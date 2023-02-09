@@ -1,4 +1,4 @@
-package com.example.yadino.ui.theme
+package com.rahim.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

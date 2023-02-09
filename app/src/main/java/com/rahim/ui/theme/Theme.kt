@@ -1,4 +1,4 @@
-package com.example.yadino.ui.theme
+package com.rahim.ui.theme
 
 import android.app.Activity
 import android.os.Build
