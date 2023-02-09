@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "587829101426",
+    "project_id": "yadinoo",
+    "storage_bucket": "yadinoo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587829101426:android:26150c0ac4802846e9d3eb",
+        "android_client_info": {
+          "package_name": "com.rahim.yadino"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "587829101426-97ugioppj7458homs4mrs3f2t59pecel.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPW7hlUykEUEEuzcjYZXDvp-EQUtoQ7Ck"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "587829101426-97ugioppj7458homs4mrs3f2t59pecel.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
