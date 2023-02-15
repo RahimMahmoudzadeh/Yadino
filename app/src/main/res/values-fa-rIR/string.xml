@@ -23,4 +23,13 @@
     <string name="question_remove" translatable="false">از پاک شدن روتین مطمعن هستید؟</string>
     <string name="yes" translatable="false">بله</string>
     <string name="edit_routine" translatable="false">ویرایش روتین</string>
+    <string name="welcome_yadino" translatable="false">!به خانواده یادینو خوش آمدید</string>
+    <string name="hello" translatable="false">سلااام</string>
+    <string name="next" translatable="false">بعدی</string>
+    <string name="welcome_2" translatable="false">با یادینو دیگه ازکارات عقب نمیفتی!</string>
+    <string name="home" translatable="false">خانه</string>
+    <string name="routine" translatable="false">روتین</string>
+    <string name="note" translatable="false">یادداشت</string>
+    <string name="calendar" translatable="false">تقویم</string>
+    <string name="welcome" translatable="false">خوشامدگویی</string>
 </resources>
