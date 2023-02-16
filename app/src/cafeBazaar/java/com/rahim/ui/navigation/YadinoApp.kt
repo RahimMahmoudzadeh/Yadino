@@ -13,6 +13,7 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -28,7 +29,7 @@ import com.rahim.utils.navigation.Screen
 
 @Composable
 fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
-    BottomNavigation(backgroundColor = ZIRCON) {
+    BottomAppBar(containerColor = ZIRCON) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
 

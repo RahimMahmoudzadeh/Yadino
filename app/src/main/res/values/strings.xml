@@ -31,4 +31,8 @@
     <string name="note" translatable="false">یادداشت</string>
     <string name="calendar" translatable="false">تقویم</string>
     <string name="welcome" translatable="false">خوشامدگویی</string>
+    <string name="welcome_help" translatable="false">اینجا ما بهت کمک میکنیم تا به همه هدفگذاری هات برسی !</string>
+    <string name="yadino_life" translatable="false">یادینو اپلیکیشنی برای زندگی بهتر !</string>
+    <string name="energetic_yadino" translatable="false">با یادینو بانشاط تر منظم تر و هوشمندتر باشید !</string>
+    <string name="lets_go" translatable="false">بزن بریم</string>
 </resources>

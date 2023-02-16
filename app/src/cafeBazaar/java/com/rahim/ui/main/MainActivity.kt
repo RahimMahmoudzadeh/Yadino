@@ -19,9 +19,11 @@ import com.rahim.ui.navigation.NavGraph
 import com.rahim.ui.navigation.YadinoApp
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.navigation.Screen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    val screenItems = listOf(
+    private val screenItems = listOf(
         Screen.Home,
         Screen.Routine,
         Screen.Note,
@@ -33,15 +35,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             YadinoTheme {
                 val navController = rememberNavController()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Scaffold(
                         bottomBar = {
-//                            if (currentRoute(navController) != Screen.Welcome.route) {
-//                                YadinoApp(navController, screenItems)
-//                            }
+                            if (navBackStackEntry?.destination?.route != Screen.Welcome.route)
+                                YadinoApp(navController, screenItems)
                         }
                     ) { innerPadding ->
                         NavGraph(navController, innerPadding = innerPadding)
@@ -52,8 +54,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-//@Composable
-//fun currentRoute(navController: NavHostController): String {
-//    val navBackStackEntry by navController.currentBackStackEntryAsState()
-//    return navBackStackEntry.destination.route.toString()
-//}

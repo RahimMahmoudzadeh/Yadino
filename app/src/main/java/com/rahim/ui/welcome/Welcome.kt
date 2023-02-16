@@ -30,10 +30,47 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rahim.R
+import com.rahim.data.modle.screen.WelcomeScreen
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.GradientButton
+
+
+@Composable
+fun WelcomeScreens(screenPosition: Int, clickScreen: () -> Unit) {
+    val listItemWelcome = listOf(
+        WelcomeScreen(
+            stringResource(id = R.string.hello),
+            stringResource(id = R.string.welcome_yadino),
+            stringResource(id = R.string.next),
+            22.sp,
+            R.drawable.welcome1
+        ),
+        WelcomeScreen(
+            stringResource(id = R.string.welcome_2),
+            stringResource(id = R.string.welcome_help),
+            stringResource(id = R.string.next),
+            22.sp,
+            R.drawable.welcome2
+        ),
+        WelcomeScreen(
+            stringResource(id = R.string.yadino_life),
+            stringResource(id = R.string.energetic_yadino),
+            stringResource(id = R.string.lets_go),
+            22.sp,
+            R.drawable.welcome3
+        )
+    )
+    Welcome(
+        textWelcomeTop = listItemWelcome[screenPosition].textWelcomeTop,
+        textWelcomeBottom = listItemWelcome[screenPosition].textWelcomeBottom,
+        textButton = listItemWelcome[screenPosition].textButton,
+        textSizeBottom = listItemWelcome[screenPosition].textSizeBottom,
+        imageRes = listItemWelcome[screenPosition].imageRes,
+        nextClick = clickScreen
+    )
+}
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
@@ -43,7 +80,8 @@ fun Welcome(
     textWelcomeBottom: String,
     textButton: String,
     textSizeBottom: TextUnit,
-    imageRes: Int
+    imageRes: Int,
+    nextClick: () -> Unit
 ) {
     val gradientColors = listOf(Purple, PurpleGrey)
 
@@ -53,7 +91,7 @@ fun Welcome(
     ) {
         Image(
             modifier = Modifier.weight(1f, fill = false),
-            contentScale=ContentScale.FillWidth,
+            contentScale = ContentScale.FillWidth,
             painter = painterResource(id = imageRes), contentDescription = "welcomeImage"
         )
         Text(
@@ -76,7 +114,8 @@ fun Welcome(
             gradient = Brush.horizontalGradient(com.rahim.utils.base.view.gradientColors),
             modifier = Modifier
                 .padding(top = 38.dp, end = 22.dp, start = 22.dp, bottom = 8.dp),
-            textSize = 18.sp
+            textSize = 18.sp,
+            onClick = nextClick
         )
     }
 }
@@ -91,7 +130,9 @@ private fun WelcomePreview1() {
             textButton = "بعدی",
             imageRes = R.drawable.welcome1,
             textSizeBottom = 12.sp
-        )
+        ) {
+
+        }
     }
 }
 
@@ -105,7 +146,9 @@ private fun WelcomePreview2() {
             textButton = "بعدی",
             imageRes = R.drawable.welcome2,
             textSizeBottom = 22.sp
-        )
+        ) {
+
+        }
     }
 }
 
@@ -119,6 +162,6 @@ private fun WelcomePreview3() {
             textButton = "شروع",
             imageRes = R.drawable.welcome3,
             textSizeBottom = 22.sp
-        )
+        ) {}
     }
 }
