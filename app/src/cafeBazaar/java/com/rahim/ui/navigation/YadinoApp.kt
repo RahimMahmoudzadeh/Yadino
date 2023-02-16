@@ -29,26 +29,27 @@ import com.rahim.utils.navigation.Screen
 
 @Composable
 fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
-    BottomAppBar(containerColor = ZIRCON) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination
-
-        screenItems.forEach { screen ->
-            BottomNavigationItem(
-                icon = { Icon(painterResource(id = screen.icon), contentDescription = null) },
-                selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                onClick = {
-                    navController.navigate(screen.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    if (navBackStackEntry?.destination?.route != Screen.Welcome.route) {
+        BottomAppBar(containerColor = ZIRCON) {
+            screenItems.forEach { screen ->
+                BottomNavigationItem(
+                    icon = { Icon(painterResource(id = screen.icon), contentDescription = null) },
+                    selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                    onClick = {
+                        navController.navigate(screen.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                selectedContentColor = Purple,
-                unselectedContentColor = LocalContentColor.current
-            )
+                    },
+                    selectedContentColor = Purple,
+                    unselectedContentColor = LocalContentColor.current
+                )
+            }
         }
     }
 }

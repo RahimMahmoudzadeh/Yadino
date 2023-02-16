@@ -35,4 +35,5 @@
     <string name="yadino_life" translatable="false">یادینو اپلیکیشنی برای زندگی بهتر !</string>
     <string name="energetic_yadino" translatable="false">با یادینو بانشاط تر منظم تر و هوشمندتر باشید !</string>
     <string name="lets_go" translatable="false">بزن بریم</string>
+    <string name="hello_friend" translatable="false">سلام دوست خوبم</string>
 </resources>

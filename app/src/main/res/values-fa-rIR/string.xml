@@ -25,6 +25,7 @@
     <string name="edit_routine" translatable="false">ویرایش روتین</string>
     <string name="welcome_yadino" translatable="false">!به خانواده یادینو خوش آمدید</string>
     <string name="hello" translatable="false">سلااام</string>
+    <string name="hello_friend" translatable="false">سلام دوست خوبم</string>
     <string name="next" translatable="false">بعدی</string>
     <string name="welcome_2" translatable="false">با یادینو دیگه ازکارات عقب نمیفتی!</string>
     <string name="home" translatable="false">خانه</string>

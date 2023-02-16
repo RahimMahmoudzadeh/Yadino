@@ -105,7 +105,7 @@ fun Welcome(
             text = textWelcomeBottom,
             fontSize = textSizeBottom,
             modifier = Modifier
-                .padding(top = 20.dp, start = 12.dp, end = 12.dp),
+                .padding(top = 18.dp, start = 12.dp, end = 12.dp),
             textAlign = TextAlign.Center,
             style = TextStyle(fontWeight = FontWeight.Bold)
         )
@@ -113,7 +113,7 @@ fun Welcome(
             text = textButton,
             gradient = Brush.horizontalGradient(com.rahim.utils.base.view.gradientColors),
             modifier = Modifier
-                .padding(top = 38.dp, end = 22.dp, start = 22.dp, bottom = 8.dp),
+                .padding(top = 40.dp, end = 22.dp, start = 22.dp, bottom = 24.dp),
             textSize = 18.sp,
             onClick = nextClick
         )

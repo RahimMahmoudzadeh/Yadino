@@ -35,15 +35,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             YadinoTheme {
                 val navController = rememberNavController()
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Scaffold(
                         bottomBar = {
-                            if (navBackStackEntry?.destination?.route != Screen.Welcome.route)
-                                YadinoApp(navController, screenItems)
+                            YadinoApp(navController, screenItems)
                         }
                     ) { innerPadding ->
                         NavGraph(navController, innerPadding = innerPadding)
