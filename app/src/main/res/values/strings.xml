@@ -1,42 +1,49 @@
 <resources>
     <string name="app_name">Yadino</string>
-    <string name="search_hint" translatable="false">جستجو...</string>
-    <string name="add_item" translatable="false">لطفا روتین خود را اضافه بکنید!</string>
-    <string name="add_routine" translatable="false">ساخت روتین جدید</string>
-    <string name="saturday" translatable="false">ش</string>
-    <string name="sunday" translatable="false">ی</string>
-    <string name="monday" translatable="false">د</string>
-    <string name="tuesday" translatable="false">س</string>
-    <string name="wednesday" translatable="false">چ</string>
-    <string name="thursday" translatable="false">پ</string>
-    <string name="friday" translatable="false">ج</string>
-    <string name="channel_description" translatable="false">این بخش مر بوط به نوتیفیکیشن های ارسالی از اپلیکیشن yadinoo می باشد.</string>
-    <string name="name_routine" translatable="false">اسم روتین</string>
-    <string name="change_time" translatable="false">انتخاب زمان</string>
-    <string name="ok" translatable="false">باشه</string>
-    <string name="cancel" translatable="false">انصراف</string>
-    <string name="emptyField" translatable="false">فیلد خالی است !!!</string>
-    <string name="success_save_routine" translatable="false">روتین شما با موفقیت ثبت شد!</string>
-    <string name="not_time" translatable="false">بدون ساعت!</string>
-    <string name="not_result" translatable="false">هیچ موردی یافت نشد!</string>
-    <string name="question_remove" translatable="false">از پاک شدن روتین مطمعن هستید؟</string>
-    <string name="yes" translatable="false">بله</string>
-    <string name="edit_routine" translatable="false">ویرایش روتین</string>
-    <string name="welcome_yadino" translatable="false">!به خانواده یادینو خوش آمدید</string>
-    <string name="hello" translatable="false">سلااام</string>
-    <string name="next" translatable="false">بعدی</string>
-    <string name="welcome_2" translatable="false">با یادینو دیگه ازکارات عقب نمیفتی!</string>
-    <string name="home" translatable="false">خانه</string>
-    <string name="routine" translatable="false">روتین</string>
-    <string name="note" translatable="false">یادداشت</string>
-    <string name="calendar" translatable="false">تقویم</string>
-    <string name="welcome" translatable="false">خوشامدگویی</string>
-    <string name="welcome_help" translatable="false">اینجا ما بهت کمک میکنیم تا به همه هدفگذاری هات برسی !</string>
-    <string name="yadino_life" translatable="false">یادینو اپلیکیشنی برای زندگی بهتر !</string>
-    <string name="energetic_yadino" translatable="false">با یادینو بانشاط تر منظم تر و هوشمندتر باشید !</string>
-    <string name="lets_go" translatable="false">بزن بریم</string>
-    <string name="hello_friend" translatable="false">سلام دوست خوبم</string>
-    <string name="not_work" translatable="false">!شماهنوز کاری ثبت نکردید</string>
-    <string name="not_work_for_day" translatable="false">!شماهنوز کاری برای امروز ثبت نکردید</string>
-    <string name="list_work_day" translatable="false">لیست کار های امروز</string>
+    <string name="search_hint">جستجو...</string>
+    <string name="add_item">لطفا روتین خود را اضافه بکنید!</string>
+    <string name="add_routine">ساخت روتین جدید</string>
+    <string name="saturday">ش</string>
+    <string name="sunday">ی</string>
+    <string name="monday">د</string>
+    <string name="tuesday">س</string>
+    <string name="wednesday">چ</string>
+    <string name="thursday">پ</string>
+    <string name="friday">ج</string>
+    <string name="channel_description">این بخش مر بوط به نوتیفیکیشن های ارسالی از اپلیکیشن yadinoo می باشد.</string>
+    <string name="name_routine">اسم روتین</string>
+    <string name="change_time">انتخاب زمان</string>
+    <string name="ok">باشه</string>
+    <string name="cancel">انصراف</string>
+    <string name="emptyField">فیلد خالی است !!!</string>
+    <string name="success_save_routine">روتین شما با موفقیت ثبت شد!</string>
+    <string name="not_time">بدون ساعت!</string>
+    <string name="not_result">هیچ موردی یافت نشد!</string>
+    <string name="question_remove">از پاک شدن روتین مطمعن هستید؟</string>
+    <string name="yes">بله</string>
+    <string name="edit_routine">ویرایش روتین</string>
+    <string name="welcome_yadino">به خانواده یادینو خوش آمدید!</string>
+    <string name="hello">سلااام</string>
+    <string name="next">بعدی</string>
+    <string name="welcome_2">با یادینو دیگه ازکارات عقب نمیفتی!</string>
+    <string name="home">خانه</string>
+    <string name="routine">روتین</string>
+    <string name="note">یادداشت</string>
+    <string name="calendar">تقویم</string>
+    <string name="welcome">خوشامدگویی</string>
+    <string name="welcome_help">اینجا ما بهت کمک میکنیم تا به همه هدفگذاری هات برسی !</string>
+    <string name="yadino_life">یادینو اپلیکیشنی برای زندگی بهتر !</string>
+    <string name="energetic_yadino">با یادینو بانشاط تر منظم تر و هوشمندتر باشید !</string>
+    <string name="lets_go">بزن بریم</string>
+    <string name="hello_friend">سلام دوست خوبم</string>
+    <string name="not_work">!شماهنوز کاری ثبت نکردید</string>
+    <string name="not_work_for_day">!شماهنوز کاری برای امروز ثبت نکردید</string>
+    <string name="list_work_day">لیست کار های امروز</string>
+    <string name="name">نام</string>
+    <string name="week_day">تعداد روز در هفته</string>
+    <string name="remmeber">یادآور</string>
+    <string name="seven_day">7 روز</string>
+    <string name="for_remmber">برای اینکه بتونیم یادت بندازیم تیک یادآور رو بزن</string>
+    <string name="name_hint_text_filed_routine">.نام روتین مورد نظر خود را وارد کنید</string>
+    <string name="confirmation">تایید</string>
 </resources>

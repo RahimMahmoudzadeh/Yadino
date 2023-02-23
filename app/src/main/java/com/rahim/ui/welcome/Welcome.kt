@@ -4,10 +4,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -16,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,14 +55,16 @@ fun WelcomeScreens(screenPosition: Int, clickScreen: () -> Unit) {
             R.drawable.welcome3
         )
     )
-    Welcome(
-        textWelcomeTop = listItemWelcome[screenPosition].textWelcomeTop,
-        textWelcomeBottom = listItemWelcome[screenPosition].textWelcomeBottom,
-        textButton = listItemWelcome[screenPosition].textButton,
-        textSizeBottom = listItemWelcome[screenPosition].textSizeBottom,
-        imageRes = listItemWelcome[screenPosition].imageRes,
-        nextClick = clickScreen
-    )
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        Welcome(
+            textWelcomeTop = listItemWelcome[screenPosition].textWelcomeTop,
+            textWelcomeBottom = listItemWelcome[screenPosition].textWelcomeBottom,
+            textButton = listItemWelcome[screenPosition].textButton,
+            textSizeBottom = listItemWelcome[screenPosition].textSizeBottom,
+            imageRes = listItemWelcome[screenPosition].imageRes,
+            nextClick = clickScreen
+        )
+    }
 }
 
 @OptIn(ExperimentalTextApi::class)
@@ -103,7 +108,7 @@ fun Welcome(
             text = textButton,
             gradient = Brush.horizontalGradient(com.rahim.utils.base.view.gradientColors),
             modifier = Modifier
-                .padding(top = 40.dp, end = 22.dp, start = 22.dp, bottom = 24.dp),
+                .padding(top = 40.dp, end = 32.dp, start = 32.dp, bottom = 24.dp),
             textSize = 18.sp,
             onClick = nextClick
         )
