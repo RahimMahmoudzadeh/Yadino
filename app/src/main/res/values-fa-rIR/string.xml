@@ -37,4 +37,7 @@
     <string name="yadino_life" translatable="false">یادینو اپلیکیشنی برای زندگی بهتر !</string>
     <string name="energetic_yadino" translatable="false">با یادینو بانشاط تر منظم تر و هوشمندتر باشید !</string>
     <string name="lets_go" translatable="false">بزن بریم</string>
+    <string name="not_work" translatable="false">!شماهنوز کاری ثبت نکردید</string>
+    <string name="not_work_for_day" translatable="false">!شماهنوز کاری برای امروز ثبت نکردید</string>
+    <string name="list_work_day" translatable="false">لیست کار های امروز</string>
 </resources>
