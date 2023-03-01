@@ -11,7 +11,6 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Text
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
@@ -243,8 +242,8 @@ fun ShowTimePicker(dialogState: MaterialDialogState) {
     ) {
         timepicker(
             colors = TimePickerDefaults.colors(
-                activeBackgroundColor = ONAHAU,
-                inactiveBackgroundColor = ONAHAU,
+                activeBackgroundColor = Onahau,
+                inactiveBackgroundColor = Onahau,
                 activeTextColor = Color.Black,
                 borderColor = Purple,
                 selectorColor = Purple,

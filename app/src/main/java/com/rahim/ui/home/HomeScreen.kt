@@ -3,48 +3,45 @@ package com.rahim.ui.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Shapes
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rahim.R
+import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.theme.YadinoTheme
-import com.rahim.ui.theme.ZIRCON
+import com.rahim.ui.theme.Zircon
 import com.rahim.utils.base.view.TopBar
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
+    val checkedState = rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopBar(
-                modifier.background(ZIRCON), stringResource(id = R.string.hello_friend)
+                modifier.background(Zircon), stringResource(id = R.string.hello_friend)
             )
         }, backgroundColor = Color.White
     ) {
-        Column(modifier = modifier) {
+        Column(modifier = modifier.padding(end = 16.dp, start = 16.dp, top = 25.dp)) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                modifier = Modifier.padding(horizontal = 12.dp)
                     .fillMaxWidth()
             ) {
                 Text(
@@ -54,31 +51,65 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     text = stringResource(id = R.string.list_work_day), fontSize = 18.sp
                 )
             }
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize()
-            ) {
-
-                Image(
-                    modifier = Modifier
-                        .sizeIn(minHeight = 320.dp)
-                        .fillMaxWidth(),
-                    painter = painterResource(id = R.drawable.empty_list_home),
-                    contentDescription = "empty list home"
-                )
-                Text(
-                    text = stringResource(id = R.string.not_work_for_day),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 32.dp),
-                    textAlign = TextAlign.Center,
-                    fontSize = 18.sp
-                )
-            }
+//            EmptyHome(it)
+            ItemsHome(it, checkedState.value, onChecked = {
+                checkedState.value = it
+            })
         }
+    }
+}
+
+@Composable
+fun EmptyHome(paddingValues: PaddingValues) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .padding(paddingValues)
+            .fillMaxSize()
+    ) {
+
+        Image(
+            modifier = Modifier
+                .sizeIn(minHeight = 320.dp)
+                .fillMaxWidth(),
+            painter = painterResource(id = R.drawable.empty_list_home),
+            contentDescription = "empty list home"
+        )
+        Text(
+            text = stringResource(id = R.string.not_work_for_day),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 32.dp),
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp
+        )
+    }
+}
+
+@Composable
+fun ItemsHome(paddingValues: PaddingValues, isChecked: Boolean, onChecked: (Boolean) -> Unit) {
+    val routine =
+        remember {
+            listOf(
+                Routine("قراره کاری", null, null, null, null, null, false, null),
+                Routine("قراره کاری2", null, null, null, null, null, false, null),
+                Routine("قراره کاری3", null, null, null, null, null, false, null)
+            )
+        }
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(paddingValues),
+        contentPadding = PaddingValues(top = 25.dp)
+    ) {
+        items(
+            items = routine, itemContent = {
+                ItemHome(routine = it, isChecked = isChecked) {
+                    onChecked(it)
+                }
+            }
+        )
     }
 }
 

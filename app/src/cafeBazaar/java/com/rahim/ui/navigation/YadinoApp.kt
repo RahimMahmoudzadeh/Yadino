@@ -2,8 +2,6 @@ package com.rahim.ui.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -13,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.LayoutDirection
@@ -22,11 +19,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.rahim.R
 import com.rahim.ui.dialog.DialogAddRoutine
-import com.rahim.ui.theme.Purple
-import com.rahim.ui.theme.PurpleGrey
-import com.rahim.ui.theme.ZIRCON
+import com.rahim.ui.theme.Zircon
 import com.rahim.utils.navigation.Screen
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -40,7 +34,7 @@ fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
     val destination = navBackStackEntry?.destination?.route
 
     if (destination != Screen.Welcome.route) {
-        BottomNavigation(backgroundColor = ZIRCON) {
+        BottomNavigation(backgroundColor = Zircon) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
 

@@ -18,7 +18,7 @@ import androidx.core.view.ViewCompat
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple,
-    secondary = ZIRCON,
+    secondary = Zircon,
     tertiary = Pink80
 )
 
@@ -56,7 +56,7 @@ fun YadinoTheme(
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            (view.context as Activity).window.statusBarColor = ZIRCON.toArgb()
+            (view.context as Activity).window.statusBarColor = Zircon.toArgb()
             ViewCompat.getWindowInsetsController(view)?.isAppearanceLightStatusBars = darkTheme
         }
     }
