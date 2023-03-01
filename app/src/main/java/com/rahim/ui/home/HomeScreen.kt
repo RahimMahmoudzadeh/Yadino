@@ -29,7 +29,6 @@ import com.rahim.utils.base.view.TopBar
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
-    val checkedState = rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -52,9 +51,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 )
             }
 //            EmptyHome(it)
-            ItemsHome(it, checkedState.value, onChecked = {
-                checkedState.value = it
-            })
+            ItemsHome(it)
         }
     }
 }
@@ -88,12 +85,12 @@ fun EmptyHome(paddingValues: PaddingValues) {
 }
 
 @Composable
-fun ItemsHome(paddingValues: PaddingValues, isChecked: Boolean, onChecked: (Boolean) -> Unit) {
+fun ItemsHome(paddingValues: PaddingValues) {
     val routine =
         remember {
             listOf(
                 Routine("قراره کاری", null, null, null, null, null, false, null),
-                Routine("قراره کاری2", null, null, null, null, null, false, null),
+                Routine("قراره کاری2", null, null, null, null, null, true, null),
                 Routine("قراره کاری3", null, null, null, null, null, false, null)
             )
         }
@@ -105,9 +102,9 @@ fun ItemsHome(paddingValues: PaddingValues, isChecked: Boolean, onChecked: (Bool
     ) {
         items(
             items = routine, itemContent = {
-                ItemHome(routine = it, isChecked = isChecked) {
-                    onChecked(it)
-                }
+                ItemHome(routine = it, onChecked = {
+
+                })
             }
         )
     }

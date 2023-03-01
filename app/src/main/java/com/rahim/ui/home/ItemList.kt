@@ -26,20 +26,21 @@ import com.rahim.utils.base.view.gradientColors
 fun ItemHome(
     routine: Routine,
     modifier: Modifier = Modifier,
-    isChecked: Boolean,
-    onCheck: (Boolean) -> Unit
+    onChecked: (Routine) -> Unit
 ) {
-
     Card(
         colors = CardDefaults.cardColors(containerColor = Zircon),
-        border = if (isChecked) BorderStroke(1.dp, color = Porcelain) else BorderStroke(
+        border = if (routine.isChecked) BorderStroke(1.dp, color = Porcelain) else BorderStroke(
             1.dp,
             Brush.horizontalGradient(gradientColors)
         ),
-        onClick = { onCheck(!isChecked) },
+        onClick = {
+            onChecked(routine.apply { isChecked = !isChecked })
+        },
         modifier = modifier
             .fillMaxWidth()
-            .sizeIn(minHeight = 120.dp).padding(bottom = 12.dp)
+            .sizeIn(minHeight = 120.dp)
+            .padding(bottom = 12.dp)
     ) {
         Row(
             modifier = Modifier
@@ -48,8 +49,10 @@ fun ItemHome(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Checkbox(
-                checked = isChecked,
-                onCheckedChange = { onCheck(it) },
+                checked = routine.isChecked,
+                onCheckedChange = {
+                    onChecked(routine.apply { isChecked = it })
+                },
                 colors = CheckboxDefaults.colors(checkedColor = Purple)
             )
             Column(modifier = Modifier.padding(top = 12.dp)) {
