@@ -3,13 +3,13 @@
     <string name="search_hint">جستجو...</string>
     <string name="add_item">لطفا روتین خود را اضافه بکنید!</string>
     <string name="add_routine">ساخت روتین جدید</string>
-    <string name="saturday">ش</string>
-    <string name="sunday">ی</string>
-    <string name="monday">د</string>
-    <string name="tuesday">س</string>
-    <string name="wednesday">چ</string>
-    <string name="thursday">پ</string>
-    <string name="friday">ج</string>
+    <string name="saturday">شنبه</string>
+    <string name="sunday">یک</string>
+    <string name="monday">دو</string>
+    <string name="tuesday">سه</string>
+    <string name="wednesday">چهار</string>
+    <string name="thursday">پنج</string>
+    <string name="friday">جمعه</string>
     <string name="channel_description">این بخش مر بوط به نوتیفیکیشن های ارسالی از اپلیکیشن yadinoo می باشد.</string>
     <string name="name_routine">اسم روتین</string>
     <string name="change_time">انتخاب زمان</string>
@@ -44,6 +44,13 @@
     <string name="remmeber">یادآور</string>
     <string name="seven_day">7 روز</string>
     <string name="for_remmber">برای اینکه بتونیم یادت بندازیم تیک یادآور رو بزن</string>
-    <string name="name_hint_text_filed_routine">.نام روتین مورد نظر خود را وارد کنید</string>
+    <string name="name_hint_text_filed_routine">نام روتین مورد نظر خود را وارد کنید</string>
     <string name="confirmation">تایید</string>
+    <string name="creat_new_work">ایجاد کار جدید</string>
+    <string name="all">همه</string>
+    <string name="set_alarms">تنظیم آلارم ساعت : 00 12 </string>
+    <string name="time_change">تغییر زمان</string>
+    <string name="time">زمان</string>
+    <string name="data_change">تغییر تاریخ</string>
+    <string name="set_reminder">تنظیم یادآور از روی تقویم</string>
 </resources>

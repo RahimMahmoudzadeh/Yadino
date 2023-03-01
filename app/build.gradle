@@ -114,4 +114,7 @@ dependencies {
 
     //navigation
     implementation "androidx.navigation:navigation-compose:$nav_version"
+
+    implementation "io.github.vanpra.compose-material-dialogs:datetime:$datetime"
+
 }

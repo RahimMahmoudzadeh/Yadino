@@ -28,6 +28,12 @@ fun NavGraph(
         composable(Screen.Routine.route) {
 
         }
+        composable(Screen.Note.route) {
+
+        }
+        composable(Screen.Calender.route) {
+
+        }
         composable(Screen.Welcome.route) {
             if (stateWelcomePage)
                 return@composable
