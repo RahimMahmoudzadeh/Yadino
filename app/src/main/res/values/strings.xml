@@ -53,4 +53,5 @@
     <string name="time">زمان</string>
     <string name="data_change">تغییر تاریخ</string>
     <string name="set_reminder">تنظیم یادآور از روی تقویم</string>
+    <string name="no">خیر</string>
 </resources>

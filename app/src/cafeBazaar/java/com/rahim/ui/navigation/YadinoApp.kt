@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.LayoutDirection
@@ -29,10 +30,10 @@ fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
     var click by rememberSaveable { mutableStateOf(false) }
     var openDialog by remember { mutableStateOf(false) }
     var routineName = rememberSaveable { mutableStateOf("") }
+    val configuration = LocalConfiguration.current
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val destination = navBackStackEntry?.destination?.route
-
     if (destination != Screen.Welcome.route) {
         BottomNavigation(backgroundColor = Zircon) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -60,7 +61,10 @@ fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
             }
         }
         FloatingActionButton(
-            modifier = Modifier.offset(x = 180.dp, y = -35.dp),
+            modifier = Modifier.offset(
+                x = (configuration.screenWidthDp.dp / 2) - 26.dp,
+                y = -35.dp
+            ),
             onClick = {
                 click = true
                 openDialog = true
@@ -71,7 +75,7 @@ fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
     }
     if (click) {
         ShowDialog(destination = destination.toString(), isOpenDialog = openDialog, click = {
-            openDialog = false
+            openDialog = it
         }, routine = {
             routineName.value = it
         }, routineName = routineName.value)
@@ -85,17 +89,16 @@ fun ShowDialog(
     destination: String,
     isOpenDialog: Boolean,
     routineName: String,
-    click: () -> Unit,
+    click: (Boolean) -> Unit,
     routine: (String) -> Unit
 ) {
     if (destination == Screen.Home.route || destination == Screen.Routine.route) {
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            DialogAddRoutine(modifier, isOpenDialog, routineName = routineName, routine = {
-                routine(it)
-            }, openDialog = {
-                click()
-            })
-        }
+        DialogAddRoutine(modifier, isOpenDialog, routineName = routineName, routine = {
+            routine(it)
+        }, openDialog = {
+            click(it)
+        })
+
     } else {
 
     }

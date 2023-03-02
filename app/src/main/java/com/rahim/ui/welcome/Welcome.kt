@@ -94,7 +94,7 @@ fun Welcome(
                 brush = Brush.verticalGradient(
                     colors = gradientColors
                 ), fontWeight = FontWeight.Bold
-            ), fontSize = 22.sp
+            ), fontSize = 22.sp, modifier = Modifier.padding(top = 6.dp)
         )
         Text(
             text = textWelcomeBottom,

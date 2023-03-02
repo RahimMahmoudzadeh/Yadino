@@ -1,9 +1,11 @@
 package com.rahim.ui.main
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
@@ -12,7 +14,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -33,23 +38,27 @@ class MainActivity : ComponentActivity() {
         Screen.Calender
     )
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewModel
         setContent {
-            YadinoTheme {
-                val navController = rememberNavController()
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Scaffold(
-                        bottomBar = {
-                            YadinoApp(navController, screenItems)
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                YadinoTheme {
+                    val navController = rememberNavController()
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        Scaffold(
+                            bottomBar = {
+                                YadinoApp(navController, screenItems)
+                            }
+                        ) { innerPadding ->
+                            NavGraph(navController, innerPadding = innerPadding)
                         }
-                    ) { innerPadding ->
-                        NavGraph(navController, innerPadding = innerPadding)
                     }
+
                 }
 
             }

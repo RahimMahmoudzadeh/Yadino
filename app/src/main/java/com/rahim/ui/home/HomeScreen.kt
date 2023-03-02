@@ -1,5 +1,7 @@
 package com.rahim.ui.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -27,17 +29,19 @@ import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.base.view.TopBar
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
 
     Scaffold(
+        modifier=modifier.background(Zircon),
         topBar = {
             TopBar(
-                modifier.background(Zircon), stringResource(id = R.string.hello_friend)
+                modifier, stringResource(id = R.string.hello_friend)
             )
         }, backgroundColor = Color.White
     ) {
-        Column(modifier = modifier.padding(end = 16.dp, start = 16.dp, top = 25.dp)) {
+        Column(modifier = Modifier.padding(end = 16.dp, start = 16.dp, top = 25.dp)) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.padding(horizontal = 12.dp)
@@ -84,8 +88,11 @@ fun EmptyHome(paddingValues: PaddingValues) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ItemsHome(paddingValues: PaddingValues) {
+    var routineName = rememberSaveable { mutableStateOf("") }
+
     val routine =
         remember {
             listOf(
@@ -104,12 +111,15 @@ fun ItemsHome(paddingValues: PaddingValues) {
             items = routine, itemContent = {
                 ItemHome(routine = it, onChecked = {
 
+                }, routineName = {
+                    routineName.value=it
                 })
             }
         )
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, backgroundColor = 0xFFFFFF, device = Devices.PIXEL_4)
 @Composable
 fun HomeScreenPreview() {

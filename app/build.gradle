@@ -109,12 +109,16 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
 
-    //persianData
+    //persian Data
     implementation "com.github.samanzamani:PersianDate:$persianData"
 
     //navigation
     implementation "androidx.navigation:navigation-compose:$nav_version"
 
+    //dialog time
     implementation "io.github.vanpra.compose-material-dialogs:datetime:$datetime"
+
+    //swipe
+    implementation "me.saket.swipe:swipe:$swipe"
 
 }
