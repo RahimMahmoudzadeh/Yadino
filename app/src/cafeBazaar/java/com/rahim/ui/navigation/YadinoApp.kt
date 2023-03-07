@@ -3,6 +3,7 @@ package com.rahim.ui.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
@@ -60,10 +61,12 @@ fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
                 )
             }
         }
+//        x = (configuration.screenWidthDp.dp / 2) - 26.dp,
+//        y = -35.dp
         FloatingActionButton(
             modifier = Modifier.offset(
-                x = (configuration.screenWidthDp.dp / 2) - 26.dp,
-                y = -35.dp
+                x = (configuration.screenWidthDp.dp) - 70.dp,
+                y = -65.dp
             ),
             onClick = {
                 click = true

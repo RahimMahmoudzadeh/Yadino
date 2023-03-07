@@ -54,8 +54,8 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     text = stringResource(id = R.string.list_work_day), fontSize = 18.sp
                 )
             }
-//            EmptyHome(it)
-            ItemsHome(it)
+            EmptyHome(it)
+//            ItemsHome(it)
         }
     }
 }

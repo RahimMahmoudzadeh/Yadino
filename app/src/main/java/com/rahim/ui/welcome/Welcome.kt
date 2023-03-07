@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -22,16 +23,25 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
+import com.google.accompanist.pager.rememberPagerState
 import com.rahim.R
 import com.rahim.data.modle.screen.WelcomeScreen
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.GradientButton
+import com.rahim.utils.navigation.Screen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun WelcomeScreens(screenPosition: Int, clickScreen: () -> Unit) {
+fun WelcomeScreens(navController: NavController,pagerState: PagerState,scope:CoroutineScope) {
     val listItemWelcome = listOf(
         WelcomeScreen(
             stringResource(id = R.string.hello),
@@ -56,14 +66,31 @@ fun WelcomeScreens(screenPosition: Int, clickScreen: () -> Unit) {
         )
     )
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        Welcome(
-            textWelcomeTop = listItemWelcome[screenPosition].textWelcomeTop,
-            textWelcomeBottom = listItemWelcome[screenPosition].textWelcomeBottom,
-            textButton = listItemWelcome[screenPosition].textButton,
-            textSizeBottom = listItemWelcome[screenPosition].textSizeBottom,
-            imageRes = listItemWelcome[screenPosition].imageRes,
-            nextClick = clickScreen
-        )
+        Column() {
+            HorizontalPager(modifier = Modifier.fillMaxHeight(0.87f),count = 3, state = pagerState) { page ->
+                Welcome(
+                    textWelcomeTop = listItemWelcome[page].textWelcomeTop,
+                    textWelcomeBottom = listItemWelcome[page].textWelcomeBottom,
+                    textSizeBottom = listItemWelcome[page].textSizeBottom,
+                    imageRes = listItemWelcome[page].imageRes,
+                )
+            }
+            GradientButton(
+                text = listItemWelcome[pagerState.currentPage].textButton,
+                gradient = Brush.horizontalGradient(com.rahim.utils.base.view.gradientColors),
+                modifier = Modifier
+                    .padding(top = 28.dp,end = 32.dp, start = 32.dp, bottom = 8.dp),
+                textSize = 18.sp,
+                onClick = {
+                    scope.launch {
+                        if (pagerState.currentPage == 2) {
+                            navController.navigate(Screen.Home.route)
+                        }
+                        pagerState.scrollToPage(pagerState.currentPage.plus(1))
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -73,10 +100,8 @@ fun Welcome(
     modifier: Modifier = Modifier,
     textWelcomeTop: String,
     textWelcomeBottom: String,
-    textButton: String,
     textSizeBottom: TextUnit,
     imageRes: Int,
-    nextClick: () -> Unit
 ) {
     val gradientColors = listOf(Purple, PurpleGrey)
 
@@ -87,7 +112,8 @@ fun Welcome(
         Image(
             modifier = Modifier.weight(1f, fill = false),
             contentScale = ContentScale.FillWidth,
-            painter = painterResource(id = imageRes), contentDescription = "welcomeImage"
+            painter = painterResource(id = imageRes),
+            contentDescription = "welcomeImage"
         )
         Text(
             text = textWelcomeTop, style = TextStyle(
@@ -104,14 +130,7 @@ fun Welcome(
             textAlign = TextAlign.Center,
             style = TextStyle(fontWeight = FontWeight.Bold)
         )
-        GradientButton(
-            text = textButton,
-            gradient = Brush.horizontalGradient(com.rahim.utils.base.view.gradientColors),
-            modifier = Modifier
-                .padding(top = 40.dp, end = 32.dp, start = 32.dp, bottom = 24.dp),
-            textSize = 18.sp,
-            onClick = nextClick
-        )
+
     }
 }
 
@@ -122,12 +141,9 @@ private fun WelcomePreview1() {
         Welcome(
             textWelcomeTop = "سلااام",
             textWelcomeBottom = "!به خانواده یادینو خوش آمدید",
-            textButton = "بعدی",
             imageRes = R.drawable.welcome1,
             textSizeBottom = 12.sp
-        ) {
-
-        }
+        )
     }
 }
 
@@ -138,12 +154,9 @@ private fun WelcomePreview2() {
         Welcome(
             textWelcomeTop = "! با یادینو دیگه ازکارات عقب نمیفتی",
             textWelcomeBottom = "اینجا ما بهت کمک میکنیم تا به همه هدفگذاری هات برسی",
-            textButton = "بعدی",
             imageRes = R.drawable.welcome2,
             textSizeBottom = 22.sp
-        ) {
-
-        }
+        )
     }
 }
 
@@ -154,9 +167,8 @@ private fun WelcomePreview3() {
         Welcome(
             textWelcomeTop = "!یادینو اپلیکیشنی برای زندگی بهتر",
             textWelcomeBottom = "با یادینو بانشاط تر منظم تر و هوشمندتر باشید",
-            textButton = "شروع",
             imageRes = R.drawable.welcome3,
             textSizeBottom = 22.sp
-        ) {}
+        )
     }
 }

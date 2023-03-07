@@ -11,43 +11,38 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
 import com.rahim.ui.home.HomeScreen
 import com.rahim.ui.welcome.WelcomeScreens
 import com.rahim.utils.navigation.Screen
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun NavGraph(
     navController: NavHostController = rememberNavController(),
     startDestination: String = Screen.Welcome.route, innerPadding: PaddingValues
 ) {
-    var welcomePagePosition by rememberSaveable { mutableStateOf(0) }
-    var stateWelcomePage by rememberSaveable { mutableStateOf(false) }
+    val pagerState = rememberPagerState()
+    val scope = rememberCoroutineScope()
+
     NavHost(navController, startDestination = startDestination, Modifier.padding(innerPadding)) {
-            composable(Screen.Home.route) {
-                HomeScreen()
-            }
-            composable(Screen.Routine.route) {
-
-            }
-            composable(Screen.Note.route) {
-
-            }
-            composable(Screen.Calender.route) {
-
-            }
-            composable(Screen.Welcome.route) {
-                if (stateWelcomePage)
-                    return@composable
-                if (welcomePagePosition >= 3) {
-                    stateWelcomePage = true
-                    navController.navigate(Screen.Home.route)
-                } else {
-                    WelcomeScreens(welcomePagePosition) {
-                        welcomePagePosition += 1
-                        navController.navigate(Screen.Welcome.route)
-                    }
-                }
-            }
+        composable(Screen.Welcome.route) {
+            WelcomeScreens(navController, pagerState, scope)
         }
+        composable(Screen.Home.route) {
+            HomeScreen()
+        }
+        composable(Screen.Routine.route) {
+
+        }
+        composable(Screen.Note.route) {
+
+        }
+//        composable(Screen.Calender.route) {
+//
+//        }
+
+    }
 
 }

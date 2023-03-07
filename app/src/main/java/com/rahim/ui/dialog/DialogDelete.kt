@@ -29,8 +29,8 @@ fun DialogDelete(
 ) {
     if (isOpen) {
         AlertDialog(
-            properties = DialogProperties(dismissOnClickOutside = false),
-            modifier = modifier
+            properties = DialogProperties(usePlatformDefaultWidth = false,dismissOnClickOutside = false),
+            modifier = modifier.fillMaxWidth().padding(horizontal = 22.dp)
                 .border(
                     1.dp,
                     brush = Brush.verticalGradient(gradientColors),

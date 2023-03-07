@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
         Screen.Home,
         Screen.Routine,
         Screen.Note,
-        Screen.Calender
+//        Screen.Calender
     )
 
     @RequiresApi(Build.VERSION_CODES.O)

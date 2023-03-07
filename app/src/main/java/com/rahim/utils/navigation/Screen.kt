@@ -30,12 +30,12 @@ sealed class Screen(
         R.drawable.note_dark
     )
 
-    object Calender : Screen(
-        ScreenName.CALENDER.nameScreen,
-        R.drawable.calendar,
-        R.drawable.calendar_selected,
-        R.drawable.calendar_dark
-    )
+//    object Calender : Screen(
+//        ScreenName.CALENDER.nameScreen,
+//        R.drawable.calendar,
+//        R.drawable.calendar_selected,
+//        R.drawable.calendar_dark
+//    )
 
     object Welcome : Screen(
         ScreenName.WELCOME.nameScreen,
