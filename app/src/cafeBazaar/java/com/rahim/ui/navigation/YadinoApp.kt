@@ -3,7 +3,6 @@ package com.rahim.ui.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
@@ -12,16 +11,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.rahim.ui.dialog.DialogAddNote
 import com.rahim.ui.dialog.DialogAddRoutine
+import com.rahim.ui.theme.W
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.navigation.Screen
 
@@ -31,6 +31,7 @@ fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
     var click by rememberSaveable { mutableStateOf(false) }
     var openDialog by remember { mutableStateOf(false) }
     var routineName = rememberSaveable { mutableStateOf("") }
+    var noteName = rememberSaveable { mutableStateOf("") }
     val configuration = LocalConfiguration.current
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -64,6 +65,8 @@ fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
 //        x = (configuration.screenWidthDp.dp / 2) - 26.dp,
 //        y = -35.dp
         FloatingActionButton(
+            containerColor = W,
+            contentColor = Color.White,
             modifier = Modifier.offset(
                 x = (configuration.screenWidthDp.dp) - 70.dp,
                 y = -65.dp
@@ -81,7 +84,9 @@ fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
             openDialog = it
         }, routine = {
             routineName.value = it
-        }, routineName = routineName.value)
+        }, routineName = routineName.value, note = {
+            noteName.value = it
+        }, noteName = noteName.value)
     }
 }
 
@@ -91,9 +96,11 @@ fun ShowDialog(
     modifier: Modifier = Modifier,
     destination: String,
     isOpenDialog: Boolean,
-    routineName: String,
+    routineName: String? = null,
+    noteName: String? = null,
     click: (Boolean) -> Unit,
-    routine: (String) -> Unit
+    routine: (String) -> Unit,
+    note: (String) -> Unit
 ) {
     if (destination == Screen.Home.route || destination == Screen.Routine.route) {
         DialogAddRoutine(modifier, isOpenDialog, routineName = routineName, routine = {
@@ -103,6 +110,10 @@ fun ShowDialog(
         })
 
     } else {
-
+        DialogAddNote(modifier, isOpen = isOpenDialog, noteName = noteName, openDialog = {
+            click(it)
+        }, note = {
+            note(it)
+        })
     }
 }

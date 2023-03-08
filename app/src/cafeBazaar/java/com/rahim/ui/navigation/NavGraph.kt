@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.rahim.ui.home.HomeScreen
+import com.rahim.ui.note.NoteScreen
 import com.rahim.ui.welcome.WelcomeScreens
 import com.rahim.utils.navigation.Screen
 
@@ -23,21 +24,17 @@ fun NavGraph(
     navController: NavHostController = rememberNavController(),
     startDestination: String = Screen.Welcome.route, innerPadding: PaddingValues
 ) {
-    val pagerState = rememberPagerState()
-    val scope = rememberCoroutineScope()
-
     NavHost(navController, startDestination = startDestination, Modifier.padding(innerPadding)) {
         composable(Screen.Welcome.route) {
-            WelcomeScreens(navController, pagerState, scope)
+            WelcomeScreens(navController)
         }
         composable(Screen.Home.route) {
             HomeScreen()
         }
         composable(Screen.Routine.route) {
-
         }
         composable(Screen.Note.route) {
-
+            NoteScreen()
         }
 //        composable(Screen.Calender.route) {
 //

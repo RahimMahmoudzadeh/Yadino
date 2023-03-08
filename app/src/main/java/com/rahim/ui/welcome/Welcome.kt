@@ -41,7 +41,10 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun WelcomeScreens(navController: NavController,pagerState: PagerState,scope:CoroutineScope) {
+fun WelcomeScreens(navController: NavController) {
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState()
+
     val listItemWelcome = listOf(
         WelcomeScreen(
             stringResource(id = R.string.hello),

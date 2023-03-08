@@ -18,16 +18,16 @@ sealed class Screen(
 
     object Routine : Screen(
         ScreenName.ROUTINE.nameScreen,
-        R.drawable.routine,
-        R.drawable.routine_selected,
-        R.drawable.routine_dark
+        R.drawable.note,
+        R.drawable.mote_selected,
+        R.drawable.note_dark
     )
 
     object Note : Screen(
         ScreenName.NOTE.nameScreen,
-        R.drawable.note,
-        R.drawable.mote_selected,
-        R.drawable.note_dark
+        R.drawable.routine,
+        R.drawable.routine_selected,
+        R.drawable.routine_dark
     )
 
 //    object Calender : Screen(

@@ -49,7 +49,7 @@ import java.util.*
 fun DialogAddRoutine(
     modifier: Modifier = Modifier,
     isOpen: Boolean,
-    routineName: String,
+    routineName: String?,
     openDialog: (Boolean) -> Unit,
     routine: (String) -> Unit
 ) {
@@ -102,7 +102,7 @@ fun DialogAddRoutine(
                                     brush = Brush.verticalGradient(gradientColors),
                                     shape = RoundedCornerShape(4.dp)
                                 ),
-                            value = routineName,
+                            value = routineName.toString(),
                             onValueChange = {
                                 routine(it)
                             },
@@ -222,7 +222,7 @@ fun DialogAddRoutine(
                                 modifier = Modifier,
                                 textSize = 14.sp,
                                 width = 0.3f,
-                                height = 45.dp,
+                                height = 40.dp,
                                 onClick = { openDialog(false) }
                             )
                             Spacer(modifier = Modifier.width(10.dp))

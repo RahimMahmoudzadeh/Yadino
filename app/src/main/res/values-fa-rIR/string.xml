@@ -31,6 +31,7 @@
     <string name="home">خانه</string>
     <string name="routine">روتین</string>
     <string name="note">یادداشت</string>
+    <string name="notes">یادداشت ها</string>
     <string name="calendar">تقویم</string>
     <string name="welcome">خوشامدگویی</string>
     <string name="welcome_help">!اینجا ما بهت کمک میکنیم تا به همه هدفگذاری هات برسی</string>
@@ -39,6 +40,7 @@
     <string name="lets_go">بزن بریم</string>
     <string name="not_work">!شماهنوز کاری ثبت نکردید</string>
     <string name="not_work_for_day">!شماهنوز کاری برای امروز ثبت نکردید</string>
+    <string name="not_note">!شما هنوز یادداشتی ثبت نکردید</string>
     <string name="list_work_day">لیست کار های امروز</string>
     <string name="name">نام</string>
     <string name="week_day">تعداد روز در هفته</string>
@@ -48,6 +50,7 @@
     <string name="name_hint_text_filed_routine">نام روتین مورد نظر خود را وارد کنید</string>
     <string name="confirmation">تایید</string>
     <string name="creat_new_work">ایجاد کار جدید</string>
+    <string name="creat_new_note">ایجاد یادداشت جدید</string>
     <string name="all">همه</string>
     <string name="set_alarms">تنظیم آلارم ساعت : 00 12 </string>
     <string name="set_reminder">تنظیم یادآور از روی تقویم</string>
@@ -55,4 +58,10 @@
     <string name="data_change">تغییر تاریخ</string>
     <string name="time">زمان</string>
     <string name="no">خیر</string>
+    <string name="priority_level">میزان الویت:</string>
+    <string name="up">بالا</string>
+    <string name="medium">متوسط</string>
+    <string name="low">کم</string>
+    <string name="issue">موضوع یادداشت خود را بنویسید</string>
+    <string name="issue_explanation">توضیح برای یادداشت خود بنویسید</string>
 </resources>

@@ -74,7 +74,7 @@ fun DialogButtonBackground(
         Box(
             modifier = Modifier
                 .background(gradient)
-                .padding(vertical = 12.dp)
+                .padding(vertical = 10.dp)
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
@@ -125,7 +125,7 @@ fun DialogButtonBorder(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(modifier: Modifier = Modifier, title: String) {
+fun TopBarRightAlign(modifier: Modifier = Modifier, title: String) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Zircon),
         modifier = modifier.shadow(elevation = 4.dp),
@@ -145,6 +145,27 @@ fun TopBar(modifier: Modifier = Modifier, title: String) {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String) {
+    CenterAlignedTopAppBar(
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Zircon),
+        modifier = modifier.shadow(elevation = 4.dp),
+        title = {
+            androidx.compose.material.Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 8.dp),
+                textAlign = TextAlign.Center,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                text = title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    )
+}
 @Preview
 @Composable
 fun GradientButtonPreview() {

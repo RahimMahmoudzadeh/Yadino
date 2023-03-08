@@ -54,4 +54,13 @@
     <string name="data_change">تغییر تاریخ</string>
     <string name="set_reminder">تنظیم یادآور از روی تقویم</string>
     <string name="no">خیر</string>
+    <string name="notes">یادداشت ها</string>
+    <string name="not_note">!شما هنوز یادداشتی ثبت نکردید</string>
+    <string name="creat_new_note">ایجاد یادداشت جدید</string>
+    <string name="priority_level">میزان الویت:</string>
+    <string name="up">بالا</string>
+    <string name="medium">متوسط</string>
+    <string name="low">کم</string>
+    <string name="issue">موضوع یادداشت خود را بنویسید</string>
+    <string name="issue_explanation">توضیح برای یادداشت خود بنویسید</string>
 </resources>

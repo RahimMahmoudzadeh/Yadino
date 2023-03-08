@@ -1,4 +1,4 @@
-package com.rahim.ui.home
+package com.rahim.ui.note
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -24,61 +24,48 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rahim.R
-import com.rahim.data.modle.Rotin.Routine
+import com.rahim.data.modle.note.NoteModel
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
-import com.rahim.utils.base.view.TopBarRightAlign
+import com.rahim.utils.base.view.TopBarCenterAlign
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun NoteScreen(modifier: Modifier = Modifier) {
 
     Scaffold(
-        modifier=modifier.background(Zircon),
+        modifier = modifier.background(Zircon),
         topBar = {
-            TopBarRightAlign(
-                modifier, stringResource(id = R.string.hello_friend)
+            TopBarCenterAlign(
+                modifier, stringResource(id = R.string.notes)
             )
         }, backgroundColor = Color.White
     ) {
-        Column(modifier = Modifier.padding(end = 16.dp, start = 16.dp, top = 25.dp)) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.padding(horizontal = 12.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = "1402/1/1", fontSize = 18.sp
-                )
-                Text(
-                    text = stringResource(id = R.string.list_work_day), fontSize = 18.sp
-                )
-            }
-//            EmptyHome(it)
-            ItemsHome(it)
-        }
+        EmptyNote(it)
+//            ItemsHome(it)
+
     }
 }
 
 @Composable
-fun EmptyHome(paddingValues: PaddingValues) {
+fun EmptyNote(paddingValues: PaddingValues) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .padding(paddingValues)
             .fillMaxSize()
+            .padding(end = 16.dp, start = 16.dp, top = 25.dp)
     ) {
 
         Image(
             modifier = Modifier
                 .sizeIn(minHeight = 320.dp)
                 .fillMaxWidth(),
-            painter = painterResource(id = R.drawable.empty_list_home),
+            painter = painterResource(id = R.drawable.empty_note),
             contentDescription = "empty list home"
         )
         Text(
-            text = stringResource(id = R.string.not_work_for_day),
+            text = stringResource(id = R.string.not_note),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 32.dp),
@@ -90,29 +77,50 @@ fun EmptyHome(paddingValues: PaddingValues) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ItemsHome(paddingValues: PaddingValues) {
-    var routineName = rememberSaveable { mutableStateOf("") }
+fun ItemsNote(paddingValues: PaddingValues) {
+    var noteName = rememberSaveable { mutableStateOf("") }
 
-    val routine =
+    val note =
         remember {
             listOf(
-                Routine("قراره کاری", null, null, null, null, null, false, null),
-                Routine("قراره کاری2", null, null, null, null, null, true, null),
-                Routine("قراره کاری3", null, null, null, null, null, false, null)
+                NoteModel(
+                    0,
+                    "rahim",
+                    "adasdadsadadadfsdfsdfsjkfdsljldkjfglkjdhglkjdfhglkjdfhglkjdffgljkdfgldjkfgldkjgdlkjgdhlkjghjcbnklvbvcmn",
+                    "1402/1/1",
+                    false,
+                    0
+                ),
+                NoteModel(
+                    0,
+                    "rahim",
+                    "adasdadsadadadfsdfsdfsjkfdsljldkjfglkjdhglkjdfhglkjdfhglkjdffgljkdfgldjkfgldkjgdlkjgdhlkjghjcbnklvbvcmn",
+                    "1402/1/1",
+                    false,
+                    0
+                ),
+                NoteModel(
+                    0,
+                    "rahim",
+                    "adasdadsadadadfsdfsdfsjkfdsljldkjfglkjdhglkjdfhglkjdfhglkjdffgljkdfgldjkfgldkjgdlkjgdhlkjghjcbnklvbvcmn",
+                    "1402/1/1",
+                    false,
+                    0
+                )
             )
         }
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(paddingValues),
+            .padding(paddingValues).padding(end = 16.dp, start = 16.dp, top = 25.dp),
         contentPadding = PaddingValues(top = 25.dp)
     ) {
         items(
-            items = routine, itemContent = {
-                ItemHome(routine = it, onChecked = {
+            items = note, itemContent = {
+                ItemListNote(noteModel = it, onChecked = {
 
-                }, routineName = {
-                    routineName.value=it
+                }, noteName = {
+                    noteName.value = it
                 })
             }
         )
@@ -122,8 +130,8 @@ fun ItemsHome(paddingValues: PaddingValues) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, backgroundColor = 0xFFFFFF, device = Devices.PIXEL_4)
 @Composable
-fun HomeScreenPreview() {
+fun NoteScreenPreview() {
     YadinoTheme() {
-        HomeScreen()
+        NoteScreen()
     }
 }
