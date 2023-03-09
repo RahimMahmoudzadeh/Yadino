@@ -109,7 +109,7 @@ fun DialogButtonBorder(
         Box(
             modifier = Modifier
                 .border(1.dp, brush = gradient, RoundedCornerShape(12))
-                .padding(vertical = 12.dp)
+                .padding(vertical = 10.dp)
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {

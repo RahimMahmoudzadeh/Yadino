@@ -1,33 +1,28 @@
 package com.rahim.ui.note
 
-import android.os.Build
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.rahim.R
-import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.note.NoteModel
-import com.rahim.ui.dialog.DialogAddRoutine
+import com.rahim.ui.dialog.DialogAddNote
 import com.rahim.ui.dialog.DialogDelete
-import com.rahim.ui.theme.Porcelain
-import com.rahim.ui.theme.Purple
-import com.rahim.ui.theme.Zircon
+import com.rahim.ui.theme.*
 import com.rahim.utils.base.view.gradientColors
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemListNote(
@@ -56,15 +51,18 @@ fun ItemListNote(
         },
     )
     SwipeableActionsBox(
-        backgroundUntilSwipeThreshold= Color.White,
+        backgroundUntilSwipeThreshold = Color.White,
         startActions = listOf(delete),
         endActions = listOf(edit)
     ) {
         Card(
             colors = CardDefaults.cardColors(containerColor = Zircon),
-            border = if (noteModel.isChecked) BorderStroke(1.dp, color = Porcelain) else BorderStroke(
+            border = if (noteModel.isChecked) BorderStroke(
                 1.dp,
-                Brush.horizontalGradient(gradientColors)
+                color = Porcelain
+            ) else BorderStroke(
+                1.dp,
+                Brush.verticalGradient(gradientColors)
             ),
             onClick = {
                 onChecked(noteModel.apply { isChecked = !isChecked })
@@ -85,41 +83,60 @@ fun ItemListNote(
                     onCheckedChange = {
                         onChecked(noteModel.apply { isChecked = it })
                     },
-                    colors = CheckboxDefaults.colors(checkedColor = Purple)
+                    colors = CheckboxDefaults.colors(
+                        uncheckedColor = CornflowerBlueLight,
+                        checkedColor = Purple
+                    )
                 )
                 Column(modifier = Modifier.padding(top = 12.dp)) {
-                    Text(text = noteModel.name, style = TextStyle(fontWeight = FontWeight.Bold))
+                    Text(
+                        modifier = Modifier.align(Alignment.End),
+                        color = Mantis,
+                        text = noteModel.name,
+                        style = TextStyle(fontWeight = FontWeight.Bold)
+                    )
+                    Text(
+                        textAlign = TextAlign.End,
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(top = 10.dp),
+                        text = "یادداشت : من یک یادداشت هستم برای ویرایش یا حذف من را به چپ یا راست بکشید ...",
+                    )
                 }
             }
-
+            Text(
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(start = 12.dp, top = 12.dp, bottom = 12.dp),
+                text = "1401/1/5",
+                fontSize = 12.sp
+            )
         }
     }
     ShowDialogEdit(
         isOpenDialog = openDialogEdit,
-        routineName = noteModel.name,
+        noteName = noteModel.name,
         click = { openDialogEdit = it },
-        routine = { noteName(it) }
+        note = { noteName(it) }
     )
     ShowDialogDelete(isOpenDialog = openDialogDelete, click = { openDialogDelete = it })
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ShowDialogEdit(
     modifier: Modifier = Modifier,
     isOpenDialog: Boolean,
-    routineName: String,
+    noteName: String,
     click: (Boolean) -> Unit,
-    routine: (String) -> Unit
+    note: (String) -> Unit
 ) {
-    DialogAddRoutine(modifier, isOpenDialog, routineName = routineName, routine = {
-        routine(it)
-    }, openDialog = {
+    DialogAddNote(modifier, isOpen = isOpenDialog, noteName = noteName, openDialog = {
         click(it)
+    }, note = {
+        note(it)
     })
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ShowDialogDelete(
     modifier: Modifier = Modifier,

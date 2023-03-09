@@ -122,15 +122,15 @@ fun DialogAddNote(
                             Text(
                                 fontSize = 18.sp,
                                 text = stringResource(id = R.string.priority_level),
-                                 color = B
+                                 color = Gigas
                             )
                             Text(
                                 fontSize = 16.sp,
                                 text = stringResource(id = R.string.up),
-                                modifier = Modifier.padding(start = 24.dp), color = Red
+                                modifier = Modifier.padding(start = 24.dp), color = Punch
                             )
                             RadioButton(
-                                colors = RadioButtonDefaults.colors(selectedColor = Red, unselectedColor = Red),
+                                colors = RadioButtonDefaults.colors(selectedColor = Punch, unselectedColor = Punch),
                                 selected = state,
                                 onClick = { state = true },
                                 modifier = Modifier.semantics { contentDescription = "Localized Description" }.size(20.dp).padding(start = 8.dp)
@@ -138,10 +138,10 @@ fun DialogAddNote(
                             Text(
                                 fontSize = 16.sp,
                                 modifier=Modifier.padding(start = 24.dp),
-                                text = stringResource(id = R.string.medium), color = D
+                                text = stringResource(id = R.string.medium), color = CornflowerBlueDark
                             )
                             RadioButton(
-                                colors = RadioButtonDefaults.colors(selectedColor = D, unselectedColor = D),
+                                colors = RadioButtonDefaults.colors(selectedColor = CornflowerBlueDark, unselectedColor = CornflowerBlueDark),
                                 selected = !state,
                                 onClick = { state = false },
                                 modifier = Modifier.semantics { contentDescription = "Localized Description" }.size(20.dp).padding(start = 8.dp)
@@ -149,10 +149,10 @@ fun DialogAddNote(
                             Text(
                                 fontSize = 16.sp,
                                 modifier=Modifier.padding(start = 24.dp),
-                                text = stringResource(id = R.string.low), color = F
+                                text = stringResource(id = R.string.low), color = Mantis
                             )
                             RadioButton(
-                                colors = RadioButtonDefaults.colors(selectedColor = F, unselectedColor = F),
+                                colors = RadioButtonDefaults.colors(selectedColor = Mantis, unselectedColor = Mantis),
                                 selected = !state,
                                 onClick = { state = false },
                                 modifier = Modifier.semantics { contentDescription = "Localized Description" }.size(20.dp).padding(start = 8.dp)

@@ -40,9 +40,8 @@ fun NoteScreen(modifier: Modifier = Modifier) {
             )
         }, backgroundColor = Color.White
     ) {
-        EmptyNote(it)
-//            ItemsHome(it)
-
+//        EmptyNote(it)
+        ItemsNote(it)
     }
 }
 
@@ -75,7 +74,6 @@ fun EmptyNote(paddingValues: PaddingValues) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ItemsNote(paddingValues: PaddingValues) {
     var noteName = rememberSaveable { mutableStateOf("") }
@@ -96,7 +94,7 @@ fun ItemsNote(paddingValues: PaddingValues) {
                     "rahim",
                     "adasdadsadadadfsdfsdfsjkfdsljldkjfglkjdhglkjdfhglkjdfhglkjdffgljkdfgldjkfgldkjgdlkjgdhlkjghjcbnklvbvcmn",
                     "1402/1/1",
-                    false,
+                    true,
                     0
                 ),
                 NoteModel(

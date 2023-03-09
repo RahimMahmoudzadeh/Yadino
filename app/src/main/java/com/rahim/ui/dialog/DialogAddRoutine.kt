@@ -167,7 +167,10 @@ fun DialogAddRoutine(
                                 modifier = Modifier.padding(start = 10.dp),
                                 checked = checkedState.value,
                                 onCheckedChange = { checkedState.value = it },
-                                colors = CheckboxDefaults.colors(checkedColor = Purple)
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = Purple,
+                                    uncheckedColor = CornflowerBlueLight
+                                )
                             )
                         }
                         Row(

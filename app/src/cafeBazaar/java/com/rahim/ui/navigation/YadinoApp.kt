@@ -21,7 +21,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.rahim.ui.dialog.DialogAddNote
 import com.rahim.ui.dialog.DialogAddRoutine
-import com.rahim.ui.theme.W
+import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.navigation.Screen
 
@@ -65,7 +65,7 @@ fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
 //        x = (configuration.screenWidthDp.dp / 2) - 26.dp,
 //        y = -35.dp
         FloatingActionButton(
-            containerColor = W,
+            containerColor = CornflowerBlueLight,
             contentColor = Color.White,
             modifier = Modifier.offset(
                 x = (configuration.screenWidthDp.dp) - 70.dp,

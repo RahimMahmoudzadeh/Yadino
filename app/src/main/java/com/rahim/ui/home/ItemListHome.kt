@@ -18,6 +18,7 @@ import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.DialogDelete
+import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Porcelain
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.Zircon
@@ -54,7 +55,7 @@ fun ItemHome(
         },
     )
     SwipeableActionsBox(
-        backgroundUntilSwipeThreshold= Color.White,
+        backgroundUntilSwipeThreshold = Color.White,
         startActions = listOf(delete),
         endActions = listOf(edit)
     ) {
@@ -62,7 +63,7 @@ fun ItemHome(
             colors = CardDefaults.cardColors(containerColor = Zircon),
             border = if (routine.isChecked) BorderStroke(1.dp, color = Porcelain) else BorderStroke(
                 1.dp,
-                Brush.horizontalGradient(gradientColors)
+                Brush.verticalGradient(gradientColors)
             ),
             onClick = {
                 onChecked(routine.apply { isChecked = !isChecked })
@@ -83,7 +84,10 @@ fun ItemHome(
                     onCheckedChange = {
                         onChecked(routine.apply { isChecked = it })
                     },
-                    colors = CheckboxDefaults.colors(checkedColor = Purple)
+                    colors = CheckboxDefaults.colors(
+                        uncheckedColor = CornflowerBlueLight,
+                        checkedColor = Purple
+                    )
                 )
                 Column(modifier = Modifier.padding(top = 12.dp)) {
                     Text(text = routine.name, style = TextStyle(fontWeight = FontWeight.Bold))
