@@ -14,11 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.rahim.R
 import com.rahim.ui.dialog.DialogAddNote
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.theme.CornflowerBlueLight
@@ -32,6 +34,8 @@ fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
     var openDialog by remember { mutableStateOf(false) }
     var routineName = rememberSaveable { mutableStateOf("") }
     var noteName = rememberSaveable { mutableStateOf("") }
+    val checkedStateAllDay = remember { mutableStateOf(false) }
+    var dayChecked by rememberSaveable { mutableStateOf("شنبه") }
     val configuration = LocalConfiguration.current
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -86,7 +90,11 @@ fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
             routineName.value = it
         }, routineName = routineName.value, note = {
             noteName.value = it
-        }, noteName = noteName.value)
+        }, noteName = noteName.value, dayCheckedName = {
+            dayChecked = it
+        }, dayChecked = dayChecked, checkedAllItemsState = {
+            checkedStateAllDay.value = it
+        }, checkedAllDay = checkedStateAllDay.value)
     }
 }
 
@@ -100,14 +108,32 @@ fun ShowDialog(
     noteName: String? = null,
     click: (Boolean) -> Unit,
     routine: (String) -> Unit,
-    note: (String) -> Unit
+    note: (String) -> Unit,
+    dayChecked: String,
+    dayCheckedName: (String) -> Unit,
+    checkedAllDay: Boolean,
+    checkedAllItemsState: (Boolean) -> Unit,
 ) {
+
     if (destination == Screen.Home.route || destination == Screen.Routine.route) {
-        DialogAddRoutine(modifier, isOpenDialog, routineName = routineName, routine = {
-            routine(it)
-        }, openDialog = {
-            click(it)
-        })
+        DialogAddRoutine(
+            modifier,
+            isOpenDialog,
+            routineName = routineName,
+            dayChecked = dayChecked,
+            dayCheckedName = {
+                dayCheckedName(it)
+            },
+            checkedAllDay = checkedAllDay,
+            checkedAllItemsState = {
+                checkedAllItemsState(it)
+            },
+            routine = {
+                routine(it)
+            },
+            openDialog = {
+                click(it)
+            })
 
     } else {
         DialogAddNote(modifier, isOpen = isOpenDialog, noteName = noteName, openDialog = {

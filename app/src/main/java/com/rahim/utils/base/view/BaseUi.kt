@@ -128,7 +128,7 @@ fun DialogButtonBorder(
 fun TopBarRightAlign(modifier: Modifier = Modifier, title: String) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Zircon),
-        modifier = modifier.shadow(elevation = 4.dp),
+        modifier = modifier.shadow(elevation = 8.dp),
         title = {
             androidx.compose.material.Text(
                 modifier = Modifier
@@ -150,7 +150,7 @@ fun TopBarRightAlign(modifier: Modifier = Modifier, title: String) {
 fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Zircon),
-        modifier = modifier.shadow(elevation = 4.dp),
+        modifier = modifier.shadow(elevation = 8.dp),
         title = {
             androidx.compose.material.Text(
                 modifier = Modifier

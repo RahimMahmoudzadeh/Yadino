@@ -4,6 +4,15 @@
     <string name="search_hint">جستجو...</string>
     <string name="add_item">لطفا روتین خود را اضافه بکنید!</string>
     <string name="add_routine">ساخت روتین جدید</string>
+    <string-array name="day_weeks">
+        <item>@string/saturday</item>
+        <item>@string/sunday</item>
+        <item>@string/monday</item>
+        <item>@string/tuesday</item>
+        <item>@string/wednesday</item>
+        <item>@string/thursday</item>
+        <item>@string/friday</item>
+    </string-array>
     <string name="saturday">شنبه</string>
     <string name="sunday">یک</string>
     <string name="monday">دو</string>
@@ -64,4 +73,6 @@
     <string name="low">کم</string>
     <string name="issue">موضوع یادداشت خود را بنویسید</string>
     <string name="issue_explanation">توضیح برای یادداشت خود بنویسید</string>
+    <string name="not_routine">!شما هنوز روتینی ثبت نکردید</string>
+    <string name="list_routine">لیست روتین</string>
 </resources>

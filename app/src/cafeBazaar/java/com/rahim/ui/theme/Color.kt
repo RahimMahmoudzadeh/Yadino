@@ -20,4 +20,5 @@ val Punch= Color(0XFFDC3535)
 val CornflowerBlueDark= Color(0XFF6A63F2)
 val Mantis= Color(0XFF70C652)
 val CornflowerBlueLight= Color(0XFF518AE7)
+val SanJuan= Color(0XFF2E4170)
 

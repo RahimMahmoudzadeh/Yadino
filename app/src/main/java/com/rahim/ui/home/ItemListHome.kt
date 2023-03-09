@@ -18,6 +18,7 @@ import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.DialogDelete
+import com.rahim.ui.navigation.ShowDialog
 import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Porcelain
 import com.rahim.ui.theme.Purple
@@ -37,6 +38,8 @@ fun ItemHome(
 ) {
     var openDialogEdit by remember { mutableStateOf(false) }
     var openDialogDelete by remember { mutableStateOf(false) }
+    val checkedState = remember { mutableStateOf(false) }
+    var dayChecked by rememberSaveable { mutableStateOf("شنبه") }
 
     val delete = SwipeAction(
         icon = painterResource(id = R.drawable.delete),
@@ -100,7 +103,11 @@ fun ItemHome(
         isOpenDialog = openDialogEdit,
         routineName = routine.name,
         click = { openDialogEdit = it },
-        routine = { routineName(it) }
+        routine = { routineName(it) }, dayChecked = dayChecked, dayCheckedName = {
+            dayChecked = it
+        }, checkedAllItemsState = {
+            checkedState.value = it
+        }, checkedAllDay = checkedState.value
     )
     ShowDialogDelete(isOpenDialog = openDialogDelete, click = { openDialogDelete = it })
 }
@@ -112,12 +119,20 @@ fun ShowDialogEdit(
     isOpenDialog: Boolean,
     routineName: String,
     click: (Boolean) -> Unit,
-    routine: (String) -> Unit
+    routine: (String) -> Unit,
+    dayChecked: String,
+    dayCheckedName: (String) -> Unit,
+    checkedAllDay: Boolean,
+    checkedAllItemsState: (Boolean) -> Unit,
 ) {
     DialogAddRoutine(modifier, isOpenDialog, routineName = routineName, routine = {
         routine(it)
     }, openDialog = {
         click(it)
+    }, dayChecked = dayChecked, dayCheckedName = {
+        dayCheckedName(it)
+    }, checkedAllDay = checkedAllDay, checkedAllItemsState = {
+        checkedAllItemsState(it)
     })
 }
 

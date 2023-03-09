@@ -15,6 +15,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.rahim.ui.home.HomeScreen
 import com.rahim.ui.note.NoteScreen
+import com.rahim.ui.routine.RoutineScreen
 import com.rahim.ui.welcome.WelcomeScreens
 import com.rahim.utils.navigation.Screen
 
@@ -32,6 +33,7 @@ fun NavGraph(
             HomeScreen()
         }
         composable(Screen.Routine.route) {
+            RoutineScreen()
         }
         composable(Screen.Note.route) {
             NoteScreen()

@@ -1,7 +1,5 @@
-package com.rahim.ui.home
+package com.rahim.ui.routine
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -25,42 +23,34 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
+import com.rahim.ui.home.ItemHome
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
-import com.rahim.utils.base.view.TopBarRightAlign
+import com.rahim.utils.base.view.TopBarCenterAlign
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun RoutineScreen(modifier: Modifier = Modifier) {
 
     Scaffold(
-        modifier=modifier.background(Zircon),
+        modifier = modifier.background(Zircon),
         topBar = {
-            TopBarRightAlign(
-                modifier, stringResource(id = R.string.hello_friend)
+            TopBarCenterAlign(
+                modifier, stringResource(id = R.string.list_routine)
             )
         }, backgroundColor = Color.White
     ) {
-        Column(modifier = Modifier.padding(end = 16.dp, start = 16.dp, top = 25.dp)) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.padding(horizontal = 12.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = "1402/1/1", fontSize = 18.sp
-                )
-                Text(
-                    text = stringResource(id = R.string.list_work_day), fontSize = 18.sp
-                )
-            }
-//            EmptyHome(it)
-            ItemsHome(it)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(end = 16.dp, start = 16.dp, top = 25.dp)
+        ) {
+//            EmptyRoutine(it)
+            ItemsRoutine(it)
         }
     }
 }
 
 @Composable
-fun EmptyHome(paddingValues: PaddingValues) {
+fun EmptyRoutine(paddingValues: PaddingValues) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -73,14 +63,14 @@ fun EmptyHome(paddingValues: PaddingValues) {
             modifier = Modifier
                 .sizeIn(minHeight = 320.dp)
                 .fillMaxWidth(),
-            painter = painterResource(id = R.drawable.empty_list_home),
+            painter = painterResource(id = R.drawable.routine_empty),
             contentDescription = "empty list home"
         )
         Text(
-            text = stringResource(id = R.string.not_work_for_day),
+            text = stringResource(id = R.string.not_routine),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 32.dp),
+                .padding(top = 26.dp),
             textAlign = TextAlign.Center,
             fontSize = 18.sp
         )
@@ -88,9 +78,9 @@ fun EmptyHome(paddingValues: PaddingValues) {
 }
 
 @Composable
-fun ItemsHome(paddingValues: PaddingValues) {
+fun ItemsRoutine(paddingValues: PaddingValues) {
     var routineName = rememberSaveable { mutableStateOf("") }
-
+    val items = listOf("شنبه", "یکشنبه", "دوشنبه", "سه شنبه", "چهار شنبه", "پنج شنبه", "جمعه")
     val routine =
         remember {
             listOf(
@@ -99,6 +89,12 @@ fun ItemsHome(paddingValues: PaddingValues) {
                 Routine("قراره کاری3", null, null, null, null, null, false, null)
             )
         }
+    Text(text = "اسفند 1400")
+    Row(modifier = Modifier.padding(end = 6.dp,top=16.dp)) {
+        for (item in items.size-1 downTo (0)) {
+            Text(modifier = Modifier.padding(start = 14.dp),text = items[item])
+        }
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -110,7 +106,7 @@ fun ItemsHome(paddingValues: PaddingValues) {
                 ItemHome(routine = it, onChecked = {
 
                 }, routineName = {
-                    routineName.value=it
+                    routineName.value = it
                 })
             }
         )
@@ -119,8 +115,8 @@ fun ItemsHome(paddingValues: PaddingValues) {
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFF, device = Devices.PIXEL_4)
 @Composable
-fun HomeScreenPreview() {
+fun RoutineScreenPreview() {
     YadinoTheme() {
-        HomeScreen()
+        RoutineScreen()
     }
 }

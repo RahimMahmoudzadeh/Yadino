@@ -1,21 +1,27 @@
 package com.rahim.ui.dialog
 
 import android.os.Build
+import android.widget.GridLayout.Alignment
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Text
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -40,7 +46,6 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalTime
 import java.util.*
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalTextApi::class,
@@ -51,12 +56,20 @@ fun DialogAddRoutine(
     isOpen: Boolean,
     routineName: String?,
     openDialog: (Boolean) -> Unit,
-    routine: (String) -> Unit
+    routine: (String) -> Unit,
+    dayChecked: String,
+    dayCheckedName: (String) -> Unit,
+    checkedAllDay: Boolean,
+    checkedAllItemsState: (Boolean) -> Unit,
 ) {
-    val checkedState = remember { mutableStateOf(false) }
+    val dayWeek = stringArrayResource(id = R.array.day_weeks)
+    val dayWeekSmale=listOf(
+        stringResource(id = R.string.sunday),
+        stringResource(id = R.string.monday),
+        stringResource(id = R.string.tuesday),
+        stringResource(id = R.string.thursday)
+    )
     val alarmDialogState = rememberMaterialDialogState()
-
-    val gradientColors = listOf(Purple, PurpleGrey)
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         if (isOpen) {
             AlertDialog(properties = DialogProperties(
@@ -114,59 +127,56 @@ fun DialogAddRoutine(
                                 disabledIndicatorColor = Color.Transparent
                             )
                         )
-                        Row(modifier = Modifier.padding(top = 4.dp, start = 3.dp, end = 3.dp)) {
-                            ClickableText(
-                                onClick = {},
-                                text = AnnotatedString(stringResource(id = R.string.saturday)),
-                                modifier = Modifier
-                                    .padding(top = 14.dp, start = 4.dp)
-                                    .drawBehind {
-                                        drawCircle(
-                                            brush = Brush.verticalGradient(gradientColors),
-                                            radius = 60f
+                        Row(
+                            modifier = Modifier.padding(top = 4.dp, end = 4.dp, start = 4.dp)
+                        ) {
+                            dayWeek.forEach { dayName ->
+                                Box(
+                                    modifier = Modifier
+                                        .padding(top=9.dp,
+                                            end = 6.dp,)
+                                        .size(30.dp)
+                                        .clip(CircleShape)
+                                        .background(
+                                            brush = if (checkedAllDay || dayChecked == dayName) {
+                                                Brush.verticalGradient(
+                                                    gradientColors
+                                                )
+                                            } else Brush.horizontalGradient(
+                                                listOf(
+                                                    Color.White,
+                                                    Color.White
+                                                )
+                                            )
                                         )
-                                    },
-                                style = TextStyle(color = Color.White)
-                            )
-                            ClickableText(
-                                onClick = {},
-                                text = AnnotatedString(stringResource(id = R.string.sunday)),
-                                modifier = Modifier.padding(top = 14.dp, start = 17.dp)
-                            )
-                            ClickableText(
-                                onClick = {},
-                                text = AnnotatedString(stringResource(id = R.string.monday)),
-                                modifier = Modifier.padding(top = 14.dp, start = 17.dp)
-                            )
-                            ClickableText(
-                                onClick = {},
-                                text = AnnotatedString(stringResource(id = R.string.tuesday)),
-                                modifier = Modifier.padding(top = 14.dp, start = 17.dp)
-                            )
-                            ClickableText(
-                                onClick = {},
-                                text = AnnotatedString(stringResource(id = R.string.wednesday)),
-                                modifier = Modifier.padding(top = 14.dp, start = 17.dp)
-                            )
-                            ClickableText(
-                                onClick = {},
-                                text = AnnotatedString(stringResource(id = R.string.thursday)),
-                                modifier = Modifier.padding(top = 14.dp, start = 17.dp)
-                            )
-                            ClickableText(
-                                onClick = {},
-                                text = AnnotatedString(stringResource(id = R.string.friday)),
-                                modifier = Modifier.padding(top = 14.dp, start = 17.dp)
-                            )
+                                ) {
+                                    ClickableText(
+                                        modifier = Modifier.padding(
+                                            top = 8.dp,
+                                            start = if (dayName in dayWeekSmale) 10.dp else 6.dp)
+                                        ,
+                                        onClick = { dayCheckedName(dayName) },
+                                        text = AnnotatedString(dayName),
+                                        style = TextStyle(
+                                            fontSize = 10.sp, fontWeight = FontWeight.Bold,
+                                            color = if (checkedAllDay || dayChecked == dayName)
+                                                (Color.White)
+                                            else Color.Black
+                                        )
+                                    )
+                                }
+                            }
                             ClickableText(
                                 onClick = {},
                                 text = AnnotatedString(stringResource(id = R.string.all)),
-                                modifier = Modifier.padding(top = 14.dp, start = 17.dp)
+                                modifier = Modifier
+                                    .padding(top = 14.dp)
                             )
                             Checkbox(
-                                modifier = Modifier.padding(start = 10.dp),
-                                checked = checkedState.value,
-                                onCheckedChange = { checkedState.value = it },
+                                modifier = Modifier
+                                    .padding(start = 10.dp),
+                                checked = checkedAllDay,
+                                onCheckedChange = { checkedAllItemsState(it) },
                                 colors = CheckboxDefaults.colors(
                                     checkedColor = Purple,
                                     uncheckedColor = CornflowerBlueLight
@@ -189,7 +199,11 @@ fun DialogAddRoutine(
                             ), onClick = { alarmDialogState.show() }) {
                                 Text(
                                     text = stringResource(id = R.string.time_change),
-                                    style = TextStyle(brush = Brush.verticalGradient(gradientColors))
+                                    style = TextStyle(
+                                        brush = Brush.verticalGradient(
+                                            gradientColors
+                                        )
+                                    )
                                 )
                             }
                         }
@@ -233,7 +247,11 @@ fun DialogAddRoutine(
                                 Text(
                                     fontSize = 16.sp,
                                     text = stringResource(id = R.string.cancel),
-                                    style = TextStyle(brush = Brush.verticalGradient(gradientColors))
+                                    style = TextStyle(
+                                        brush = Brush.verticalGradient(
+                                            gradientColors
+                                        )
+                                    )
                                 )
                             }
                         }
@@ -247,7 +265,6 @@ fun DialogAddRoutine(
 }
 
 @OptIn(ExperimentalTextApi::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ShowTimePicker(dialogState: MaterialDialogState) {
     MaterialDialog(
@@ -291,10 +308,10 @@ fun ShowTimePicker(dialogState: MaterialDialogState) {
 @Composable
 private fun DialogAddRoutinePreview() {
     YadinoTheme() {
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            DialogAddRoutine(isOpen = true, routine = {
-
-            }, openDialog = {}, routineName = "")
-        }
+//        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+//            DialogAddRoutine(isOpen = true, routine = {
+//
+//            }, openDialog = {}, routineName = "")
+//        }
     }
 }
