@@ -23,11 +23,11 @@ interface TimeDao {
     @Query("SELECT * FROM tbl_timeData")
     suspend fun getAllMonthDayNotFlow(): List<TimeData>
 
-    @Query("SELECT * FROM tbl_timeData WHERE month=:monthName And yerNumber=:yerNumber")
-    fun getIsSpecificMonthFromYer(monthName: String, yerNumber: Int?): Boolean
+    @Query("SELECT * FROM tbl_timeData WHERE monthNumber=:monthNumber And yerNumber=:yerNumber")
+    fun getIsSpecificMonthFromYer(monthNumber: String, yerNumber: Int?): Boolean
 
-    @Query("SELECT * FROM tbl_timeData WHERE month=:monthName And yerNumber=:yerNumber")
-    fun getSpecificMonthFromYer(monthName: String, yerNumber: Int?): Flow<List<TimeData>>
+    @Query("SELECT * FROM tbl_timeData WHERE monthNumber=:monthNumber And yerNumber=:yerNumber")
+    fun getSpecificMonthFromYer(monthNumber: String, yerNumber: Int?): Flow<List<TimeData>>
 
     @Update
     suspend fun updateTimeData(timeData: TimeData)

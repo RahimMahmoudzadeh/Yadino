@@ -10,7 +10,7 @@ data class TimeData(
     var isToday: Boolean = false,
     val nameDay: String?,
     val yerNumber: Int?,
-    val month: String?,
+    val monthNumber: Int?,
     var isChecked: Boolean?,
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
