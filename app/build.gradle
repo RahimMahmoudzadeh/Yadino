@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId "com.rahim"
-        minSdk 24
+        minSdk 26
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -62,14 +62,13 @@ android {
 dependencies {
 
     implementation "androidx.core:core-ktx:$core_ktx"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime_ktx"
     implementation "androidx.activity:activity-compose:$activity_compose"
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.compose.material3:material3:$material3"
     implementation "androidx.compose.material:material:$material"
     testImplementation "junit:junit:$junit"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation "androidx.test.ext:junit:$junit_test"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
@@ -84,6 +83,7 @@ dependencies {
     //hilt
     implementation "com.google.dagger:hilt-android:$hilt_android"
     kapt "com.google.dagger:hilt-compiler:$hilt_android"
+    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
     //navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
@@ -95,6 +95,10 @@ dependencies {
     //lifecycle_aware
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_aware"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_aware"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_aware"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_aware"
+
+//    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_aware"
 
     //MultiSnapRecyclerView
     implementation "com.github.takusemba:multisnaprecyclerview:$multisnaprecyclerview"

@@ -4,6 +4,8 @@ import com.rahim.data.repository.addRoutine.RepositoryRoutine
 import com.rahim.data.repository.addRoutine.RepositoryRoutineImpl
 import com.rahim.data.repository.dataTime.DataTimeRepository
 import com.rahim.data.repository.dataTime.DataTimeRepositoryImpl
+import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
+import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -18,4 +20,6 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun provideRepositoryDataTime(dataTimeRepositoryImpl: DataTimeRepositoryImpl):DataTimeRepository
+    @Binds
+    abstract fun provideSharedPreferencesRepository(sharedPreferencesRepositoryImpl: SharedPreferencesRepositoryImpl):SharedPreferencesRepository
 }

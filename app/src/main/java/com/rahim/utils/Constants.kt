@@ -11,4 +11,6 @@ object Constants {
     const val TEXT_TOAST = "Text Toast"
     const val ROUTINE = "Routine"
     const val CAFE_BAZAAR = "CafeBazaar"
+    const val NAME_SHARED_PREFERENCE = "YadinooShared"
+    const val WELCOME_SHARED = "WelcomeShared"
 }

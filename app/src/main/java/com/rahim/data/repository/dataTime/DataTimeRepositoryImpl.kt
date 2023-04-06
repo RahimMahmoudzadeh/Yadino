@@ -5,8 +5,6 @@ import com.rahim.data.di.DefaultDispatcher
 import com.rahim.data.modle.data.TimeData
 import kotlinx.coroutines.*
 import saman.zamani.persiandate.PersianDate
-import saman.zamani.persiandate.PersianDateFormat
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -23,7 +21,7 @@ class DataTimeRepositoryImpl @Inject constructor(
     private val currentTimeYer = persianData.shYear
 
     override suspend fun addTime() {
-        if (!timeDao.getAllMonthDay().isNullOrEmpty())
+        if (!timeDao.getAllTime().isNullOrEmpty())
             return
         appDatabase.timeDataDao().insertAllTime(calculateDate())
     }
@@ -31,12 +29,11 @@ class DataTimeRepositoryImpl @Inject constructor(
     private suspend fun calculateDate(): List<TimeData> {
         return withContext(defaultDispatcher) {
             val timeDates = ArrayList<TimeData>()
-            for (yer in 1..10) {
-                val convertYer = "${140}$yer"
+            for (yer in 1300..1430) {
                 for (month in 1..12) {
                     val dayNumber = if (month == 12) 29 else if (month in 7..11) 30 else 31
                     for (day in 1..dayNumber) {
-                        persianData.initJalaliDate(convertYer.toInt(), month, day)
+                        persianData.initJalaliDate(yer, month, day)
                         val today = checkDayIsToday(yer, month, day)
                         val data = TimeData(
                             persianData.shDay,

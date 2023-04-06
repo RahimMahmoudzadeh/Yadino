@@ -33,7 +33,7 @@ import com.rahim.utils.base.view.TopBarRightAlign
 fun HomeScreen(modifier: Modifier = Modifier) {
 
     Scaffold(
-        modifier=modifier.background(Zircon),
+        modifier = modifier.background(Zircon),
         topBar = {
             TopBarRightAlign(
                 modifier, stringResource(id = R.string.hello_friend)
@@ -43,7 +43,8 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         Column(modifier = Modifier.padding(end = 16.dp, start = 16.dp, top = 25.dp)) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
                     .fillMaxWidth()
             ) {
                 Text(
@@ -110,7 +111,7 @@ fun ItemsHome(paddingValues: PaddingValues) {
                 ItemHome(routine = it, onChecked = {
 
                 }, routineName = {
-                    routineName.value=it
+                    routineName.value = it
                 })
             }
         )

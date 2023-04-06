@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -23,28 +25,33 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.rahim.R
 import com.rahim.data.modle.screen.WelcomeScreen
+import com.rahim.ui.home.HomeViewModel
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.GradientButton
 import com.rahim.utils.navigation.Screen
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun WelcomeScreens(navController: NavController) {
+fun WelcomeScreens(navController: NavController, viewModel: HomeViewModel) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
-
+    val clickNext = rememberSaveable { mutableStateOf(true) }
+    if (viewModel.isShowWelcomeScreen() && clickNext.value) {
+        navController.navigate(Screen.Home.route)
+        return
+    }
     val listItemWelcome = listOf(
         WelcomeScreen(
             stringResource(id = R.string.hello),
@@ -56,7 +63,10 @@ fun WelcomeScreens(navController: NavController) {
         WelcomeScreen(
             stringResource(id = R.string.welcome_2),
             stringResource(id = R.string.welcome_help),
-            stringResource(id = R.string.next),
+            stringResource(
+                id =
+                R.string.next
+            ),
             22.sp,
             R.drawable.welcome2
         ),
@@ -70,7 +80,11 @@ fun WelcomeScreens(navController: NavController) {
     )
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Column() {
-            HorizontalPager(modifier = Modifier.fillMaxHeight(0.87f),count = 3, state = pagerState) { page ->
+            HorizontalPager(
+                modifier = Modifier.fillMaxHeight(0.87f),
+                count = 3,
+                state = pagerState
+            ) { page ->
                 Welcome(
                     textWelcomeTop = listItemWelcome[page].textWelcomeTop,
                     textWelcomeBottom = listItemWelcome[page].textWelcomeBottom,
@@ -82,11 +96,13 @@ fun WelcomeScreens(navController: NavController) {
                 text = listItemWelcome[pagerState.currentPage].textButton,
                 gradient = Brush.horizontalGradient(com.rahim.utils.base.view.gradientColors),
                 modifier = Modifier
-                    .padding(top = 28.dp,end = 32.dp, start = 32.dp, bottom = 8.dp),
+                    .padding(top = 28.dp, end = 32.dp, start = 32.dp, bottom = 8.dp),
                 textSize = 18.sp,
                 onClick = {
                     scope.launch {
                         if (pagerState.currentPage == 2) {
+                            viewModel.saveShowWelcome(true)
+                            clickNext.value = false
                             navController.navigate(Screen.Home.route)
                         }
                         pagerState.scrollToPage(pagerState.currentPage.plus(1))
@@ -104,7 +120,7 @@ fun Welcome(
     textWelcomeTop: String,
     textWelcomeBottom: String,
     textSizeBottom: TextUnit,
-    imageRes: Int,
+    imageRes: Int
 ) {
     val gradientColors = listOf(Purple, PurpleGrey)
 

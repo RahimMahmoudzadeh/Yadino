@@ -7,7 +7,6 @@ import androidx.room.Query
 import androidx.room.Update
 import com.rahim.data.modle.data.TimeData
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Dao
 interface TimeDao {
@@ -18,7 +17,7 @@ interface TimeDao {
     suspend fun insertTime(timesData: TimeData)
 
     @Query("SELECT * FROM tbl_timeData")
-    suspend fun getAllMonthDay(): List<TimeData>
+    suspend fun getAllTime(): List<TimeData>
 
     @Query("SELECT * FROM tbl_timeData")
     suspend fun getAllMonthDayNotFlow(): List<TimeData>
@@ -31,4 +30,7 @@ interface TimeDao {
 
     @Update
     suspend fun updateTimeData(timeData: TimeData)
+
+    @Query("DELETE FROM tbl_timeData")
+    suspend fun deleteAllTimes()
 }

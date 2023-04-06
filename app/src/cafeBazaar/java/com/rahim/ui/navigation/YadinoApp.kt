@@ -98,7 +98,6 @@ fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ShowDialog(
     modifier: Modifier = Modifier,
