@@ -347,7 +347,7 @@ fun DialogAddRoutine(
     }
 
     ShowTimePicker(alarmDialogState) {
-        time.value = it.toString()
+        time.value = it.hour.toString()+":"+it.minute
     }
 }
 
@@ -416,9 +416,9 @@ fun ShowTimePicker(dialogState: MaterialDialogState, time: (LocalTime) -> Unit) 
                 selectorColor = Purple,
                 headerTextColor = PurpleGrey
             ),
-            initialTime = LocalTime.NOON,
             title = stringResource(id = R.string.time),
-            timeRange = LocalTime.MIDNIGHT..LocalTime.NOON
+            timeRange = LocalTime.MIDNIGHT..LocalTime.MAX,
+            is24HourClock=true
         ) { time ->
             time(time)
         }
