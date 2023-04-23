@@ -39,7 +39,7 @@
     <string name="welcome_2">! با یادینو دیگه ازکارات عقب نمیفتی</string>
     <string name="home">خانه</string>
     <string name="routine">روتین</string>
-    <string name="note">یادداشت</string>
+    <string name="note"> : یادداشت</string>
     <string name="notes">یادداشت ها</string>
     <string name="calendar">تقویم</string>
     <string name="welcome">خوشامدگویی</string>
@@ -53,7 +53,7 @@
     <string name="list_work_day">لیست کار های امروز</string>
     <string name="name">نام</string>
     <string name="week_day">تعداد روز در هفته</string>
-    <string name="remmeber">یادآور</string>
+    <string name="remmeber">: یادآوری</string>
     <string name="seven_day">7 روز</string>
     <string name="for_remmber">برای اینکه بتونیم یادت بندازیم تیک یادآور رو بزن</string>
     <string name="name_hint_text_filed_routine">نام روتین مورد نظر خود را وارد کنید</string>
@@ -73,6 +73,10 @@
     <string name="low">کم</string>
     <string name="issue">موضوع یادداشت خود را بنویسید</string>
     <string name="issue_explanation">توضیح برای یادداشت خود بنویسید</string>
+    <string name="routine_explanation">توضیح برای روتین خود بنویسید</string>
     <string name="not_routine">!شما هنوز روتینی ثبت نکردید</string>
     <string name="list_routine">لیست روتین</string>
+    <string name="length_textFiled_name_routine">نام انتخابی باید حداکثر 22 کاراکتر باشد!</string>
+    <string name="length_textFiled_explanation_routine">نام انتخابی باید حداکثر 40 کاراکتر باشد!</string>
+    <string name="empty">خالی</string>
 </resources>

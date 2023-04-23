@@ -19,9 +19,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rahim.ui.dialog.DialogAddNote
+import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
 import com.rahim.ui.theme.Zircon
+import com.rahim.utils.navigation.Screen
 
 val gradientColors = listOf(Purple, PurpleGrey)
 
@@ -166,6 +169,7 @@ fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String) {
         }
     )
 }
+
 @Preview
 @Composable
 fun GradientButtonPreview() {

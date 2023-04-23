@@ -16,11 +16,11 @@ interface RoutineDao {
     @Query("SELECT * FROM tbl_routine WHERE id =:id")
     suspend fun getRoutine(id: Int): Routine
 
-    @Query("SELECT * FROM tbl_routine WHERE monthName LIKE :monthName AND numberInMonth LIKE :numberDay")
-    fun getRoutines(monthName: String, numberDay: Int): Flow<List<Routine>>
+    @Query("SELECT * FROM tbl_routine WHERE monthNumber LIKE :monthNumber AND dayNumber LIKE :dayNumber AND yerNumber LIKE :yerNumber")
+    fun getRoutines(monthNumber: Int, dayNumber: Int, yerNumber: Int): Flow<List<Routine>>
 
-    @Query("DELETE FROM tbl_routine WHERE numberInMonth=:dayNumber AND monthName=:nameMonth AND yerNumber=:yerNumber")
-    suspend fun removeAllRoutine(nameMonth: String?, dayNumber: String?, yerNumber: String?)
+    @Query("DELETE FROM tbl_routine WHERE dayNumber=:dayNumber AND monthNumber=:monthNumber AND yerNumber=:yerNumber")
+    suspend fun removeAllRoutine(monthNumber: Int?, dayNumber: Int?, yerNumber: Int?)
 
     @Delete
     suspend fun removeRoutine(routine: Routine)
@@ -28,10 +28,10 @@ interface RoutineDao {
     @Update
     suspend fun updateRoutine(routine: Routine)
 
-    @Query("SELECT * FROM tbl_routine WHERE monthName=:nameMonth AND numberInMonth=:dayNumber AND name LIKE '%'||:nameRoutine|| '%'")
+    @Query("SELECT * FROM tbl_routine WHERE monthNumber=:monthNumber AND dayNumber=:dayNumber AND name LIKE '%'||:nameRoutine|| '%'")
     fun searchRoutine(
         nameRoutine: String,
-        nameMonth: String?,
-        dayNumber: String?
+        monthNumber: Int?,
+        dayNumber: Int?
     ): Flow<List<Routine>>
 }

@@ -10,11 +10,13 @@ import kotlinx.android.parcel.Parcelize
 data class Routine(
     var name: String,
     val colorTask: Int?,
-    val numberInMonth: Int?,
-    val monthName: String?,
+    val dayName: String,
+    val dayNumber: Int?,
+    val monthNumber: Int?,
+    val yerNumber: Int?,
     var timeHours: String?,
-    val yerNumber: String?,
     var isChecked: Boolean = false,
     @PrimaryKey(autoGenerate = true)
-    var id: Int? = null
-):Parcelable
+    var id: Int? = null,
+    var explanation: String? = null
+) : Parcelable

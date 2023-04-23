@@ -9,6 +9,6 @@ import com.rahim.data.modle.data.TimeData
 
 @Database(entities = [Routine::class, TimeData::class], version = 1, exportSchema = true)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun taskDao(): RoutineDao
+    abstract fun routineDao(): RoutineDao
     abstract fun timeDataDao(): TimeDao
 }

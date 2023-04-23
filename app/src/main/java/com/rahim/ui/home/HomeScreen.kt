@@ -1,7 +1,5 @@
 package com.rahim.ui.home
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,9 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,42 +19,136 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
+import com.rahim.ui.dialog.DialogAddRoutine
+import com.rahim.ui.dialog.DialogDelete
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.base.view.TopBarRightAlign
+import com.rahim.utils.resours.Resource
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel,
+    onClickAdd: Boolean,
+    isOpenDialog: (Boolean) -> Unit
+) {
+
+    val currentYer = viewModel.getCurrentTime()[0]
+    val currentMonth = viewModel.getCurrentTime()[1]
+    val currentDay = viewModel.getCurrentTime()[2]
+
+    val openDialogDelete = rememberSaveable { mutableStateOf(false) }
+    val openDialogUpdate = rememberSaveable { mutableStateOf(false) }
+    val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
+    val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
+
+    val routines by viewModel.getCurrentRoutines()
+        .collectAsStateWithLifecycle(initialValue = Resource.Success(emptyList()))
 
     Scaffold(
-        modifier = modifier.background(Zircon),
-        topBar = {
+        modifier = modifier.background(Zircon), topBar = {
             TopBarRightAlign(
                 modifier, stringResource(id = R.string.hello_friend)
             )
         }, backgroundColor = Color.White
     ) {
         Column(modifier = Modifier.padding(end = 16.dp, start = 16.dp, top = 25.dp)) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = "1402/1/1", fontSize = 18.sp
-                )
-                Text(
-                    text = stringResource(id = R.string.list_work_day), fontSize = 18.sp
-                )
+            if (routines.data?.isEmpty() == false) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "$currentYer/$currentMonth/$currentDay", fontSize = 18.sp
+                    )
+                    Text(
+                        text = stringResource(id = R.string.list_work_day), fontSize = 18.sp
+                    )
+                }
             }
-//            EmptyHome(it)
-            ItemsHome(it)
+            setRoutine(it, routines, { checkedRoutine ->
+                viewModel.updateRoutine(checkedRoutine)
+            }, { routineUpdate ->
+                routineUpdateDialog.value = routineUpdate
+                openDialogUpdate.value = true
+            }, { deleteRoutine ->
+                routineDeleteDialog.value = deleteRoutine
+                openDialogDelete.value = true
+            })
+            routineDeleteDialog.value?.let { routineFromDialog ->
+                DialogDelete(isOpen = openDialogDelete.value, openDialog = {
+                    openDialogDelete.value = false
+                    routineDeleteDialog.value = null
+                    if (it) {
+                        viewModel.deleteRoutine(routineFromDialog)
+                    }
+                })
+            }
+        }
+    }
+    DialogAddRoutine(
+        isOpen = onClickAdd || openDialogUpdate.value,
+        isShowDay = false,
+        openDialog = {
+            routineUpdateDialog.value = null
+            openDialogUpdate.value = it
+            isOpenDialog(it)
+        },
+        routineUpdate = routineUpdateDialog.value,
+        routine = {
+            if (openDialogUpdate.value) {
+                viewModel.updateRoutine(it)
+            } else {
+                viewModel.addRoutine(it)
+            }
+        },
+        currentNumberDay = currentDay,
+        currentNumberMonth = currentMonth,
+        currentNumberYer = currentYer
+    )
+}
+
+@Composable
+fun setRoutine(
+    paddingValues: PaddingValues,
+    routines: Resource<List<Routine>>,
+    checkedRoutine: (Routine) -> Unit,
+    updateRoutine: (Routine) -> Unit,
+    deleteRoutine: (Routine) -> Unit
+) {
+    when (routines) {
+        is Resource.Loading -> {
+
+        }
+
+        is Resource.Success -> {
+            routines.data?.let {
+                if (it.isEmpty()) {
+                    EmptyHome(paddingValues)
+                } else {
+                    ItemsHome(
+                        paddingValues,
+                        it,
+                        { checkedRoutine(it) },
+                        { updateRoutine(it) },
+                        { deleteRoutine(it) })
+                }
+            }
+        }
+
+        is Resource.Error -> {
+
         }
     }
 }
+
 
 @Composable
 fun EmptyHome(paddingValues: PaddingValues) {
@@ -89,39 +179,37 @@ fun EmptyHome(paddingValues: PaddingValues) {
 }
 
 @Composable
-fun ItemsHome(paddingValues: PaddingValues) {
-    var routineName = rememberSaveable { mutableStateOf("") }
+fun ItemsHome(
+    paddingValues: PaddingValues,
+    routines: List<Routine>,
+    checkedRoutine: (Routine) -> Unit,
+    updateRoutine: (Routine) -> Unit,
+    deleteRoutine: (Routine) -> Unit
+) {
 
-    val routine =
-        remember {
-            listOf(
-                Routine("قراره کاری", null, null, null, null, null, false, null),
-                Routine("قراره کاری2", null, null, null, null, null, true, null),
-                Routine("قراره کاری3", null, null, null, null, null, false, null)
-            )
-        }
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .padding(paddingValues),
         contentPadding = PaddingValues(top = 25.dp)
     ) {
-        items(
-            items = routine, itemContent = {
-                ItemHome(routine = it, onChecked = {
-
-                }, routineName = {
-                    routineName.value = it
-                })
-            }
-        )
+        items(items = routines, itemContent = {
+            ItemRoutine(routine = it, onChecked = {
+                checkedRoutine(it)
+            }, openDialogDelete = {
+                deleteRoutine(it)
+            }, openDialogEdit = {
+                updateRoutine(it)
+            })
+        })
     }
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFF, device = Devices.PIXEL_4)
 @Composable
 fun HomeScreenPreview() {
-    YadinoTheme() {
-        HomeScreen()
+    YadinoTheme {
+        val viewModel = hiltViewModel<HomeViewModel>()
+//        HomeScreen(viewModel = viewModel)
     }
 }

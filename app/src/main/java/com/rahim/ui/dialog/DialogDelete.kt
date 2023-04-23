@@ -73,7 +73,7 @@ fun DialogDelete(
                             textSize = 14.sp,
                             width = 0.3f,
                             height = 40.dp,
-                            onClick = { openDialog(false) }
+                            onClick = { openDialog(true) }
                         )
                     }
                 }

@@ -9,13 +9,13 @@ interface RepositoryRoutine {
 
     suspend fun removeRoutine(routine: Routine)
 
-    suspend fun removeAllRoutine(nameMonth: String?, dayNumber: String?, yerNumber: String?)
+    suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yerNumber: Int?)
 
     suspend fun updateRoutine(routine: Routine)
 
     suspend fun getRoutine(id: Int): Routine
 
-    fun getRoutine(monthName: String, numberDay: Int): Flow<List<Routine>>
+    fun getRoutine(monthNumber: Int, numberDay: Int,yerNumber:Int): Flow<List<Routine>>
 
-    fun searchRoutine(name: String, nameMonth: String?, dayNumber: String?): Flow<List<Routine>>
+    fun searchRoutine(name: String,monthNumber: Int?, dayNumber: Int?): Flow<List<Routine>>
 }

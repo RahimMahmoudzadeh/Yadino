@@ -22,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -31,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
-import com.rahim.ui.home.ItemHome
+import com.rahim.ui.home.ItemRoutine
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.base.view.TopBarCenterAlign
@@ -95,96 +94,88 @@ fun ItemsRoutine(
     dayChecked: String,
     dayCheckedNumber: (String) -> Unit
 ) {
-    var routineName = rememberSaveable { mutableStateOf("") }
-    val items = listOf("شنبه", "یکشنبه", "دوشنبه", "سه شنبه", "چهار شنبه", "پنج شنبه", "جمعه")
-    val routine =
-        remember {
-            listOf(
-                Routine("قراره کاری", null, null, null, null, null, false, null),
-                Routine("قراره کاری2", null, null, null, null, null, true, null),
-                Routine("قراره کاری3", null, null, null, null, null, false, null)
-            )
-        }
-    Text(text = "اسفند 1400")
-    Row(modifier = Modifier.padding(top = 12.dp)) {
-        IconButton(modifier = Modifier
-            .weight(1f)
-            .padding(top = 17.dp), onClick = {}) {
-            Icon(painterResource(id = R.drawable.less_then), contentDescription = "less then sign")
-        }
-        Spacer(modifier = Modifier.width(12.dp))
-        for (item in items.size - 1 downTo (0)) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-                    .weight(8f)
-                    .padding(end = 15.dp)
-            ) {
-                Text(
-                    fontSize = 9.sp,
-                    text = items[item]
-                )
-                Box(
-                    modifier = Modifier
-                        .padding(
-                            top = 14.dp,
-                            start = 4.dp
-                        )
-                        .size(29.dp)
-                        .clip(CircleShape)
-                        .background(
-                            brush = if (dayChecked == item.toString()) {
-                                Brush.verticalGradient(
-                                    gradientColors
-                                )
-                            } else Brush.horizontalGradient(
-                                listOf(
-                                    Color.White,
-                                    Color.White
-                                )
-                            )
-                        )
-                ) {
-                    ClickableText(
-                        modifier = Modifier.padding(
-                            top = 8.dp, start =12.dp
-                        ),
-                        onClick = { dayCheckedNumber(item.toString()) },
-                        text = AnnotatedString(item.toString()),
-                        style = TextStyle(
-                            fontSize = 9.sp, fontWeight = FontWeight.Bold,
-                            color = if (dayChecked == item.toString())
-                                (Color.White)
-                            else Color.Black
-                        )
-                    )
-                }
-            }
-        }
-        IconButton(modifier = Modifier
-            .weight(1f)
-            .padding(top = 17.dp), onClick = {}) {
-            Icon(
-                painterResource(id = R.drawable.greater_then),
-                contentDescription = "greater then sign"
-            )
-        }
-    }
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(paddingValues),
-        contentPadding = PaddingValues(top = 8.dp)
-    ) {
-        items(
-            items = routine, itemContent = {
-                ItemHome(routine = it, onChecked = {
-
-                }, routineName = {
-                    routineName.value = it
-                })
-            }
-        )
-    }
+//    Text(text = "اسفند 1400")
+//    Row(modifier = Modifier.padding(top = 12.dp)) {
+//        IconButton(modifier = Modifier
+//            .weight(1f)
+//            .padding(top = 17.dp), onClick = {}) {
+//            Icon(painterResource(id = R.drawable.less_then), contentDescription = "less then sign")
+//        }
+//        Spacer(modifier = Modifier.width(12.dp))
+//        for (item in items.size - 1 downTo (0)) {
+//            Column(
+//                horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+//                    .weight(8f)
+//                    .padding(end = 15.dp)
+//            ) {
+//                Text(
+//                    fontSize = 9.sp,
+//                    text = items[item]
+//                )
+//                Box(
+//                    modifier = Modifier
+//                        .padding(
+//                            top = 14.dp,
+//                            start = 4.dp
+//                        )
+//                        .size(29.dp)
+//                        .clip(CircleShape)
+//                        .background(
+//                            brush = if (dayChecked == item.toString()) {
+//                                Brush.verticalGradient(
+//                                    gradientColors
+//                                )
+//                            } else Brush.horizontalGradient(
+//                                listOf(
+//                                    Color.White,
+//                                    Color.White
+//                                )
+//                            )
+//                        )
+//                ) {
+//                    ClickableText(
+//                        modifier = Modifier.padding(
+//                            top = 8.dp, start =12.dp
+//                        ),
+//                        onClick = { dayCheckedNumber(item.toString()) },
+//                        text = AnnotatedString(item.toString()),
+//                        style = TextStyle(
+//                            fontSize = 9.sp, fontWeight = FontWeight.Bold,
+//                            color = if (dayChecked == item.toString())
+//                                (Color.White)
+//                            else Color.Black
+//                        )
+//                    )
+//                }
+//            }
+//        }
+//        IconButton(modifier = Modifier
+//            .weight(1f)
+//            .padding(top = 17.dp), onClick = {}) {
+//            Icon(
+//                painterResource(id = R.drawable.greater_then),
+//                contentDescription = "greater then sign"
+//            )
+//        }
+//    }
+//    LazyColumn(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(paddingValues),
+//        contentPadding = PaddingValues(top = 8.dp)
+//    ) {
+//        items(
+//            items = routine, itemContent = {
+//                ItemRoutine(routine = it, onChecked = {
+//                    updateRoutine(it)
+//                }, openDialogDelete = {
+//                    deleteRoutine(it)
+//                }, openDialogEdit = {
+//                    updateRoutine(it)
+//                })
+//            }
+//        )
+//    }
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFF, device = Devices.PIXEL_4)

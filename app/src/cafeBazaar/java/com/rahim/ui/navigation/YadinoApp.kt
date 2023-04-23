@@ -29,17 +29,15 @@ import com.rahim.utils.navigation.Screen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
-    var click by rememberSaveable { mutableStateOf(false) }
-    var openDialog by remember { mutableStateOf(false) }
-    var routineName = rememberSaveable { mutableStateOf("") }
-    var noteName = rememberSaveable { mutableStateOf("") }
-    val checkedStateAllDay = remember { mutableStateOf(false) }
-    var dayChecked by rememberSaveable { mutableStateOf("شنبه") }
+fun YadinoApp(
+    navController: NavController,
+    screenItems: List<Screen>,
+    openDialog: (Boolean) -> Unit
+) {
     val configuration = LocalConfiguration.current
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val destination = navBackStackEntry?.destination?.route
+
     if (destination != Screen.Welcome.route) {
         BottomNavigation(backgroundColor = Zircon) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -76,69 +74,10 @@ fun YadinoApp(navController: NavController, screenItems: List<Screen>) {
                 y = -65.dp
             ),
             onClick = {
-                click = true
-                openDialog = true
+                openDialog(true)
             },
         ) {
             Icon(Icons.Filled.Add, "add item")
         }
-    }
-    if (click) {
-        ShowDialog(destination = destination.toString(), isOpenDialog = openDialog, click = {
-            openDialog = it
-        }, routine = {
-            routineName.value = it
-        }, routineName = routineName.value, note = {
-            noteName.value = it
-        }, noteName = noteName.value, dayCheckedName = {
-            dayChecked = it
-        }, dayChecked = dayChecked, checkedAllItemsState = {
-            checkedStateAllDay.value = it
-        }, checkedAllDay = checkedStateAllDay.value)
-    }
-}
-
-@Composable
-fun ShowDialog(
-    modifier: Modifier = Modifier,
-    destination: String,
-    isOpenDialog: Boolean,
-    routineName: String? = null,
-    noteName: String? = null,
-    click: (Boolean) -> Unit,
-    routine: (String) -> Unit,
-    note: (String) -> Unit,
-    dayChecked: String,
-    dayCheckedName: (String) -> Unit,
-    checkedAllDay: Boolean,
-    checkedAllItemsState: (Boolean) -> Unit,
-) {
-
-    if (destination == Screen.Home.route || destination == Screen.Routine.route) {
-        DialogAddRoutine(
-            modifier,
-            isOpenDialog,
-            routineName = routineName,
-            dayChecked = dayChecked,
-            dayCheckedName = {
-                dayCheckedName(it)
-            },
-            checkedAllDay = checkedAllDay,
-            checkedAllItemsState = {
-                checkedAllItemsState(it)
-            },
-            routine = {
-                routine(it)
-            },
-            openDialog = {
-                click(it)
-            })
-
-    } else {
-        DialogAddNote(modifier, isOpen = isOpenDialog, noteName = noteName, openDialog = {
-            click(it)
-        }, note = {
-            note(it)
-        })
     }
 }

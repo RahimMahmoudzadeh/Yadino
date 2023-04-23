@@ -13,9 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.NavHostController
@@ -43,6 +42,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         mainViewModel
         setContent {
+            var openDialog by rememberSaveable { mutableStateOf(false) }
+
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 YadinoTheme {
                     val navController = rememberNavController()
@@ -52,15 +53,21 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Scaffold(
                             bottomBar = {
-                                YadinoApp(navController, screenItems)
+                                YadinoApp(navController, screenItems) {
+                                    openDialog = it
+                                }
                             }
                         ) { innerPadding ->
-                            NavGraph(navController, innerPadding = innerPadding)
+                            NavGraph(
+                                navController,
+                                innerPadding = innerPadding,
+                                isClickButtonAdd = openDialog, isOpenDialog = {
+                                    openDialog = it
+                                }
+                            )
                         }
                     }
-
                 }
-
             }
         }
     }

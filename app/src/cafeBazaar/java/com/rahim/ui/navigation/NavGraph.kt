@@ -25,7 +25,10 @@ import com.rahim.utils.navigation.Screen
 @Composable
 fun NavGraph(
     navController: NavHostController = rememberNavController(),
-    startDestination: String = Screen.Welcome.route, innerPadding: PaddingValues
+    startDestination: String = Screen.Welcome.route,
+    innerPadding: PaddingValues,
+    isClickButtonAdd: Boolean,
+    isOpenDialog: (Boolean) -> Unit
 ) {
     NavHost(navController, startDestination = startDestination, Modifier.padding(innerPadding)) {
         composable(Screen.Welcome.route) {
@@ -33,7 +36,10 @@ fun NavGraph(
             WelcomeScreens(navController, viewModel)
         }
         composable(Screen.Home.route) {
-            HomeScreen()
+            val viewModel = hiltViewModel<HomeViewModel>()
+            HomeScreen(viewModel = viewModel, onClickAdd = isClickButtonAdd, isOpenDialog = {
+                isOpenDialog(it)
+            })
         }
         composable(Screen.Routine.route) {
             RoutineScreen()
