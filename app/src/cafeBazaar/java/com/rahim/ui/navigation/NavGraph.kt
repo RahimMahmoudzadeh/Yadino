@@ -17,6 +17,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.rahim.ui.home.HomeScreen
 import com.rahim.ui.home.HomeViewModel
 import com.rahim.ui.note.NoteScreen
+import com.rahim.ui.note.NoteViewModel
 import com.rahim.ui.routine.RoutineScreen
 import com.rahim.ui.welcome.WelcomeScreens
 import com.rahim.utils.navigation.Screen
@@ -45,7 +46,8 @@ fun NavGraph(
             RoutineScreen()
         }
         composable(Screen.Note.route) {
-            NoteScreen()
+            val viewModel = hiltViewModel<NoteViewModel>()
+            NoteScreen(viewModel = viewModel)
         }
 //        composable(Screen.Calender.route) {
 //

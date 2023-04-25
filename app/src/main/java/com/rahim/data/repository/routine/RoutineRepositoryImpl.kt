@@ -1,4 +1,4 @@
-package com.rahim.data.repository.addRoutine
+package com.rahim.data.repository.routine
 
 import com.rahim.data.db.database.AppDatabase
 import com.rahim.data.modle.Rotin.Routine

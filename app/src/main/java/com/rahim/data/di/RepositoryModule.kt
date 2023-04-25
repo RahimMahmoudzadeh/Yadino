@@ -1,11 +1,13 @@
 package com.rahim.data.di
 
-import com.rahim.data.repository.addRoutine.RepositoryRoutine
-import com.rahim.data.repository.addRoutine.RoutineRepositoryImpl
+import com.rahim.data.repository.routine.RepositoryRoutine
+import com.rahim.data.repository.routine.RoutineRepositoryImpl
 import com.rahim.data.repository.dataTime.DataTimeRepository
 import com.rahim.data.repository.dataTime.DataTimeRepositoryImpl
 import com.rahim.data.repository.home.HomeRepository
 import com.rahim.data.repository.home.HomeRepositoryImpl
+import com.rahim.data.repository.note.NoteRepository
+import com.rahim.data.repository.note.NoteRepositoryImpl
 import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
 import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepositoryImpl
 import dagger.Binds
@@ -18,12 +20,17 @@ import dagger.hilt.components.SingletonComponent
 abstract class RepositoryModule {
 
     @Binds
-    abstract fun provideRepositoryTask(repositoryAddTaskImpl: RoutineRepositoryImpl):RepositoryRoutine
+    abstract fun provideRepositoryTask(repositoryAddTaskImpl: RoutineRepositoryImpl): RepositoryRoutine
 
     @Binds
-    abstract fun provideRepositoryDataTime(dataTimeRepositoryImpl: DataTimeRepositoryImpl):DataTimeRepository
+    abstract fun provideRepositoryDataTime(dataTimeRepositoryImpl: DataTimeRepositoryImpl): DataTimeRepository
+
     @Binds
-    abstract fun provideSharedPreferencesRepository(sharedPreferencesRepositoryImpl: SharedPreferencesRepositoryImpl):SharedPreferencesRepository
+    abstract fun provideSharedPreferencesRepository(sharedPreferencesRepositoryImpl: SharedPreferencesRepositoryImpl): SharedPreferencesRepository
+
     @Binds
-    abstract fun provideHomeRepository(homeRepositoryImpl: HomeRepositoryImpl):HomeRepository
+    abstract fun provideHomeRepository(homeRepositoryImpl: HomeRepositoryImpl): HomeRepository
+
+    @Binds
+    abstract fun provideNoteRepository(noteRepositoryImpl: NoteRepositoryImpl): NoteRepository
 }

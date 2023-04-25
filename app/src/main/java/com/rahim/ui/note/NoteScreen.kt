@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,15 +24,22 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.R
 import com.rahim.data.modle.note.NoteModel
+import com.rahim.ui.home.HomeViewModel
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.base.view.TopBarCenterAlign
+import com.rahim.utils.resours.Resource
 
 @Composable
-fun NoteScreen(modifier: Modifier = Modifier) {
-
+fun NoteScreen(modifier: Modifier = Modifier, viewModel: NoteViewModel) {
+    val notes by viewModel.getNotes().collectAsStateWithLifecycle(
+        initialValue = Resource.Success(
+            emptyList()
+        )
+    )
     Scaffold(
         modifier = modifier.background(Zircon),
         topBar = {
@@ -40,8 +48,23 @@ fun NoteScreen(modifier: Modifier = Modifier) {
             )
         }, backgroundColor = Color.White
     ) {
-//        EmptyNote(it)
-        ItemsNote(it)
+        when (notes) {
+            is Resource.Loading -> {
+
+            }
+
+            is Resource.Success -> {
+                if (notes.data?.isEmpty() == true) {
+                    EmptyNote(it)
+                } else {
+                    ItemsNote(it, notes.data as List<NoteModel>)
+                }
+            }
+
+            is Resource.Error -> {
+
+            }
+        }
     }
 }
 
@@ -75,46 +98,18 @@ fun EmptyNote(paddingValues: PaddingValues) {
 }
 
 @Composable
-fun ItemsNote(paddingValues: PaddingValues) {
+fun ItemsNote(paddingValues: PaddingValues, notes: List<NoteModel>) {
     var noteName = rememberSaveable { mutableStateOf("") }
 
-    val note =
-        remember {
-            listOf(
-                NoteModel(
-                    0,
-                    "rahim",
-                    "adasdadsadadadfsdfsdfsjkfdsljldkjfglkjdhglkjdfhglkjdfhglkjdffgljkdfgldjkfgldkjgdlkjgdhlkjghjcbnklvbvcmn",
-                    "1402/1/1",
-                    false,
-                    0
-                ),
-                NoteModel(
-                    0,
-                    "rahim",
-                    "adasdadsadadadfsdfsdfsjkfdsljldkjfglkjdhglkjdfhglkjdfhglkjdffgljkdfgldjkfgldkjgdlkjgdhlkjghjcbnklvbvcmn",
-                    "1402/1/1",
-                    true,
-                    0
-                ),
-                NoteModel(
-                    0,
-                    "rahim",
-                    "adasdadsadadadfsdfsdfsjkfdsljldkjfglkjdhglkjdfhglkjdfhglkjdffgljkdfgldjkfgldkjgdlkjgdhlkjghjcbnklvbvcmn",
-                    "1402/1/1",
-                    false,
-                    0
-                )
-            )
-        }
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(paddingValues).padding(end = 16.dp, start = 16.dp, top = 25.dp),
+            .padding(paddingValues)
+            .padding(end = 16.dp, start = 16.dp, top = 25.dp),
         contentPadding = PaddingValues(top = 25.dp)
     ) {
         items(
-            items = note, itemContent = {
+            items = notes, itemContent = {
                 ItemListNote(noteModel = it, onChecked = {
 
                 }, noteName = {
@@ -130,6 +125,6 @@ fun ItemsNote(paddingValues: PaddingValues) {
 @Composable
 fun NoteScreenPreview() {
     YadinoTheme() {
-        NoteScreen()
+//        NoteScreen()
     }
 }
