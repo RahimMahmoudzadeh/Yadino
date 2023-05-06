@@ -12,7 +12,6 @@ data class NoteModel(
     var id: Int? = null,
     var name: String,
     var description: String,
-    var date: String,
     var isChecked: Boolean = false,
     var state: Int = 0
 ) : Parcelable

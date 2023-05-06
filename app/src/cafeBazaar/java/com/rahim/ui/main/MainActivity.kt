@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.ui.navigation.NavGraph
 import com.rahim.ui.navigation.YadinoApp
 import com.rahim.ui.theme.YadinoTheme
@@ -42,7 +43,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         mainViewModel
         setContent {
-            var openDialog by rememberSaveable { mutableStateOf(false) }
+            var openDialog by rememberSaveable { mutableStateOf(StateOpenDialog(false, "")) }
 
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 YadinoTheme {

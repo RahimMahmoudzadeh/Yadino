@@ -26,6 +26,11 @@ class NoteViewModel @Inject constructor(
             noteRepository.addNote(noteModel)
         }
     }
+    fun updateNote(noteModel: NoteModel) {
+        viewModelScope.launch {
+            noteRepository.updateNote(noteModel)
+        }
+    }
 
     fun getNotes(): Flow<Resource<List<NoteModel>>> = flow {
         emit(Resource.Loading())
@@ -34,6 +39,12 @@ class NoteViewModel @Inject constructor(
         }.collect {
             emit(Resource.Success(it))
 
+        }
+    }
+
+    fun delete(noteModel: NoteModel){
+        viewModelScope.launch {
+            noteRepository.deleteNote(noteModel)
         }
     }
 }

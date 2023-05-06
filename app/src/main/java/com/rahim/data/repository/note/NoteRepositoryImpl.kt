@@ -10,5 +10,13 @@ class NoteRepositoryImpl @Inject constructor(val appDatabase: AppDatabase) : Not
         appDatabase.noteDao().insertNote(noteModel)
     }
 
+    override suspend fun updateNote(noteModel: NoteModel) {
+        appDatabase.noteDao().update(noteModel)
+    }
+
+    override suspend fun deleteNote(noteModel: NoteModel) {
+        appDatabase.noteDao().delete(noteModel)
+    }
+
     override fun getNotes(): Flow<List<NoteModel>> = appDatabase.noteDao().getNotes()
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -23,20 +24,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.R
+import com.rahim.data.modle.note.NoteModel
 import com.rahim.ui.theme.*
 import com.rahim.utils.base.view.DialogButtonBackground
 import com.rahim.utils.base.view.gradientColors
+import com.rahim.utils.enums.StateNote
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTextApi::class)
 @Composable
 fun DialogAddNote(
     modifier: Modifier = Modifier,
+    noteUpdate: NoteModel?,
     isOpen: Boolean,
-    noteName: String?,
     openDialog: (Boolean) -> Unit,
-    note: (String) -> Unit
+    note: (NoteModel) -> Unit
 ) {
-    var state by remember { mutableStateOf(true) }
+    var state by remember { mutableStateOf(0) }
+    var nameNote by rememberSaveable { mutableStateOf("") }
+    var description by rememberSaveable { mutableStateOf("") }
+
+    if (noteUpdate != null) {
+        state = noteUpdate.state
+        nameNote = noteUpdate.name
+        description = noteUpdate.description
+    }
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         if (isOpen) {
@@ -83,9 +94,9 @@ fun DialogAddNote(
                                     brush = Brush.verticalGradient(gradientColors),
                                     shape = RoundedCornerShape(4.dp)
                                 ),
-                            value = noteName.toString(),
+                            value = nameNote,
                             onValueChange = {
-                                note(it)
+                                nameNote = it
                             },
                             placeholder = { Text(text = stringResource(id = R.string.issue)) },
                             colors = TextFieldDefaults.textFieldColors(
@@ -106,9 +117,9 @@ fun DialogAddNote(
                                     brush = Brush.horizontalGradient(gradientColors),
                                     shape = RoundedCornerShape(4.dp)
                                 ),
-                            value = noteName.toString(),
+                            value = description,
                             onValueChange = {
-                                note(it)
+                                description = it
                             },
                             placeholder = { Text(text = stringResource(id = R.string.issue_explanation)) },
                             colors = TextFieldDefaults.textFieldColors(
@@ -122,7 +133,7 @@ fun DialogAddNote(
                             Text(
                                 fontSize = 18.sp,
                                 text = stringResource(id = R.string.priority_level),
-                                 color = Gigas
+                                color = Gigas,
                             )
                             Text(
                                 fontSize = 16.sp,
@@ -130,32 +141,51 @@ fun DialogAddNote(
                                 modifier = Modifier.padding(start = 24.dp), color = Punch
                             )
                             RadioButton(
-                                colors = RadioButtonDefaults.colors(selectedColor = Punch, unselectedColor = Punch),
-                                selected = state,
-                                onClick = { state = true },
-                                modifier = Modifier.semantics { contentDescription = "Localized Description" }.size(20.dp).padding(start = 8.dp)
+                                colors = RadioButtonDefaults.colors(
+                                    selectedColor = Punch,
+                                    unselectedColor = Punch
+                                ),
+                                selected = state == 2,
+                                onClick = { state = 2 },
+                                modifier = Modifier
+                                    .semantics { contentDescription = "Localized Description" }
+                                    .size(20.dp)
+                                    .padding(start = 8.dp)
                             )
                             Text(
                                 fontSize = 16.sp,
-                                modifier=Modifier.padding(start = 24.dp),
-                                text = stringResource(id = R.string.medium), color = CornflowerBlueDark
+                                modifier = Modifier.padding(start = 24.dp),
+                                text = stringResource(id = R.string.medium),
+                                color = CornflowerBlueDark
                             )
                             RadioButton(
-                                colors = RadioButtonDefaults.colors(selectedColor = CornflowerBlueDark, unselectedColor = CornflowerBlueDark),
-                                selected = !state,
-                                onClick = { state = false },
-                                modifier = Modifier.semantics { contentDescription = "Localized Description" }.size(20.dp).padding(start = 8.dp)
+                                colors = RadioButtonDefaults.colors(
+                                    selectedColor = CornflowerBlueDark,
+                                    unselectedColor = CornflowerBlueDark
+                                ),
+                                selected = state == 1,
+                                onClick = { state = 1 },
+                                modifier = Modifier
+                                    .semantics { contentDescription = "Localized Description" }
+                                    .size(20.dp)
+                                    .padding(start = 8.dp)
                             )
                             Text(
                                 fontSize = 16.sp,
-                                modifier=Modifier.padding(start = 24.dp),
+                                modifier = Modifier.padding(start = 24.dp),
                                 text = stringResource(id = R.string.low), color = Mantis
                             )
                             RadioButton(
-                                colors = RadioButtonDefaults.colors(selectedColor = Mantis, unselectedColor = Mantis),
-                                selected = !state,
-                                onClick = { state = false },
-                                modifier = Modifier.semantics { contentDescription = "Localized Description" }.size(20.dp).padding(start = 8.dp)
+                                colors = RadioButtonDefaults.colors(
+                                    selectedColor = Mantis,
+                                    unselectedColor = Mantis
+                                ),
+                                selected = state == 0,
+                                onClick = { state = 0 },
+                                modifier = Modifier
+                                    .semantics { contentDescription = "Localized Description" }
+                                    .size(20.dp)
+                                    .padding(start = 8.dp)
                             )
                         }
 
@@ -172,10 +202,36 @@ fun DialogAddNote(
                                 textSize = 14.sp,
                                 width = 0.3f,
                                 height = 40.dp,
-                                onClick = { openDialog(false) }
+                                onClick = {
+                                    note(
+                                        if (noteUpdate != null) {
+                                            NoteModel(
+                                                id = noteUpdate.id,
+                                                name = nameNote,
+                                                description = description,
+                                                state = state
+                                            )
+                                        } else {
+                                            NoteModel(
+                                                name = nameNote,
+                                                description = description,
+                                                state = state
+                                            )
+                                        }
+                                    )
+                                    openDialog(false)
+                                    nameNote = ""
+                                    description = ""
+                                    state = 0
+                                }
                             )
                             Spacer(modifier = Modifier.width(10.dp))
-                            TextButton(onClick = { openDialog(false) }) {
+                            TextButton(onClick = {
+                                nameNote = ""
+                                description = ""
+                                state = 0
+                                openDialog(false)
+                            }) {
                                 Text(
                                     fontSize = 16.sp,
                                     text = stringResource(id = R.string.cancel),

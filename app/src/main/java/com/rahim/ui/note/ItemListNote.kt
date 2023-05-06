@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rahim.R
+import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.note.NoteModel
 import com.rahim.ui.dialog.DialogAddNote
 import com.rahim.ui.dialog.DialogDelete
@@ -29,16 +30,16 @@ fun ItemListNote(
     noteModel: NoteModel,
     modifier: Modifier = Modifier,
     onChecked: (NoteModel) -> Unit,
-    noteName: (String) -> Unit,
+    note: (NoteModel) -> Unit,
+    openDialogEdit: (NoteModel) -> Unit,
+    openDialogDelete: (NoteModel) -> Unit,
 ) {
-    var openDialogEdit by remember { mutableStateOf(false) }
-    var openDialogDelete by remember { mutableStateOf(false) }
 
     val delete = SwipeAction(
         icon = painterResource(id = R.drawable.delete),
         background = Color.White,
         onSwipe = {
-            openDialogDelete = true
+            openDialogDelete(noteModel)
         }
     )
 
@@ -47,7 +48,7 @@ fun ItemListNote(
         background = Color.White,
         isUndo = true,
         onSwipe = {
-            openDialogEdit = true
+            openDialogEdit(noteModel)
         },
     )
     SwipeableActionsBox(
@@ -91,7 +92,7 @@ fun ItemListNote(
                 Column(modifier = Modifier.padding(top = 12.dp)) {
                     Text(
                         modifier = Modifier.align(Alignment.End),
-                        color = Mantis,
+                        color = if (noteModel.state == 0) Mantis else if (noteModel.state == 1) CornflowerBlueDark else Punch,
                         text = noteModel.name,
                         style = TextStyle(fontWeight = FontWeight.Bold)
                     )
@@ -100,7 +101,7 @@ fun ItemListNote(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(top = 10.dp),
-                        text = "یادداشت : من یک یادداشت هستم برای ویرایش یا حذف من را به چپ یا راست بکشید ...",
+                        text = noteModel.description,
                     )
                 }
             }
@@ -113,37 +114,6 @@ fun ItemListNote(
             )
         }
     }
-    ShowDialogEdit(
-        isOpenDialog = openDialogEdit,
-        noteName = noteModel.name,
-        click = { openDialogEdit = it },
-        note = { noteName(it) }
-    )
-    ShowDialogDelete(isOpenDialog = openDialogDelete, click = { openDialogDelete = it })
 }
 
-@Composable
-fun ShowDialogEdit(
-    modifier: Modifier = Modifier,
-    isOpenDialog: Boolean,
-    noteName: String,
-    click: (Boolean) -> Unit,
-    note: (String) -> Unit
-) {
-    DialogAddNote(modifier, isOpen = isOpenDialog, noteName = noteName, openDialog = {
-        click(it)
-    }, note = {
-        note(it)
-    })
-}
 
-@Composable
-fun ShowDialogDelete(
-    modifier: Modifier = Modifier,
-    isOpenDialog: Boolean,
-    click: (Boolean) -> Unit,
-) {
-    DialogDelete(modifier, isOpenDialog, openDialog = {
-        click(it)
-    })
-}

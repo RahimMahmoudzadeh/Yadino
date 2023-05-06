@@ -1,9 +1,11 @@
 package com.rahim.data.db.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.rahim.data.modle.note.NoteModel
 import kotlinx.coroutines.flow.Flow
 
@@ -14,4 +16,9 @@ interface NoteDao {
 
     @Query("SELECT * FROM tbl_note")
     fun getNotes(): Flow<List<NoteModel>>
+
+    @Update
+    suspend fun update(noteModel: NoteModel)
+    @Delete
+    suspend fun delete(noteModel: NoteModel)
 }

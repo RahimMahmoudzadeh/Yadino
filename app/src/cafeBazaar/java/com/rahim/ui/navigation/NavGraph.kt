@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
+import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.ui.home.HomeScreen
 import com.rahim.ui.home.HomeViewModel
 import com.rahim.ui.note.NoteScreen
@@ -28,8 +29,8 @@ fun NavGraph(
     navController: NavHostController = rememberNavController(),
     startDestination: String = Screen.Welcome.route,
     innerPadding: PaddingValues,
-    isClickButtonAdd: Boolean,
-    isOpenDialog: (Boolean) -> Unit
+    isClickButtonAdd: StateOpenDialog,
+    isOpenDialog: (StateOpenDialog) -> Unit
 ) {
     NavHost(navController, startDestination = startDestination, Modifier.padding(innerPadding)) {
         composable(Screen.Welcome.route) {
@@ -38,16 +39,24 @@ fun NavGraph(
         }
         composable(Screen.Home.route) {
             val viewModel = hiltViewModel<HomeViewModel>()
-            HomeScreen(viewModel = viewModel, onClickAdd = isClickButtonAdd, isOpenDialog = {
-                isOpenDialog(it)
-            })
+            HomeScreen(
+                viewModel = viewModel,
+                onClickAdd = if (isClickButtonAdd.destination == Screen.Home.route) isClickButtonAdd.isOpen else false,
+                isOpenDialog = {
+                    isOpenDialog(StateOpenDialog(it, Screen.Home.route))
+                })
         }
         composable(Screen.Routine.route) {
             RoutineScreen()
         }
         composable(Screen.Note.route) {
             val viewModel = hiltViewModel<NoteViewModel>()
-            NoteScreen(viewModel = viewModel)
+            NoteScreen(
+                viewModel = viewModel,
+                onClickAdd = if (isClickButtonAdd.destination == Screen.Note.route) isClickButtonAdd.isOpen else false,
+                isOpenDialog = {
+                    isOpenDialog(StateOpenDialog(it, Screen.Note.route))
+                })
         }
 //        composable(Screen.Calender.route) {
 //

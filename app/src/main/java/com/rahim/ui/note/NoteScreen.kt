@@ -26,7 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.R
+import com.rahim.data.modle.Rotin.Routine
+import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.data.modle.note.NoteModel
+import com.rahim.ui.dialog.DialogAddNote
+import com.rahim.ui.dialog.DialogDelete
 import com.rahim.ui.home.HomeViewModel
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
@@ -34,7 +38,16 @@ import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.resours.Resource
 
 @Composable
-fun NoteScreen(modifier: Modifier = Modifier, viewModel: NoteViewModel) {
+fun NoteScreen(
+    modifier: Modifier = Modifier,
+    viewModel: NoteViewModel,
+    onClickAdd: Boolean,
+    isOpenDialog: (Boolean) -> Unit
+) {
+
+    val noteDeleteDialog = rememberSaveable { mutableStateOf<NoteModel?>(null) }
+    val noteUpdateDialog = rememberSaveable { mutableStateOf<NoteModel?>(null) }
+
     val notes by viewModel.getNotes().collectAsStateWithLifecycle(
         initialValue = Resource.Success(
             emptyList()
@@ -57,7 +70,13 @@ fun NoteScreen(modifier: Modifier = Modifier, viewModel: NoteViewModel) {
                 if (notes.data?.isEmpty() == true) {
                     EmptyNote(it)
                 } else {
-                    ItemsNote(it, notes.data as List<NoteModel>)
+                    ItemsNote(it, notes.data as List<NoteModel>, checkedNote = {
+                        viewModel.updateNote(it)
+                    }, updateNote = {
+                        noteUpdateDialog.value = it
+                    }, deleteNote = {
+                        noteDeleteDialog.value = it
+                    })
                 }
             }
 
@@ -65,6 +84,31 @@ fun NoteScreen(modifier: Modifier = Modifier, viewModel: NoteViewModel) {
 
             }
         }
+    }
+    val u=noteUpdateDialog.value
+    DialogAddNote(
+
+        noteUpdate = if (noteUpdateDialog.value != null) u else null,
+        isOpen = onClickAdd || noteUpdateDialog.value != null,
+        note = {
+            if (noteUpdateDialog.value != null) {
+                viewModel.updateNote(it)
+            } else {
+                viewModel.addNote(it)
+            }
+        },
+        openDialog = {
+            noteUpdateDialog.value = null
+            isOpenDialog(it)
+        })
+
+    noteDeleteDialog.value?.let { noteDelete ->
+        ShowDialogDelete(click = {
+            noteDeleteDialog.value = null
+            if (it) {
+                viewModel.delete(noteDelete)
+            }
+        }, isOpenDialog = noteDeleteDialog.value != null)
     }
 }
 
@@ -98,8 +142,13 @@ fun EmptyNote(paddingValues: PaddingValues) {
 }
 
 @Composable
-fun ItemsNote(paddingValues: PaddingValues, notes: List<NoteModel>) {
-    var noteName = rememberSaveable { mutableStateOf("") }
+fun ItemsNote(
+    paddingValues: PaddingValues, notes: List<NoteModel>,
+    checkedNote: (NoteModel) -> Unit,
+    updateNote: (NoteModel) -> Unit,
+    deleteNote: (NoteModel) -> Unit
+) {
+    var note = rememberSaveable { mutableStateOf<NoteModel?>(null) }
 
     LazyColumn(
         modifier = Modifier
@@ -111,20 +160,26 @@ fun ItemsNote(paddingValues: PaddingValues, notes: List<NoteModel>) {
         items(
             items = notes, itemContent = {
                 ItemListNote(noteModel = it, onChecked = {
-
-                }, noteName = {
-                    noteName.value = it
+                    checkedNote(it)
+                }, note = {
+                    note.value = it
+                }, openDialogDelete = {
+                    deleteNote(it)
+                }, openDialogEdit = {
+                    updateNote(it)
                 })
             }
         )
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true, backgroundColor = 0xFFFFFF, device = Devices.PIXEL_4)
 @Composable
-fun NoteScreenPreview() {
-    YadinoTheme() {
-//        NoteScreen()
-    }
+fun ShowDialogDelete(
+    modifier: Modifier = Modifier,
+    isOpenDialog: Boolean,
+    click: (Boolean) -> Unit,
+) {
+    DialogDelete(modifier, isOpenDialog, openDialog = {
+        click(it)
+    })
 }

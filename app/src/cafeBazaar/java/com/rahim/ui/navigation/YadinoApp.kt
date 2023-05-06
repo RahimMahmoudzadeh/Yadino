@@ -21,6 +21,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.rahim.R
+import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.ui.dialog.DialogAddNote
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.theme.CornflowerBlueLight
@@ -32,7 +33,7 @@ import com.rahim.utils.navigation.Screen
 fun YadinoApp(
     navController: NavController,
     screenItems: List<Screen>,
-    openDialog: (Boolean) -> Unit
+    openDialog: (StateOpenDialog) -> Unit
 ) {
     val configuration = LocalConfiguration.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -74,7 +75,7 @@ fun YadinoApp(
                 y = -65.dp
             ),
             onClick = {
-                openDialog(true)
+                openDialog(StateOpenDialog(true, destination.toString()))
             },
         ) {
             Icon(Icons.Filled.Add, "add item")
