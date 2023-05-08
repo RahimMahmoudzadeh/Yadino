@@ -42,8 +42,6 @@ fun HomeScreen(
     val currentMonth = viewModel.getCurrentTime()[1]
     val currentDay = viewModel.getCurrentTime()[2]
 
-    val openDialogDelete = rememberSaveable { mutableStateOf(false) }
-    val openDialogUpdate = rememberSaveable { mutableStateOf(false) }
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
 
@@ -77,14 +75,11 @@ fun HomeScreen(
                 viewModel.updateRoutine(checkedRoutine)
             }, { routineUpdate ->
                 routineUpdateDialog.value = routineUpdate
-                openDialogUpdate.value = true
             }, { deleteRoutine ->
                 routineDeleteDialog.value = deleteRoutine
-                openDialogDelete.value = true
             })
             routineDeleteDialog.value?.let { routineFromDialog ->
-                DialogDelete(isOpen = openDialogDelete.value, openDialog = {
-                    openDialogDelete.value = false
+                DialogDelete(isOpen = routineDeleteDialog.value!=null, openDialog = {
                     routineDeleteDialog.value = null
                     if (it) {
                         viewModel.deleteRoutine(routineFromDialog)
@@ -94,16 +89,15 @@ fun HomeScreen(
         }
     }
     DialogAddRoutine(
-        isOpen = onClickAdd || openDialogUpdate.value,
+        isOpen = onClickAdd || routineUpdateDialog.value!=null,
         isShowDay = false,
         openDialog = {
             routineUpdateDialog.value = null
-            openDialogUpdate.value = it
             isOpenDialog(it)
         },
         routineUpdate = routineUpdateDialog.value,
         routine = {
-            if (openDialogUpdate.value) {
+            if (routineUpdateDialog.value!=null) {
                 viewModel.updateRoutine(it)
             } else {
                 viewModel.addRoutine(it)
