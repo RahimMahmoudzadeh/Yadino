@@ -26,7 +26,6 @@ import com.rahim.utils.base.view.gradientColors
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemRoutine(

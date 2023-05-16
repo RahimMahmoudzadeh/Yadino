@@ -2,6 +2,7 @@ package com.rahim.ui.note
 
 import androidx.lifecycle.viewModelScope
 import com.rahim.data.modle.note.NoteModel
+import com.rahim.data.repository.base.BaseRepository
 import com.rahim.data.repository.note.NoteRepository
 import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
 import com.rahim.utils.base.viewModel.BaseViewModel
@@ -17,15 +18,17 @@ import javax.inject.Inject
 @HiltViewModel
 class NoteViewModel @Inject constructor(
     sharedPreferencesRepository: SharedPreferencesRepository,
-    val noteRepository: NoteRepository
+    baseRepository: BaseRepository,
+    private val noteRepository: NoteRepository
 ) :
-    BaseViewModel(sharedPreferencesRepository) {
+    BaseViewModel(sharedPreferencesRepository, baseRepository) {
 
     fun addNote(noteModel: NoteModel) {
         viewModelScope.launch {
             noteRepository.addNote(noteModel)
         }
     }
+
     fun updateNote(noteModel: NoteModel) {
         viewModelScope.launch {
             noteRepository.updateNote(noteModel)
@@ -42,7 +45,7 @@ class NoteViewModel @Inject constructor(
         }
     }
 
-    fun delete(noteModel: NoteModel){
+    fun delete(noteModel: NoteModel) {
         viewModelScope.launch {
             noteRepository.deleteNote(noteModel)
         }

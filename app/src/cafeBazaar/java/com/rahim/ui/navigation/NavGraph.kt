@@ -20,6 +20,7 @@ import com.rahim.ui.home.HomeViewModel
 import com.rahim.ui.note.NoteScreen
 import com.rahim.ui.note.NoteViewModel
 import com.rahim.ui.routine.RoutineScreen
+import com.rahim.ui.routine.RoutineViewModel
 import com.rahim.ui.welcome.WelcomeScreens
 import com.rahim.utils.navigation.Screen
 
@@ -47,7 +48,12 @@ fun NavGraph(
                 })
         }
         composable(Screen.Routine.route) {
-            RoutineScreen()
+            val viewModel = hiltViewModel<RoutineViewModel>()
+            RoutineScreen(viewModel = viewModel,
+                onClickAdd = if (isClickButtonAdd.destination == Screen.Routine.route) isClickButtonAdd.isOpen else false,
+                isOpenDialog = {
+                    isOpenDialog(StateOpenDialog(it, Screen.Routine.route))
+                })
         }
         composable(Screen.Note.route) {
             val viewModel = hiltViewModel<NoteViewModel>()

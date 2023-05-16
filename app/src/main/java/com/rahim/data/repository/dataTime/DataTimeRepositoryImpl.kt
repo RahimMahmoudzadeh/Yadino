@@ -3,7 +3,9 @@ package com.rahim.data.repository.dataTime
 import com.rahim.data.db.database.AppDatabase
 import com.rahim.data.di.DefaultDispatcher
 import com.rahim.data.modle.data.TimeData
+import com.rahim.utils.enums.WeekName
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import saman.zamani.persiandate.PersianDate
 import java.util.*
 import javax.inject.Inject
@@ -26,6 +28,12 @@ class DataTimeRepositoryImpl @Inject constructor(
         appDatabase.timeDataDao().insertAllTime(calculateDate())
     }
 
+    override suspend fun getCurrentMonthDay(
+        monthNumber: Int,
+        yerNumber: Int?
+    ): Flow<List<TimeData>> =
+        appDatabase.timeDataDao().getSpecificMonthFromYer(monthNumber, yerNumber)
+
     private suspend fun calculateDate(): List<TimeData> {
         return withContext(defaultDispatcher) {
             val timeDates = ArrayList<TimeData>()
@@ -39,7 +47,7 @@ class DataTimeRepositoryImpl @Inject constructor(
                             persianData.shDay,
                             false,
                             today,
-                            persianData.dayName(),
+                            calculateDay(persianData.dayName()),
                             persianData.shYear,
                             persianData.shMonth,
                             today
@@ -51,6 +59,35 @@ class DataTimeRepositoryImpl @Inject constructor(
             timeDates
         }
     }
+
+    private fun calculateDay(shDay: String): String {
+        return when (shDay) {
+            WeekName.SATURDAY.nameDay -> {
+               "ش"
+            }
+            WeekName.SUNDAY.nameDay -> {
+                "ی"
+            }
+            WeekName.MONDAY.nameDay -> {
+                "د"
+            }
+            WeekName.TUESDAY.nameDay -> {
+                "س"
+            }
+            WeekName.WEDNESDAY.nameDay -> {
+                "چ"
+            }
+            WeekName.THURSDAY.nameDay -> {
+                "پ"
+            }
+            WeekName.FRIDAY.nameDay -> {
+                "ج"
+            }
+
+            else -> {""}
+        }
+    }
+
     private fun checkDayIsToday(yer: Int, month: Int, day: Int): Boolean {
         if (yer != currentTimeYer)
             return false
@@ -61,5 +98,6 @@ class DataTimeRepositoryImpl @Inject constructor(
 
         return true
     }
+
 
 }

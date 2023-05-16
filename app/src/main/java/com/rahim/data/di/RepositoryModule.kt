@@ -1,5 +1,7 @@
 package com.rahim.data.di
 
+import com.rahim.data.repository.base.BaseRepository
+import com.rahim.data.repository.base.BaseRepositoryImpl
 import com.rahim.data.repository.routine.RepositoryRoutine
 import com.rahim.data.repository.routine.RoutineRepositoryImpl
 import com.rahim.data.repository.dataTime.DataTimeRepository
@@ -33,4 +35,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun provideNoteRepository(noteRepositoryImpl: NoteRepositoryImpl): NoteRepository
+
+    @Binds
+    abstract fun provideBaseRepository(baseRepositoryImpl: BaseRepositoryImpl): BaseRepository
 }
