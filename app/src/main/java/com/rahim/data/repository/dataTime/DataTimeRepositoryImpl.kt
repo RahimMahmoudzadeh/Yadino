@@ -2,6 +2,7 @@ package com.rahim.data.repository.dataTime
 
 import com.rahim.data.db.database.AppDatabase
 import com.rahim.data.di.DefaultDispatcher
+import com.rahim.data.di.IODispatcher
 import com.rahim.data.modle.data.TimeData
 import com.rahim.utils.enums.WeekName
 import kotlinx.coroutines.*
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 class DataTimeRepositoryImpl @Inject constructor(
     @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
+    @IODispatcher val ioDispatcher: CoroutineDispatcher,
     private val appDatabase: AppDatabase
 ) :
     DataTimeRepository {
@@ -22,10 +24,47 @@ class DataTimeRepositoryImpl @Inject constructor(
     private val currentTimeMonth = persianData.shMonth
     private val currentTimeYer = persianData.shYear
 
+    init {
+        CoroutineScope(ioDispatcher).launch {
+            calculateToday()
+        }
+    }
+
     override suspend fun addTime() {
         if (!timeDao.getAllTime().isNullOrEmpty())
             return
         appDatabase.timeDataDao().insertAllTime(calculateDate())
+    }
+
+    private suspend fun calculateToday() {
+        val times = timeDao.getAllTime()
+        val today = timeDao.getToday()
+
+        if (times.isEmpty())
+            return
+
+        if (checkDayIsToday(today.yerNumber, today.monthNumber, today.dayNumber))
+            return
+
+        times.forEach {
+            if (it.isToday && !checkDayIsToday(
+                    today.yerNumber,
+                    today.monthNumber,
+                    today.dayNumber
+                )
+            ) {
+                it.apply {
+                    isToday = false
+                }
+                timeDao.updateTimeData(it)
+            }
+            if (checkDayIsToday(today.yerNumber, today.monthNumber, today.dayNumber)) {
+                it.apply {
+                    isToday = true
+                }
+                timeDao.updateTimeData(it)
+            }
+        }
     }
 
     override suspend fun getCurrentMonthDay(
@@ -63,28 +102,36 @@ class DataTimeRepositoryImpl @Inject constructor(
     private fun calculateDay(shDay: String): String {
         return when (shDay) {
             WeekName.SATURDAY.nameDay -> {
-               "ش"
+                "ش"
             }
+
             WeekName.SUNDAY.nameDay -> {
                 "ی"
             }
+
             WeekName.MONDAY.nameDay -> {
                 "د"
             }
+
             WeekName.TUESDAY.nameDay -> {
                 "س"
             }
+
             WeekName.WEDNESDAY.nameDay -> {
                 "چ"
             }
+
             WeekName.THURSDAY.nameDay -> {
                 "پ"
             }
+
             WeekName.FRIDAY.nameDay -> {
                 "ج"
             }
 
-            else -> {""}
+            else -> {
+                ""
+            }
         }
     }
 

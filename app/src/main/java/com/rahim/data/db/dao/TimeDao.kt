@@ -16,6 +16,9 @@ interface TimeDao {
     @Insert(onConflict = REPLACE)
     suspend fun insertTime(timesData: TimeData)
 
+    @Query("SELECT * FROM tbl_timeData Where isToday = 1 ")
+    suspend fun getToday(): TimeData
+
     @Query("SELECT * FROM tbl_timeData")
     suspend fun getAllTime(): List<TimeData>
 

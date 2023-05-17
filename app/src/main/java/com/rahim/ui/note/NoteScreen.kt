@@ -85,10 +85,8 @@ fun NoteScreen(
             }
         }
     }
-    val u=noteUpdateDialog.value
     DialogAddNote(
-
-        noteUpdate = if (noteUpdateDialog.value != null) u else null,
+        noteUpdate = if (noteUpdateDialog.value != null) noteUpdateDialog.value else null,
         isOpen = onClickAdd || noteUpdateDialog.value != null,
         note = {
             if (noteUpdateDialog.value != null) {
