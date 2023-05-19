@@ -43,8 +43,17 @@ class DataTimeRepositoryImpl @Inject constructor(
         if (times.isEmpty())
             return
 
-        if (today == null)
+        if (today == null) {
+            val currentDay =
+                times.find { it.dayNumber == currentTimeDay && it.monthNumber == currentTimeMonth && it.yerNumber == currentTimeYer }
+            currentDay?.let {
+                it.apply {
+                    isToday = true
+                }
+                timeDao.updateTimeData(currentDay)
+            }
             return
+        }
 
         if (checkDayIsToday(today.yerNumber, today.monthNumber, today.dayNumber))
             return
