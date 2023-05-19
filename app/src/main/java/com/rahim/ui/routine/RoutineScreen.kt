@@ -87,50 +87,23 @@ fun RoutineScreen(
                 }
             }
         }
-        when (routines) {
-            is Resource.Loading -> {
-
-            }
-
-            is Resource.Success -> {
-                routines.data?.let {
-                    if (it.isEmpty()) {
-                        EmptyRoutine(padding)
-                    } else {
-                        ItemsRoutine(monthDay,
-                            it,
-                            dayChecked,
-                            currentMonth = currentMonth.calculateMonthName(),
-                            currentYer = currentYer.toString(),
-                            listState = listState,
-                            index = index,
-                            dayCheckedNumber = {
-                                dayChecked = it
-                            },
-                            checkedRoutine = {
-                                routineUpdateDialog.value = it
-                            },
-                            updateRoutine = {
-                                routineUpdateDialog.value = it
-                            },
-                            deleteRoutine = {
-                                routineDeleteDialog.value = it
-                            },
-                            indexScroll = {
-                                coroutineScope.launch {
-                                    listState.animateScrollToItem(it)
-                                    index = it
-                                }
-                            })
-                    }
+        GetRoutines(
+            padding,
+            routines,
+            monthDay,
+            dayChecked,
+            index = index,
+            currentYer = currentYer.toString(),
+            currentMonth = currentMonth,
+            listState = listState,
+            indexScroll = {
+                coroutineScope.launch {
+                    listState.animateScrollToItem(it)
+                    index = it
                 }
-            }
-
-            is Resource.Error -> {
-
-            }
-        }
-
+            }, dayCheckedNumber = { dayChecked = it },
+            routineUpdateDialog = { routineUpdateDialog.value = it },
+            routineDeleteDialog = { routineDeleteDialog.value = it })
     }
     routineDeleteDialog.value?.let { routineFromDialog ->
         DialogDelete(isOpen = routineDeleteDialog.value != null, openDialog = {
@@ -163,6 +136,96 @@ fun RoutineScreen(
 }
 
 @Composable
+fun GetRoutines(
+    padding: PaddingValues,
+    routines: Resource<List<Routine>>,
+    monthDay: List<TimeData>,
+    dayChecked: String,
+    index: Int,
+    currentYer: String,
+    currentMonth: Int,
+    listState: LazyListState,
+    indexScroll: (Int) -> Unit,
+    dayCheckedNumber: (String) -> Unit,
+    routineUpdateDialog: (Routine) -> Unit,
+    routineDeleteDialog: (Routine) -> Unit
+) {
+    when (routines) {
+        is Resource.Loading -> {
+
+        }
+
+        is Resource.Success -> {
+            routines.data?.let {
+                if (it.isEmpty()) {
+                    EmptyRoutine(padding)
+                } else {
+                    SetItemsRoutine(monthDay,
+                        it,
+                        dayChecked,
+                        currentMonth = currentMonth.calculateMonthName(),
+                        currentYer = currentYer,
+                        listState = listState,
+                        index = index,
+                        dayCheckedNumber = {
+                            dayCheckedNumber(it)
+                        },
+                        checkedRoutine = {
+                            routineUpdateDialog(it)
+                        },
+                        updateRoutine = {
+                            routineUpdateDialog(it)
+                        },
+                        deleteRoutine = {
+                            routineDeleteDialog(it)
+                        },
+                        indexScroll = {
+                            indexScroll(it)
+                        })
+                }
+            }
+        }
+
+        is Resource.Error -> {
+
+        }
+    }
+}
+
+@Composable
+fun SetItemsRoutine(
+    monthDay: List<TimeData>,
+    routines: List<Routine>,
+    dayChecked: String,
+    currentMonth: String,
+    currentYer: String,
+    listState: LazyListState,
+    index: Int,
+    dayCheckedNumber: (String) -> Unit,
+    checkedRoutine: (Routine) -> Unit,
+    updateRoutine: (Routine) -> Unit,
+    deleteRoutine: (Routine) -> Unit,
+    indexScroll: (Int) -> Unit
+) {
+    Column(
+        modifier = Modifier.padding(top = 25.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        ItemTimeDate(
+            monthDay,
+            dayChecked,
+            currentMonth,
+            currentYer,
+            listState,
+            index,
+            dayCheckedNumber,
+            indexScroll
+        )
+        ItemsRoutine(routines, checkedRoutine, updateRoutine, deleteRoutine)
+    }
+}
+
+@Composable
 private fun EmptyRoutine(paddingValues: PaddingValues) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -191,105 +254,106 @@ private fun EmptyRoutine(paddingValues: PaddingValues) {
 }
 
 @Composable
-private fun ItemsRoutine(
+private fun ItemTimeDate(
     monthDay: List<TimeData>,
-    routines: List<Routine>,
     dayChecked: String,
     currentMonth: String,
     currentYer: String,
     listState: LazyListState,
     index: Int,
     dayCheckedNumber: (String) -> Unit,
+    indexScroll: (Int) -> Unit
+) {
+    Text(text = "$currentYer $currentMonth")
+    Row(modifier = Modifier.padding(end = 18.dp, top = 16.dp)) {
+        Text(
+            modifier = Modifier.padding(start = 0.dp),
+            fontSize = 10.sp,
+            text = WeekName.FRIDAY.nameDay
+        )
+        Text(
+            modifier = Modifier.padding(start = 15.dp),
+            fontSize = 10.sp,
+            text = WeekName.THURSDAY.nameDay
+        )
+        Text(
+            modifier = Modifier.padding(start = 15.dp),
+            fontSize = 10.sp,
+            text = WeekName.WEDNESDAY.nameDay
+        )
+        Text(
+            modifier = Modifier.padding(start = 12.dp),
+            fontSize = 10.sp,
+            text = WeekName.TUESDAY.nameDay
+        )
+        Text(
+            modifier = Modifier.padding(start = 12.dp),
+            fontSize = 10.sp,
+            text = WeekName.MONDAY.nameDay
+        )
+        Text(
+            modifier = Modifier.padding(start = 12.dp),
+            fontSize = 10.sp,
+            text = WeekName.SUNDAY.nameDay
+        )
+        Text(
+            modifier = Modifier.padding(start = 14.dp),
+            fontSize = 10.sp,
+            text = WeekName.SATURDAY.nameDay
+        )
+    }
+    Row() {
+        IconButton(modifier = Modifier.padding(top = 10.dp), onClick = {
+            indexScroll(if (index <= 6) 0 else index - 7)
+        }) {
+            Icon(
+                painterResource(id = R.drawable.less_then),
+                contentDescription = "less then sign"
+            )
+        }
+        LazyRow(
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 9.dp, top = 6.dp), state = listState
+        ) {
+            items(items = monthDay, itemContent = {
+                DayItems(it, dayChecked, dayCheckedNumber = { dayCheckedNumber(it) })
+            })
+        }
+        IconButton(modifier = Modifier.padding(top = 10.dp, start = 10.dp), onClick = {
+            indexScroll(if (monthDay.size == index + 7) monthDay.size - 1 else index + 7)
+        }) {
+            Icon(
+                painterResource(id = R.drawable.greater_then),
+                contentDescription = "greater then sign"
+            )
+        }
+    }
+}
+
+@Composable
+private fun ItemsRoutine(
+    routines: List<Routine>,
     checkedRoutine: (Routine) -> Unit,
     updateRoutine: (Routine) -> Unit,
     deleteRoutine: (Routine) -> Unit,
-    indexScroll: (Int) -> Unit
 ) {
-    Column(
-        modifier = Modifier.padding(top = 25.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(end = 16.dp, start = 16.dp),
+        contentPadding = PaddingValues(top = 8.dp)
     ) {
-        Text(text = "$currentYer $currentMonth")
-        Row(modifier = Modifier.padding(end = 18.dp, top = 16.dp)) {
-            Text(
-                modifier = Modifier.padding(start = 0.dp),
-                fontSize = 10.sp,
-                text = WeekName.FRIDAY.nameDay
-            )
-            Text(
-                modifier = Modifier.padding(start = 15.dp),
-                fontSize = 10.sp,
-                text = WeekName.THURSDAY.nameDay
-            )
-            Text(
-                modifier = Modifier.padding(start = 15.dp),
-                fontSize = 10.sp,
-                text = WeekName.WEDNESDAY.nameDay
-            )
-            Text(
-                modifier = Modifier.padding(start = 12.dp),
-                fontSize = 10.sp,
-                text = WeekName.TUESDAY.nameDay
-            )
-            Text(
-                modifier = Modifier.padding(start = 12.dp),
-                fontSize = 10.sp,
-                text = WeekName.MONDAY.nameDay
-            )
-            Text(
-                modifier = Modifier.padding(start = 12.dp),
-                fontSize = 10.sp,
-                text = WeekName.SUNDAY.nameDay
-            )
-            Text(
-                modifier = Modifier.padding(start = 14.dp),
-                fontSize = 10.sp,
-                text = WeekName.SATURDAY.nameDay
-            )
-        }
-        Row() {
-            IconButton(modifier = Modifier.padding(top = 10.dp), onClick = {
-                indexScroll(if (index <= 6) 0 else index - 7)
-            }) {
-                Icon(
-                    painterResource(id = R.drawable.less_then),
-                    contentDescription = "less then sign"
-                )
-            }
-            LazyRow(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 9.dp, top = 6.dp), state = listState
-            ) {
-                items(items = monthDay, itemContent = {
-                    DayItems(it, dayChecked, dayCheckedNumber = { dayCheckedNumber(it) })
-                })
-            }
-            IconButton(modifier = Modifier.padding(top = 10.dp, start = 10.dp), onClick = {
-                indexScroll(if (monthDay.size == index + 7) monthDay.size - 1 else index + 7)
-            }) {
-                Icon(
-                    painterResource(id = R.drawable.greater_then),
-                    contentDescription = "greater then sign"
-                )
-            }
-        }
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = 16.dp, start = 16.dp),
-            contentPadding = PaddingValues(top = 8.dp)
-        ) {
-            items(items = routines, itemContent = {
-                ItemRoutine(routine = it, onChecked = {
-                    checkedRoutine(it)
-                }, openDialogDelete = {
-                    deleteRoutine(it)
-                }, openDialogEdit = {
-                    updateRoutine(it)
-                })
+        items(items = routines, itemContent = {
+            ItemRoutine(routine = it, onChecked = {
+                checkedRoutine(it)
+            }, openDialogDelete = {
+                deleteRoutine(it)
+            }, openDialogEdit = {
+                updateRoutine(it)
             })
-        }
+        })
     }
 }
 
@@ -339,14 +403,5 @@ fun checkToday(timeData: List<TimeData>, dayChecked: (String) -> Unit) {
         if (it.isToday) {
             dayChecked(it.dayNumber.toString())
         }
-    }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFFFFFF, device = Devices.PIXEL_4)
-@Composable
-fun RoutineScreenPreview() {
-    YadinoTheme() {
-        val viewModel = hiltViewModel<RoutineViewModel>()
-
     }
 }

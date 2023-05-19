@@ -43,6 +43,9 @@ class DataTimeRepositoryImpl @Inject constructor(
         if (times.isEmpty())
             return
 
+        if (today == null)
+            return
+
         if (checkDayIsToday(today.yerNumber, today.monthNumber, today.dayNumber))
             return
 
