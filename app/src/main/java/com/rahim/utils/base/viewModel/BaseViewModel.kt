@@ -10,7 +10,7 @@ import javax.inject.Inject
 open class BaseViewModel @Inject constructor(
     private val sharedPreferencesRepository: SharedPreferencesRepository,
     private val baseRepository: BaseRepository
-    ) :
+) :
     ViewModel() {
     val errorGetProses = "مشکلی در دریافت اطلاعات پیش امده است! لطفا دوباره امتحان کنید"
     val errorSaveProses = "مشکلی در ثبت اطلاعات پیش امده است! لطفا دوباره امتحان کنید"

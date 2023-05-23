@@ -23,6 +23,11 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -66,7 +71,7 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.compose.material3:material3:$material3"
-    implementation "androidx.compose.material:material:$material"
+//    implementation "androidx.compose.material:material:$material"
     testImplementation "junit:junit:$junit"
     androidTestImplementation "androidx.test.ext:junit:$junit_test"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
@@ -126,6 +131,9 @@ dependencies {
     implementation "me.saket.swipe:swipe:$swipe"
 
     //pager
-    implementation "com.google.accompanist:accompanist-pager:0.25.1"
-    implementation "com.google.accompanist:accompanist-pager-indicators:0.19.0"
+    implementation "com.google.accompanist:accompanist-pager:$accompanist_pager"
+    implementation "com.google.accompanist:accompanist-pager-indicators:$accompanist_pager_indicators"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+
 }

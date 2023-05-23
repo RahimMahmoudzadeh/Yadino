@@ -17,6 +17,5 @@ import com.rahim.data.modle.note.NoteModel
 abstract class AppDatabase : RoomDatabase() {
     abstract fun routineDao(): RoutineDao
     abstract fun timeDataDao(): TimeDao
-
     abstract fun noteDao(): NoteDao
 }

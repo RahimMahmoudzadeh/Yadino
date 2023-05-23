@@ -59,7 +59,7 @@ fun RoutineScreen(
     val currentMonth = viewModel.getCurrentTime()[1]
     val currentDay = viewModel.getCurrentTime()[2]
 
-    val routines by viewModel.getRoutines(currentMonth, currentDay, currentYer)
+    val routines by viewModel.flowRoutines
         .collectAsStateWithLifecycle(initialValue = Resource.Success(emptyList()))
     val monthDay by viewModel.getCurrentMonthDay(currentMonth, currentYer)
         .collectAsStateWithLifecycle(initialValue = emptyList())
@@ -87,26 +87,38 @@ fun RoutineScreen(
                 }
             }
         }
-        GetRoutines(
-            padding,
-            routines,
-            monthDay,
-            dayChecked,
-            index = index,
-            currentYer = currentYer.toString(),
-            currentMonth = currentMonth,
-            listState = listState,
-            indexScroll = {
-                coroutineScope.launch {
-                    listState.animateScrollToItem(it)
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+
+            ) {
+
+            ItemTimeDate(
+                monthDay,
+                dayChecked,
+                currentMonth.calculateMonthName(),
+                currentYer.toString(),
+                listState,
+                index,
+                dayCheckedNumber = {
+                    dayChecked = it
+                    viewModel.getRoutines(currentMonth, it.toInt(), currentYer)
+                },
+                indexScroll = {
                     index = it
                 }
-            }, dayCheckedNumber = { dayChecked = it },
-            routineUpdateDialog = { routineUpdateDialog.value = it },
-            routineDeleteDialog = { routineDeleteDialog.value = it })
+            )
+            GetRoutines(
+                routines,
+                routineUpdateDialog = { routineUpdateDialog.value = it },
+                routineChecked = { viewModel.updateRoutine(it) },
+                routineDeleteDialog = { routineDeleteDialog.value = it })
+        }
     }
     routineDeleteDialog.value?.let { routineFromDialog ->
-        DialogDelete(isOpen = routineDeleteDialog.value != null, openDialog = {
+        DialogDelete(isOpen = true, openDialog = {
             routineDeleteDialog.value = null
             if (it) {
                 viewModel.deleteRoutine(routineFromDialog)
@@ -128,8 +140,9 @@ fun RoutineScreen(
             } else {
                 viewModel.addRoutine(it)
             }
+            viewModel.getRoutines(it.monthNumber ?: 0, it.dayNumber ?: 0, it.yerNumber ?: 0)
         },
-        currentNumberDay = currentDay,
+        currentNumberDay = dayChecked.toInt(),
         currentNumberMonth = currentMonth,
         currentNumberYer = currentYer
     )
@@ -137,120 +150,65 @@ fun RoutineScreen(
 
 @Composable
 fun GetRoutines(
-    padding: PaddingValues,
     routines: Resource<List<Routine>>,
-    monthDay: List<TimeData>,
-    dayChecked: String,
-    index: Int,
-    currentYer: String,
-    currentMonth: Int,
-    listState: LazyListState,
-    indexScroll: (Int) -> Unit,
-    dayCheckedNumber: (String) -> Unit,
     routineUpdateDialog: (Routine) -> Unit,
+    routineChecked: (Routine) -> Unit,
     routineDeleteDialog: (Routine) -> Unit
 ) {
     when (routines) {
-        is Resource.Loading -> {
-
-        }
-
+        is Resource.Loading -> {}
         is Resource.Success -> {
             routines.data?.let {
                 if (it.isEmpty()) {
-                    EmptyRoutine(padding)
+                    EmptyRoutine()
                 } else {
-                    SetItemsRoutine(monthDay,
+                    SetItemsRoutine(
                         it,
-                        dayChecked,
-                        currentMonth = currentMonth.calculateMonthName(),
-                        currentYer = currentYer,
-                        listState = listState,
-                        index = index,
-                        dayCheckedNumber = {
-                            dayCheckedNumber(it)
-                        },
                         checkedRoutine = {
-                            routineUpdateDialog(it)
+                            routineChecked(it)
                         },
                         updateRoutine = {
                             routineUpdateDialog(it)
                         },
                         deleteRoutine = {
                             routineDeleteDialog(it)
-                        },
-                        indexScroll = {
-                            indexScroll(it)
                         })
                 }
             }
         }
 
-        is Resource.Error -> {
-
-        }
+        is Resource.Error -> {}
     }
 }
 
 @Composable
 fun SetItemsRoutine(
-    monthDay: List<TimeData>,
     routines: List<Routine>,
-    dayChecked: String,
-    currentMonth: String,
-    currentYer: String,
-    listState: LazyListState,
-    index: Int,
-    dayCheckedNumber: (String) -> Unit,
     checkedRoutine: (Routine) -> Unit,
     updateRoutine: (Routine) -> Unit,
     deleteRoutine: (Routine) -> Unit,
-    indexScroll: (Int) -> Unit
 ) {
-    Column(
-        modifier = Modifier.padding(top = 25.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        ItemTimeDate(
-            monthDay,
-            dayChecked,
-            currentMonth,
-            currentYer,
-            listState,
-            index,
-            dayCheckedNumber,
-            indexScroll
-        )
-        ItemsRoutine(routines, checkedRoutine, updateRoutine, deleteRoutine)
-    }
+    ItemsRoutine(routines, checkedRoutine, updateRoutine, deleteRoutine)
 }
 
 @Composable
-private fun EmptyRoutine(paddingValues: PaddingValues) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+private fun EmptyRoutine() {
+    Image(
         modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxSize()
-    ) {
-
-        Image(
-            modifier = Modifier
-                .sizeIn(minHeight = 320.dp)
-                .fillMaxWidth(),
-            painter = painterResource(id = R.drawable.routine_empty),
-            contentDescription = "empty list home"
-        )
-        Text(
-            text = stringResource(id = R.string.not_routine),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 26.dp),
-            textAlign = TextAlign.Center,
-            fontSize = 18.sp
-        )
-    }
+            .padding(top = 40.dp)
+            .sizeIn(minHeight = 320.dp)
+            .fillMaxWidth(),
+        painter = painterResource(id = R.drawable.routine_empty),
+        contentDescription = "empty list home"
+    )
+    Text(
+        text = stringResource(id = R.string.not_routine),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 26.dp),
+        textAlign = TextAlign.Center,
+        fontSize = 18.sp
+    )
 }
 
 @Composable
@@ -264,7 +222,7 @@ private fun ItemTimeDate(
     dayCheckedNumber: (String) -> Unit,
     indexScroll: (Int) -> Unit
 ) {
-    Text(text = "$currentYer $currentMonth")
+    Text(modifier = Modifier.padding(top = 28.dp), text = "$currentYer $currentMonth")
     Row(modifier = Modifier.padding(end = 18.dp, top = 16.dp)) {
         Text(
             modifier = Modifier.padding(start = 0.dp),

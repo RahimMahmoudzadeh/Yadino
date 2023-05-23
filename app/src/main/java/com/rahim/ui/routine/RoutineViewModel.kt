@@ -11,6 +11,8 @@ import com.rahim.utils.base.viewModel.BaseViewModel
 import com.rahim.utils.resours.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
@@ -26,18 +28,31 @@ class RoutineViewModel @Inject constructor(
     sharedPreferencesRepository: SharedPreferencesRepository
 ) :
     BaseViewModel(sharedPreferencesRepository, baseRepository) {
+    val currentYer = getCurrentTime()[0]
+    val currentMonth = getCurrentTime()[1]
+    val currentDay = getCurrentTime()[2]
+
+    private val _flowRoutines =
+        MutableStateFlow<Resource<List<Routine>>>(Resource.Success(emptyList()))
+    val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
+
+    init {
+        getRoutines(currentMonth, currentDay, currentYer)
+    }
+
     fun getRoutines(
         monthNumber: Int,
         numberDay: Int,
         yerNumber: Int
-    ): Flow<Resource<List<Routine>>> = flow {
-        emit(Resource.Loading())
-        routineRepository.getRoutine(monthNumber, numberDay, yerNumber).catch {
-            emit(Resource.Error(errorGetProses))
-        }.collect {
-            emit(Resource.Success(it))
+    ) {
+        viewModelScope.launch {
+            _flowRoutines.value = Resource.Loading()
+            routineRepository.getRoutine(monthNumber, numberDay, yerNumber).catch {
+                _flowRoutines.value = Resource.Error(errorGetProses)
+            }.collect {
+                _flowRoutines.value = Resource.Success(it)
+            }
         }
-
     }
 
     fun deleteRoutine(routine: Routine) {

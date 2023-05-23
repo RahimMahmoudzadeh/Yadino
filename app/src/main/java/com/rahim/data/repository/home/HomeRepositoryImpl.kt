@@ -12,8 +12,4 @@ class HomeRepositoryImpl @Inject constructor(val appDatabase: AppDatabase) : Hom
     private val currentTimeMonth = persianData.shMonth
     private val currentTimeYer = persianData.shYear
 
-
-    override suspend fun getCurrentRoutines(): Flow<List<Routine>> {
-        return appDatabase.routineDao().getRoutines(currentTimeMonth,currentTimeDay,currentTimeYer)
-    }
 }

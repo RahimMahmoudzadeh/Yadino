@@ -27,7 +27,7 @@ class HomeViewModel @Inject constructor(
 
     fun getCurrentRoutines(): Flow<Resource<List<Routine>>> = flow {
         emit(Resource.Loading())
-        homeRepository.getCurrentRoutines().catch {
+        routineRepository.getCurrentRoutines().catch {
             emit(Resource.Error(errorGetProses))
         }.collect {
             emit(Resource.Success(it))
