@@ -55,9 +55,8 @@ fun RoutineScreen(
     onClickAdd: Boolean,
     isOpenDialog: (Boolean) -> Unit
 ) {
-    val currentYer = viewModel.getCurrentTime()[0]
-    val currentMonth = viewModel.getCurrentTime()[1]
-    val currentDay = viewModel.getCurrentTime()[2]
+    val currentYer = viewModel.currentYer
+    val currentMonth = viewModel.currentMonth
 
     val routines by viewModel.flowRoutines
         .collectAsStateWithLifecycle(initialValue = Resource.Success(emptyList()))

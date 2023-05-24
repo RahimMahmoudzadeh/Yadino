@@ -135,5 +135,6 @@ dependencies {
     implementation "com.google.accompanist:accompanist-pager-indicators:$accompanist_pager_indicators"
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+    implementation "io.github.farimarwat:anrspy:1.3"
 
 }

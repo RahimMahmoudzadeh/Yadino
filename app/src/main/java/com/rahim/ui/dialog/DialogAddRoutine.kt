@@ -63,7 +63,7 @@ fun DialogAddRoutine(
     routine: (Routine) -> Unit,
 ) {
     var routineName by rememberSaveable { mutableStateOf("") }
-    var routineExplanation by rememberSaveable { mutableStateOf<String?>(null) }
+    var routineExplanation by rememberSaveable { mutableStateOf("") }
     var dayChecked by rememberSaveable { mutableStateOf(firstDay) }
     val checkedStateAllDay = remember { mutableStateOf(false) }
     val isErrorName = remember { mutableStateOf(false) }
@@ -95,7 +95,7 @@ fun DialogAddRoutine(
                 .padding(horizontal = 22.dp)
                 .border(
                     1.dp,
-                    brush = Brush.verticalGradient(com.rahim.utils.base.view.gradientColors),
+                    brush = Brush.verticalGradient(gradientColors),
                     shape = RoundedCornerShape(8.dp)
                 ), onDismissRequest = {
                 openDialog(false)
@@ -116,16 +116,17 @@ fun DialogAddRoutine(
                             textAlign = TextAlign.Center,
                             style = TextStyle(brush = Brush.verticalGradient(gradientColors))
                         )
-                        TextField(modifier = Modifier
-                            .background(Color.White)
-                            .fillMaxWidth()
-                            .padding(top = 18.dp)
-                            .height(52.dp)
-                            .border(
-                                width = 1.dp,
-                                brush = Brush.verticalGradient(gradientColors),
-                                shape = RoundedCornerShape(4.dp)
-                            ),
+                        TextField(
+                            modifier = Modifier
+                                .background(Color.White)
+                                .fillMaxWidth()
+                                .padding(top = 18.dp)
+                                .height(52.dp)
+                                .border(
+                                    width = 1.dp,
+                                    brush = Brush.verticalGradient(gradientColors),
+                                    shape = RoundedCornerShape(4.dp)
+                                ),
                             value = routineName,
                             onValueChange = {
                                 isErrorName.value = it.length > 22
@@ -159,7 +160,7 @@ fun DialogAddRoutine(
                                     brush = Brush.verticalGradient(gradientColors),
                                     shape = RoundedCornerShape(4.dp)
                                 ),
-                            value = if (routineExplanation.isNullOrEmpty()) "" else routineExplanation.toString(),
+                            value = if (routineExplanation.isNullOrEmpty()) "" else routineExplanation,
                             onValueChange = {
                                 isErrorRoutine.value = it.length > 40
                                 routineExplanation = it
@@ -306,13 +307,13 @@ fun DialogAddRoutine(
                                     } else {
                                         routine(routineUpdate?.apply {
                                             name = routineName
-                                            dayChecked = calculateDayCode(dayChecked)
+                                            dayChecked = dayChecked
                                             timeHours = time.value
                                             explanation = routineExplanation
                                         } ?: Routine(
                                             routineName,
                                             null,
-                                            calculateDayCode(dayChecked),
+                                            dayChecked,
                                             currentNumberDay,
                                             currentNumberMonth,
                                             currentNumberYer,
@@ -320,12 +321,14 @@ fun DialogAddRoutine(
                                             explanation = routineExplanation
                                         ))
                                         routineName = ""
+                                        routineExplanation = ""
                                         openDialog(false)
                                     }
                                 })
                             Spacer(modifier = Modifier.width(10.dp))
                             TextButton(onClick = {
                                 routineName = ""
+                                routineExplanation = ""
                                 time.value = "12:00"
                                 openDialog(false)
                             }) {
@@ -347,44 +350,7 @@ fun DialogAddRoutine(
     }
 
     ShowTimePicker(alarmDialogState) {
-        time.value = it.hour.toString()+":"+it.minute
-    }
-}
-
-
-fun calculateDayCode(dayChecked: String): String {
-    return when (dayChecked) {
-        WeekName.SATURDAY.nameDay -> {
-            WeekName.SATURDAY.nameDay
-        }
-
-        WeekName.SUNDAY.nameDay -> {
-            WeekName.SUNDAY.nameDay
-        }
-
-        WeekName.MONDAY.nameDay -> {
-            WeekName.MONDAY.nameDay
-        }
-
-        WeekName.TUESDAY.nameDay -> {
-            WeekName.TUESDAY.nameDay
-        }
-
-        WeekName.WEDNESDAY.nameDay -> {
-            WeekName.WEDNESDAY.nameDay
-        }
-
-        WeekName.THURSDAY.nameDay -> {
-            WeekName.THURSDAY.nameDay
-        }
-
-        WeekName.FRIDAY.nameDay -> {
-            WeekName.FRIDAY.nameDay
-        }
-
-        else -> {
-            ""
-        }
+        time.value = it.hour.toString() + ":" + it.minute
     }
 }
 
@@ -418,7 +384,7 @@ fun ShowTimePicker(dialogState: MaterialDialogState, time: (LocalTime) -> Unit) 
             ),
             title = stringResource(id = R.string.time),
             timeRange = LocalTime.MIDNIGHT..LocalTime.MAX,
-            is24HourClock=true
+            is24HourClock = true
         ) { time ->
             time(time)
         }
