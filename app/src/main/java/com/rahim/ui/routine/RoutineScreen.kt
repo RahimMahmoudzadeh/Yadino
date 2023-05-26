@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -268,15 +270,18 @@ private fun ItemTimeDate(
                 contentDescription = "less then sign"
             )
         }
-        LazyRow(
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 9.dp, top = 6.dp), state = listState
-        ) {
-            items(items = monthDay, itemContent = {
-                DayItems(it, dayChecked, dayCheckedNumber = { dayCheckedNumber(it) })
-            })
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+            LazyRow(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 9.dp, top = 6.dp), state = listState
+            ) {
+                items(items = monthDay, itemContent = {
+                    DayItems(it, dayChecked, dayCheckedNumber = { dayCheckedNumber(it) })
+                })
+            }
         }
+
         IconButton(modifier = Modifier.padding(top = 10.dp, start = 10.dp), onClick = {
             indexScroll(if (monthDay.size == index + 7) monthDay.size - 1 else index + 7)
         }) {

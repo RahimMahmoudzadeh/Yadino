@@ -7,9 +7,13 @@ import com.rahim.data.modle.data.TimeData
 import com.rahim.utils.enums.WeekName
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import saman.zamani.persiandate.PersianDate
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 class DataTimeRepositoryImpl @Inject constructor(
@@ -82,8 +86,81 @@ class DataTimeRepositoryImpl @Inject constructor(
     override suspend fun getCurrentMonthDay(
         monthNumber: Int,
         yerNumber: Int?
-    ): Flow<List<TimeData>> =
-        appDatabase.timeDataDao().getSpecificMonthFromYer(monthNumber, yerNumber)
+    ): Flow<List<TimeData>> = flow {
+        appDatabase.timeDataDao().getSpecificMonthFromYer(monthNumber, yerNumber).catch {}.collect {
+            val space = calculateDaySpace(it[0].nameDay)
+            val list = ArrayList<TimeData>()
+            list.addAll(space)
+            list.addAll(it)
+            emit(list)
+        }
+    }
+
+    private fun calculateDaySpace(nameDay: String): List<TimeData> {
+        return when (nameDay) {
+            "ش" -> {
+                listOf(
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null)
+                )
+            }
+
+            "ی" -> {
+                listOf(
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                )
+            }
+
+            "د" -> {
+                listOf(
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                )
+            }
+
+            "س" -> {
+                listOf(
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                )
+            }
+
+            "چ" -> {
+                listOf(
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                )
+            }
+
+            "پ" -> {
+                listOf(
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                )
+            }
+
+            "ج" -> {
+                listOf()
+            }
+
+            else -> {
+                listOf(
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                )
+            }
+        }
+    }
+
 
     private suspend fun calculateDate(): List<TimeData> {
         return withContext(defaultDispatcher) {

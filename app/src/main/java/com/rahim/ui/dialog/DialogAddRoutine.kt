@@ -70,6 +70,8 @@ fun DialogAddRoutine(
     val isErrorRoutine = remember { mutableStateOf(false) }
     val time = rememberSaveable { mutableStateOf("12:00") }
 
+    val timeCurrent = rememberSaveable { mutableListOf("") }
+
     if (routineUpdate != null) {
         routineName = routineUpdate.name
         time.value = routineUpdate.timeHours.toString()
@@ -77,7 +79,6 @@ fun DialogAddRoutine(
             routineExplanation = it
         }
     }
-
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
     val dayWeekSmale = listOf(
         stringResource(id = R.string.sunday),
