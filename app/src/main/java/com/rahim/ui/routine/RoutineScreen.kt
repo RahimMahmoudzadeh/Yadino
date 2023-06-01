@@ -28,12 +28,9 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
@@ -60,8 +57,11 @@ fun RoutineScreen(
     val currentYer = viewModel.currentYer
     val currentMonth = viewModel.currentMonth
 
-    val routines by viewModel.flowRoutines
-        .collectAsStateWithLifecycle(initialValue = Resource.Success(emptyList()))
+    val routines by viewModel.flowRoutines.collectAsStateWithLifecycle(
+        initialValue = Resource.Success(
+            emptyList()
+        )
+    )
     val monthDay by viewModel.getCurrentMonthDay(currentMonth, currentYer)
         .collectAsStateWithLifecycle(initialValue = emptyList())
 
@@ -82,7 +82,7 @@ fun RoutineScreen(
         checkToday(monthDay) {
             if (dayChecked == "0") {
                 dayChecked = it
-                index = it.toInt()
+                index += calculateIndex(it, index)
                 coroutineScope.launch {
                     listState.animateScrollToItem(index)
                 }
@@ -96,8 +96,7 @@ fun RoutineScreen(
 
             ) {
 
-            ItemTimeDate(
-                monthDay,
+            ItemTimeDate(monthDay,
                 dayChecked,
                 currentMonth.calculateMonthName(),
                 currentYer.toString(),
@@ -108,11 +107,14 @@ fun RoutineScreen(
                     viewModel.getRoutines(currentMonth, it.toInt(), currentYer)
                 },
                 indexScroll = {
-                    index = it
-                }
-            )
-            GetRoutines(
-                routines,
+                    if (it != monthDay.size) {
+                        index = it
+                        coroutineScope.launch {
+                            listState.animateScrollToItem(index)
+                        }
+                    }
+                })
+            GetRoutines(routines,
                 routineUpdateDialog = { routineUpdateDialog.value = it },
                 routineChecked = { viewModel.updateRoutine(it) },
                 routineDeleteDialog = { routineDeleteDialog.value = it })
@@ -149,6 +151,19 @@ fun RoutineScreen(
     )
 }
 
+fun calculateIndex(currentDay: String, index: Int): Int {
+    var currentIndex=index
+
+    while (true) {
+        currentIndex+=7
+        if (currentIndex >= currentDay.toInt() || currentIndex <= currentDay.toInt())
+        {
+            break
+        }
+    }
+    return currentIndex
+}
+
 @Composable
 fun GetRoutines(
     routines: Resource<List<Routine>>,
@@ -163,22 +178,19 @@ fun GetRoutines(
                 if (it.isEmpty()) {
                     EmptyRoutine()
                 } else {
-                    SetItemsRoutine(
-                        it,
-                        checkedRoutine = {
-                            routineChecked(it)
-                        },
-                        updateRoutine = {
-                            routineUpdateDialog(it)
-                        },
-                        deleteRoutine = {
-                            routineDeleteDialog(it)
-                        })
+                    SetItemsRoutine(it, checkedRoutine = {
+                        routineChecked(it)
+                    }, updateRoutine = {
+                        routineUpdateDialog(it)
+                    }, deleteRoutine = {
+                        routineDeleteDialog(it)
+                    })
                 }
             }
         }
 
         is Resource.Error -> {}
+        else -> {}
     }
 }
 
@@ -224,66 +236,77 @@ private fun ItemTimeDate(
     indexScroll: (Int) -> Unit
 ) {
     Text(modifier = Modifier.padding(top = 28.dp), text = "$currentYer $currentMonth")
-    Row(modifier = Modifier.padding(end = 18.dp, top = 16.dp)) {
+    Row(modifier = Modifier.padding(top = 16.dp)) {
         Text(
-            modifier = Modifier.padding(start = 0.dp),
+            modifier = Modifier.padding(end = 4.dp),
             fontSize = 10.sp,
             text = WeekName.FRIDAY.nameDay
         )
         Text(
-            modifier = Modifier.padding(start = 15.dp),
+            modifier = Modifier.padding(start = 8.dp, end = 0.dp),
             fontSize = 10.sp,
             text = WeekName.THURSDAY.nameDay
         )
         Text(
-            modifier = Modifier.padding(start = 15.dp),
+            modifier = Modifier.padding(start = 16.dp, end = 4.dp),
             fontSize = 10.sp,
             text = WeekName.WEDNESDAY.nameDay
         )
         Text(
-            modifier = Modifier.padding(start = 12.dp),
+            modifier = Modifier.padding(start = 10.dp, end = 4.dp),
             fontSize = 10.sp,
             text = WeekName.TUESDAY.nameDay
         )
         Text(
-            modifier = Modifier.padding(start = 12.dp),
+            modifier = Modifier.padding(start = 10.dp, end = 4.dp),
             fontSize = 10.sp,
             text = WeekName.MONDAY.nameDay
         )
         Text(
-            modifier = Modifier.padding(start = 12.dp),
+            modifier = Modifier.padding(start = 12.dp, end = 4.dp),
             fontSize = 10.sp,
             text = WeekName.SUNDAY.nameDay
         )
         Text(
-            modifier = Modifier.padding(start = 14.dp),
+            modifier = Modifier.padding(start = 14.dp, end = 0.dp),
             fontSize = 10.sp,
             text = WeekName.SATURDAY.nameDay
         )
     }
     Row() {
         IconButton(modifier = Modifier.padding(top = 10.dp), onClick = {
-            indexScroll(if (index <= 6) 0 else index - 7)
+            indexScroll(
+                if (monthDay.size <= index + 7) {
+                    monthDay.size
+                } else {
+                    index + 7
+                }
+            )
         }) {
             Icon(
-                painterResource(id = R.drawable.less_then),
-                contentDescription = "less then sign"
+                painterResource(id = R.drawable.less_then), contentDescription = "less then sign"
             )
         }
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+
             LazyRow(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 9.dp, top = 6.dp), state = listState
+                    .padding(start = 0.dp, top = 6.dp), state = listState
             ) {
                 items(items = monthDay, itemContent = {
                     DayItems(it, dayChecked, dayCheckedNumber = { dayCheckedNumber(it) })
                 })
             }
         }
-
         IconButton(modifier = Modifier.padding(top = 10.dp, start = 10.dp), onClick = {
-            indexScroll(if (monthDay.size == index + 7) monthDay.size - 1 else index + 7)
+            indexScroll(
+                if (index <= 6) {
+                    0
+                } else {
+                    index - 7
+                }
+            )
         }) {
             Icon(
                 painterResource(id = R.drawable.greater_then),
@@ -349,7 +372,7 @@ fun DayItems(
                 top = 4.dp, start = if (dayChecked.length == 1) 11.dp else 6.dp
             ),
             onClick = { dayCheckedNumber(timeData.dayNumber.toString()) },
-            text = AnnotatedString(timeData.dayNumber.toString()),
+            text = AnnotatedString(if (timeData.dayNumber != 0) timeData.dayNumber.toString() else ""),
             style = TextStyle(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,

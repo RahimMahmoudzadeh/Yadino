@@ -70,7 +70,6 @@ fun DialogAddRoutine(
     val isErrorRoutine = remember { mutableStateOf(false) }
     val time = rememberSaveable { mutableStateOf("12:00") }
 
-    val timeCurrent = rememberSaveable { mutableListOf("") }
 
     if (routineUpdate != null) {
         routineName = routineUpdate.name

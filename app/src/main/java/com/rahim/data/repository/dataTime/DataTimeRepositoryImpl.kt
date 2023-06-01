@@ -8,10 +8,8 @@ import com.rahim.utils.enums.WeekName
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import saman.zamani.persiandate.PersianDate
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -88,15 +86,81 @@ class DataTimeRepositoryImpl @Inject constructor(
         yerNumber: Int?
     ): Flow<List<TimeData>> = flow {
         appDatabase.timeDataDao().getSpecificMonthFromYer(monthNumber, yerNumber).catch {}.collect {
-            val space = calculateDaySpace(it[0].nameDay)
+            val spaceStart = calculateDaySpaceStartMonth(it[0].nameDay)
+            val spaceEnd = calculateDaySpaceEndMonth(it[it.size-1].nameDay)
             val list = ArrayList<TimeData>()
-            list.addAll(space)
+            list.addAll(spaceStart)
             list.addAll(it)
+            list.addAll(spaceEnd)
             emit(list)
         }
     }
 
-    private fun calculateDaySpace(nameDay: String): List<TimeData> {
+    private fun calculateDaySpaceStartMonth(nameDay: String): List<TimeData> {
+        return when (nameDay) {
+            "ج" -> {
+                listOf(
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null)
+                )
+            }
+
+            "پ" -> {
+                listOf(
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                )
+            }
+
+            "چ" -> {
+                listOf(
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                )
+            }
+
+            "س" -> {
+                listOf(
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                )
+            }
+
+            "د" -> {
+                listOf(
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                )
+            }
+
+            "ی" -> {
+                listOf(
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                )
+            }
+
+            "ش" -> {
+                listOf()
+            }
+
+            else -> {
+                listOf(
+                    TimeData(0, false, false, "", 0, 0, false, null),
+                )
+            }
+        }
+    }
+    private fun calculateDaySpaceEndMonth(nameDay: String): List<TimeData> {
         return when (nameDay) {
             "ش" -> {
                 listOf(
