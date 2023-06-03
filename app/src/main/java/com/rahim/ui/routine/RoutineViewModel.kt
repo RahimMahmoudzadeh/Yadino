@@ -54,7 +54,6 @@ class RoutineViewModel @Inject constructor(
             }
         }
     }
-
     fun deleteRoutine(routine: Routine) {
         viewModelScope.launch {
             routineRepository.removeRoutine(routine)

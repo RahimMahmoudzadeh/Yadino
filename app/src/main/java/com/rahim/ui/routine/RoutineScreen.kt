@@ -1,5 +1,6 @@
 package com.rahim.ui.routine
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,6 +47,9 @@ import com.rahim.utils.base.view.gradientColors
 import com.rahim.utils.enums.WeekName
 import com.rahim.utils.extention.calculateMonthName
 import com.rahim.utils.resours.Resource
+import dev.chrisbanes.snapper.ExperimentalSnapperApi
+import dev.chrisbanes.snapper.rememberLazyListSnapperLayoutInfo
+import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.launch
 
 @Composable
@@ -69,6 +74,7 @@ fun RoutineScreen(
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     var dayChecked by rememberSaveable { mutableStateOf("0") }
     var index by rememberSaveable { mutableStateOf(0) }
+    var previousIndex by rememberSaveable { mutableStateOf(0) }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -113,6 +119,10 @@ fun RoutineScreen(
                             listState.animateScrollToItem(index)
                         }
                     }
+                },
+                indexPrevious = previousIndex,
+                previousIndex = {
+                    previousIndex = it
                 })
             GetRoutines(routines,
                 routineUpdateDialog = { routineUpdateDialog.value = it },
@@ -152,12 +162,11 @@ fun RoutineScreen(
 }
 
 fun calculateIndex(currentDay: String, index: Int): Int {
-    var currentIndex=index
+    var currentIndex = index
 
     while (true) {
-        currentIndex+=7
-        if (currentIndex >= currentDay.toInt() || currentIndex <= currentDay.toInt())
-        {
+        currentIndex += 7
+        if (currentIndex >= currentDay.toInt()) {
             break
         }
     }
@@ -224,6 +233,7 @@ private fun EmptyRoutine() {
     )
 }
 
+@OptIn(ExperimentalSnapperApi::class)
 @Composable
 private fun ItemTimeDate(
     monthDay: List<TimeData>,
@@ -232,9 +242,12 @@ private fun ItemTimeDate(
     currentYer: String,
     listState: LazyListState,
     index: Int,
+    indexPrevious: Int,
     dayCheckedNumber: (String) -> Unit,
-    indexScroll: (Int) -> Unit
+    indexScroll: (Int) -> Unit,
+    previousIndex: (Int) -> Unit
 ) {
+
     Text(modifier = Modifier.padding(top = 28.dp), text = "$currentYer $currentMonth")
     Row(modifier = Modifier.padding(top = 16.dp)) {
         Text(
@@ -273,6 +286,8 @@ private fun ItemTimeDate(
             text = WeekName.SATURDAY.nameDay
         )
     }
+    val GroupSize = 7
+
     Row() {
         IconButton(modifier = Modifier.padding(top = 10.dp), onClick = {
             indexScroll(
@@ -288,11 +303,22 @@ private fun ItemTimeDate(
             )
         }
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-
             LazyRow(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 0.dp, top = 6.dp), state = listState
+                    .padding(top = 6.dp),
+                state = listState,
+                flingBehavior = rememberSnapperFlingBehavior(
+                    lazyListState = listState,
+                    snapIndex = { _, start, targetIndex ->
+                        if (indexPrevious <= start) {
+                            indexScroll(index + 7)
+                        } else {
+                            indexScroll(index - 7)
+                        }
+                        previousIndex(start)
+                        index
+                    }),
             ) {
                 items(items = monthDay, itemContent = {
                     DayItems(it, dayChecked, dayCheckedNumber = { dayCheckedNumber(it) })
@@ -369,7 +395,7 @@ fun DayItems(
     ) {
         ClickableText(
             modifier = Modifier.padding(
-                top = 4.dp, start = if (dayChecked.length == 1) 11.dp else 6.dp
+                top = 4.dp, start = if (dayChecked.length == 1) 11.dp else 7.dp
             ),
             onClick = { dayCheckedNumber(timeData.dayNumber.toString()) },
             text = AnnotatedString(if (timeData.dayNumber != 0) timeData.dayNumber.toString() else ""),
