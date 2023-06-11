@@ -52,7 +52,7 @@ import java.util.*
 @Composable
 fun DialogAddRoutine(
     modifier: Modifier = Modifier,
-    firstDay: String = stringResource(id = R.string.saturday),
+    dayChecked: String,
     isOpen: Boolean,
     isShowDay: Boolean,
     currentNumberDay: Int,
@@ -64,7 +64,7 @@ fun DialogAddRoutine(
 ) {
     var routineName by rememberSaveable { mutableStateOf("") }
     var routineExplanation by rememberSaveable { mutableStateOf("") }
-    var dayChecked by rememberSaveable { mutableStateOf(firstDay) }
+
     val checkedStateAllDay = remember { mutableStateOf(false) }
     val isErrorName = remember { mutableStateOf(false) }
     val isErrorRoutine = remember { mutableStateOf(false) }
@@ -205,20 +205,20 @@ fun DialogAddRoutine(
                                                 )
                                             )
                                     ) {
-                                        ClickableText(
-                                            modifier = Modifier.padding(
-                                                top = 8.dp,
-                                                start = if (dayName in dayWeekSmale) 10.dp else 6.dp
-                                            ),
-                                            onClick = { dayChecked = dayName },
-                                            text = AnnotatedString(dayName),
-                                            style = TextStyle(
-                                                fontSize = 10.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = if (checkedStateAllDay.value || dayChecked == dayName) (Color.White)
-                                                else Color.Black
-                                            )
-                                        )
+//                                        ClickableText(
+//                                            modifier = Modifier.padding(
+//                                                top = 8.dp,
+//                                                start = if (dayName in dayWeekSmale) 10.dp else 6.dp
+//                                            ),
+////                                            onClick = { dayChecked = dayName },
+//                                            text = AnnotatedString(dayName),
+//                                            style = TextStyle(
+//                                                fontSize = 10.sp,
+//                                                fontWeight = FontWeight.Bold,
+//                                                color = if (checkedStateAllDay.value || dayChecked == dayName) (Color.White)
+//                                                else Color.Black
+//                                            )
+//                                        )
                                     }
                                 }
                                 ClickableText(
@@ -307,7 +307,6 @@ fun DialogAddRoutine(
                                     } else {
                                         routine(routineUpdate?.apply {
                                             name = routineName
-                                            dayChecked = dayChecked
                                             timeHours = time.value
                                             explanation = routineExplanation
                                         } ?: Routine(

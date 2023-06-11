@@ -21,4 +21,5 @@ interface RepositoryRoutine {
 
     suspend fun getCurrentRoutines(): Flow<List<Routine>>
 
+    suspend fun getCurrentNameDay(date:String,format:String):String
 }

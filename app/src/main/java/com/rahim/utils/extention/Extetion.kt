@@ -53,3 +53,17 @@ fun Int.calculateMonthName(): String {
         }
     }
 }
+
+fun String.calculateTimeFormat(currentYer: Int, currentMonth: Int, currentDay: String): String {
+    val currentMonth = if (currentMonth.toString().length == 1) {
+        "0$currentMonth"
+    } else {
+        currentMonth
+    }
+    val currentDay = if (currentDay.length == 1) {
+        "0$currentDay"
+    } else {
+        currentDay
+    }
+    return "$currentYer-$currentMonth-$currentDay"
+}

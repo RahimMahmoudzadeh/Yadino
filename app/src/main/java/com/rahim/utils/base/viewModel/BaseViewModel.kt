@@ -17,6 +17,10 @@ open class BaseViewModel @Inject constructor(
     val successSave = "ثبت اطلاعات با موفقیت ثبت شد!"
     val successUpdateRoutine = "روتین شما با موفقیت ویرایش شد!"
     val successRemove = "حذف روتین با موفقیت انجام شد!"
+
+    val currentYer = getCurrentTime()[0]
+    val currentMonth = getCurrentTime()[1]
+    val currentDay = getCurrentTime()[2]
     fun saveShowWelcome(isShow: Boolean) {
         sharedPreferencesRepository.saveShowWelcome(isShow)
     }

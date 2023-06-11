@@ -1,6 +1,5 @@
 package com.rahim.ui.routine
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,15 +38,15 @@ import com.rahim.data.modle.data.TimeData
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.DialogDelete
 import com.rahim.ui.home.ItemRoutine
-import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
+import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.base.view.gradientColors
 import com.rahim.utils.enums.WeekName
 import com.rahim.utils.extention.calculateMonthName
+import com.rahim.utils.extention.calculateTimeFormat
 import com.rahim.utils.resours.Resource
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
-import dev.chrisbanes.snapper.rememberLazyListSnapperLayoutInfo
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.launch
 
@@ -62,11 +60,8 @@ fun RoutineScreen(
     val currentYer = viewModel.currentYer
     val currentMonth = viewModel.currentMonth
 
-    val routines by viewModel.flowRoutines.collectAsStateWithLifecycle(
-        initialValue = Resource.Success(
-            emptyList()
-        )
-    )
+    val routines by viewModel.flowRoutines.collectAsStateWithLifecycle()
+    val currentNameDay by viewModel.flowNameDay.collectAsStateWithLifecycle()
     val monthDay by viewModel.getCurrentMonthDay(currentMonth, currentYer)
         .collectAsStateWithLifecycle(initialValue = emptyList())
 
@@ -74,10 +69,13 @@ fun RoutineScreen(
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     var dayChecked by rememberSaveable { mutableStateOf("0") }
     var index by rememberSaveable { mutableStateOf(0) }
-    var previousIndex by rememberSaveable { mutableStateOf(0) }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-
+    val currentIndex by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex
+        }
+    }
     Scaffold(
         modifier = modifier.background(Zircon), topBar = {
             TopBarCenterAlign(
@@ -110,19 +108,21 @@ fun RoutineScreen(
                 index,
                 dayCheckedNumber = {
                     dayChecked = it
+                    viewModel.getCurrentNameDay(
+                        String().calculateTimeFormat(currentYer, currentMonth, it),
+                        YYYY_MM_DD
+                    )
                     viewModel.getRoutines(currentMonth, it.toInt(), currentYer)
                 },
+                currentIndex = currentIndex,
                 indexScroll = {
                     if (it != monthDay.size) {
                         index = it
                         coroutineScope.launch {
                             listState.animateScrollToItem(index)
                         }
+
                     }
-                },
-                indexPrevious = previousIndex,
-                previousIndex = {
-                    previousIndex = it
                 })
             GetRoutines(routines,
                 routineUpdateDialog = { routineUpdateDialog.value = it },
@@ -138,10 +138,10 @@ fun RoutineScreen(
             }
         })
     }
-
     DialogAddRoutine(
         isOpen = onClickAdd || routineUpdateDialog.value != null,
         isShowDay = false,
+        dayChecked = currentNameDay,
         openDialog = {
             routineUpdateDialog.value = null
             isOpenDialog(it)
@@ -160,6 +160,19 @@ fun RoutineScreen(
         currentNumberYer = currentYer
     )
 }
+
+fun calculateCurrentIndex(currentIndex: Int, previousIndex: Int): Int {
+    return if (currentIndex > previousIndex) {
+        previousIndex + 7
+    } else {
+        if (previousIndex - 7 < 0) {
+            previousIndex
+        } else {
+            previousIndex - 7
+        }
+    }
+}
+
 
 fun calculateIndex(currentDay: String, index: Int): Int {
     var currentIndex = index
@@ -242,12 +255,10 @@ private fun ItemTimeDate(
     currentYer: String,
     listState: LazyListState,
     index: Int,
-    indexPrevious: Int,
+    currentIndex: Int,
     dayCheckedNumber: (String) -> Unit,
     indexScroll: (Int) -> Unit,
-    previousIndex: (Int) -> Unit
 ) {
-
     Text(modifier = Modifier.padding(top = 28.dp), text = "$currentYer $currentMonth")
     Row(modifier = Modifier.padding(top = 16.dp)) {
         Text(
@@ -286,7 +297,6 @@ private fun ItemTimeDate(
             text = WeekName.SATURDAY.nameDay
         )
     }
-    val GroupSize = 7
 
     Row() {
         IconButton(modifier = Modifier.padding(top = 10.dp), onClick = {
@@ -303,6 +313,7 @@ private fun ItemTimeDate(
             )
         }
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+
             LazyRow(
                 modifier = Modifier
                     .weight(1f)
@@ -311,12 +322,7 @@ private fun ItemTimeDate(
                 flingBehavior = rememberSnapperFlingBehavior(
                     lazyListState = listState,
                     snapIndex = { _, start, targetIndex ->
-                        if (indexPrevious <= start) {
-                            indexScroll(index + 7)
-                        } else {
-                            indexScroll(index - 7)
-                        }
-                        previousIndex(start)
+                        indexScroll(calculateCurrentIndex(currentIndex, index))
                         index
                     }),
             ) {

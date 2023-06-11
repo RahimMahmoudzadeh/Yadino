@@ -28,22 +28,29 @@ class RoutineViewModel @Inject constructor(
     sharedPreferencesRepository: SharedPreferencesRepository
 ) :
     BaseViewModel(sharedPreferencesRepository, baseRepository) {
-    val currentYer = getCurrentTime()[0]
-    val currentMonth = getCurrentTime()[1]
-    val currentDay = getCurrentTime()[2]
+
 
     private val _flowRoutines =
         MutableStateFlow<Resource<List<Routine>>>(Resource.Success(emptyList()))
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
 
+    private val _flowNameDay =
+        MutableStateFlow("")
+    val flowNameDay: StateFlow<String> = _flowNameDay
+
     init {
         getRoutines(currentMonth, currentDay, currentYer)
     }
 
+    fun getCurrentNameDay(date: String, format: String) {
+        viewModelScope.launch {
+            val time = routineRepository.getCurrentNameDay(date, format)
+            _flowNameDay.value = time
+        }
+    }
+
     fun getRoutines(
-        monthNumber: Int,
-        numberDay: Int,
-        yerNumber: Int
+        monthNumber: Int, numberDay: Int, yerNumber: Int
     ) {
         viewModelScope.launch {
             _flowRoutines.value = Resource.Loading()
@@ -54,6 +61,7 @@ class RoutineViewModel @Inject constructor(
             }
         }
     }
+
     fun deleteRoutine(routine: Routine) {
         viewModelScope.launch {
             routineRepository.removeRoutine(routine)

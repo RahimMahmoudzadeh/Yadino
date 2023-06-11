@@ -91,6 +91,7 @@ fun HomeScreen(
     DialogAddRoutine(
         isOpen = onClickAdd || routineUpdateDialog.value!=null,
         isShowDay = false,
+        dayChecked = "",
         openDialog = {
             routineUpdateDialog.value = null
             isOpenDialog(it)

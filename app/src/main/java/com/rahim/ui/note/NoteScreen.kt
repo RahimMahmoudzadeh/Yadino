@@ -47,6 +47,9 @@ fun NoteScreen(
 
     val noteDeleteDialog = rememberSaveable { mutableStateOf<NoteModel?>(null) }
     val noteUpdateDialog = rememberSaveable { mutableStateOf<NoteModel?>(null) }
+    val currentYer = viewModel.currentYer
+    val currentMonth = viewModel.currentMonth
+    val currentDay = viewModel.currentDay
 
     val notes by viewModel.getNotes().collectAsStateWithLifecycle(
         initialValue = Resource.Success(
@@ -95,6 +98,9 @@ fun NoteScreen(
                 viewModel.addNote(it)
             }
         },
+        currentYer = currentYer,
+        currentMonth = currentMonth,
+        currentDay = currentDay,
         openDialog = {
             noteUpdateDialog.value = null
             isOpenDialog(it)

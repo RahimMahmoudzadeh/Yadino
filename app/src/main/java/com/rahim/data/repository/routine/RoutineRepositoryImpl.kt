@@ -5,6 +5,7 @@ import com.rahim.data.modle.Rotin.Routine
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import saman.zamani.persiandate.PersianDate
+import saman.zamani.persiandate.PersianDateFormat
 import javax.inject.Inject
 
 class RoutineRepositoryImpl @Inject constructor(val appDatabase: AppDatabase) : RepositoryRoutine {
@@ -12,6 +13,15 @@ class RoutineRepositoryImpl @Inject constructor(val appDatabase: AppDatabase) : 
     private val currentTimeDay = persianData.shDay
     private val currentTimeMonth = persianData.shMonth
     private val currentTimeYer = persianData.shYear
+
+
+
+    override suspend fun getCurrentNameDay(date:String,format:String):String{
+        val persianDateFormat=PersianDateFormat()
+        val da=persianDateFormat.parse(date,format)
+        val n=persianData.dayName(da)
+        return n
+    }
     override suspend fun addRoutine(routine: Routine) {
         appDatabase.routineDao().addRoutine(routine)
     }

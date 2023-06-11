@@ -13,4 +13,5 @@ object Constants {
     const val CAFE_BAZAAR = "CafeBazaar"
     const val NAME_SHARED_PREFERENCE = "YadinooShared"
     const val WELCOME_SHARED = "WelcomeShared"
+    const val YYYY_MM_DD = "yyyy-MM-dd"
 }

@@ -13,5 +13,9 @@ data class NoteModel(
     var name: String,
     var description: String,
     var isChecked: Boolean = false,
-    var state: Int = 0
+    var state: Int = 0,
+    val dayName: String,
+    val dayNumber: Int?,
+    val monthNumber: Int?,
+    val yerNumber: Int?,
 ) : Parcelable
