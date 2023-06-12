@@ -153,7 +153,6 @@ fun RoutineScreen(
             } else {
                 viewModel.addRoutine(it)
             }
-            viewModel.getRoutines(it.monthNumber ?: 0, it.dayNumber ?: 0, it.yerNumber ?: 0)
         },
         currentNumberDay = dayChecked.toInt(),
         currentNumberMonth = currentMonth,
