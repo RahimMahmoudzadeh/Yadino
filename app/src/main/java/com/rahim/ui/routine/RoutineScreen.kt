@@ -176,10 +176,12 @@ fun calculateCurrentIndex(currentIndex: Int, previousIndex: Int): Int {
 
 fun calculateIndex(currentDay: String, index: Int): Int {
     var currentIndex = index
+    var currentIndexPlus = currentIndex + 7
 
     while (true) {
         currentIndex += 7
-        if (currentIndex >= currentDay.toInt()) {
+        currentIndexPlus += 7
+        if (currentIndex >= currentDay.toInt() || currentDay.toInt() in currentIndex..currentIndexPlus) {
             break
         }
     }
