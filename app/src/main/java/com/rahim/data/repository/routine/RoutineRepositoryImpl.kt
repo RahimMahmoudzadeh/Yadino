@@ -34,7 +34,7 @@ class RoutineRepositoryImpl @Inject constructor(val appDatabase: AppDatabase) : 
     override suspend fun getRoutine(id: Int): Routine = appDatabase.routineDao().getRoutine(id)
 
 
-    override fun getRoutine(monthNumber: Int, numberDay: Int,yerNumber:Int): Flow<List<Routine>> = appDatabase.routineDao().getRoutines(monthNumber, numberDay,yerNumber)
+    override fun getRoutine(monthNumber: Int, numberDay: Int,yerNumber:Int): Flow<List<Routine>> = appDatabase.routineDao().getRoutines(monthNumber, numberDay,yerNumber).distinctUntilChanged()
 
     override fun searchRoutine(name: String,monthNumber: Int?, dayNumber: Int?): Flow<List<Routine>> = appDatabase.routineDao().searchRoutine(name,monthNumber, dayNumber).distinctUntilChanged()
     override suspend fun getCurrentRoutines(): Flow<List<Routine>> {
