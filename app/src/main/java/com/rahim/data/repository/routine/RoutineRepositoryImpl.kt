@@ -15,13 +15,6 @@ class RoutineRepositoryImpl @Inject constructor(val appDatabase: AppDatabase) : 
     private val currentTimeYer = persianData.shYear
 
 
-
-    override suspend fun getCurrentNameDay(date:String,format:String):String{
-        val persianDateFormat=PersianDateFormat()
-        val da=persianDateFormat.parse(date,format)
-        val n=persianData.dayName(da)
-        return n
-    }
     override suspend fun addRoutine(routine: Routine) {
         appDatabase.routineDao().addRoutine(routine)
     }

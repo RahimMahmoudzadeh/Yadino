@@ -34,7 +34,9 @@ import com.rahim.ui.dialog.DialogDelete
 import com.rahim.ui.home.HomeViewModel
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
+import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.TopBarCenterAlign
+import com.rahim.utils.extention.calculateTimeFormat
 import com.rahim.utils.resours.Resource
 
 @Composable
@@ -50,12 +52,19 @@ fun NoteScreen(
     val currentYer = viewModel.currentYer
     val currentMonth = viewModel.currentMonth
     val currentDay = viewModel.currentDay
+    val currentNameDay by viewModel.flowNameDay.collectAsStateWithLifecycle()
 
     val notes by viewModel.getNotes().collectAsStateWithLifecycle(
         initialValue = Resource.Success(
             emptyList()
         )
     )
+
+    viewModel.getCurrentNameDay(
+        String().calculateTimeFormat(currentYer, currentMonth, currentDay.toString()),
+        YYYY_MM_DD
+    )
+
     Scaffold(
         modifier = modifier.background(Zircon),
         topBar = {
@@ -101,6 +110,7 @@ fun NoteScreen(
         currentYer = currentYer,
         currentMonth = currentMonth,
         currentDay = currentDay,
+        currentDayName = currentNameDay,
         openDialog = {
             noteUpdateDialog.value = null
             isOpenDialog(it)

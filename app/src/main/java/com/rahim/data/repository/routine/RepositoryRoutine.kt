@@ -20,6 +20,4 @@ interface RepositoryRoutine {
     fun searchRoutine(name: String,monthNumber: Int?, dayNumber: Int?): Flow<List<Routine>>
 
     suspend fun getCurrentRoutines(): Flow<List<Routine>>
-
-    suspend fun getCurrentNameDay(date:String,format:String):String
 }

@@ -34,20 +34,11 @@ class RoutineViewModel @Inject constructor(
         MutableStateFlow<Resource<List<Routine>>>(Resource.Success(emptyList()))
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
 
-    private val _flowNameDay =
-        MutableStateFlow("")
-    val flowNameDay: StateFlow<String> = _flowNameDay
-
     init {
         getRoutines(currentMonth, currentDay, currentYer)
     }
 
-    fun getCurrentNameDay(date: String, format: String) {
-        viewModelScope.launch {
-            val time = routineRepository.getCurrentNameDay(date, format)
-            _flowNameDay.value = time
-        }
-    }
+
 
     fun getRoutines(
         monthNumber: Int, numberDay: Int, yerNumber: Int

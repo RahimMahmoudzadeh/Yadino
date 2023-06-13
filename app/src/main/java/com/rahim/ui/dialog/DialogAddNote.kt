@@ -39,6 +39,7 @@ fun DialogAddNote(
     currentDay:Int,
     currentMonth:Int,
     currentYer:Int,
+    currentDayName:String,
     openDialog: (Boolean) -> Unit,
     note: (NoteModel) -> Unit
 ) {
@@ -213,7 +214,7 @@ fun DialogAddNote(
                                                 name = nameNote,
                                                 description = description,
                                                 state = state,
-                                                dayName = currentDay.toString(),
+                                                dayName = currentDayName,
                                                 yerNumber = currentYer,
                                                 monthNumber = currentMonth,
                                                 dayNumber = currentDay
@@ -223,7 +224,7 @@ fun DialogAddNote(
                                                 name = nameNote,
                                                 description = description,
                                                 state = state,
-                                                dayName = currentDay.toString(),
+                                                dayName = currentDayName,
                                                 yerNumber = currentYer,
                                                 monthNumber = currentMonth,
                                                 dayNumber = currentDay
