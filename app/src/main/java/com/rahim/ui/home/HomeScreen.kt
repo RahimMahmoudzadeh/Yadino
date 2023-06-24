@@ -12,6 +12,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -22,12 +23,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.R
+import com.rahim.data.alarm.ManagementAlarm
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.DialogDelete
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.base.view.TopBarRightAlign
+import com.rahim.utils.base.view.calculateHours
+import com.rahim.utils.base.view.calculateMinute
 import com.rahim.utils.resours.Resource
 
 @Composable
@@ -37,6 +41,9 @@ fun HomeScreen(
     onClickAdd: Boolean,
     isOpenDialog: (Boolean) -> Unit
 ) {
+
+    val context = LocalContext.current
+    val managementAlarm = ManagementAlarm()
 
     val currentYer = viewModel.getCurrentTime()[0]
     val currentMonth = viewModel.getCurrentTime()[1]
@@ -98,6 +105,10 @@ fun HomeScreen(
         },
         routineUpdate = routineUpdateDialog.value,
         routine = {
+            managementAlarm.setAlarm(context,
+                calculateHours(it.timeHours.toString()),
+                calculateMinute(it.timeHours.toString())
+            )
             if (routineUpdateDialog.value!=null) {
                 viewModel.updateRoutine(it)
             } else {

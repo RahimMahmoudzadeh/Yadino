@@ -79,12 +79,7 @@ fun DialogAddRoutine(
         }
     }
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
-    val dayWeekSmale = listOf(
-        stringResource(id = R.string.sunday),
-        stringResource(id = R.string.monday),
-        stringResource(id = R.string.tuesday),
-        stringResource(id = R.string.thursday)
-    )
+
     val alarmDialogState = rememberMaterialDialogState()
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         if (isOpen) {
@@ -349,7 +344,8 @@ fun DialogAddRoutine(
     }
 
     ShowTimePicker(alarmDialogState) {
-        time.value = it.hour.toString() + ":" + it.minute
+        time.value =
+            it.hour.toString() + ":" + if (it.minute.toString().length == 1) "0" + it.minute else it.minute
     }
 }
 

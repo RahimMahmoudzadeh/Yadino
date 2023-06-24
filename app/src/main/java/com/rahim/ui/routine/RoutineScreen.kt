@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.R
+import com.rahim.data.alarm.ManagementAlarm
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.data.TimeData
 import com.rahim.ui.dialog.DialogAddRoutine
@@ -41,6 +43,8 @@ import com.rahim.ui.home.ItemRoutine
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.TopBarCenterAlign
+import com.rahim.utils.base.view.calculateHours
+import com.rahim.utils.base.view.calculateMinute
 import com.rahim.utils.base.view.gradientColors
 import com.rahim.utils.enums.WeekName
 import com.rahim.utils.extention.calculateMonthName
@@ -57,8 +61,12 @@ fun RoutineScreen(
     onClickAdd: Boolean,
     isOpenDialog: (Boolean) -> Unit
 ) {
+    val context = LocalContext.current
+    val managementAlarm = ManagementAlarm()
+
     val currentYer = viewModel.currentYer
     val currentMonth = viewModel.currentMonth
+
 
     val routines by viewModel.flowRoutines.collectAsStateWithLifecycle()
     val currentNameDay by viewModel.flowNameDay.collectAsStateWithLifecycle()
@@ -148,6 +156,7 @@ fun RoutineScreen(
         },
         routineUpdate = routineUpdateDialog.value,
         routine = {
+            managementAlarm.setAlarm(context,calculateHours(it.timeHours.toString()),calculateMinute(it.timeHours.toString()))
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(it)
             } else {

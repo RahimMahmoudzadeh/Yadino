@@ -1,8 +1,11 @@
 package com.rahim.data.notification
 
+import android.Manifest
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.rahim.ui.main.MainActivity
@@ -30,6 +33,13 @@ class NotificationManager @Inject constructor() {
             .build()
 
         with(NotificationManagerCompat.from(context)) {
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
             notify(Random().nextInt(), builder)
         }
     }

@@ -182,3 +182,13 @@ fun GradientButtonPreview() {
         textSize = 14.sp
     )
 }
+
+fun calculateMinute(timeHours: String): Int {
+    val index=timeHours.indexOf(':')
+    return timeHours.subSequence(index.plus(1),timeHours.length).toString().toInt()
+}
+
+fun calculateHours(timeHours: String): Int {
+    val index=timeHours.indexOf(':')
+    return timeHours.subSequence(0,index).toString().toInt()
+}
