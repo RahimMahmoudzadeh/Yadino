@@ -15,10 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rahim.R
-import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.note.NoteModel
-import com.rahim.ui.dialog.DialogAddNote
-import com.rahim.ui.dialog.DialogDelete
 import com.rahim.ui.theme.*
 import com.rahim.utils.base.view.gradientColors
 import me.saket.swipe.SwipeAction

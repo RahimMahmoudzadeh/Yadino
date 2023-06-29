@@ -78,4 +78,7 @@
     <string name="routine_explanation">توضیح برای روتین خود بنویسید</string>
     <string name="length_textFiled_explanation_routine">نام انتخابی باید حداکثر 40 کاراکتر باشد!</string>
     <string name="empty">خالی</string>
+    <string name="can_you_delete">آیا می خواهید حذف کنید؟</string>
+    <string name="setting">تنظیمات</string>
+    <string name="better_performance_access">برای عملکرد بهتر نرم افزار لطفا اجازه دسترسی های لازم را بدهید</string>
 </resources>

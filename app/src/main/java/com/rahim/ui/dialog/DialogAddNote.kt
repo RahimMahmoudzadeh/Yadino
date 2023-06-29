@@ -30,7 +30,7 @@ import com.rahim.utils.base.view.DialogButtonBackground
 import com.rahim.utils.base.view.gradientColors
 import com.rahim.utils.enums.StateNote
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalTextApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialogAddNote(
     modifier: Modifier = Modifier,

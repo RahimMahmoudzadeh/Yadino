@@ -9,6 +9,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import saman.zamani.persiandate.PersianDate
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -86,15 +87,17 @@ class DataTimeRepositoryImpl @Inject constructor(
         yerNumber: Int?
     ): Flow<List<TimeData>> = flow {
         appDatabase.timeDataDao().getSpecificMonthFromYer(monthNumber, yerNumber).catch {}.collect {
-            val spaceStart = calculateDaySpaceStartMonth(it[0].nameDay)
-            val spaceEnd = calculateDaySpaceEndMonth(it[it.size-1].nameDay)
-            val list = ArrayList<TimeData>()
-            list.addAll(spaceStart)
-            list.addAll(it)
-            list.addAll(spaceEnd)
-            emit(list)
+            if (it.isNotEmpty()){
+                val spaceStart = calculateDaySpaceStartMonth(it[0].nameDay)
+                val spaceEnd = calculateDaySpaceEndMonth(it[it.size-1].nameDay)
+                val list = ArrayList<TimeData>()
+                list.addAll(spaceStart)
+                list.addAll(it)
+                list.addAll(spaceEnd)
+                emit(list)
+            }
         }
-    }
+    }.flowOn(ioDispatcher)
 
     private fun calculateDaySpaceStartMonth(nameDay: String): List<TimeData> {
         return when (nameDay) {

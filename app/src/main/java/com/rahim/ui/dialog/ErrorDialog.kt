@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -23,20 +22,27 @@ import com.rahim.utils.base.view.gradientColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DialogDelete(
+fun ErrorDialog(
     modifier: Modifier = Modifier, isOpen: Boolean,
-    openDialog: (Boolean) -> Unit
+    message:String,
+    okMessage:String,
+    isClickOk: (Boolean) -> Unit
 ) {
     if (isOpen) {
         AlertDialog(
-            properties = DialogProperties(usePlatformDefaultWidth = false,dismissOnClickOutside = false),
-            modifier = modifier.fillMaxWidth().padding(horizontal = 22.dp)
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                dismissOnClickOutside = false
+            ),
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 22.dp)
                 .border(
                     1.dp,
                     brush = Brush.verticalGradient(gradientColors),
                     shape = RoundedCornerShape(8.dp)
                 ),
-            onDismissRequest = { openDialog(false) }) {
+            onDismissRequest = { isClickOk(false) }) {
             Surface(shape = RoundedCornerShape(8.dp)) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -47,7 +53,7 @@ fun DialogDelete(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 30.dp, end = 50.dp, start = 50.dp),
-                        text = "آیا می خواهید حذف کنید؟",
+                        text = message,
                         textAlign = TextAlign.Center
                     )
                     Row(
@@ -64,16 +70,20 @@ fun DialogDelete(
                             textSize = 14.sp,
                             width = 0.22f,
                             40.dp,
-                            onClick = { openDialog(false) })
+                            onClick = {
+                                isClickOk(false)
+                            })
 
                         DialogButtonBackground(
-                            text = stringResource(id = R.string.yes),
+                            text = okMessage,
                             gradient = Brush.verticalGradient(gradientColors),
                             modifier = Modifier.padding(start = 16.dp),
                             textSize = 14.sp,
                             width = 0.3f,
                             height = 40.dp,
-                            onClick = { openDialog(true) }
+                            onClick = {
+                                isClickOk(true)
+                            }
                         )
                     }
                 }

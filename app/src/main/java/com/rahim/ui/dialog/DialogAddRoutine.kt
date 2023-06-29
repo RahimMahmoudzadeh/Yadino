@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -36,7 +37,6 @@ import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.theme.*
 import com.rahim.utils.base.view.DialogButtonBackground
 import com.rahim.utils.base.view.gradientColors
-import com.rahim.utils.enums.WeekName
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
@@ -47,7 +47,6 @@ import java.util.*
 
 @OptIn(
     ExperimentalMaterial3Api::class,
-    ExperimentalTextApi::class,
 )
 @Composable
 fun DialogAddRoutine(
@@ -64,12 +63,11 @@ fun DialogAddRoutine(
 ) {
     var routineName by rememberSaveable { mutableStateOf("") }
     var routineExplanation by rememberSaveable { mutableStateOf("") }
-
     val checkedStateAllDay = remember { mutableStateOf(false) }
     val isErrorName = remember { mutableStateOf(false) }
     val isErrorRoutine = remember { mutableStateOf(false) }
     val time = rememberSaveable { mutableStateOf("12:00") }
-
+    val alarmDialogState = rememberMaterialDialogState()
 
     if (routineUpdate != null) {
         routineName = routineUpdate.name
@@ -80,7 +78,6 @@ fun DialogAddRoutine(
     }
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
 
-    val alarmDialogState = rememberMaterialDialogState()
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         if (isOpen) {
             AlertDialog(properties = DialogProperties(
@@ -253,7 +250,9 @@ fun DialogAddRoutine(
                             }
                             OutlinedButton(border = BorderStroke(
                                 1.dp, Brush.horizontalGradient(gradientColors)
-                            ), onClick = { alarmDialogState.show() }) {
+                            ), onClick = {
+                                alarmDialogState.show()
+                            }) {
                                 Text(
                                     text = stringResource(id = R.string.time_change),
                                     style = TextStyle(
@@ -348,6 +347,7 @@ fun DialogAddRoutine(
             it.hour.toString() + ":" + if (it.minute.toString().length == 1) "0" + it.minute else it.minute
     }
 }
+
 
 @OptIn(ExperimentalTextApi::class)
 @Composable

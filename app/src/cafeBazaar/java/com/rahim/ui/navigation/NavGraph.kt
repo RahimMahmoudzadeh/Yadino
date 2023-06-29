@@ -31,7 +31,7 @@ fun NavGraph(
     startDestination: String = Screen.Welcome.route,
     innerPadding: PaddingValues,
     isClickButtonAdd: StateOpenDialog,
-    isOpenDialog: (StateOpenDialog) -> Unit
+    isOpenDialog: (StateOpenDialog) -> Unit,
 ) {
     NavHost(navController, startDestination = startDestination, Modifier.padding(innerPadding)) {
         composable(Screen.Welcome.route) {
@@ -53,7 +53,8 @@ fun NavGraph(
                 onClickAdd = if (isClickButtonAdd.destination == Screen.Routine.route) isClickButtonAdd.isOpen else false,
                 isOpenDialog = {
                     isOpenDialog(StateOpenDialog(it, Screen.Routine.route))
-                })
+                }
+            )
         }
         composable(Screen.Note.route) {
             val viewModel = hiltViewModel<NoteViewModel>()

@@ -26,12 +26,13 @@ import com.rahim.R
 import com.rahim.data.alarm.ManagementAlarm
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.dialog.DialogAddRoutine
-import com.rahim.ui.dialog.DialogDelete
+import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.base.view.TopBarRightAlign
 import com.rahim.utils.base.view.calculateHours
 import com.rahim.utils.base.view.calculateMinute
+import com.rahim.utils.base.view.goSettingPermission
 import com.rahim.utils.resours.Resource
 
 @Composable
@@ -39,7 +40,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel,
     onClickAdd: Boolean,
-    isOpenDialog: (Boolean) -> Unit
+    isOpenDialog: (Boolean) -> Unit,
 ) {
 
     val context = LocalContext.current
@@ -86,17 +87,24 @@ fun HomeScreen(
                 routineDeleteDialog.value = deleteRoutine
             })
             routineDeleteDialog.value?.let { routineFromDialog ->
-                DialogDelete(isOpen = routineDeleteDialog.value!=null, openDialog = {
-                    routineDeleteDialog.value = null
-                    if (it) {
-                        viewModel.deleteRoutine(routineFromDialog)
-                    }
-                })
+                ErrorDialog(
+                    isOpen = routineDeleteDialog.value != null,
+                    isClickOk = {
+                        routineDeleteDialog.value = null
+                        if (it) {
+                            viewModel.deleteRoutine(routineFromDialog)
+                        }
+                    },
+                    message = stringResource(id = R.string.can_you_delete),
+                    okMessage = stringResource(
+                        id = R.string.ok
+                    )
+                )
             }
         }
     }
     DialogAddRoutine(
-        isOpen = onClickAdd || routineUpdateDialog.value!=null,
+        isOpen = onClickAdd || routineUpdateDialog.value != null,
         isShowDay = false,
         dayChecked = "",
         openDialog = {
@@ -105,11 +113,12 @@ fun HomeScreen(
         },
         routineUpdate = routineUpdateDialog.value,
         routine = {
-            managementAlarm.setAlarm(context,
+            managementAlarm.setAlarm(
+                context,
                 calculateHours(it.timeHours.toString()),
                 calculateMinute(it.timeHours.toString())
             )
-            if (routineUpdateDialog.value!=null) {
+            if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(it)
             } else {
                 viewModel.addRoutine(it)

@@ -1,5 +1,6 @@
 package com.rahim.ui.routine
 
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -38,13 +39,14 @@ import com.rahim.data.alarm.ManagementAlarm
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.data.TimeData
 import com.rahim.ui.dialog.DialogAddRoutine
-import com.rahim.ui.dialog.DialogDelete
+import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.home.ItemRoutine
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.base.view.calculateHours
 import com.rahim.utils.base.view.calculateMinute
+import com.rahim.utils.base.view.goSettingPermission
 import com.rahim.utils.base.view.gradientColors
 import com.rahim.utils.enums.WeekName
 import com.rahim.utils.extention.calculateMonthName
@@ -59,7 +61,7 @@ fun RoutineScreen(
     modifier: Modifier = Modifier,
     viewModel: RoutineViewModel,
     onClickAdd: Boolean,
-    isOpenDialog: (Boolean) -> Unit
+    isOpenDialog: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
     val managementAlarm = ManagementAlarm()
@@ -139,12 +141,18 @@ fun RoutineScreen(
         }
     }
     routineDeleteDialog.value?.let { routineFromDialog ->
-        DialogDelete(isOpen = true, openDialog = {
-            routineDeleteDialog.value = null
-            if (it) {
-                viewModel.deleteRoutine(routineFromDialog)
-            }
-        })
+        ErrorDialog(
+            isOpen = true, isClickOk = {
+                routineDeleteDialog.value = null
+                if (it) {
+                    viewModel.deleteRoutine(routineFromDialog)
+                }
+            },
+            message = stringResource(id = R.string.can_you_delete),
+            okMessage = stringResource(
+                id = R.string.ok
+            )
+        )
     }
     DialogAddRoutine(
         isOpen = onClickAdd || routineUpdateDialog.value != null,
@@ -156,7 +164,11 @@ fun RoutineScreen(
         },
         routineUpdate = routineUpdateDialog.value,
         routine = {
-            managementAlarm.setAlarm(context,calculateHours(it.timeHours.toString()),calculateMinute(it.timeHours.toString()))
+            managementAlarm.setAlarm(
+                context,
+                calculateHours(it.timeHours.toString()),
+                calculateMinute(it.timeHours.toString())
+            )
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(it)
             } else {
@@ -169,7 +181,7 @@ fun RoutineScreen(
     )
 }
 
-fun calculateCurrentIndex(currentIndex: Int, previousIndex: Int): Int {
+private fun calculateCurrentIndex(currentIndex: Int, previousIndex: Int): Int {
     return if (currentIndex > previousIndex) {
         previousIndex + 7
     } else {
@@ -182,7 +194,7 @@ fun calculateCurrentIndex(currentIndex: Int, previousIndex: Int): Int {
 }
 
 
-fun calculateIndex(currentDay: String, index: Int): Int {
+private fun calculateIndex(currentDay: String, index: Int): Int {
     var currentIndex = index
     var currentIndexPlus = currentIndex + 7
 
@@ -197,7 +209,7 @@ fun calculateIndex(currentDay: String, index: Int): Int {
 }
 
 @Composable
-fun GetRoutines(
+private fun GetRoutines(
     routines: Resource<List<Routine>>,
     routineUpdateDialog: (Routine) -> Unit,
     routineChecked: (Routine) -> Unit,
@@ -227,7 +239,7 @@ fun GetRoutines(
 }
 
 @Composable
-fun SetItemsRoutine(
+private fun SetItemsRoutine(
     routines: List<Routine>,
     checkedRoutine: (Routine) -> Unit,
     updateRoutine: (Routine) -> Unit,
@@ -385,7 +397,7 @@ private fun ItemsRoutine(
 }
 
 @Composable
-fun DayItems(
+private fun DayItems(
     timeData: TimeData,
     dayChecked: String,
     dayCheckedNumber: (String) -> Unit,
@@ -425,7 +437,7 @@ fun DayItems(
     }
 }
 
-fun checkToday(timeData: List<TimeData>, dayChecked: (String) -> Unit) {
+private fun checkToday(timeData: List<TimeData>, dayChecked: (String) -> Unit) {
     timeData.forEach {
         if (it.isToday) {
             dayChecked(it.dayNumber.toString())

@@ -1,11 +1,18 @@
 package com.rahim.utils.base.view
 
+import android.Manifest
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -19,12 +26,22 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import com.rahim.ui.dialog.DialogAddNote
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.navigation.Screen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 val gradientColors = listOf(Purple, PurpleGrey)
 
@@ -184,11 +201,42 @@ fun GradientButtonPreview() {
 }
 
 fun calculateMinute(timeHours: String): Int {
-    val index=timeHours.indexOf(':')
-    return timeHours.subSequence(index.plus(1),timeHours.length).toString().toInt()
+    val index = timeHours.indexOf(':')
+    return timeHours.subSequence(index.plus(1), timeHours.length).toString().toInt()
 }
 
 fun calculateHours(timeHours: String): Int {
-    val index=timeHours.indexOf(':')
-    return timeHours.subSequence(0,index).toString().toInt()
+    val index = timeHours.indexOf(':')
+    return timeHours.subSequence(0, index).toString().toInt()
 }
+
+@OptIn(ExperimentalPermissionsApi::class)
+fun requestPermissionNotification(
+    notificationPermission: PermissionState,
+    isGranted: (Boolean) -> Unit,
+    permissionState: (PermissionState) -> Unit
+) {
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (notificationPermission.status.isGranted) {
+            isGranted(true)
+        } else {
+            if (notificationPermission.status.shouldShowRationale) {
+                isGranted(false)
+            } else {
+                permissionState(notificationPermission)
+            }
+        }
+    } else {
+        isGranted(true)
+    }
+}
+
+fun goSettingPermission(context: Context) {
+    val intent = Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Uri.fromParts("package", context.packageName, null)
+    )
+    ContextCompat.startActivity(context, intent, null)
+}
+

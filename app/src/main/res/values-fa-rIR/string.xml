@@ -23,7 +23,7 @@
     <string name="channel_description">این بخش مر بوط به نوتیفیکیشن های ارسالی از اپلیکیشن yadinoo می باشد.</string>
     <string name="name_routine">اسم روتین</string>
     <string name="change_time">انتخاب زمان</string>
-    <string name="ok">باشه</string>
+    <string name="ok">بله</string>
     <string name="cancel">انصراف</string>
     <string name="emptyField">فیلد خالی است !!!</string>
     <string name="success_save_routine">روتین شما با موفقیت ثبت شد!</string>
@@ -79,4 +79,7 @@
     <string name="length_textFiled_name_routine">نام انتخابی باید حداکثر 22 کاراکتر باشد!</string>
     <string name="length_textFiled_explanation_routine">نام انتخابی باید حداکثر 40 کاراکتر باشد!</string>
     <string name="empty">خالی</string>
+    <string name="can_you_delete">آیا می خواهید حذف کنید؟</string>
+    <string name="setting">تنظیمات</string>
+    <string name="better_performance_access">برای عملکرد بهتر نرم افزار لطفا اجازه دسترسی های لازم را بدهید</string>
 </resources>

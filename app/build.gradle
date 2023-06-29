@@ -71,7 +71,6 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation "androidx.compose.material3:material3:$material3"
-//    implementation "androidx.compose.material:material:$material"
     testImplementation "junit:junit:$junit"
     androidTestImplementation "androidx.test.ext:junit:$junit_test"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core"
@@ -88,7 +87,7 @@ dependencies {
     //hilt
     implementation "com.google.dagger:hilt-android:$hilt_android"
     kapt "com.google.dagger:hilt-compiler:$hilt_android"
-    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_navigation_compose"
 
     //navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
@@ -134,7 +133,9 @@ dependencies {
     implementation "com.google.accompanist:accompanist-pager:$accompanist_pager"
     implementation "com.google.accompanist:accompanist-pager-indicators:$accompanist_pager_indicators"
 
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-    implementation "io.github.farimarwat:anrspy:1.3"
+    implementation "io.github.farimarwat:anrspy:$anrspy"
+
+    //permission
+    implementation "com.google.accompanist:accompanist-permissions:$accompanist_permissions"
 
 }

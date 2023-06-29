@@ -1,7 +1,5 @@
 package com.rahim.ui.note
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,7 +10,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,19 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.R
-import com.rahim.data.modle.Rotin.Routine
-import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.data.modle.note.NoteModel
 import com.rahim.ui.dialog.DialogAddNote
-import com.rahim.ui.dialog.DialogDelete
-import com.rahim.ui.home.HomeViewModel
-import com.rahim.ui.theme.YadinoTheme
+import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.TopBarCenterAlign
@@ -193,7 +184,13 @@ fun ShowDialogDelete(
     isOpenDialog: Boolean,
     click: (Boolean) -> Unit,
 ) {
-    DialogDelete(modifier, isOpenDialog, openDialog = {
-        click(it)
-    })
+    ErrorDialog(
+        modifier, isOpenDialog, isClickOk = {
+            click(it)
+        },
+        message = stringResource(id = R.string.can_you_delete),
+        okMessage = stringResource(
+            id = R.string.ok
+        )
+    )
 }

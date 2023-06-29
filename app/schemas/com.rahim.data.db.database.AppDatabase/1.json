@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ba5e42cc6dc69a070a6c8284e18a3d37",
+    "identityHash": "355bbb0f5f5f83964e01ce24d8b3f919",
     "entities": [
       {
         "tableName": "tbl_routine",
@@ -142,7 +142,7 @@
       },
       {
         "tableName": "tbl_note",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `isChecked` INTEGER NOT NULL, `state` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `isChecked` INTEGER NOT NULL, `state` INTEGER NOT NULL, `dayName` TEXT NOT NULL, `dayNumber` INTEGER, `monthNumber` INTEGER, `yerNumber` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
@@ -173,6 +173,30 @@
             "columnName": "state",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "dayName",
+            "columnName": "dayName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dayNumber",
+            "columnName": "dayNumber",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "monthNumber",
+            "columnName": "monthNumber",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "yerNumber",
+            "columnName": "yerNumber",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -188,7 +212,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ba5e42cc6dc69a070a6c8284e18a3d37')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '355bbb0f5f5f83964e01ce24d8b3f919')"
     ]
   }
 }
