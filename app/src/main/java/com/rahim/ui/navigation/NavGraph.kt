@@ -24,7 +24,6 @@ import com.rahim.ui.routine.RoutineViewModel
 import com.rahim.ui.welcome.WelcomeScreens
 import com.rahim.utils.navigation.Screen
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun NavGraph(
     navController: NavHostController = rememberNavController(),

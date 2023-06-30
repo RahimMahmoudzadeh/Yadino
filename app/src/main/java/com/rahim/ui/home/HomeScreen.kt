@@ -22,9 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.rahim.R
 import com.rahim.data.alarm.ManagementAlarm
 import com.rahim.data.modle.Rotin.Routine
+import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.theme.YadinoTheme
@@ -33,8 +35,10 @@ import com.rahim.utils.base.view.TopBarRightAlign
 import com.rahim.utils.base.view.calculateHours
 import com.rahim.utils.base.view.calculateMinute
 import com.rahim.utils.base.view.goSettingPermission
+import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.resours.Resource
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,

@@ -1,5 +1,6 @@
 package com.rahim.ui.main
 
+import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -18,10 +19,13 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.ui.navigation.NavGraph
 import com.rahim.ui.navigation.YadinoApp
 import com.rahim.ui.theme.YadinoTheme
+import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.navigation.Screen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -38,11 +42,15 @@ class MainActivity : ComponentActivity() {
         Screen.Note,
 //        Screen.Calender
     )
-    @RequiresApi(Build.VERSION_CODES.O)
+
+    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             var openDialog by rememberSaveable { mutableStateOf(StateOpenDialog(false, "")) }
+            val notificationPermissionState = rememberPermissionState(
+                Manifest.permission.POST_NOTIFICATIONS
+            )
 
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 YadinoTheme {
@@ -58,6 +66,8 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         ) { innerPadding ->
+                            val currentDestination =
+                                navController.currentBackStackEntry?.destination?.route
                             NavGraph(
                                 navController,
                                 innerPadding = innerPadding,
@@ -65,6 +75,13 @@ class MainActivity : ComponentActivity() {
                                     openDialog = it
                                 }
                             )
+                            if (currentDestination == Screen.Home.route)
+                                requestPermissionNotification(
+                                    notificationPermission = notificationPermissionState,
+                                    isGranted = {},
+                                    permissionState = {
+                                        it.launchPermissionRequest()
+                                    })
                         }
                     }
                 }
