@@ -6,13 +6,14 @@ import android.content.Context
 import android.content.Intent
 import com.rahim.data.broadcast.YadinoBroadCastReceiver
 import com.rahim.utils.Constants.ALARM_MESSAGE
+import com.rahim.utils.Constants.ALARM_NAME
 import com.rahim.utils.Constants.IS_ALARM
 import java.util.Calendar
 import kotlin.random.Random
 
 class ManagementAlarm {
 
-    fun setAlarm(context: Context, hours: Int, minute: Int) {
+    fun setAlarm(context: Context, hours: Int, minute: Int,name:String,message:String) {
         val calendar: Calendar = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, hours)
             set(Calendar.MINUTE, minute)
@@ -22,8 +23,8 @@ class ManagementAlarm {
         val alarmManager =
             context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).let { intent ->
-            intent.putExtra(ALARM_MESSAGE, IS_ALARM)
-
+            intent.putExtra(ALARM_MESSAGE, message)
+            intent.putExtra(ALARM_NAME, name)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,

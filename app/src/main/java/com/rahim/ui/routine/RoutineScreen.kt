@@ -96,7 +96,7 @@ fun RoutineScreen(
         checkToday(monthDay) {
             if (dayChecked == "0") {
                 dayChecked = it
-                index += calculateIndex(it, index)
+                index += calculateIndex(it, index, monthDay)
                 coroutineScope.launch {
                     listState.animateScrollToItem(index)
                 }
@@ -167,7 +167,9 @@ fun RoutineScreen(
             managementAlarm.setAlarm(
                 context,
                 calculateHours(it.timeHours.toString()),
-                calculateMinute(it.timeHours.toString())
+                calculateMinute(it.timeHours.toString()),
+                it.name,
+                it.explanation ?: ""
             )
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(it)
@@ -194,14 +196,25 @@ private fun calculateCurrentIndex(currentIndex: Int, previousIndex: Int): Int {
 }
 
 
-private fun calculateIndex(currentDay: String, index: Int): Int {
+private fun calculateIndex(currentDay: String, index: Int, monthDay: List<TimeData>): Int {
     var currentIndex = index
     var currentIndexPlus = currentIndex + 7
-
+    var dayNumber = 0
+    var i = 0
+    val emptyDay = ArrayList<Int>()
+    while (dayNumber == 0) {
+        dayNumber = monthDay[i].dayNumber
+        if (dayNumber == 0) {
+            emptyDay.add(monthDay[i].dayNumber)
+        }
+        i++
+    }
+    val currentDayInt = currentDay.toInt().plus(emptyDay.size)
     while (true) {
         currentIndex += 7
         currentIndexPlus += 7
-        if (currentIndex >= currentDay.toInt() || currentDay.toInt() in currentIndex..currentIndexPlus) {
+        if (currentIndex >= currentDayInt) {
+            currentIndex -= 7
             break
         }
     }

@@ -4,6 +4,8 @@ import com.rahim.data.db.database.AppDatabase
 import com.rahim.data.di.DefaultDispatcher
 import com.rahim.data.di.IODispatcher
 import com.rahim.data.modle.data.TimeData
+import com.rahim.utils.Constants.END_YEAR
+import com.rahim.utils.Constants.FIRST_YEAR
 import com.rahim.utils.enums.WeekName
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -232,7 +234,7 @@ class DataTimeRepositoryImpl @Inject constructor(
     private suspend fun calculateDate(): List<TimeData> {
         return withContext(defaultDispatcher) {
             val timeDates = ArrayList<TimeData>()
-            for (yer in 1300..1430) {
+            for (yer in FIRST_YEAR..END_YEAR) {
                 for (month in 1..12) {
                     val dayNumber = if (month == 12) 29 else if (month in 7..11) 30 else 31
                     for (day in 1..dayNumber) {

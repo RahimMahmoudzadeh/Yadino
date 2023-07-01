@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import com.rahim.data.notification.NotificationManager
 import com.rahim.utils.Constants.ALARM_MESSAGE
+import com.rahim.utils.Constants.ALARM_NAME
 import timber.log.Timber
 
 class YadinoBroadCastReceiver() : BroadcastReceiver() {
@@ -16,9 +17,11 @@ class YadinoBroadCastReceiver() : BroadcastReceiver() {
 
     private fun sendNotificationAlarm(intent: Intent?, context: Context?) {
         intent?.extras?.getString(ALARM_MESSAGE)?.let {
+            val message=it
+            val name=intent.extras?.getString(ALARM_NAME)
             val nothing = NotificationManager()
             context?.let {
-                nothing.createNotification("isAlarm", "ok", it)
+                nothing.createNotification(name.toString(), message, it)
             }
         }
     }

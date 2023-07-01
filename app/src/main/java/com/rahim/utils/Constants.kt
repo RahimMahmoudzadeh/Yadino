@@ -9,9 +9,12 @@ object Constants {
 
     //Static
     const val YYYY_MM_DD = "yyyy-MM-dd"
+    const val FIRST_YEAR = 1300
+    const val END_YEAR = 1430
 
     //Key
     const val ALARM_MESSAGE = "alarm Message"
+    const val ALARM_NAME = "alarm name"
 
     //Value
     const val IS_ALARM = "is Alarm"

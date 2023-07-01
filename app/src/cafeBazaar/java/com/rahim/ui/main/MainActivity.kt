@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.*
@@ -36,6 +37,8 @@ import pk.farimarwat.anrspy.annotations.TraceClass
 @TraceClass(traceAllMethods = true)
 class MainActivity : ComponentActivity() {
 
+    private val mainViewModel: MainViewModel by viewModels()
+
     private val screenItems = listOf(
         Screen.Home,
         Screen.Routine,
@@ -46,6 +49,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainViewModel
         setContent {
             var openDialog by rememberSaveable { mutableStateOf(StateOpenDialog(false, "")) }
             val notificationPermissionState = rememberPermissionState(

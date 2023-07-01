@@ -120,7 +120,9 @@ fun HomeScreen(
             managementAlarm.setAlarm(
                 context,
                 calculateHours(it.timeHours.toString()),
-                calculateMinute(it.timeHours.toString())
+                calculateMinute(it.timeHours.toString()),
+                it.name,
+                it.explanation ?: ""
             )
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(it)
