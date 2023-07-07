@@ -21,9 +21,11 @@ class YadinoBroadCastReceiver() : BroadcastReceiver() {
 
     private fun sendNotificationAlarm(intent: Intent?, context: Context?) {
         intent?.extras?.getString(ALARM_MESSAGE)?.let {
+            val message=it
+            val name=intent.extras?.getString(ALARM_NAME)
             val nothing = NotificationManager()
             context?.let {
-                nothing.createFullNotification(it)
+                nothing.createFullNotification(name.toString(), message, it)
             }
         }
     }

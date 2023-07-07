@@ -29,7 +29,7 @@ class NotificationManager @Inject constructor() {
             .setSmallIcon(R.drawable.ic_round_notifications_24)
             .setContentTitle(textTitle)
             .setContentText(textContent)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setSound(null)
@@ -47,18 +47,16 @@ class NotificationManager @Inject constructor() {
         }
     }
 
-    fun createFullNotification(context: Context) {
+    fun createFullNotification(textTitle: String, textContent: String, context: Context) {
         val fullScreenIntent = Intent(context, WakeupActivity::class.java)
-        val fullScreenPendingIntent = PendingIntent.getActivity(
-            context, 0,
-            fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        val fullScreenPendingIntent = PendingIntent.getActivity(context, 0,
+            fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
         val notificationBuilder =
             NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_round_notifications_24)
-                .setContentTitle("Incoming call")
-                .setContentText("(919) 555-1234")
+                .setContentTitle(textTitle)
+                .setContentText(textContent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setFullScreenIntent(fullScreenPendingIntent, true)

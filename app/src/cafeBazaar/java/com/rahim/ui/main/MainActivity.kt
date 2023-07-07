@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.rahim.data.modle.dialog.StateOpenDialog
+import com.rahim.data.notification.NotificationManager
 import com.rahim.ui.navigation.NavGraph
 import com.rahim.ui.navigation.YadinoApp
 import com.rahim.ui.theme.YadinoTheme
@@ -32,6 +33,7 @@ import com.rahim.utils.navigation.Screen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import pk.farimarwat.anrspy.annotations.TraceClass
+import javax.inject.Inject
 
 
 @AndroidEntryPoint

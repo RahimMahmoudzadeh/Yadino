@@ -29,9 +29,6 @@ class AlarmManagement : CalculateDate {
         message: String
     ) {
 
-        Timber.tag("calender")
-            .d("calender yadino ${calculateTime(yer, month, dayOfYer, hours, minute).time}")
-        Timber.tag("calender").d(Calendar.getInstance().time.toString())
         val alarmManager =
             context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).let { intent ->
@@ -44,7 +41,6 @@ class AlarmManagement : CalculateDate {
             alarmIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-
 
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
@@ -80,14 +76,10 @@ class AlarmManagement : CalculateDate {
     }
 
     override fun calculateMonth(month: Int?): Int {
-        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            if (month == 1) {
-                12
-            } else {
-                month?.minus(1) ?: 1
-            }
+        return if (month == 1) {
+            12
         } else {
-            month ?: 1
+            month?.minus(1) ?: 1
         }
     }
 }
