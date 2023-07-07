@@ -2,10 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-<!--    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>-->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <application
         android:name=".utils.App"
@@ -28,9 +34,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".data.broadcast.YadinoBroadCastReceiver"
-            android:exported="false"
-            android:enabled="true"
+        <activity
+            android:name=".ui.wakeup.WakeupActivity"
+            android:parentActivityName=".ui.main.MainActivity"
+            android:excludeFromRecents="true"
+            android:showOnLockScreen="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:showForAllUsers="true"
+            android:launchMode="singleInstance"
             />
+        <receiver
+            android:name=".data.broadcast.YadinoBroadCastReceiver"
+            android:enabled="true"
+            android:exported="false" />
     </application>
+
 </manifest>

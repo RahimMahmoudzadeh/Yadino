@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -34,7 +35,6 @@ import pk.farimarwat.anrspy.annotations.TraceClass
 
 
 @AndroidEntryPoint
-@TraceClass(traceAllMethods = true)
 class MainActivity : ComponentActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()

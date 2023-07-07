@@ -24,9 +24,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.rahim.R
-import com.rahim.data.alarm.ManagementAlarm
+import com.rahim.data.alarm.AlarmManagement
 import com.rahim.data.modle.Rotin.Routine
-import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.theme.YadinoTheme
@@ -34,8 +33,6 @@ import com.rahim.ui.theme.Zircon
 import com.rahim.utils.base.view.TopBarRightAlign
 import com.rahim.utils.base.view.calculateHours
 import com.rahim.utils.base.view.calculateMinute
-import com.rahim.utils.base.view.goSettingPermission
-import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.resours.Resource
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -48,7 +45,7 @@ fun HomeScreen(
 ) {
 
     val context = LocalContext.current
-    val managementAlarm = ManagementAlarm()
+    val alarmManagement = AlarmManagement()
 
     val currentYer = viewModel.getCurrentTime()[0]
     val currentMonth = viewModel.getCurrentTime()[1]
@@ -117,10 +114,13 @@ fun HomeScreen(
         },
         routineUpdate = routineUpdateDialog.value,
         routine = {
-            managementAlarm.setAlarm(
+            alarmManagement.setAlarm(
                 context,
                 calculateHours(it.timeHours.toString()),
                 calculateMinute(it.timeHours.toString()),
+                it.yerNumber,
+                it.monthNumber,
+                it.dayNumber,
                 it.name,
                 it.explanation ?: ""
             )

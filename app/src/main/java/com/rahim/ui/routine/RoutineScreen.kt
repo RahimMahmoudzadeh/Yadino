@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.R
-import com.rahim.data.alarm.ManagementAlarm
+import com.rahim.data.alarm.AlarmManagement
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.data.TimeData
 import com.rahim.ui.dialog.DialogAddRoutine
@@ -46,7 +46,6 @@ import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.base.view.calculateHours
 import com.rahim.utils.base.view.calculateMinute
-import com.rahim.utils.base.view.goSettingPermission
 import com.rahim.utils.base.view.gradientColors
 import com.rahim.utils.enums.WeekName
 import com.rahim.utils.extention.calculateMonthName
@@ -64,7 +63,7 @@ fun RoutineScreen(
     isOpenDialog: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
-    val managementAlarm = ManagementAlarm()
+    val alarmManagement = AlarmManagement()
 
     val currentYer = viewModel.currentYer
     val currentMonth = viewModel.currentMonth
@@ -164,10 +163,13 @@ fun RoutineScreen(
         },
         routineUpdate = routineUpdateDialog.value,
         routine = {
-            managementAlarm.setAlarm(
+            alarmManagement.setAlarm(
                 context,
                 calculateHours(it.timeHours.toString()),
                 calculateMinute(it.timeHours.toString()),
+                it.yerNumber,
+                it.monthNumber,
+                it.dayNumber,
                 it.name,
                 it.explanation ?: ""
             )
