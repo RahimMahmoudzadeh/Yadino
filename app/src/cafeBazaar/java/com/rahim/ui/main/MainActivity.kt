@@ -41,6 +41,9 @@ class MainActivity : ComponentActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
 
+    @Inject
+    lateinit var notificationManager: NotificationManager
+
     private val screenItems = listOf(
         Screen.Home,
         Screen.Routine,
@@ -52,6 +55,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewModel
+        notificationManager.createFullNotification("sad","sada",this)
         setContent {
             var openDialog by rememberSaveable { mutableStateOf(StateOpenDialog(false, "")) }
             val notificationPermissionState = rememberPermissionState(
