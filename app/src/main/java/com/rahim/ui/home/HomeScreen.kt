@@ -64,7 +64,7 @@ fun HomeScreen(
             TopBarRightAlign(
                 modifier, stringResource(id = R.string.hello_friend)
             )
-        }
+        },backgroundColor = MaterialTheme.colorScheme.background
     ) {
         Column(modifier = Modifier.padding(end = 16.dp, start = 16.dp, top = 25.dp)) {
             if (routines.data?.isEmpty() == false) {
@@ -76,11 +76,11 @@ fun HomeScreen(
                 ) {
                     Text(
                         text = "$currentYer/$currentMonth/$currentDay", fontSize = 18.sp,
-                        style = TextStyle(color = MaterialTheme.colorScheme.primary)
+                        color = MaterialTheme.colorScheme.primary
                     )
                     Text(
                         text = stringResource(id = R.string.list_work_day), fontSize = 18.sp,
-                        style = TextStyle(color = MaterialTheme.colorScheme.primary)
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -199,7 +199,7 @@ fun EmptyHome(paddingValues: PaddingValues) {
                 .padding(top = 32.dp),
             textAlign = TextAlign.Center,
             fontSize = 18.sp,
-            style = TextStyle(color = MaterialTheme.colorScheme.primary)
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }

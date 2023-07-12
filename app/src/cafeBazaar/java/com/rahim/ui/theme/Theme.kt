@@ -24,7 +24,10 @@ private val DarkColorScheme = darkColorScheme(
     background = MineShaft,
     onBackground = BalticSea,
     secondary = Color.White,
-    onPrimary = Seashell
+    onPrimary = Seashell,
+    onTertiary = Color.White,
+    tertiaryContainer = White65,
+    secondaryContainer = Gallery
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -33,7 +36,10 @@ private val LightColorScheme = lightColorScheme(
     background = Color.White,
     onBackground = Zircon,
     secondary = MineShaft,
-    onPrimary = Rhino
+    onPrimary = Rhino,
+    onTertiary = Color.Black,
+    tertiaryContainer = Black45,
+    secondaryContainer = Black45
 
     /* Other default colors to override
     surface = Color(0xFFFFFBFE),

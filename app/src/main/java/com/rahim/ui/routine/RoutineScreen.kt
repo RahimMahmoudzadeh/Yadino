@@ -281,7 +281,7 @@ private fun EmptyRoutine() {
             .padding(top = 26.dp),
         textAlign = TextAlign.Center,
         fontSize = 18.sp,
-        style = TextStyle(color = MaterialTheme.colorScheme.primary)
+        color = MaterialTheme.colorScheme.primary
     )
 }
 
@@ -301,50 +301,50 @@ private fun ItemTimeDate(
     Text(
         modifier = Modifier.padding(top = 28.dp),
         text = "$currentYer $currentMonth",
-        style = TextStyle(color = MaterialTheme.colorScheme.primary)
+        color = MaterialTheme.colorScheme.primary
     )
     Row(modifier = Modifier.padding(top = 16.dp)) {
         Text(
             modifier = Modifier.padding(end = 4.dp),
             fontSize = 10.sp,
             text = WeekName.FRIDAY.nameDay,
-            style = TextStyle(color = MaterialTheme.colorScheme.primary)
+            color = MaterialTheme.colorScheme.primary
         )
         Text(
             modifier = Modifier.padding(start = 8.dp, end = 0.dp),
             fontSize = 10.sp,
             text = WeekName.THURSDAY.nameDay,
-            style = TextStyle(color = MaterialTheme.colorScheme.primary)
+            color = MaterialTheme.colorScheme.primary
         )
         Text(
             modifier = Modifier.padding(start = 16.dp, end = 4.dp),
             fontSize = 10.sp,
             text = WeekName.WEDNESDAY.nameDay,
-            style = TextStyle(color = MaterialTheme.colorScheme.primary)
+            color = MaterialTheme.colorScheme.primary
         )
         Text(
             modifier = Modifier.padding(start = 10.dp, end = 4.dp),
             fontSize = 10.sp,
             text = WeekName.TUESDAY.nameDay,
-            style = TextStyle(color = MaterialTheme.colorScheme.primary)
+            color = MaterialTheme.colorScheme.primary
         )
         Text(
             modifier = Modifier.padding(start = 10.dp, end = 4.dp),
             fontSize = 10.sp,
             text = WeekName.MONDAY.nameDay,
-            style = TextStyle(color = MaterialTheme.colorScheme.primary)
+            color = MaterialTheme.colorScheme.primary
         )
         Text(
             modifier = Modifier.padding(start = 12.dp, end = 4.dp),
             fontSize = 10.sp,
             text = WeekName.SUNDAY.nameDay,
-            style = TextStyle(color = MaterialTheme.colorScheme.primary)
+            color = MaterialTheme.colorScheme.primary
         )
         Text(
             modifier = Modifier.padding(start = 14.dp, end = 0.dp),
             fontSize = 10.sp,
             text = WeekName.SATURDAY.nameDay,
-            style = TextStyle(color = MaterialTheme.colorScheme.primary)
+            color = MaterialTheme.colorScheme.primary
         )
     }
 

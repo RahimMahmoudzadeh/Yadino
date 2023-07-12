@@ -34,7 +34,7 @@ fun ItemListNote(
 
     val delete = SwipeAction(
         icon = painterResource(id = R.drawable.delete),
-        background = Color.White,
+        background = MaterialTheme.colorScheme.background,
         onSwipe = {
             openDialogDelete(noteModel)
         }
@@ -42,19 +42,19 @@ fun ItemListNote(
 
     val edit = SwipeAction(
         icon = painterResource(id = R.drawable.edit),
-        background = Color.White,
+        background = MaterialTheme.colorScheme.background,
         isUndo = true,
         onSwipe = {
             openDialogEdit(noteModel)
         },
     )
     SwipeableActionsBox(
-        backgroundUntilSwipeThreshold = Color.White,
+        backgroundUntilSwipeThreshold = MaterialTheme.colorScheme.background,
         startActions = listOf(delete),
         endActions = listOf(edit)
     ) {
         Card(
-            colors = CardDefaults.cardColors(containerColor = Zircon),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
             border = if (noteModel.isChecked) BorderStroke(
                 1.dp,
                 color = Porcelain
@@ -91,7 +91,10 @@ fun ItemListNote(
                         modifier = Modifier.align(Alignment.End),
                         color = if (noteModel.state == 0) Mantis else if (noteModel.state == 1) CornflowerBlueDark else Punch,
                         text = noteModel.name,
-                        style = TextStyle(fontWeight = FontWeight.Bold)
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onTertiary
+                        )
                     )
                     Text(
                         textAlign = TextAlign.End,
@@ -99,6 +102,7 @@ fun ItemListNote(
                             .align(Alignment.End)
                             .padding(top = 10.dp),
                         text = noteModel.description,
+                        color = MaterialTheme.colorScheme.secondaryContainer
                     )
                 }
             }
@@ -107,7 +111,8 @@ fun ItemListNote(
                     .align(Alignment.Start)
                     .padding(start = 12.dp, top = 12.dp, bottom = 12.dp),
                 text = "${noteModel.yerNumber}/${noteModel.monthNumber}/${noteModel.dayNumber}",
-                fontSize = 12.sp
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }

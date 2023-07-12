@@ -128,7 +128,7 @@ fun DialogAddRoutine(
                             placeholder = {
                                 Text(
                                     text = stringResource(id = R.string.name_hint_text_filed_routine),
-                                    style = TextStyle(color = MaterialTheme.colorScheme.primary)
+                                    color = MaterialTheme.colorScheme.primary
                                 )
                             },
                             colors = TextFieldDefaults.textFieldColors(
@@ -166,7 +166,7 @@ fun DialogAddRoutine(
                             placeholder = {
                                 Text(
                                     text = stringResource(id = R.string.routine_explanation),
-                                    style = TextStyle(color = MaterialTheme.colorScheme.primary)
+                                    color = MaterialTheme.colorScheme.primary
                                 )
                             },
                             colors = TextFieldDefaults.textFieldColors(
@@ -253,12 +253,12 @@ fun DialogAddRoutine(
                                 Text(
                                     modifier = Modifier.padding(top = 14.dp),
                                     text = stringResource(id = R.string.set_alarms),
-                                    style = TextStyle(color = MaterialTheme.colorScheme.primary)
+                                    color = MaterialTheme.colorScheme.primary
                                 )
                                 Text(
                                     modifier = Modifier.padding(top = 14.dp, start = 4.dp),
                                     text = time.value,
-                                    style = TextStyle(color = MaterialTheme.colorScheme.primary)
+                                    color = MaterialTheme.colorScheme.primary
                                 )
                             }
                             OutlinedButton(border = BorderStroke(

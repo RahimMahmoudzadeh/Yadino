@@ -36,7 +36,7 @@ fun ItemRoutine(
 
     val delete = SwipeAction(
         icon = painterResource(id = R.drawable.delete),
-        background = Color.White,
+        background = MaterialTheme.colorScheme.background,
         onSwipe = {
             openDialogDelete(routine)
         }
@@ -44,19 +44,19 @@ fun ItemRoutine(
 
     val edit = SwipeAction(
         icon = painterResource(id = R.drawable.edit),
-        background = Color.White,
+        background = MaterialTheme.colorScheme.background,
         isUndo = true,
         onSwipe = {
             openDialogEdit(routine)
         },
     )
     SwipeableActionsBox(
-        backgroundUntilSwipeThreshold = Color.White,
+        backgroundUntilSwipeThreshold = MaterialTheme.colorScheme.background,
         startActions = listOf(delete),
         endActions = listOf(edit)
     ) {
         Card(
-            colors = CardDefaults.cardColors(containerColor = Zircon),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
             border = if (routine.isChecked) BorderStroke(1.dp, color = Porcelain) else BorderStroke(
                 1.dp,
                 Brush.verticalGradient(gradientColors)
@@ -89,11 +89,17 @@ fun ItemRoutine(
                     Row(modifier = Modifier.padding(top = 22.dp, start = 12.dp)) {
                         Text(
                             text = routine.timeHours.toString() + " ",
-                            style = TextStyle(fontSize = 13.sp)
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
                         )
                         Text(
                             text = stringResource(id = R.string.remmeber),
-                            style = TextStyle(fontSize = 13.sp)
+                            style = TextStyle(
+                                fontSize = 13.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
                         )
                     }
                 }
@@ -103,13 +109,20 @@ fun ItemRoutine(
                 ) {
                     Text(
                         text = routine.name,
-                        style = TextStyle(fontWeight = FontWeight.Bold)
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     )
                     Row(modifier = Modifier.padding(top = 12.dp)) {
                         Text(
-                            text = if (routine.explanation.isNullOrEmpty()) stringResource(id = R.string.empty) + " " else routine.explanation.toString() + " "
+                            text = if (routine.explanation.isNullOrEmpty()) stringResource(id = R.string.empty) + " " else routine.explanation.toString() + " ",
+                            color = MaterialTheme.colorScheme.secondaryContainer
                         )
-                        Text(text = stringResource(id = R.string.note))
+                        Text(
+                            text = stringResource(id = R.string.note),
+                            color = MaterialTheme.colorScheme.secondaryContainer
+                        )
                     }
                 }
             }

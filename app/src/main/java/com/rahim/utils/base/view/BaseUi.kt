@@ -68,7 +68,7 @@ fun GradientButton(
                 .padding(vertical = 12.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = text, fontSize = textSize, style = TextStyle(color = Color.White))
+            Text(text = text, fontSize = textSize, color = Color.White)
         }
     }
 }
@@ -103,7 +103,7 @@ fun DialogButtonBackground(
                 text = text,
                 fontSize = textSize,
                 modifier = Modifier.padding(end = 4.dp, start = 4.dp),
-                style = TextStyle(color = Color.White)
+                color = Color.White
             )
         }
     }
@@ -138,8 +138,8 @@ fun DialogButtonBorder(
             Text(
                 text = text,
                 fontSize = textSize,
-                color = Color.Black,
-                modifier = Modifier.padding(end = 4.dp, start = 4.dp)
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(end = 4.dp, start = 4.dp),
             )
         }
     }
@@ -162,7 +162,7 @@ fun TopBarRightAlign(modifier: Modifier = Modifier, title: String) {
                 text = title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = TextStyle(color = MaterialTheme.colorScheme.secondary)
+                color = MaterialTheme.colorScheme.secondary
             )
         }
     )
@@ -185,7 +185,7 @@ fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String) {
                 text = title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = TextStyle(color = MaterialTheme.colorScheme.secondary)
+                color = MaterialTheme.colorScheme.secondary
             )
         }
     )

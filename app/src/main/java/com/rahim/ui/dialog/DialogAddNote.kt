@@ -104,7 +104,7 @@ fun DialogAddNote(
                             placeholder = {
                                 Text(
                                     text = stringResource(id = R.string.issue),
-                                    style = TextStyle(color = MaterialTheme.colorScheme.primary)
+                                    color = MaterialTheme.colorScheme.primary
                                 )
                             },
                             colors = TextFieldDefaults.textFieldColors(
@@ -131,7 +131,7 @@ fun DialogAddNote(
                             placeholder = {
                                 Text(
                                     text = stringResource(id = R.string.issue_explanation),
-                                    style = TextStyle(color = MaterialTheme.colorScheme.primary)
+                                    color = MaterialTheme.colorScheme.primary
                                 )
                             },
                             colors = TextFieldDefaults.textFieldColors(

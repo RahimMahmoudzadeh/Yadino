@@ -143,7 +143,7 @@ fun EmptyNote(paddingValues: PaddingValues) {
                 .padding(top = 32.dp),
             textAlign = TextAlign.Center,
             fontSize = 18.sp,
-            style = TextStyle(color = MaterialTheme.colorScheme.primary)
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }

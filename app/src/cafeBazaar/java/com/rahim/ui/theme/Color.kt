@@ -24,4 +24,7 @@ val Seashell= Color(0XFFF1F1F1)
 val Rhino= Color(0XFF2E3A59)
 val MineShaft= Color(0XFF212121)
 val BalticSea= Color(0XFF302D38)
+val White65= Color(0XFFFFFFA6)
+val Black45= Color(0x66000000)
+val Gallery= Color(0xFFF0F0F0)
 
