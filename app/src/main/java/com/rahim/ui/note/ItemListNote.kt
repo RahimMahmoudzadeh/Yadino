@@ -106,7 +106,7 @@ fun ItemListNote(
                 modifier = Modifier
                     .align(Alignment.Start)
                     .padding(start = 12.dp, top = 12.dp, bottom = 12.dp),
-                text = "1401/1/5",
+                text = "${noteModel.yerNumber}/${noteModel.monthNumber}/${noteModel.dayNumber}",
                 fontSize = 12.sp
             )
         }
