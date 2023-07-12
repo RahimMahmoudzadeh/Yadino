@@ -5,19 +5,25 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.Ringtone
 import android.media.RingtoneManager
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.rahim.R
+import com.rahim.data.alarm.AlarmSong
 import com.rahim.ui.main.MainActivity
 import com.rahim.ui.wakeup.WakeupActivity
 import com.rahim.utils.Constants.CHANNEL_ID
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Random
 import javax.inject.Inject
 
 
-class NotificationManager @Inject constructor() {
+class NotificationManager @Inject constructor() : AlarmSong {
 
     fun createNotification(textTitle: String, textContent: String, context: Context) {
         val intent = Intent(context, MainActivity::class.java).apply {
@@ -50,8 +56,11 @@ class NotificationManager @Inject constructor() {
 
     fun createFullNotification(textTitle: String, textContent: String, context: Context) {
         val fullScreenIntent = Intent(context, WakeupActivity::class.java)
-        val fullScreenPendingIntent = PendingIntent.getActivity(context, 0,
-            fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val fullScreenPendingIntent = PendingIntent.getActivity(
+            context, 0,
+            fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        playRingtone(context)
         val notificationBuilder =
             NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_round_notifications_24)
@@ -60,6 +69,7 @@ class NotificationManager @Inject constructor() {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setFullScreenIntent(fullScreenPendingIntent, true)
+                .setSilent(true)
 
         with(NotificationManagerCompat.from(context)) {
             if (ActivityCompat.checkSelfPermission(
@@ -70,6 +80,20 @@ class NotificationManager @Inject constructor() {
                 return
             }
             notify(Random().nextInt(), notificationBuilder.build())
+        }
+    }
+
+    override fun playRingtone(context: Context) {
+        val notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        val ringtone = RingtoneManager.getRingtone(context, notification)
+        ringtone.play()
+        stopRingtone(ringtone)
+    }
+
+    override fun stopRingtone(ringtone: Ringtone?) {
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(6000)
+            ringtone?.stop()
         }
     }
 }

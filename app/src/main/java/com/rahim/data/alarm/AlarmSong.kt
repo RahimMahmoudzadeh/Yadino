@@ -1,11 +1,12 @@
 package com.rahim.data.alarm
 
 import android.content.Context
+import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Vibrator
 
-class AlarmSong {
-//    val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+interface AlarmSong {
+    //    val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 //    vibrator.vibrate(4000)
 //
 //    Toast.makeText(context, "Alarm! Wake up! Wake up!", Toast.LENGTH_LONG).show()
@@ -20,4 +21,6 @@ class AlarmSong {
 //
 //    // play ringtone
 //    ringtone.play()
+    fun playRingtone(context:Context)
+    fun stopRingtone(ringtone: Ringtone?)
 }
