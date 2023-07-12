@@ -15,6 +15,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -86,11 +87,11 @@ fun RoutineScreen(
         }
     }
     Scaffold(
-        modifier = modifier.background(Zircon), topBar = {
+        topBar = {
             TopBarCenterAlign(
                 modifier, stringResource(id = R.string.list_routine)
             )
-        }, backgroundColor = Color.White
+        }, backgroundColor = MaterialTheme.colorScheme.background
     ) { padding ->
         checkToday(monthDay) {
             if (dayChecked == "0") {
@@ -279,7 +280,8 @@ private fun EmptyRoutine() {
             .fillMaxWidth()
             .padding(top = 26.dp),
         textAlign = TextAlign.Center,
-        fontSize = 18.sp
+        fontSize = 18.sp,
+        style = TextStyle(color = MaterialTheme.colorScheme.primary)
     )
 }
 
@@ -296,42 +298,53 @@ private fun ItemTimeDate(
     dayCheckedNumber: (String) -> Unit,
     indexScroll: (Int) -> Unit,
 ) {
-    Text(modifier = Modifier.padding(top = 28.dp), text = "$currentYer $currentMonth")
+    Text(
+        modifier = Modifier.padding(top = 28.dp),
+        text = "$currentYer $currentMonth",
+        style = TextStyle(color = MaterialTheme.colorScheme.primary)
+    )
     Row(modifier = Modifier.padding(top = 16.dp)) {
         Text(
             modifier = Modifier.padding(end = 4.dp),
             fontSize = 10.sp,
-            text = WeekName.FRIDAY.nameDay
+            text = WeekName.FRIDAY.nameDay,
+            style = TextStyle(color = MaterialTheme.colorScheme.primary)
         )
         Text(
             modifier = Modifier.padding(start = 8.dp, end = 0.dp),
             fontSize = 10.sp,
-            text = WeekName.THURSDAY.nameDay
+            text = WeekName.THURSDAY.nameDay,
+            style = TextStyle(color = MaterialTheme.colorScheme.primary)
         )
         Text(
             modifier = Modifier.padding(start = 16.dp, end = 4.dp),
             fontSize = 10.sp,
-            text = WeekName.WEDNESDAY.nameDay
+            text = WeekName.WEDNESDAY.nameDay,
+            style = TextStyle(color = MaterialTheme.colorScheme.primary)
         )
         Text(
             modifier = Modifier.padding(start = 10.dp, end = 4.dp),
             fontSize = 10.sp,
-            text = WeekName.TUESDAY.nameDay
+            text = WeekName.TUESDAY.nameDay,
+            style = TextStyle(color = MaterialTheme.colorScheme.primary)
         )
         Text(
             modifier = Modifier.padding(start = 10.dp, end = 4.dp),
             fontSize = 10.sp,
-            text = WeekName.MONDAY.nameDay
+            text = WeekName.MONDAY.nameDay,
+            style = TextStyle(color = MaterialTheme.colorScheme.primary)
         )
         Text(
             modifier = Modifier.padding(start = 12.dp, end = 4.dp),
             fontSize = 10.sp,
-            text = WeekName.SUNDAY.nameDay
+            text = WeekName.SUNDAY.nameDay,
+            style = TextStyle(color = MaterialTheme.colorScheme.primary)
         )
         Text(
             modifier = Modifier.padding(start = 14.dp, end = 0.dp),
             fontSize = 10.sp,
-            text = WeekName.SATURDAY.nameDay
+            text = WeekName.SATURDAY.nameDay,
+            style = TextStyle(color = MaterialTheme.colorScheme.primary)
         )
     }
 
@@ -346,7 +359,9 @@ private fun ItemTimeDate(
             )
         }) {
             Icon(
-                painterResource(id = R.drawable.less_then), contentDescription = "less then sign"
+                tint = MaterialTheme.colorScheme.primary,
+                painter = painterResource(id = R.drawable.less_then),
+                contentDescription = "less then sign"
             )
         }
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -379,7 +394,8 @@ private fun ItemTimeDate(
         }) {
             Icon(
                 painterResource(id = R.drawable.greater_then),
-                contentDescription = "greater then sign"
+                contentDescription = "greater then sign",
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -431,7 +447,7 @@ private fun DayItems(
                     )
                 } else Brush.horizontalGradient(
                     listOf(
-                        Color.White, Color.White
+                        MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.background
                     )
                 )
             )
@@ -445,8 +461,7 @@ private fun DayItems(
             style = TextStyle(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = if (dayChecked == timeData.dayNumber.toString()) (Color.White)
-                else Color.Black
+                color = if (dayChecked == timeData.dayNumber.toString()) (Color.White) else MaterialTheme.colorScheme.primary
             )
         )
     }

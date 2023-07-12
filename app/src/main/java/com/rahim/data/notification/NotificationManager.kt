@@ -4,17 +4,18 @@ import android.Manifest
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_NO_USER_ACTION
 import android.content.pm.PackageManager
+import android.media.RingtoneManager
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.rahim.ui.main.MainActivity
-import com.rahim.utils.Constants.CHANNEL_ID
 import com.rahim.R
+import com.rahim.ui.main.MainActivity
 import com.rahim.ui.wakeup.WakeupActivity
+import com.rahim.utils.Constants.CHANNEL_ID
 import java.util.Random
 import javax.inject.Inject
+
 
 class NotificationManager @Inject constructor() {
 
@@ -51,7 +52,6 @@ class NotificationManager @Inject constructor() {
         val fullScreenIntent = Intent(context, WakeupActivity::class.java)
         val fullScreenPendingIntent = PendingIntent.getActivity(context, 0,
             fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-
         val notificationBuilder =
             NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_round_notifications_24)

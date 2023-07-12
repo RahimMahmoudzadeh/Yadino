@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -67,7 +68,7 @@ fun GradientButton(
                 .padding(vertical = 12.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = text, fontSize = textSize)
+            Text(text = text, fontSize = textSize, style = TextStyle(color = Color.White))
         }
     }
 }
@@ -101,7 +102,8 @@ fun DialogButtonBackground(
             Text(
                 text = text,
                 fontSize = textSize,
-                modifier = Modifier.padding(end = 4.dp, start = 4.dp)
+                modifier = Modifier.padding(end = 4.dp, start = 4.dp),
+                style = TextStyle(color = Color.White)
             )
         }
     }
@@ -147,7 +149,7 @@ fun DialogButtonBorder(
 @Composable
 fun TopBarRightAlign(modifier: Modifier = Modifier, title: String) {
     CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Zircon),
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.onBackground),
         modifier = modifier.shadow(elevation = 8.dp),
         title = {
             androidx.compose.material.Text(
@@ -159,7 +161,8 @@ fun TopBarRightAlign(modifier: Modifier = Modifier, title: String) {
                 fontWeight = FontWeight.Bold,
                 text = title,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                style = TextStyle(color = MaterialTheme.colorScheme.secondary)
             )
         }
     )
@@ -169,7 +172,7 @@ fun TopBarRightAlign(modifier: Modifier = Modifier, title: String) {
 @Composable
 fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String) {
     CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(Zircon),
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.onBackground),
         modifier = modifier.shadow(elevation = 8.dp),
         title = {
             androidx.compose.material.Text(
@@ -181,7 +184,8 @@ fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String) {
                 fontWeight = FontWeight.Bold,
                 text = title,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                style = TextStyle(color = MaterialTheme.colorScheme.secondary)
             )
         }
     )

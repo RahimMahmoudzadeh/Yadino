@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -15,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,11 +60,11 @@ fun HomeScreen(
         .collectAsStateWithLifecycle(initialValue = Resource.Success(emptyList()))
 
     Scaffold(
-        modifier = modifier.background(Zircon), topBar = {
+        topBar = {
             TopBarRightAlign(
                 modifier, stringResource(id = R.string.hello_friend)
             )
-        }, backgroundColor = Color.White
+        }
     ) {
         Column(modifier = Modifier.padding(end = 16.dp, start = 16.dp, top = 25.dp)) {
             if (routines.data?.isEmpty() == false) {
@@ -73,10 +75,12 @@ fun HomeScreen(
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "$currentYer/$currentMonth/$currentDay", fontSize = 18.sp
+                        text = "$currentYer/$currentMonth/$currentDay", fontSize = 18.sp,
+                        style = TextStyle(color = MaterialTheme.colorScheme.primary)
                     )
                     Text(
-                        text = stringResource(id = R.string.list_work_day), fontSize = 18.sp
+                        text = stringResource(id = R.string.list_work_day), fontSize = 18.sp,
+                        style = TextStyle(color = MaterialTheme.colorScheme.primary)
                     )
                 }
             }
@@ -194,7 +198,8 @@ fun EmptyHome(paddingValues: PaddingValues) {
                 .fillMaxWidth()
                 .padding(top = 32.dp),
             textAlign = TextAlign.Center,
-            fontSize = 18.sp
+            fontSize = 18.sp,
+            style = TextStyle(color = MaterialTheme.colorScheme.primary)
         )
     }
 }

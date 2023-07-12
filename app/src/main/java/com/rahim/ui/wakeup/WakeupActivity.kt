@@ -54,7 +54,7 @@ class WakeupActivity : ComponentActivity() {
                         )
                         Text(
                             modifier = Modifier.padding(top = 34.dp),
-                            style = TextStyle(color = ),
+                            style = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
                             text = "sadasda"
                         )
                         Image(

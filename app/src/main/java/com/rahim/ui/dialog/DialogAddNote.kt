@@ -36,10 +36,10 @@ fun DialogAddNote(
     modifier: Modifier = Modifier,
     noteUpdate: NoteModel?,
     isOpen: Boolean,
-    currentDay:Int,
-    currentMonth:Int,
-    currentYer:Int,
-    currentDayName:String,
+    currentDay: Int,
+    currentMonth: Int,
+    currentYer: Int,
+    currentDayName: String,
     openDialog: (Boolean) -> Unit,
     note: (NoteModel) -> Unit
 ) {
@@ -71,7 +71,7 @@ fun DialogAddNote(
                     openDialog(false)
                 }) {
                 Surface(
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.background,
                     shape = RoundedCornerShape(percent = 4)
                 ) {
                     Column(
@@ -89,7 +89,6 @@ fun DialogAddNote(
                         )
                         TextField(
                             modifier = Modifier
-                                .background(Color.White)
                                 .fillMaxWidth()
                                 .padding(top = 18.dp)
                                 .height(52.dp)
@@ -102,9 +101,14 @@ fun DialogAddNote(
                             onValueChange = {
                                 nameNote = it
                             },
-                            placeholder = { Text(text = stringResource(id = R.string.issue)) },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.issue),
+                                    style = TextStyle(color = MaterialTheme.colorScheme.primary)
+                                )
+                            },
                             colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color.White,
+                                containerColor = MaterialTheme.colorScheme.background,
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent,
                                 disabledIndicatorColor = Color.Transparent
@@ -112,7 +116,6 @@ fun DialogAddNote(
                         )
                         TextField(
                             modifier = Modifier
-                                .background(Color.White)
                                 .fillMaxWidth()
                                 .padding(top = 18.dp)
                                 .sizeIn(minHeight = 130.dp)
@@ -125,9 +128,14 @@ fun DialogAddNote(
                             onValueChange = {
                                 description = it
                             },
-                            placeholder = { Text(text = stringResource(id = R.string.issue_explanation)) },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.issue_explanation),
+                                    style = TextStyle(color = MaterialTheme.colorScheme.primary)
+                                )
+                            },
                             colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color.White,
+                                containerColor = MaterialTheme.colorScheme.background,
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent,
                                 disabledIndicatorColor = Color.Transparent
@@ -137,7 +145,7 @@ fun DialogAddNote(
                             Text(
                                 fontSize = 18.sp,
                                 text = stringResource(id = R.string.priority_level),
-                                color = Gigas,
+                                color = MaterialTheme.colorScheme.tertiary,
                             )
                             Text(
                                 fontSize = 16.sp,

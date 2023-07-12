@@ -11,6 +11,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.*
 import androidx.compose.ui.Modifier
@@ -66,15 +67,14 @@ class MainActivity : ComponentActivity() {
                 YadinoTheme {
                     val navController = rememberNavController()
                     Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
+                        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
                     ) {
                         Scaffold(
                             bottomBar = {
                                 YadinoApp(navController, screenItems) {
                                     openDialog = it
                                 }
-                            }
+                            }, backgroundColor = MaterialTheme.colorScheme.background
                         ) { innerPadding ->
                             val currentDestination =
                                 navController.currentBackStackEntry?.destination?.route

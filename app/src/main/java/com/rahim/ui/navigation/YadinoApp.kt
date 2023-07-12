@@ -44,6 +44,7 @@ fun YadinoApp(
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
     val destination = navBackStackEntry?.destination?.route
     var onClickAdd by rememberSaveable { mutableStateOf(false) }
     val notificationPermissionState = rememberPermissionState(
@@ -51,15 +52,15 @@ fun YadinoApp(
     )
 
     if (destination != Screen.Welcome.route) {
-        BottomNavigation(backgroundColor = Zircon) {
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentDestination = navBackStackEntry?.destination
+        BottomNavigation(backgroundColor = MaterialTheme.colorScheme.onBackground) {
+
 
             screenItems.forEach { screen ->
                 BottomNavigationItem(
                     icon = {
                         Icon(
-                            painterResource(id = if (destination == screen.route) screen.iconSelected else screen.iconNormal),
+                            tint = MaterialTheme.colorScheme.secondary,
+                            painter = painterResource(id = if (destination == screen.route) screen.iconSelected else screen.iconNormal),
                             contentDescription = null
                         )
                     },

@@ -93,7 +93,8 @@ fun DialogAddRoutine(
                 openDialog(false)
             }) {
                 Surface(
-                    color = Color.White, shape = RoundedCornerShape(percent = 4)
+                    color = MaterialTheme.colorScheme.background,
+                    shape = RoundedCornerShape(percent = 4)
                 ) {
                     Column(
                         modifier = Modifier
@@ -110,7 +111,7 @@ fun DialogAddRoutine(
                         )
                         TextField(
                             modifier = Modifier
-                                .background(Color.White)
+                                .background(MaterialTheme.colorScheme.background)
                                 .fillMaxWidth()
                                 .padding(top = 18.dp)
                                 .height(52.dp)
@@ -124,9 +125,14 @@ fun DialogAddRoutine(
                                 isErrorName.value = it.length > 22
                                 routineName = it
                             },
-                            placeholder = { Text(text = stringResource(id = R.string.name_hint_text_filed_routine)) },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.name_hint_text_filed_routine),
+                                    style = TextStyle(color = MaterialTheme.colorScheme.primary)
+                                )
+                            },
                             colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color.White,
+                                containerColor = MaterialTheme.colorScheme.background,
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent,
                                 disabledIndicatorColor = Color.Transparent
@@ -143,7 +149,7 @@ fun DialogAddRoutine(
                         }
                         TextField(
                             modifier = Modifier
-                                .background(Color.White)
+                                .background(MaterialTheme.colorScheme.background)
                                 .fillMaxWidth()
                                 .padding(top = 18.dp)
                                 .height(90.dp)
@@ -157,9 +163,14 @@ fun DialogAddRoutine(
                                 isErrorRoutine.value = it.length > 40
                                 routineExplanation = it
                             },
-                            placeholder = { Text(text = stringResource(id = R.string.routine_explanation)) },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.routine_explanation),
+                                    style = TextStyle(color = MaterialTheme.colorScheme.primary)
+                                )
+                            },
                             colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color.White,
+                                containerColor = MaterialTheme.colorScheme.background,
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent,
                                 disabledIndicatorColor = Color.Transparent
@@ -241,11 +252,13 @@ fun DialogAddRoutine(
                             Row() {
                                 Text(
                                     modifier = Modifier.padding(top = 14.dp),
-                                    text = stringResource(id = R.string.set_alarms)
+                                    text = stringResource(id = R.string.set_alarms),
+                                    style = TextStyle(color = MaterialTheme.colorScheme.primary)
                                 )
                                 Text(
                                     modifier = Modifier.padding(top = 14.dp, start = 4.dp),
-                                    text = time.value
+                                    text = time.value,
+                                    style = TextStyle(color = MaterialTheme.colorScheme.primary)
                                 )
                             }
                             OutlinedButton(border = BorderStroke(

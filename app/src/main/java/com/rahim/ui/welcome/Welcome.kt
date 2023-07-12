@@ -1,7 +1,9 @@
 package com.rahim.ui.welcome
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -44,7 +46,11 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun WelcomeScreens(navController: NavController, viewModel: HomeViewModel) {
+fun WelcomeScreens(
+    navController: NavController,
+    viewModel: HomeViewModel,
+    modifier: Modifier = Modifier
+) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
     val clickNext = rememberSaveable { mutableStateOf(true) }
@@ -79,7 +85,7 @@ fun WelcomeScreens(navController: NavController, viewModel: HomeViewModel) {
         )
     )
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        Column() {
+        Column(modifier = modifier) {
             HorizontalPager(
                 modifier = Modifier.fillMaxHeight(0.87f),
                 count = 3,
@@ -147,7 +153,10 @@ fun Welcome(
             modifier = Modifier
                 .padding(top = 18.dp, start = 12.dp, end = 12.dp),
             textAlign = TextAlign.Center,
-            style = TextStyle(fontWeight = FontWeight.Bold)
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
         )
 
     }
