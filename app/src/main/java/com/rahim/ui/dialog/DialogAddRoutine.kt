@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -378,7 +378,10 @@ fun ShowTimePicker(dialogState: MaterialDialogState, time: (LocalTime) -> Unit) 
                 )
             )
             negativeButton(
-                textStyle = TextStyle(color = Color.Black, fontSize = 14.sp),
+                textStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 14.sp
+                ),
                 text = stringResource(id = R.string.cancel)
             )
         }) {

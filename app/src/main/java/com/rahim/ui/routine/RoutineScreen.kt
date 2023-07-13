@@ -11,11 +11,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -94,7 +94,7 @@ fun RoutineScreen(
             TopBarCenterAlign(
                 modifier, stringResource(id = R.string.list_routine)
             )
-        }, backgroundColor = MaterialTheme.colorScheme.background
+        }, containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         checkToday(monthDay) {
             if (dayChecked == "0") {

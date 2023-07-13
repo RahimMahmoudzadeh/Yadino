@@ -4,9 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -34,7 +34,6 @@ import com.rahim.utils.base.view.calculateHours
 import com.rahim.utils.base.view.calculateMinute
 import com.rahim.utils.resours.Resource
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -42,7 +41,6 @@ fun HomeScreen(
     onClickAdd: Boolean,
     isOpenDialog: (Boolean) -> Unit,
 ) {
-
     val context = LocalContext.current
     val alarmManagement = AlarmManagement()
 
@@ -61,27 +59,10 @@ fun HomeScreen(
             TopBarRightAlign(
                 modifier, stringResource(id = R.string.hello_friend)
             )
-        },backgroundColor = MaterialTheme.colorScheme.background
+        }, containerColor = MaterialTheme.colorScheme.background
     ) {
         Column(modifier = Modifier.padding(end = 16.dp, start = 16.dp, top = 25.dp)) {
-            if (routines.data?.isEmpty() == false) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = "$currentYer/$currentMonth/$currentDay", fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        text = stringResource(id = R.string.list_work_day), fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-            setRoutine(it, routines, { checkedRoutine ->
+            setRoutine(currentYer, currentMonth, currentDay, it, routines, { checkedRoutine ->
                 viewModel.updateRoutine(checkedRoutine)
             }, { routineUpdate ->
                 routineUpdateDialog.value = routineUpdate
@@ -139,6 +120,9 @@ fun HomeScreen(
 
 @Composable
 fun setRoutine(
+    currentDay: Int,
+    currentMonth: Int,
+    currentYer: Int,
     paddingValues: PaddingValues,
     routines: Resource<List<Routine>>,
     checkedRoutine: (Routine) -> Unit,
@@ -155,7 +139,7 @@ fun setRoutine(
                 if (it.isEmpty()) {
                     EmptyHome(paddingValues)
                 } else {
-                    ItemsHome(
+                    ItemsHome(currentYer, currentMonth, currentDay,
                         paddingValues,
                         it,
                         { checkedRoutine(it) },
@@ -203,28 +187,46 @@ fun EmptyHome(paddingValues: PaddingValues) {
 
 @Composable
 fun ItemsHome(
+    currentDay: Int,
+    currentMonth: Int,
+    currentYer: Int,
     paddingValues: PaddingValues,
     routines: List<Routine>,
     checkedRoutine: (Routine) -> Unit,
     updateRoutine: (Routine) -> Unit,
     deleteRoutine: (Routine) -> Unit
 ) {
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(paddingValues),
-        contentPadding = PaddingValues(top = 25.dp)
-    ) {
-        items(items = routines, itemContent = {
-            ItemRoutine(routine = it, onChecked = {
-                checkedRoutine(it)
-            }, openDialogDelete = {
-                deleteRoutine(it)
-            }, openDialogEdit = {
-                updateRoutine(it)
+    Column(modifier = Modifier.padding(paddingValues)) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = "$currentYer/$currentMonth/$currentDay", fontSize = 18.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = stringResource(id = R.string.list_work_day), fontSize = 18.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentPadding = PaddingValues(top = 25.dp)
+        ) {
+            items(items = routines, itemContent = {
+                ItemRoutine(routine = it, onChecked = {
+                    checkedRoutine(it)
+                }, openDialogDelete = {
+                    deleteRoutine(it)
+                }, openDialogEdit = {
+                    updateRoutine(it)
+                })
             })
-        })
+        }
     }
 }
 
