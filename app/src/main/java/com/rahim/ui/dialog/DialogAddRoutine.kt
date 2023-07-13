@@ -367,6 +367,7 @@ fun DialogAddRoutine(
 fun ShowTimePicker(dialogState: MaterialDialogState, time: (LocalTime) -> Unit) {
     MaterialDialog(properties = DialogProperties(dismissOnClickOutside = false),
         border = BorderStroke(1.dp, Brush.horizontalGradient(gradientColors)),
+        backgroundColor = MaterialTheme.colorScheme.background,
         dialogState = dialogState,
         buttons = {
             positiveButton(

@@ -32,10 +32,6 @@ import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.navigation.Screen
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import pk.farimarwat.anrspy.annotations.TraceClass
-import javax.inject.Inject
-
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

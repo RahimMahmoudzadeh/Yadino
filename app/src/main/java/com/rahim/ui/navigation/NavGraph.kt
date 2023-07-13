@@ -12,8 +12,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.rememberPagerState
 import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.ui.home.HomeScreen
 import com.rahim.ui.home.HomeViewModel

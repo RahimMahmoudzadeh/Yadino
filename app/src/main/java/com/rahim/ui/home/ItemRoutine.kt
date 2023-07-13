@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -33,7 +34,7 @@ fun ItemRoutine(
     openDialogEdit: (Routine) -> Unit,
     openDialogDelete: (Routine) -> Unit,
 ) {
-
+    val checkBox = rememberSaveable { mutableStateOf(routine.isChecked) }
     val delete = SwipeAction(
         icon = painterResource(id = R.drawable.delete),
         background = MaterialTheme.colorScheme.background,
@@ -57,12 +58,15 @@ fun ItemRoutine(
     ) {
         Card(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-            border = if (routine.isChecked) BorderStroke(1.dp, color = Porcelain) else BorderStroke(
+            border = if (checkBox.value) BorderStroke(1.dp, color = Porcelain) else BorderStroke(
                 1.dp,
                 Brush.verticalGradient(gradientColors)
             ),
             onClick = {
-                onChecked(routine.apply { isChecked = !isChecked })
+                checkBox.value = !routine.isChecked
+                onChecked(routine.apply {
+                    isChecked = !isChecked
+                })
             },
             modifier = modifier
                 .fillMaxWidth()
@@ -77,14 +81,14 @@ fun ItemRoutine(
             ) {
                 Column(verticalArrangement = Arrangement.SpaceBetween) {
                     Checkbox(
-                        checked = routine.isChecked,
+                        checked = checkBox.value,
                         onCheckedChange = {
                             onChecked(routine.apply { isChecked = it })
                         },
                         colors = CheckboxDefaults.colors(
                             uncheckedColor = CornflowerBlueLight,
-                            checkedColor = Purple
-                        )
+                            checkedColor = MaterialTheme.colorScheme.background,
+                            )
                     )
                     Row(modifier = Modifier.padding(top = 22.dp, start = 12.dp)) {
                         Text(

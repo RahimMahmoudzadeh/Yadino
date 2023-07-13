@@ -17,7 +17,7 @@ android {
         minSdk 26
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -104,9 +104,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_aware"
 
 
-    //MultiSnapRecyclerView
-    implementation "com.github.takusemba:multisnaprecyclerview:$multisnaprecyclerview"
-
 
     // Import the BoM for the Firebase platform
     implementation platform("com.google.firebase:firebase-bom:$firebase")
@@ -133,7 +130,6 @@ dependencies {
     implementation "com.google.accompanist:accompanist-pager:$accompanist_pager"
     implementation "com.google.accompanist:accompanist-pager-indicators:$accompanist_pager_indicators"
 
-    implementation "io.github.farimarwat:anrspy:$anrspy"
 
     //permission
     implementation "com.google.accompanist:accompanist-permissions:$accompanist_permissions"

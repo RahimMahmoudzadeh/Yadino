@@ -54,6 +54,8 @@ import com.rahim.utils.extention.calculateTimeFormat
 import com.rahim.utils.resours.Resource
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -70,7 +72,11 @@ fun RoutineScreen(
     val currentMonth = viewModel.currentMonth
 
 
-    val routines by viewModel.flowRoutines.collectAsStateWithLifecycle()
+    val routines by viewModel.flowRoutines.collectAsStateWithLifecycle(
+        initialValue = Resource.Success(
+            emptyList()
+        )
+    )
     val currentNameDay by viewModel.flowNameDay.collectAsStateWithLifecycle()
     val monthDay by viewModel.getCurrentMonthDay(currentMonth, currentYer)
         .collectAsStateWithLifecycle(initialValue = emptyList())
@@ -122,7 +128,6 @@ fun RoutineScreen(
                         String().calculateTimeFormat(currentYer, currentMonth, it),
                         YYYY_MM_DD
                     )
-                    viewModel.getRoutines(currentMonth, it.toInt(), currentYer)
                 },
                 currentIndex = currentIndex,
                 indexScroll = {
@@ -136,7 +141,9 @@ fun RoutineScreen(
                 })
             GetRoutines(routines,
                 routineUpdateDialog = { routineUpdateDialog.value = it },
-                routineChecked = { viewModel.updateRoutine(it) },
+                routineChecked = {
+                    viewModel.updateRoutine(it)
+                },
                 routineDeleteDialog = { routineDeleteDialog.value = it })
         }
     }
