@@ -1,4 +1,4 @@
-package com.rahim.ui.home
+package com.rahim.utils.base.view
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
@@ -8,7 +8,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -19,9 +18,6 @@ import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Porcelain
-import com.rahim.ui.theme.Purple
-import com.rahim.ui.theme.Zircon
-import com.rahim.utils.base.view.gradientColors
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 

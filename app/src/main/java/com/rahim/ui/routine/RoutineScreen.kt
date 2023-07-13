@@ -41,8 +41,7 @@ import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.data.TimeData
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
-import com.rahim.ui.home.ItemRoutine
-import com.rahim.ui.theme.Zircon
+import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.base.view.calculateHours
@@ -54,8 +53,6 @@ import com.rahim.utils.extention.calculateTimeFormat
 import com.rahim.utils.resours.Resource
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -128,6 +125,7 @@ fun RoutineScreen(
                         String().calculateTimeFormat(currentYer, currentMonth, it),
                         YYYY_MM_DD
                     )
+                    viewModel.getRoutines(currentMonth, it.toInt(), currentYer)
                 },
                 currentIndex = currentIndex,
                 indexScroll = {

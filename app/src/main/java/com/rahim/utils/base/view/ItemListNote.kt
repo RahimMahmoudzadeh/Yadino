@@ -1,4 +1,4 @@
-package com.rahim.ui.note
+package com.rahim.utils.base.view
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
@@ -7,7 +7,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -17,7 +16,6 @@ import androidx.compose.ui.unit.sp
 import com.rahim.R
 import com.rahim.data.modle.note.NoteModel
 import com.rahim.ui.theme.*
-import com.rahim.utils.base.view.gradientColors
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -27,7 +25,6 @@ fun ItemListNote(
     noteModel: NoteModel,
     modifier: Modifier = Modifier,
     onChecked: (NoteModel) -> Unit,
-    note: (NoteModel) -> Unit,
     openDialogEdit: (NoteModel) -> Unit,
     openDialogDelete: (NoteModel) -> Unit,
 ) {
@@ -83,7 +80,7 @@ fun ItemListNote(
                     },
                     colors = CheckboxDefaults.colors(
                         uncheckedColor = CornflowerBlueLight,
-                        checkedColor = Purple
+                        checkedColor = MaterialTheme.colorScheme.background
                     )
                 )
                 Column(modifier = Modifier.padding(top = 12.dp)) {
