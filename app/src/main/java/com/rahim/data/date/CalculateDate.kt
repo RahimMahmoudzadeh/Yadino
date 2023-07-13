@@ -10,6 +10,4 @@ interface CalculateDate {
         hours: Int,
         minute: Int
     ): Calendar
-
-    fun calculateMonth(month: Int?): Int?
 }

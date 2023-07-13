@@ -41,10 +41,11 @@ class AlarmManagement : CalculateDate {
             alarmIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-
+        val t = calculateTime(yer, month, dayOfYer, hours, minute)
+        Timber.tag("time").d(t.toString())
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
-            calculateTime(yer, month, dayOfYer, hours, minute).timeInMillis,
+            t.timeInMillis,
             pendingIntent
         )
     }
@@ -63,11 +64,14 @@ class AlarmManagement : CalculateDate {
         dayOfYer?.let {
             persianCalender.setShDay(it)
         }
+        Timber.tag("time")
+            .d("day in yer-> ${persianCalender.getDayInYear(month ?: 1, dayOfYer ?: 1)}")
         val calendar: Calendar = Calendar.getInstance().apply {
-            set(Calendar.MONTH, calculateMonth(persianCalender.grgMonth))
+            set(Calendar.MONTH, persianCalender.grgMonth)
             set(Calendar.YEAR, persianCalender.grgYear)
             set(Calendar.DAY_OF_MONTH, persianCalender.grgDay)
             set(Calendar.HOUR_OF_DAY, hours)
+            set(Calendar.HOUR, hours)
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
@@ -75,11 +79,4 @@ class AlarmManagement : CalculateDate {
         return calendar
     }
 
-    override fun calculateMonth(month: Int?): Int {
-        return if (month == 1) {
-            12
-        } else {
-            month?.minus(1) ?: 1
-        }
-    }
 }
