@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.R
 import com.rahim.data.alarm.AlarmManagement
@@ -58,7 +59,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun RoutineScreen(
     modifier: Modifier = Modifier,
-    viewModel: RoutineViewModel,
+    viewModel: RoutineViewModel= hiltViewModel(),
     onClickAdd: Boolean,
     isOpenDialog: (Boolean) -> Unit,
 ) {

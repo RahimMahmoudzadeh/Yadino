@@ -5,9 +5,9 @@ import com.rahim.R
 
 sealed class Screen(
     val route: String,
-    @DrawableRes val iconNormal: Int,
-    @DrawableRes val iconSelected: Int,
-    @DrawableRes val iconDark: Int
+    @DrawableRes val iconNormal: Int?,
+    @DrawableRes val iconSelected: Int?,
+    @DrawableRes val iconDark: Int?
 ) {
     object Home : Screen(
         ScreenName.HOME.nameScreen,
@@ -28,6 +28,11 @@ sealed class Screen(
         R.drawable.routine,
         R.drawable.routine_selected,
         R.drawable.routine_dark
+    )
+
+    object Splash : Screen(
+        ScreenName.SPLASH.nameScreen,
+        null, null, null
     )
 
 //    object Calender : Screen(

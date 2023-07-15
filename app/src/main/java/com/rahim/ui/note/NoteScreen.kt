@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.R
 import com.rahim.data.modle.note.NoteModel
@@ -32,7 +33,7 @@ import com.rahim.utils.resours.Resource
 @Composable
 fun NoteScreen(
     modifier: Modifier = Modifier,
-    viewModel: NoteViewModel,
+    viewModel: NoteViewModel= hiltViewModel(),
     onClickAdd: Boolean,
     isOpenDialog: (Boolean) -> Unit
 ) {

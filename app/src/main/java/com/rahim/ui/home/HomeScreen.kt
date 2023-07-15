@@ -1,5 +1,6 @@
 package com.rahim.ui.home
 
+import android.Manifest
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.rahim.R
 import com.rahim.data.alarm.AlarmManagement
 import com.rahim.data.modle.Rotin.Routine
@@ -29,21 +33,23 @@ import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.ItemRoutine
+import com.rahim.utils.base.view.ShowStatusBar
 import com.rahim.utils.base.view.TopBarRightAlign
 import com.rahim.utils.base.view.calculateHours
 import com.rahim.utils.base.view.calculateMinute
+import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.resours.Resource
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel,
+    viewModel: HomeViewModel= hiltViewModel(),
     onClickAdd: Boolean,
     isOpenDialog: (Boolean) -> Unit,
 ) {
+    ShowStatusBar(true)
     val context = LocalContext.current
     val alarmManagement = AlarmManagement()
-
     val currentYer = viewModel.getCurrentTime()[0]
     val currentMonth = viewModel.getCurrentTime()[1]
     val currentDay = viewModel.getCurrentTime()[2]

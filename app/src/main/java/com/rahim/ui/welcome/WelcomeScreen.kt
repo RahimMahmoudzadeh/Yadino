@@ -1,15 +1,18 @@
 package com.rahim.ui.welcome
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -28,19 +31,21 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.rahim.R
-import com.rahim.data.modle.screen.WelcomeScreen
+import com.rahim.data.modle.screen.WelcomeScreenModel
 import com.rahim.ui.home.HomeViewModel
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.GradientButton
+import com.rahim.utils.base.view.ShowStatusBar
 import com.rahim.utils.navigation.Screen
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -48,78 +53,88 @@ import kotlinx.coroutines.launch
 @Composable
 fun WelcomeScreens(
     navController: NavController,
-    viewModel: HomeViewModel,
+    viewModel: WelcomeViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
+    ShowStatusBar(true)
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
-    val clickNext = rememberSaveable { mutableStateOf(true) }
-    if (viewModel.isShowWelcomeScreen() && clickNext.value) {
-        navController.navigate(Screen.Home.route)
-        return
+    val clickNext = remember { mutableStateOf(viewModel.isShowWelcomeScreen()) }
+    var create by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(key1 = true) {
+        if (clickNext.value) {
+            navController.navigate(Screen.Home.route) {
+                popUpTo(0)
+            }
+            create = false
+            return@LaunchedEffect
+        } else {
+            create = true
+        }
     }
-    val listItemWelcome = listOf(
-        WelcomeScreen(
-            stringResource(id = R.string.hello),
-            stringResource(id = R.string.welcome_yadino),
-            stringResource(id = R.string.next),
-            22.sp,
-            R.drawable.welcome1
-        ),
-        WelcomeScreen(
-            stringResource(id = R.string.welcome_2),
-            stringResource(id = R.string.welcome_help),
-            stringResource(
-                id =
-                R.string.next
+    if (create) {
+        val listItemWelcome = listOf(
+            WelcomeScreenModel(
+                stringResource(id = R.string.hello),
+                stringResource(id = R.string.welcome_yadino),
+                stringResource(id = R.string.next),
+                22.sp,
+                R.drawable.welcome1
             ),
-            22.sp,
-            R.drawable.welcome2
-        ),
-        WelcomeScreen(
-            stringResource(id = R.string.yadino_life),
-            stringResource(id = R.string.energetic_yadino),
-            stringResource(id = R.string.lets_go),
-            22.sp,
-            R.drawable.welcome3
+            WelcomeScreenModel(
+                stringResource(id = R.string.welcome_2),
+                stringResource(id = R.string.welcome_help),
+                stringResource(
+                    id =
+                    R.string.next
+                ),
+                22.sp,
+                R.drawable.welcome2
+            ),
+            WelcomeScreenModel(
+                stringResource(id = R.string.yadino_life),
+                stringResource(id = R.string.energetic_yadino),
+                stringResource(id = R.string.lets_go),
+                22.sp,
+                R.drawable.welcome3
+            )
         )
-    )
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        Column(modifier = modifier) {
-            HorizontalPager(
-                modifier = Modifier.fillMaxHeight(0.87f),
-                count = 3,
-                state = pagerState
-            ) { page ->
-                Welcome(
-                    textWelcomeTop = listItemWelcome[page].textWelcomeTop,
-                    textWelcomeBottom = listItemWelcome[page].textWelcomeBottom,
-                    textSizeBottom = listItemWelcome[page].textSizeBottom,
-                    imageRes = listItemWelcome[page].imageRes,
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+            Column(modifier = modifier) {
+                HorizontalPager(
+                    modifier = Modifier.fillMaxHeight(0.87f),
+                    count = 3,
+                    state = pagerState
+                ) { page ->
+                    Welcome(
+                        textWelcomeTop = listItemWelcome[page].textWelcomeTop,
+                        textWelcomeBottom = listItemWelcome[page].textWelcomeBottom,
+                        textSizeBottom = listItemWelcome[page].textSizeBottom,
+                        imageRes = listItemWelcome[page].imageRes,
+                    )
+                }
+                GradientButton(
+                    text = listItemWelcome[pagerState.currentPage].textButton,
+                    gradient = Brush.horizontalGradient(com.rahim.utils.base.view.gradientColors),
+                    modifier = Modifier
+                        .padding(top = 28.dp, end = 32.dp, start = 32.dp, bottom = 8.dp),
+                    textSize = 18.sp,
+                    onClick = {
+                        scope.launch {
+                            if (pagerState.currentPage == 2) {
+                                viewModel.saveShowWelcome(true)
+                                clickNext.value = true
+                                navController.navigate(Screen.Home.route)
+                            }
+                            pagerState.scrollToPage(pagerState.currentPage.plus(1))
+                        }
+                    }
                 )
             }
-            GradientButton(
-                text = listItemWelcome[pagerState.currentPage].textButton,
-                gradient = Brush.horizontalGradient(com.rahim.utils.base.view.gradientColors),
-                modifier = Modifier
-                    .padding(top = 28.dp, end = 32.dp, start = 32.dp, bottom = 8.dp),
-                textSize = 18.sp,
-                onClick = {
-                    scope.launch {
-                        if (pagerState.currentPage == 2) {
-                            viewModel.saveShowWelcome(true)
-                            clickNext.value = false
-                            navController.navigate(Screen.Home.route)
-                        }
-                        pagerState.scrollToPage(pagerState.currentPage.plus(1))
-                    }
-                }
-            )
         }
     }
 }
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun Welcome(
     modifier: Modifier = Modifier,

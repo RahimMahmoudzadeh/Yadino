@@ -51,16 +51,17 @@ fun YadinoApp(
         android.Manifest.permission.POST_NOTIFICATIONS
     )
 
-    if (destination != Screen.Welcome.route) {
+    if (destination != Screen.Welcome.route && destination != Screen.Splash.route) {
         BottomNavigation(backgroundColor = MaterialTheme.colorScheme.onBackground) {
-
-
             screenItems.forEach { screen ->
                 BottomNavigationItem(
                     icon = {
                         Icon(
                             tint = MaterialTheme.colorScheme.secondary,
-                            painter = painterResource(id = if (destination == screen.route) screen.iconSelected else screen.iconNormal),
+                            painter = painterResource(
+                                id = if (destination == screen.route) screen.iconSelected
+                                    ?: 0 else screen.iconNormal ?: 0
+                            ),
                             contentDescription = null
                         )
                     },

@@ -1,6 +1,7 @@
 package com.rahim.ui.main
 
 import android.Manifest
+import android.R
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -22,12 +23,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.data.notification.NotificationManager
+import com.rahim.ui.home.HomeViewModel
 import com.rahim.ui.navigation.NavGraph
 import com.rahim.ui.navigation.YadinoApp
 import com.rahim.ui.theme.BalticSea
@@ -57,24 +60,24 @@ class MainActivity : ComponentActivity() {
         setContent {
             val systemUiController = rememberSystemUiController()
             val useDarkIcons = !isSystemInDarkTheme()
+            var openDialog by rememberSaveable { mutableStateOf(StateOpenDialog(false, "")) }
+            val notificationPermissionState =
+                rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
+            val navController = rememberNavController()
+            val currentDestination = navController.currentBackStackEntry?.destination?.route
 
-//            DisposableEffect(systemUiController, useDarkIcons) {
+            DisposableEffect(systemUiController, useDarkIcons) {
                 systemUiController.setSystemBarsColor(
                     color = if (useDarkIcons) Zircon else BalticSea,
                     darkIcons = useDarkIcons
-                ){
-                   Color.Black
+                ) {
+                    Color.Black
                 }
-//                onDispose {}
-//            }
-            var openDialog by rememberSaveable { mutableStateOf(StateOpenDialog(false, "")) }
-            val notificationPermissionState = rememberPermissionState(
-                Manifest.permission.POST_NOTIFICATIONS
-            )
+                onDispose {}
+            }
 
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 YadinoTheme {
-                    val navController = rememberNavController()
                     Surface(
                         modifier = Modifier
                             .fillMaxSize()
@@ -87,8 +90,6 @@ class MainActivity : ComponentActivity() {
                                 }
                             }, containerColor = MaterialTheme.colorScheme.background
                         ) { innerPadding ->
-                            val currentDestination =
-                                navController.currentBackStackEntry?.destination?.route
                             NavGraph(
                                 navController,
                                 innerPadding = innerPadding,

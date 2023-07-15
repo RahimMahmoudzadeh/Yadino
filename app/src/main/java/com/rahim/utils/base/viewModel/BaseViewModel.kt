@@ -5,14 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.rahim.data.repository.base.BaseRepository
 import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 open class BaseViewModel @Inject constructor(
-    private val sharedPreferencesRepository: SharedPreferencesRepository,
+    val sharedPreferencesRepository: SharedPreferencesRepository,
     private val baseRepository: BaseRepository
 ) :
     ViewModel() {
@@ -30,11 +32,7 @@ open class BaseViewModel @Inject constructor(
         MutableStateFlow("")
     val flowNameDay: StateFlow<String> = _flowNameDay
 
-    fun saveShowWelcome(isShow: Boolean) {
-        sharedPreferencesRepository.saveShowWelcome(isShow)
-    }
-
-    fun isShowWelcomeScreen(): Boolean = sharedPreferencesRepository.isShowWelcomeScreen()
+    fun isShowWelcomeScreen() = sharedPreferencesRepository.isShowWelcomeScreen()
 
     fun getCurrentTime(): List<Int> = baseRepository.getCurrentTime()
 

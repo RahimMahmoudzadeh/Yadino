@@ -34,15 +34,9 @@ import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
-import com.rahim.ui.dialog.DialogAddNote
-import com.rahim.ui.dialog.DialogAddRoutine
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
-import com.rahim.ui.theme.Zircon
-import com.rahim.utils.navigation.Screen
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 val gradientColors = listOf(Purple, PurpleGrey)
 
@@ -242,5 +236,14 @@ fun goSettingPermission(context: Context) {
         Uri.fromParts("package", context.packageName, null)
     )
     ContextCompat.startActivity(context, intent, null)
+}
+
+@Composable
+fun ShowStatusBar(isShow: Boolean) {
+    rememberSystemUiController().apply {
+        isStatusBarVisible = isShow
+        isNavigationBarVisible = isShow
+        isSystemBarsVisible = isShow
+    }
 }
 
