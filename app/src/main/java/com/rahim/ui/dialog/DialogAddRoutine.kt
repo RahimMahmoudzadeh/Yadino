@@ -61,6 +61,8 @@ fun DialogAddRoutine(
     openDialog: (Boolean) -> Unit,
     routine: (Routine) -> Unit,
 ) {
+    val maxName = 22
+    val maxExplanation = 40
     var routineName by rememberSaveable { mutableStateOf("") }
     var routineExplanation by rememberSaveable { mutableStateOf("") }
     val checkedStateAllDay = remember { mutableStateOf(false) }
@@ -122,8 +124,8 @@ fun DialogAddRoutine(
                                 ),
                             value = routineName,
                             onValueChange = {
-                                isErrorName.value = it.length > 22
-                                routineName = it
+                                isErrorName.value = it.length >= maxName
+                                routineName = if (it.length <= maxName) it else routineName
                             },
                             placeholder = {
                                 Text(
@@ -131,11 +133,12 @@ fun DialogAddRoutine(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             },
-                            colors = TextFieldDefaults.textFieldColors(
-                                containerColor = MaterialTheme.colorScheme.background,
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.background,
                                 focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent
+                                unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
+                                disabledIndicatorColor = MaterialTheme.colorScheme.background,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.background
                             )
                         )
                         if (isErrorName.value) {
@@ -160,8 +163,9 @@ fun DialogAddRoutine(
                                 ),
                             value = if (routineExplanation.isNullOrEmpty()) "" else routineExplanation,
                             onValueChange = {
-                                isErrorRoutine.value = it.length > 40
-                                routineExplanation = it
+                                isErrorRoutine.value = it.length >= maxExplanation
+                                routineExplanation =
+                                    if (it.length <= maxExplanation) it else routineExplanation
                             },
                             placeholder = {
                                 Text(
@@ -169,11 +173,12 @@ fun DialogAddRoutine(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             },
-                            colors = TextFieldDefaults.textFieldColors(
-                                containerColor = MaterialTheme.colorScheme.background,
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.background,
                                 focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent
+                                unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
+                                disabledIndicatorColor = MaterialTheme.colorScheme.background,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.background
                             )
                         )
                         if (isErrorRoutine.value) {
@@ -328,6 +333,8 @@ fun DialogAddRoutine(
                                         ))
                                         routineName = ""
                                         routineExplanation = ""
+                                        isErrorName.value=false
+                                        isErrorRoutine.value=false
                                         openDialog(false)
                                     }
                                 })
@@ -336,6 +343,8 @@ fun DialogAddRoutine(
                                 routineName = ""
                                 routineExplanation = ""
                                 time.value = "12:00"
+                                isErrorName.value=false
+                                isErrorRoutine.value=false
                                 openDialog(false)
                             }) {
                                 Text(
