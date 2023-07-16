@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -67,7 +66,7 @@ fun DialogAddRoutine(
     var routineExplanation by rememberSaveable { mutableStateOf("") }
     val checkedStateAllDay = remember { mutableStateOf(false) }
     val isErrorName = remember { mutableStateOf(false) }
-    val isErrorRoutine = remember { mutableStateOf(false) }
+    val isErrorExplanation = remember { mutableStateOf(false) }
     val time = rememberSaveable { mutableStateOf("12:00") }
     val alarmDialogState = rememberMaterialDialogState()
 
@@ -163,7 +162,7 @@ fun DialogAddRoutine(
                                 ),
                             value = if (routineExplanation.isNullOrEmpty()) "" else routineExplanation,
                             onValueChange = {
-                                isErrorRoutine.value = it.length >= maxExplanation
+                                isErrorExplanation.value = it.length >= maxExplanation
                                 routineExplanation =
                                     if (it.length <= maxExplanation) it else routineExplanation
                             },
@@ -181,7 +180,7 @@ fun DialogAddRoutine(
                                 unfocusedContainerColor = MaterialTheme.colorScheme.background
                             )
                         )
-                        if (isErrorRoutine.value) {
+                        if (isErrorExplanation.value) {
                             Text(
                                 modifier = Modifier.padding(start = 16.dp),
                                 text = stringResource(id = R.string.length_textFiled_explanation_routine),
@@ -334,7 +333,7 @@ fun DialogAddRoutine(
                                         routineName = ""
                                         routineExplanation = ""
                                         isErrorName.value=false
-                                        isErrorRoutine.value=false
+                                        isErrorExplanation.value=false
                                         openDialog(false)
                                     }
                                 })
@@ -344,7 +343,7 @@ fun DialogAddRoutine(
                                 routineExplanation = ""
                                 time.value = "12:00"
                                 isErrorName.value=false
-                                isErrorRoutine.value=false
+                                isErrorExplanation.value=false
                                 openDialog(false)
                             }) {
                                 Text(

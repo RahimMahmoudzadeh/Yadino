@@ -1,6 +1,5 @@
 package com.rahim.ui.dialog
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,7 +14,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -28,7 +26,6 @@ import com.rahim.data.modle.note.NoteModel
 import com.rahim.ui.theme.*
 import com.rahim.utils.base.view.DialogButtonBackground
 import com.rahim.utils.base.view.gradientColors
-import com.rahim.utils.enums.StateNote
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,9 +40,13 @@ fun DialogAddNote(
     openDialog: (Boolean) -> Unit,
     note: (NoteModel) -> Unit
 ) {
+    val maxName = 22
+    val maxExplanation = 40
     var state by remember { mutableStateOf(0) }
     var nameNote by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
+    val isErrorName = remember { mutableStateOf(false) }
+    val isErrorExplanation = remember { mutableStateOf(false) }
 
     if (noteUpdate != null) {
         state = noteUpdate.state
@@ -99,7 +100,9 @@ fun DialogAddNote(
                                 ),
                             value = nameNote,
                             onValueChange = {
-                                nameNote = it
+                                isErrorName.value = it.length >= maxName
+                                nameNote =
+                                    if (it.length <= maxName) it else nameNote
                             },
                             placeholder = {
                                 Text(
@@ -114,6 +117,15 @@ fun DialogAddNote(
                                 disabledIndicatorColor = Color.Transparent
                             )
                         )
+                        if (isErrorName.value) {
+                            Text(
+                                modifier = Modifier.padding(start = 16.dp),
+                                text = if (nameNote.isEmpty()) stringResource(id = R.string.emptyField) else stringResource(
+                                    id = R.string.length_textFiled_name_routine
+                                ),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
                         TextField(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -126,7 +138,9 @@ fun DialogAddNote(
                                 ),
                             value = description,
                             onValueChange = {
-                                description = it
+                                isErrorExplanation.value = it.length >= maxExplanation
+                                description =
+                                    if (it.length <= maxExplanation) it else description
                             },
                             placeholder = {
                                 Text(
@@ -141,6 +155,13 @@ fun DialogAddNote(
                                 disabledIndicatorColor = Color.Transparent
                             )
                         )
+                        if (isErrorExplanation.value) {
+                            Text(
+                                modifier = Modifier.padding(start = 16.dp),
+                                text = stringResource(id = R.string.length_textFiled_explanation_routine),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
                         Row(modifier = Modifier.padding(top = 20.dp, start = 12.dp, end = 10.dp)) {
                             Text(
                                 fontSize = 18.sp,
@@ -242,6 +263,8 @@ fun DialogAddNote(
                                     openDialog(false)
                                     nameNote = ""
                                     description = ""
+                                    isErrorExplanation.value = false
+                                    isErrorName.value = false
                                     state = 0
                                 }
                             )
@@ -250,6 +273,8 @@ fun DialogAddNote(
                                 nameNote = ""
                                 description = ""
                                 state = 0
+                                isErrorExplanation.value = false
+                                isErrorName.value = false
                                 openDialog(false)
                             }) {
                                 Text(
