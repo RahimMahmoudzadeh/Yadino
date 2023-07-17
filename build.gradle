@@ -1,7 +1,7 @@
 buildscript {
     ext {
         compose_version = '1.4.3'
-        core_ktx = "1.10.1"
+        core_ktx = "1.12.0-alpha05"
         activity_compose = "1.7.1"
         junit = "4.13.2"
         junit_test = "1.1.5"

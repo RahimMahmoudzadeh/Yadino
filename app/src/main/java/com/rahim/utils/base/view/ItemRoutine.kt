@@ -12,6 +12,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rahim.R
@@ -75,7 +76,7 @@ fun ItemRoutine(
                     .padding(end = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Column(verticalArrangement = Arrangement.SpaceBetween) {
+                Column(verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.weight(0.3f)) {
                     Checkbox(
                         checked = checkBox.value,
                         onCheckedChange = {
@@ -104,7 +105,7 @@ fun ItemRoutine(
                     }
                 }
                 Column(
-                    modifier = Modifier.padding(top = 12.dp),
+                    modifier = Modifier.padding(top = 12.dp).weight(0.7f),
                     horizontalAlignment = Alignment.End
                 ) {
                     Text(
@@ -116,10 +117,13 @@ fun ItemRoutine(
                     )
                     Row(modifier = Modifier.padding(top = 12.dp)) {
                         Text(
+                            textAlign = TextAlign.End,
+                            modifier = Modifier.weight(0.7f).padding(bottom = 14.dp, end = 4.dp),
                             text = if (routine.explanation.isNullOrEmpty()) stringResource(id = R.string.empty) + " " else routine.explanation.toString() + " ",
                             color = MaterialTheme.colorScheme.secondaryContainer
                         )
                         Text(
+                            modifier = Modifier.weight(0.3f),
                             text = stringResource(id = R.string.note),
                             color = MaterialTheme.colorScheme.secondaryContainer
                         )
