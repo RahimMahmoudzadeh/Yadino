@@ -87,7 +87,7 @@ fun DialogAddRoutine(
                 .fillMaxWidth()
                 .padding(horizontal = 22.dp)
                 .border(
-                    1.dp,
+                    2.dp,
                     brush = Brush.verticalGradient(gradientColors),
                     shape = RoundedCornerShape(8.dp)
                 ), onDismissRequest = {
@@ -332,8 +332,8 @@ fun DialogAddRoutine(
                                         ))
                                         routineName = ""
                                         routineExplanation = ""
-                                        isErrorName.value=false
-                                        isErrorExplanation.value=false
+                                        isErrorName.value = false
+                                        isErrorExplanation.value = false
                                         openDialog(false)
                                     }
                                 })
@@ -342,8 +342,8 @@ fun DialogAddRoutine(
                                 routineName = ""
                                 routineExplanation = ""
                                 time.value = "12:00"
-                                isErrorName.value=false
-                                isErrorExplanation.value=false
+                                isErrorName.value = false
+                                isErrorExplanation.value = false
                                 openDialog(false)
                             }) {
                                 Text(
@@ -357,15 +357,14 @@ fun DialogAddRoutine(
                                 )
                             }
                         }
+                        ShowTimePicker(alarmDialogState) {
+                            time.value =
+                                it.hour.toString() + ":" + if (it.minute.toString().length == 1) "0" + it.minute else it.minute
+                        }
                     }
                 }
             }
         }
-    }
-
-    ShowTimePicker(alarmDialogState) {
-        time.value =
-            it.hour.toString() + ":" + if (it.minute.toString().length == 1) "0" + it.minute else it.minute
     }
 }
 
@@ -374,7 +373,7 @@ fun DialogAddRoutine(
 @Composable
 fun ShowTimePicker(dialogState: MaterialDialogState, time: (LocalTime) -> Unit) {
     MaterialDialog(properties = DialogProperties(dismissOnClickOutside = false),
-        border = BorderStroke(1.dp, Brush.horizontalGradient(gradientColors)),
+        border = BorderStroke(2.dp, Brush.horizontalGradient(gradientColors)),
         backgroundColor = MaterialTheme.colorScheme.background,
         dialogState = dialogState,
         buttons = {

@@ -64,7 +64,7 @@ fun DialogAddNote(
                     .fillMaxWidth()
                     .padding(horizontal = 22.dp)
                     .border(
-                        1.dp,
+                        2.dp,
                         brush = Brush.verticalGradient(gradientColors),
                         shape = RoundedCornerShape(8.dp)
                     ),
