@@ -236,36 +236,40 @@ fun DialogAddNote(
                                 width = 0.3f,
                                 height = 40.dp,
                                 onClick = {
-                                    note(
-                                        if (noteUpdate != null) {
-                                            NoteModel(
-                                                id = noteUpdate.id,
-                                                name = nameNote,
-                                                description = description,
-                                                state = state,
-                                                dayName = currentDayName,
-                                                yerNumber = currentYer,
-                                                monthNumber = currentMonth,
-                                                dayNumber = currentDay
-                                            )
-                                        } else {
-                                            NoteModel(
-                                                name = nameNote,
-                                                description = description,
-                                                state = state,
-                                                dayName = currentDayName,
-                                                yerNumber = currentYer,
-                                                monthNumber = currentMonth,
-                                                dayNumber = currentDay
-                                            )
-                                        }
-                                    )
-                                    openDialog(false)
-                                    nameNote = ""
-                                    description = ""
-                                    isErrorExplanation.value = false
-                                    isErrorName.value = false
-                                    state = 0
+                                    if (nameNote.isEmpty()) {
+                                        isErrorName.value = true
+                                    } else {
+                                        note(
+                                            if (noteUpdate != null) {
+                                                NoteModel(
+                                                    id = noteUpdate.id,
+                                                    name = nameNote,
+                                                    description = description,
+                                                    state = state,
+                                                    dayName = currentDayName,
+                                                    yerNumber = currentYer,
+                                                    monthNumber = currentMonth,
+                                                    dayNumber = currentDay
+                                                )
+                                            } else {
+                                                NoteModel(
+                                                    name = nameNote,
+                                                    description = description,
+                                                    state = state,
+                                                    dayName = currentDayName,
+                                                    yerNumber = currentYer,
+                                                    monthNumber = currentMonth,
+                                                    dayNumber = currentDay
+                                                )
+                                            }
+                                        )
+                                        openDialog(false)
+                                        nameNote = ""
+                                        description = ""
+                                        isErrorExplanation.value = false
+                                        isErrorName.value = false
+                                        state = 0
+                                    }
                                 }
                             )
                             Spacer(modifier = Modifier.width(10.dp))
