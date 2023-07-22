@@ -42,6 +42,9 @@ class AlarmManagement : CalculateDate {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val t = calculateTime(yer, month, dayOfYer, hours, minute)
+        if (t.timeInMillis < System.currentTimeMillis())
+            return
+
         Timber.tag("time").d(t.toString())
         Timber.tag("time").d("current time ->${Calendar.getInstance().time}")
         Timber.tag("time").d("current time yadino ->${t.time}")
