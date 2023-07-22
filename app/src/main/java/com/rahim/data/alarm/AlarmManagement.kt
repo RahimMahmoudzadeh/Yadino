@@ -43,6 +43,8 @@ class AlarmManagement : CalculateDate {
         )
         val t = calculateTime(yer, month, dayOfYer, hours, minute)
         Timber.tag("time").d(t.toString())
+        Timber.tag("time").d("current time ->${Calendar.getInstance().time}")
+        Timber.tag("time").d("current time yadino ->${t.time}")
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
             t.timeInMillis,
@@ -64,19 +66,17 @@ class AlarmManagement : CalculateDate {
         dayOfYer?.let {
             persianCalender.setShDay(it)
         }
-        Timber.tag("time")
-            .d("day in yer-> ${persianCalender.getDayInYear(month ?: 1, dayOfYer ?: 1)}")
+        val month = persianCalender.grgMonth
+        Timber.tag("time").d(month.toString())
         val calendar: Calendar = Calendar.getInstance().apply {
-            set(Calendar.MONTH, persianCalender.grgMonth)
+            set(Calendar.MONTH, month.minus(1))
             set(Calendar.YEAR, persianCalender.grgYear)
             set(Calendar.DAY_OF_MONTH, persianCalender.grgDay)
             set(Calendar.HOUR_OF_DAY, hours)
-            set(Calendar.HOUR, hours)
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
         }
         return calendar
     }
-
 }

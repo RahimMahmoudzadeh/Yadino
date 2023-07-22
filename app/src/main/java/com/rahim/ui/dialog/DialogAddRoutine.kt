@@ -402,6 +402,7 @@ fun ShowTimePicker(dialogState: MaterialDialogState, time: (LocalTime) -> Unit) 
                 selectorColor = Purple,
                 headerTextColor = PurpleGrey
             ),
+            title = "  ",
             timeRange = LocalTime.MIDNIGHT..LocalTime.MAX,
             is24HourClock = true
         ) { time ->
