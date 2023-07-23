@@ -9,6 +9,23 @@ plugins {
 }
 
 android {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def storeFileAddress = properties.getProperty('storeFileAddress')
+    def storePasswordProperties = properties.getProperty('storePassword')
+    def keyAliasProperties = properties.getProperty('keyAlias')
+    def keyPasswordProperties = properties.getProperty('keyPassword')
+
+
+    signingConfigs {
+        release {
+            storeFile file(storeFileAddress)
+            storePassword storePasswordProperties
+            keyAlias keyAliasProperties
+            keyPassword keyPasswordProperties
+        }
+    }
+
     namespace 'com.rahim'
     compileSdk 34
 
@@ -32,8 +49,10 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     flavorDimensions "rahim"
