@@ -104,7 +104,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_aware"
 
 
-
     // Import the BoM for the Firebase platform
     implementation platform("com.google.firebase:firebase-bom:$firebase")
 
@@ -135,4 +134,8 @@ dependencies {
 
     //systemUiController
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_permissions"
+
+    //lottie-compose
+    implementation "com.airbnb.android:lottie-compose:$lottie_compose"
+
 }

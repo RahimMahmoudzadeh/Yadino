@@ -15,6 +15,7 @@ import com.rahim.data.alarm.AlarmSong
 import com.rahim.ui.main.MainActivity
 import com.rahim.ui.wakeup.WakeupActivity
 import com.rahim.utils.Constants.CHANNEL_ID
+import com.rahim.utils.Constants.TITLE_TASK
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -55,7 +56,9 @@ class NotificationManager @Inject constructor() : AlarmSong {
     }
 
     fun createFullNotification(textTitle: String, textContent: String, context: Context) {
-        val fullScreenIntent = Intent(context, WakeupActivity::class.java)
+        val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {
+            putExtra(TITLE_TASK,textTitle)
+        }
         val fullScreenPendingIntent = PendingIntent.getActivity(
             context, 0,
             fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE

@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import com.rahim.data.notification.NotificationManager
-import com.rahim.ui.wakeup.WakeupActivity
 import com.rahim.utils.Constants.ALARM_MESSAGE
 import com.rahim.utils.Constants.ALARM_NAME
 import timber.log.Timber
