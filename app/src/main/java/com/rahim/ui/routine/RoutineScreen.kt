@@ -48,6 +48,7 @@ import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.base.view.calculateHours
 import com.rahim.utils.base.view.calculateMinute
 import com.rahim.utils.base.view.gradientColors
+import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.enums.WeekName
 import com.rahim.utils.extention.calculateMonthName
 import com.rahim.utils.extention.calculateTimeFormat
@@ -59,7 +60,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun RoutineScreen(
     modifier: Modifier = Modifier,
-    viewModel: RoutineViewModel= hiltViewModel(),
+    viewModel: RoutineViewModel = hiltViewModel(),
     onClickAdd: Boolean,
     isOpenDialog: (Boolean) -> Unit,
 ) {
@@ -309,47 +310,47 @@ private fun ItemTimeDate(
         text = "$currentYer $currentMonth",
         color = MaterialTheme.colorScheme.primary
     )
-    Row(modifier = Modifier.padding(top = 16.dp)) {
+    Row(
+        modifier = Modifier
+            .padding(top = 18.dp, end = 50.dp, start = 50.dp)
+            .fillMaxWidth(),
+        horizontalArrangement=Arrangement.SpaceBetween
+    ) {
         Text(
-            modifier = Modifier.padding(end = 4.dp),
-            fontSize = 10.sp,
-            text = WeekName.FRIDAY.nameDay,
+            modifier = Modifier.padding(start = 13.dp),
+            fontSize = 14.sp,
+            text = HalfWeekName.FRIDAY.nameDay,
             color = MaterialTheme.colorScheme.primary
         )
         Text(
-            modifier = Modifier.padding(start = 8.dp, end = 0.dp),
-            fontSize = 10.sp,
-            text = WeekName.THURSDAY.nameDay,
+            fontSize = 14.sp,
+            text = HalfWeekName.THURSDAY.nameDay,
             color = MaterialTheme.colorScheme.primary
         )
         Text(
-            modifier = Modifier.padding(start = 16.dp, end = 4.dp),
-            fontSize = 10.sp,
-            text = WeekName.WEDNESDAY.nameDay,
+            fontSize = 14.sp,
+            text = HalfWeekName.WEDNESDAY.nameDay,
             color = MaterialTheme.colorScheme.primary
         )
         Text(
-            modifier = Modifier.padding(start = 10.dp, end = 4.dp),
-            fontSize = 10.sp,
-            text = WeekName.TUESDAY.nameDay,
+            fontSize = 14.sp,
+            text = HalfWeekName.TUESDAY.nameDay,
             color = MaterialTheme.colorScheme.primary
         )
         Text(
-            modifier = Modifier.padding(start = 10.dp, end = 4.dp),
-            fontSize = 10.sp,
-            text = WeekName.MONDAY.nameDay,
+            fontSize = 14.sp,
+            text = HalfWeekName.MONDAY.nameDay,
             color = MaterialTheme.colorScheme.primary
         )
         Text(
-            modifier = Modifier.padding(start = 12.dp, end = 4.dp),
-            fontSize = 10.sp,
-            text = WeekName.SUNDAY.nameDay,
+            fontSize = 14.sp,
+            text = HalfWeekName.SUNDAY.nameDay,
             color = MaterialTheme.colorScheme.primary
         )
         Text(
-            modifier = Modifier.padding(start = 14.dp, end = 0.dp),
-            fontSize = 10.sp,
-            text = WeekName.SATURDAY.nameDay,
+            modifier = Modifier.padding( end = 12.dp, top = 3.dp),
+            fontSize = 12.sp,
+            text = HalfWeekName.SATURDAY.nameDay,
             color = MaterialTheme.colorScheme.primary
         )
     }
@@ -389,7 +390,7 @@ private fun ItemTimeDate(
                 })
             }
         }
-        IconButton(modifier = Modifier.padding(top = 10.dp, start = 10.dp), onClick = {
+        IconButton(modifier = Modifier.padding(top = 10.dp, start = 0.dp), onClick = {
             indexScroll(
                 if (index <= 6) {
                     0
@@ -444,7 +445,7 @@ private fun DayItems(
             .padding(
                 top = 12.dp, end = 9.dp
             )
-            .size(32.dp)
+            .size(34.dp)
             .clip(CircleShape)
             .background(
                 brush = if (dayChecked == timeData.dayNumber.toString()) {
@@ -460,7 +461,7 @@ private fun DayItems(
     ) {
         ClickableText(
             modifier = Modifier.padding(
-                top = 4.dp, start = if (dayChecked.length == 1) 11.dp else 7.dp
+                top = 4.dp, start = if (dayChecked.length == 1) 12.dp else 8.dp
             ),
             onClick = { dayCheckedNumber(timeData.dayNumber.toString()) },
             text = AnnotatedString(if (timeData.dayNumber != 0) timeData.dayNumber.toString() else ""),
