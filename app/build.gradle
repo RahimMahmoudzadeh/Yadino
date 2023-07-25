@@ -154,4 +154,8 @@ dependencies {
 
     //systemUiController
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_permissions"
+
+    //lottie-compose
+    implementation "com.airbnb.android:lottie-compose:$lottie_compose"
+
 }

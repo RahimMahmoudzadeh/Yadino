@@ -82,4 +82,6 @@
     <string name="can_you_delete">آیا می خواهید حذف کنید؟</string>
     <string name="setting">تنظیمات</string>
     <string name="better_performance_access">برای عملکرد بهتر نرم افزار لطفا اجازه دسترسی های لازم را بدهید</string>
+    <string name="my_firend">دوست خوبم</string>
+    <string name="forget_work"> !! یادت نره %1$s</string>
 </resources>
