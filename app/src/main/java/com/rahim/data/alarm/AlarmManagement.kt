@@ -4,18 +4,14 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import com.rahim.data.broadcast.YadinoBroadCastReceiver
 import com.rahim.data.date.CalculateDate
 import com.rahim.utils.Constants.ALARM_MESSAGE
 import com.rahim.utils.Constants.ALARM_NAME
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.util.Calendar
+import java.util.Random
 
 class AlarmManagement : CalculateDate {
     fun setAlarm(
@@ -35,9 +31,11 @@ class AlarmManagement : CalculateDate {
             intent.putExtra(ALARM_MESSAGE, message)
             intent.putExtra(ALARM_NAME, name)
         }
+        val intentId = Random().nextInt()
+
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            0,
+            intentId,
             alarmIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -45,7 +43,7 @@ class AlarmManagement : CalculateDate {
         if (t.timeInMillis < System.currentTimeMillis())
             return
 
-        Timber.tag("time").d(t.toString())
+        Timber.tag("time").d("calculateTime -> $t")
         Timber.tag("time").d("current time ->${Calendar.getInstance().time}")
         Timber.tag("time").d("current time yadino ->${t.time}")
         alarmManager.setExact(
@@ -70,7 +68,7 @@ class AlarmManagement : CalculateDate {
             persianCalender.setShDay(it)
         }
         val month = persianCalender.grgMonth
-        Timber.tag("time").d(month.toString())
+        Timber.tag("time").d("calculateTimeMonth -> $month")
         val calendar: Calendar = Calendar.getInstance().apply {
             set(Calendar.MONTH, month.minus(1))
             set(Calendar.YEAR, persianCalender.grgYear)
