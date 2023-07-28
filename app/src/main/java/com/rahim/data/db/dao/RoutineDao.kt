@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RoutineDao {
     @Insert()
-    suspend fun addRoutine(routine: Routine)
+    suspend fun addRoutine(routine: Routine):Long
 
     @Query("SELECT * FROM tbl_routine WHERE id =:id")
     suspend fun getRoutine(id: Int): Routine
@@ -23,7 +23,7 @@ interface RoutineDao {
     suspend fun removeAllRoutine(monthNumber: Int?, dayNumber: Int?, yerNumber: Int?)
 
     @Delete
-    suspend fun removeRoutine(routine: Routine)
+    suspend fun removeRoutine(routine: Routine):Int
 
     @Update
     suspend fun updateRoutine(routine: Routine)

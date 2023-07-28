@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import com.rahim.data.notification.NotificationManager
+import com.rahim.utils.Constants
 import com.rahim.utils.Constants.ALARM_MESSAGE
 import com.rahim.utils.Constants.ALARM_NAME
 import timber.log.Timber
@@ -22,10 +23,11 @@ class YadinoBroadCastReceiver() : BroadcastReceiver() {
         intent?.extras?.getString(ALARM_MESSAGE)?.let {
             val message=it
             val name=intent.extras?.getString(ALARM_NAME)
+            val alarmId=intent.extras?.getInt(Constants.ALARM_ID)
             val nothing = NotificationManager()
             context?.let {
                 Timber.tag("intentTitle").d("YadinoBroadCastReceiver-> $name")
-                nothing.createFullNotification(name.toString(), message, it)
+                nothing.createFullNotification(name.toString(), message, it,alarmId)
             }
         }
     }

@@ -15,12 +15,12 @@ class RoutineRepositoryImpl @Inject constructor(val appDatabase: AppDatabase) : 
     private val currentTimeYer = persianData.shYear
 
 
-    override suspend fun addRoutine(routine: Routine) {
-        appDatabase.routineDao().addRoutine(routine)
+    override suspend fun addRoutine(routine: Routine):Long {
+        return appDatabase.routineDao().addRoutine(routine)
     }
 
-    override suspend fun removeRoutine(routine: Routine) {
-        appDatabase.routineDao().removeRoutine(routine)
+    override suspend fun removeRoutine(routine: Routine):Int {
+       return appDatabase.routineDao().removeRoutine(routine)
     }
 
     override suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yerNumber: Int?) {

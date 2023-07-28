@@ -16,6 +16,7 @@ object Constants {
     //Key
     const val ALARM_MESSAGE = "alarm Message"
     const val ALARM_NAME = "alarm name"
+    const val ALARM_ID = "alarmId"
 
     //Value
     const val IS_ALARM = "is Alarm"

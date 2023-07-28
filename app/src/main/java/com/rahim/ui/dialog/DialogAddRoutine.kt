@@ -60,6 +60,7 @@ fun DialogAddRoutine(
     routineUpdate: Routine? = null,
     openDialog: (Boolean) -> Unit,
     routine: (Routine) -> Unit,
+    cancel: () -> Unit
 ) {
     val maxName = 22
     val maxExplanation = 40
@@ -346,6 +347,7 @@ fun DialogAddRoutine(
                                 isErrorName.value = false
                                 isErrorExplanation.value = false
                                 openDialog(false)
+                                cancel()
                             }) {
                                 Text(
                                     fontSize = 16.sp,

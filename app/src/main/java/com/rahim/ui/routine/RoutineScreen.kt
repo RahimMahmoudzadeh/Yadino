@@ -48,6 +48,8 @@ import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.base.view.calculateHours
 import com.rahim.utils.base.view.calculateMinute
 import com.rahim.utils.base.view.gradientColors
+import com.rahim.utils.base.view.removeRoutine
+import com.rahim.utils.base.view.setAlarm
 import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.enums.WeekName
 import com.rahim.utils.extention.calculateMonthName
@@ -82,6 +84,7 @@ fun RoutineScreen(
 
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
+
     var dayChecked by rememberSaveable { mutableStateOf("0") }
     var index by rememberSaveable { mutableStateOf(0) }
     val listState = rememberLazyListState()
@@ -91,6 +94,10 @@ fun RoutineScreen(
             listState.firstVisibleItemIndex
         }
     }
+
+    val addRoutineId by viewModel.addRoutine
+        .collectAsStateWithLifecycle(initialValue = 0L)
+
     Scaffold(
         topBar = {
             TopBarCenterAlign(
@@ -150,10 +157,10 @@ fun RoutineScreen(
     routineDeleteDialog.value?.let { routineFromDialog ->
         ErrorDialog(
             isOpen = true, isClickOk = {
-                routineDeleteDialog.value = null
                 if (it) {
-                    viewModel.deleteRoutine(routineFromDialog)
+                    removeRoutine(routineDeleteDialog.value, viewModel, alarmManagement, context)
                 }
+                routineDeleteDialog.value = null
             },
             message = stringResource(id = R.string.can_you_delete),
             okMessage = stringResource(
@@ -171,25 +178,24 @@ fun RoutineScreen(
         },
         routineUpdate = routineUpdateDialog.value,
         routine = {
-            alarmManagement.setAlarm(
-                context,
-                calculateHours(it.timeHours.toString()),
-                calculateMinute(it.timeHours.toString()),
-                it.yerNumber,
-                it.monthNumber,
-                it.dayNumber,
-                it.name,
-                it.explanation ?: ""
-            )
             if (routineUpdateDialog.value != null) {
+                routineUpdateDialog.value = null
                 viewModel.updateRoutine(it)
+                setAlarm(it, alarmManagement, context, it.id ?: 0)
             } else {
+                routineUpdateDialog.value = null
                 viewModel.addRoutine(it)
+                if (addRoutineId != 0L) {
+                    setAlarm(it, alarmManagement, context, addRoutineId.toInt())
+                }
             }
         },
         currentNumberDay = dayChecked.toInt(),
         currentNumberMonth = currentMonth,
-        currentNumberYer = currentYer
+        currentNumberYer = currentYer,
+        cancel = {
+            routineUpdateDialog.value = null
+        }
     )
 }
 
@@ -314,7 +320,7 @@ private fun ItemTimeDate(
         modifier = Modifier
             .padding(top = 18.dp, end = 50.dp, start = 50.dp)
             .fillMaxWidth(),
-        horizontalArrangement=Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             modifier = Modifier.padding(start = 13.dp),
@@ -348,7 +354,7 @@ private fun ItemTimeDate(
             color = MaterialTheme.colorScheme.primary
         )
         Text(
-            modifier = Modifier.padding( end = 12.dp, top = 3.dp),
+            modifier = Modifier.padding(end = 12.dp, top = 3.dp),
             fontSize = 12.sp,
             text = HalfWeekName.SATURDAY.nameDay,
             color = MaterialTheme.colorScheme.primary
