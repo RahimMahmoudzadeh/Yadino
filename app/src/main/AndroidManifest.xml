@@ -42,7 +42,7 @@
             android:showWhenLocked="true"
             android:turnScreenOn="true"
             android:showForAllUsers="true"
-            android:launchMode="singleInstance"
+            android:launchMode="standard"
             />
         <receiver
             android:name=".data.broadcast.YadinoBroadCastReceiver"

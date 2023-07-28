@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,8 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,10 +41,11 @@ import com.rahim.R
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.Constants.TITLE_TASK
 import com.rahim.utils.base.view.gradientColors
+import timber.log.Timber
 
 
 class WakeupActivity : ComponentActivity() {
-    private var titleText: String = "rahim"
+    private var titleText: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +87,7 @@ class WakeupActivity : ComponentActivity() {
                                 .padding(top = 10.dp)
                                 .fillMaxWidth(),
                             color = Color.White,
-                            text = resources.getString(R.string.forget_work, titleText.toString())
+                            text = resources.getString(R.string.forget_work, titleText)
                         )
                         Column(Modifier.clickable { finish() }) {
                             ShowAnimation(isPlaying, speed, composition)
@@ -102,6 +99,7 @@ class WakeupActivity : ComponentActivity() {
     }
 
     private fun getIntentResult() {
+        Timber.tag("intentTitle").d(intent.extras?.getString(TITLE_TASK))
         titleText = intent.getStringExtra(TITLE_TASK).toString()
     }
 

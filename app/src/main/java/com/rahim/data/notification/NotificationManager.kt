@@ -20,6 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.Random
 import javax.inject.Inject
 
@@ -56,8 +57,10 @@ class NotificationManager @Inject constructor() : AlarmSong {
     }
 
     fun createFullNotification(textTitle: String, textContent: String, context: Context) {
+        Timber.tag("intentTitle").d("notification-> $textTitle")
+
         val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {
-            putExtra(TITLE_TASK,textTitle)
+            putExtra(TITLE_TASK, textTitle)
         }
         val fullScreenPendingIntent = PendingIntent.getActivity(
             context, 0,
