@@ -40,7 +40,7 @@ class RoutineRepositoryImpl @Inject constructor(
                     currentTimeYer,
                     "12:00",
                     false,
-                    explanation = "!!!من یک روتین تستی هستم لطفا من را به چپ بکشید",
+                    explanation = "من یک روتین تستی هستم لطفا من را به چپ بکشید",
                     isSample = true
                 )
             } else {
@@ -53,7 +53,7 @@ class RoutineRepositoryImpl @Inject constructor(
                     currentTimeYer,
                     "12:00",
                     false,
-                    explanation = "!!!من یک روتین تستی هستم لطفا من را به راست بکشید",
+                    explanation = "من یک روتین تستی هستم لطفا من را به راست بکشید",
                     isSample = true
                 )
             }

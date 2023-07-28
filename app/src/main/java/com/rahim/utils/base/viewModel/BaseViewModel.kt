@@ -48,4 +48,9 @@ open class BaseViewModel @Inject constructor(
             sharedPreferencesRepository.isShowSampleRoutine(isShow)
         }
     }
+    fun showSampleNote(isShow:Boolean){
+        viewModelScope.launch {
+            sharedPreferencesRepository.isShowSampleNote(isShow)
+        }
+    }
 }

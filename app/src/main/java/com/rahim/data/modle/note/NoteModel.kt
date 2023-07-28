@@ -18,4 +18,5 @@ data class NoteModel(
     var dayNumber: Int?,
     var monthNumber: Int?,
     var yerNumber: Int?,
+    var isSample: Boolean = false
 ) : Parcelable

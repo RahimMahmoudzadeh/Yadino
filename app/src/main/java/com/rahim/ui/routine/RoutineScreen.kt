@@ -147,7 +147,12 @@ fun RoutineScreen(
                     }
                 })
             GetRoutines(routines,
-                routineUpdateDialog = { routineUpdateDialog.value = it },
+                routineUpdateDialog = {
+                    if (it.isSample)
+                        viewModel.showSampleRoutine(true)
+
+                    routineUpdateDialog.value = it
+                },
                 routineChecked = {
                     viewModel.updateRoutine(it)
                 },

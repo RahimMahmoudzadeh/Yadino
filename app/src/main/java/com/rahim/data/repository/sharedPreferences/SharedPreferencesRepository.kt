@@ -6,4 +6,5 @@ interface SharedPreferencesRepository {
     fun isShowWelcomeScreen(): Boolean
 
     fun isShowSampleRoutine(isShow: Boolean)
+    fun isShowSampleNote(isShow: Boolean)
 }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d02ee49899492489e74d711d5ca62933",
+    "identityHash": "7fed54b13adf566f3f9f4925cac10e2b",
     "entities": [
       {
         "tableName": "tbl_routine",
@@ -148,7 +148,7 @@
       },
       {
         "tableName": "tbl_note",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `isChecked` INTEGER NOT NULL, `state` INTEGER NOT NULL, `dayName` TEXT NOT NULL, `dayNumber` INTEGER, `monthNumber` INTEGER, `yerNumber` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `isChecked` INTEGER NOT NULL, `state` INTEGER NOT NULL, `dayName` TEXT NOT NULL, `dayNumber` INTEGER, `monthNumber` INTEGER, `yerNumber` INTEGER, `isSample` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -203,6 +203,12 @@
             "columnName": "yerNumber",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "isSample",
+            "columnName": "isSample",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -218,7 +224,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd02ee49899492489e74d711d5ca62933')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7fed54b13adf566f3f9f4925cac10e2b')"
     ]
   }
 }
