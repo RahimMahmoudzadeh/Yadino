@@ -57,6 +57,8 @@ import com.rahim.utils.extention.calculateTimeFormat
 import com.rahim.utils.resours.Resource
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -98,6 +100,11 @@ fun RoutineScreen(
     val addRoutineId by viewModel.addRoutine
         .collectAsStateWithLifecycle(initialValue = 0L)
 
+    checkDay(monthDay, dayChecked, coroutineScope, listState, index, {
+        index += it
+    }, {
+        dayChecked = it
+    })
     Scaffold(
         topBar = {
             TopBarCenterAlign(
@@ -105,15 +112,7 @@ fun RoutineScreen(
             )
         }, containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-        checkToday(monthDay) {
-            if (dayChecked == "0") {
-                dayChecked = it
-                index += calculateIndex(it, index, monthDay)
-                coroutineScope.launch {
-                    listState.animateScrollToItem(index)
-                }
-            }
-        }
+
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -207,6 +206,32 @@ fun RoutineScreen(
             routineUpdateDialog.value = null
         }
     )
+}
+
+fun checkDay(
+    monthDay: List<TimeData>,
+    dayChecked: String,
+    coroutineScope: CoroutineScope,
+    listState: LazyListState,
+    index: Int,
+    calculateIndex: (Int) -> Unit,
+    dayCheckedIsChecked: (String) -> Unit
+) {
+    coroutineScope.launch(Dispatchers.IO) {
+        var i = index
+        var day = dayChecked
+        checkToday(monthDay) {
+            if (day == "0") {
+                day = it
+                dayCheckedIsChecked(day)
+                i += calculateIndex(it, i, monthDay)
+                calculateIndex(i)
+                coroutineScope.launch(Dispatchers.Main) {
+                    listState.animateScrollToItem(i)
+                }
+            }
+        }
+    }
 }
 
 private fun calculateCurrentIndex(currentIndex: Int, previousIndex: Int): Int {

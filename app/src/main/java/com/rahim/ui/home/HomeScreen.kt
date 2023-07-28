@@ -63,9 +63,10 @@ fun HomeScreen(
 
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
-
-    val routines by viewModel.getCurrentRoutines()
+    viewModel.getCurrentRoutines()
+    val routines by viewModel.flowRoutines
         .collectAsStateWithLifecycle(initialValue = Resource.Success(emptyList()))
+
     val addRoutineId by viewModel.addRoutine
         .collectAsStateWithLifecycle(initialValue = 0L)
 
@@ -76,43 +77,66 @@ fun HomeScreen(
                 modifier, stringResource(id = R.string.hello_friend)
             )
         }, containerColor = MaterialTheme.colorScheme.background
-    ) {
-        Column(modifier = Modifier.padding(end = 16.dp, start = 16.dp, top = 25.dp)) {
-            setRoutine(currentYer, currentMonth, currentDay, it, routines, { checkedRoutine ->
-                viewModel.updateRoutine(checkedRoutine)
-                setAlarm(checkedRoutine, alarmManagement, context, checkedRoutine.id ?: 0)
-            }, { routineUpdate ->
-                if (routineUpdate.isSample)
-                    viewModel.showSampleRoutine(true)
+    ) { paddingValues ->
+        when (routines) {
+            is Resource.Loading -> {}
+            is Resource.Success -> {
+                routines.data?.let {
+                    if (it.isEmpty()) {
+                        EmptyHome(paddingValues)
+                    } else {
+                        ItemsHome(currentYer, currentMonth, currentDay,
+                            paddingValues,
+                            it,
+                            { checkedRoutine ->
+                                viewModel.updateRoutine(checkedRoutine)
+                                setAlarm(
+                                    checkedRoutine,
+                                    alarmManagement,
+                                    context,
+                                    checkedRoutine.id ?: 0
+                                )
+                            },
+                            { routineUpdate ->
+                                if (routineUpdate.isSample)
+                                    viewModel.showSampleRoutine(true)
 
-                routineUpdateDialog.value = routineUpdate
-            }, { deleteRoutine ->
-                if (deleteRoutine.isSample)
-                    viewModel.showSampleRoutine(true)
+                                routineUpdateDialog.value = routineUpdate
+                            },
+                            { deleteRoutine ->
+                                if (deleteRoutine.isSample)
+                                    viewModel.showSampleRoutine(true)
 
-                routineDeleteDialog.value = deleteRoutine
-            })
-            routineDeleteDialog.value?.let { routineFromDialog ->
-                ErrorDialog(
-                    isOpen = routineDeleteDialog.value != null,
-                    isClickOk = {
-                        if (it) {
-                            removeRoutine(
-                                routineDeleteDialog.value,
-                                viewModel,
-                                alarmManagement,
-                                context
-                            )
-                        }
-                        routineDeleteDialog.value = null
-                    },
-                    message = stringResource(id = R.string.can_you_delete),
-                    okMessage = stringResource(
-                        id = R.string.ok
-                    )
-                )
+                                routineDeleteDialog.value = deleteRoutine
+                            })
+                    }
+                }
+            }
+
+            is Resource.Error -> {
+
             }
         }
+    }
+    routineDeleteDialog.value?.let { routineFromDialog ->
+        ErrorDialog(
+            isOpen = routineDeleteDialog.value != null,
+            isClickOk = {
+                if (it) {
+                    removeRoutine(
+                        routineDeleteDialog.value,
+                        viewModel,
+                        alarmManagement,
+                        context
+                    )
+                }
+                routineDeleteDialog.value = null
+            },
+            message = stringResource(id = R.string.can_you_delete),
+            okMessage = stringResource(
+                id = R.string.ok
+            )
+        )
     }
     DialogAddRoutine(
         isOpen = onClickAdd || routineUpdateDialog.value != null,
@@ -143,44 +167,6 @@ fun HomeScreen(
         }
     )
 }
-
-@Composable
-fun setRoutine(
-    currentDay: Int,
-    currentMonth: Int,
-    currentYer: Int,
-    paddingValues: PaddingValues,
-    routines: Resource<List<Routine>>,
-    checkedRoutine: (Routine) -> Unit,
-    updateRoutine: (Routine) -> Unit,
-    deleteRoutine: (Routine) -> Unit
-) {
-    when (routines) {
-        is Resource.Loading -> {
-
-        }
-
-        is Resource.Success -> {
-            routines.data?.let {
-                if (it.isEmpty()) {
-                    EmptyHome(paddingValues)
-                } else {
-                    ItemsHome(currentYer, currentMonth, currentDay,
-                        paddingValues,
-                        it,
-                        { checkedRoutine(it) },
-                        { updateRoutine(it) },
-                        { deleteRoutine(it) })
-                }
-            }
-        }
-
-        is Resource.Error -> {
-
-        }
-    }
-}
-
 
 @Composable
 fun EmptyHome(paddingValues: PaddingValues) {
@@ -226,7 +212,7 @@ fun ItemsHome(
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .padding(horizontal = 12.dp)
+                .padding(horizontal = 28.dp, vertical = 25.dp)
                 .fillMaxWidth()
         ) {
             Text(
@@ -241,7 +227,7 @@ fun ItemsHome(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth(),
-            contentPadding = PaddingValues(top = 25.dp)
+            contentPadding = PaddingValues(top = 0.dp, start = 16.dp, end = 16.dp)
         ) {
             items(items = routines, itemContent = {
                 ItemRoutine(routine = it, onChecked = {

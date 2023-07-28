@@ -29,16 +29,23 @@ class HomeViewModel @Inject constructor(
 ) :
     BaseViewModel(sharedPreferencesRepository, baseRepository) {
     val addRoutine = MutableStateFlow(0L)
-    fun getCurrentRoutines(): Flow<Resource<List<Routine>>> = flow {
-        emit(Resource.Loading())
-        routineRepository.getCurrentRoutines().catch {
-            emit(Resource.Error(errorGetProses))
-        }.collect {
-            emit(Resource.Success(it))
+
+    private val _flowRoutines =
+        MutableStateFlow<Resource<List<Routine>>>(Resource.Success(emptyList()))
+    val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
+
+    fun getCurrentRoutines() {
+        viewModelScope.launch {
+            _flowRoutines.value = Resource.Loading()
+            routineRepository.getCurrentRoutines().catch {
+                _flowRoutines.value = Resource.Error(errorGetProses)
+            }.collect {
+                _flowRoutines.value = Resource.Success(it)
+            }
         }
     }
 
-    fun deleteRoutine(routine: Routine){
+    fun deleteRoutine(routine: Routine) {
         viewModelScope.launch {
             routineRepository.removeRoutine(routine)
         }
