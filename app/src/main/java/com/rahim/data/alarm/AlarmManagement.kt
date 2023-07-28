@@ -4,8 +4,10 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.provider.AlarmClock
 import com.rahim.data.broadcast.YadinoBroadCastReceiver
 import com.rahim.data.date.CalculateDate
+import com.rahim.utils.Constants.ALARM_ID
 import com.rahim.utils.Constants.ALARM_MESSAGE
 import com.rahim.utils.Constants.ALARM_NAME
 import saman.zamani.persiandate.PersianDate
@@ -13,7 +15,7 @@ import timber.log.Timber
 import java.util.Calendar
 import java.util.Random
 
-class AlarmManagement : CalculateDate {
+ class AlarmManagement : CalculateDate,Alarm {
     fun setAlarm(
         context: Context,
         hours: Int,
@@ -22,7 +24,8 @@ class AlarmManagement : CalculateDate {
         month: Int?,
         dayOfYer: Int?,
         name: String,
-        message: String
+        message: String,
+        alarmId:Int,
     ) {
 
         val alarmManager =
@@ -30,12 +33,12 @@ class AlarmManagement : CalculateDate {
         val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).let { intent ->
             intent.putExtra(ALARM_MESSAGE, message)
             intent.putExtra(ALARM_NAME, name)
+            intent.putExtra(ALARM_ID, alarmId)
         }
-        val intentId = Random().nextInt()
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            intentId,
+            alarmId,
             alarmIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -46,9 +49,8 @@ class AlarmManagement : CalculateDate {
         Timber.tag("time").d("calculateTime -> $t")
         Timber.tag("time").d("current time ->${Calendar.getInstance().time}")
         Timber.tag("time").d("current time yadino ->${t.time}")
-        alarmManager.setExact(
-            AlarmManager.RTC_WAKEUP,
-            t.timeInMillis,
+        alarmManager.setAlarmClock(
+            AlarmManager.AlarmClockInfo(t.timeInMillis, pendingIntent),
             pendingIntent
         )
     }
@@ -80,4 +82,10 @@ class AlarmManagement : CalculateDate {
         }
         return calendar
     }
+     override fun cancelAlarm(context: Context,idAlarm:Int?) {
+         val intent = Intent(context, YadinoBroadCastReceiver::class.java)
+         val pendingIntent = PendingIntent.getBroadcast(context, idAlarm?:0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
+         alarmManager!!.cancel(pendingIntent)
+     }
 }

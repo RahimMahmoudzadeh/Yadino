@@ -21,6 +21,6 @@ interface AlarmSong {
 //
 //    // play ringtone
 //    ringtone.play()
-    fun playRingtone(context:Context)
-    fun stopRingtone(ringtone: Ringtone?)
+    fun playRingtone(context:Context,alarmId: Int?)
+    fun stopRingtone(ringtone: Ringtone?,context:Context,alarmId: Int?)
 }

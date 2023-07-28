@@ -24,8 +24,8 @@ buildscript {
         material = "1.4.1"
         espresso_core = "3.5.1"
         datetime = "0.9.0"
-        swipe = "1.1.1"
-        gradle_version = '8.0.2'
+        swipe = "1.2.0"
+        gradle_version = '8.1.0'
         accompanist_pager = "0.25.1"
         accompanist_pager_indicators = "0.19.0"
         accompanist_permissions = "0.31.4-beta"

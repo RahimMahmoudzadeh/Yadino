@@ -21,6 +21,7 @@ import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Porcelain
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
+import me.saket.swipe.rememberSwipeableActionsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,7 +44,6 @@ fun ItemRoutine(
     val edit = SwipeAction(
         icon = painterResource(id = R.drawable.edit),
         background = MaterialTheme.colorScheme.background,
-        isUndo = true,
         onSwipe = {
             openDialogEdit(routine)
         },
@@ -76,16 +76,22 @@ fun ItemRoutine(
                     .padding(end = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Column(verticalArrangement = Arrangement.SpaceBetween, modifier = Modifier.weight(0.3f)) {
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.weight(0.3f)
+                ) {
                     Checkbox(
                         checked = checkBox.value,
                         onCheckedChange = {
-                            onChecked(routine.apply { isChecked = it })
+                            onChecked(routine.apply {
+                                checkBox.value = it
+                                isChecked = it
+                            })
                         },
                         colors = CheckboxDefaults.colors(
                             uncheckedColor = CornflowerBlueLight,
                             checkedColor = MaterialTheme.colorScheme.background,
-                            )
+                        )
                     )
                     Row(modifier = Modifier.padding(top = 22.dp, start = 12.dp)) {
                         Text(
@@ -105,7 +111,9 @@ fun ItemRoutine(
                     }
                 }
                 Column(
-                    modifier = Modifier.padding(top = 12.dp).weight(0.7f),
+                    modifier = Modifier
+                        .padding(top = 12.dp)
+                        .weight(0.7f),
                     horizontalAlignment = Alignment.End
                 ) {
                     Text(
@@ -118,7 +126,9 @@ fun ItemRoutine(
                     Row(modifier = Modifier.padding(top = 12.dp)) {
                         Text(
                             textAlign = TextAlign.End,
-                            modifier = Modifier.weight(0.7f).padding(bottom = 14.dp, end = 4.dp),
+                            modifier = Modifier
+                                .weight(0.7f)
+                                .padding(bottom = 14.dp, end = 4.dp),
                             text = if (routine.explanation.isNullOrEmpty()) stringResource(id = R.string.empty) + " " else routine.explanation.toString() + " ",
                             color = MaterialTheme.colorScheme.secondaryContainer
                         )

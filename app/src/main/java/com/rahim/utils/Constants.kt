@@ -6,6 +6,8 @@ object Constants {
     const val CHANNEL_Name = "Main Channel"
     const val NAME_SHARED_PREFERENCE = "YadinooShared"
     const val WELCOME_SHARED = "WelcomeShared"
+    const val SAMPLE_ROUTINE = "sampleRoutine"
+    const val SAMPLE_NOTE = "sample note"
 
     //Static
     const val YYYY_MM_DD = "yyyy-MM-dd"
@@ -16,6 +18,7 @@ object Constants {
     //Key
     const val ALARM_MESSAGE = "alarm Message"
     const val ALARM_NAME = "alarm name"
+    const val ALARM_ID = "alarmId"
 
     //Value
     const val IS_ALARM = "is Alarm"

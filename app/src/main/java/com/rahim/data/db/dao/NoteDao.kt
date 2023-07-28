@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.note.NoteModel
 import kotlinx.coroutines.flow.Flow
 
@@ -21,4 +22,9 @@ interface NoteDao {
     suspend fun update(noteModel: NoteModel)
     @Delete
     suspend fun delete(noteModel: NoteModel)
+    @Query("SELECT * FROM tbl_note WHERE isSample=1")
+    suspend fun getSampleNote():List<NoteModel>
+
+    @Query("DELETE FROM tbl_note WHERE isSample=1")
+    suspend fun removeSampleNote()
 }

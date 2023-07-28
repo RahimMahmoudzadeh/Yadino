@@ -33,7 +33,7 @@ import com.rahim.utils.resours.Resource
 @Composable
 fun NoteScreen(
     modifier: Modifier = Modifier,
-    viewModel: NoteViewModel= hiltViewModel(),
+    viewModel: NoteViewModel = hiltViewModel(),
     onClickAdd: Boolean,
     isOpenDialog: (Boolean) -> Unit
 ) {
@@ -75,8 +75,14 @@ fun NoteScreen(
                     ItemsNote(it, notes.data as List<NoteModel>, checkedNote = {
                         viewModel.updateNote(it)
                     }, updateNote = {
+                        if (it.isSample)
+                            viewModel.showSampleNote(true)
+
                         noteUpdateDialog.value = it
                     }, deleteNote = {
+                        if (it.isSample)
+                            viewModel.showSampleNote(true)
+
                         noteDeleteDialog.value = it
                     })
                 }

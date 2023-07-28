@@ -18,5 +18,6 @@ data class Routine(
     var isChecked: Boolean = false,
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null,
-    var explanation: String? = null
+    var explanation: String? = null,
+    var isSample:Boolean = false
 ) : Parcelable
