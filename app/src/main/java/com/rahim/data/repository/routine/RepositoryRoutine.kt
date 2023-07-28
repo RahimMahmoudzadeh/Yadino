@@ -4,7 +4,7 @@ import com.rahim.data.modle.Rotin.Routine
 import kotlinx.coroutines.flow.Flow
 
 interface RepositoryRoutine {
-
+    suspend fun addSampleRoutine()
     suspend fun addRoutine(routine: Routine):Long
 
     suspend fun removeRoutine(routine: Routine):Int

@@ -60,7 +60,7 @@ fun DialogAddRoutine(
     routineUpdate: Routine? = null,
     openDialog: (Boolean) -> Unit,
     routine: (Routine) -> Unit,
-    cancel: () -> Unit
+    cancel: () -> Unit,
 ) {
     val maxName = 22
     val maxExplanation = 40

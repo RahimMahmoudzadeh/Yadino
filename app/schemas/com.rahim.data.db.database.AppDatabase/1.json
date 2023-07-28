@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "355bbb0f5f5f83964e01ce24d8b3f919",
+    "identityHash": "d02ee49899492489e74d711d5ca62933",
     "entities": [
       {
         "tableName": "tbl_routine",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `colorTask` INTEGER, `dayName` TEXT NOT NULL, `dayNumber` INTEGER, `monthNumber` INTEGER, `yerNumber` INTEGER, `timeHours` TEXT, `isChecked` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `explanation` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `colorTask` INTEGER, `dayName` TEXT NOT NULL, `dayNumber` INTEGER, `monthNumber` INTEGER, `yerNumber` INTEGER, `timeHours` TEXT, `isChecked` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT, `explanation` TEXT, `isSample` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "name",
@@ -67,6 +67,12 @@
             "columnName": "explanation",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "isSample",
+            "columnName": "isSample",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -212,7 +218,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '355bbb0f5f5f83964e01ce24d8b3f919')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd02ee49899492489e74d711d5ca62933')"
     ]
   }
 }

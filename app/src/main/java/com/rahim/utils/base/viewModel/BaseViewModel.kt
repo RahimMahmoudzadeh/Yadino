@@ -42,4 +42,10 @@ open class BaseViewModel @Inject constructor(
             _flowNameDay.value = time
         }
     }
+
+    fun showSampleRoutine(isShow:Boolean){
+        viewModelScope.launch {
+            sharedPreferencesRepository.isShowSampleRoutine(isShow)
+        }
+    }
 }

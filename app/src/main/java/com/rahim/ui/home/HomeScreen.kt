@@ -82,8 +82,14 @@ fun HomeScreen(
                 viewModel.updateRoutine(checkedRoutine)
                 setAlarm(checkedRoutine, alarmManagement, context, checkedRoutine.id ?: 0)
             }, { routineUpdate ->
+                if (routineUpdate.isSample)
+                    viewModel.showSampleRoutine(true)
+
                 routineUpdateDialog.value = routineUpdate
             }, { deleteRoutine ->
+                if (deleteRoutine.isSample)
+                    viewModel.showSampleRoutine(true)
+
                 routineDeleteDialog.value = deleteRoutine
             })
             routineDeleteDialog.value?.let { routineFromDialog ->

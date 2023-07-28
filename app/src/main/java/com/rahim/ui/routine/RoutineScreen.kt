@@ -151,7 +151,12 @@ fun RoutineScreen(
                 routineChecked = {
                     viewModel.updateRoutine(it)
                 },
-                routineDeleteDialog = { routineDeleteDialog.value = it })
+                routineDeleteDialog = {
+                    if (it.isSample)
+                        viewModel.showSampleRoutine(true)
+
+                    routineDeleteDialog.value = it
+                })
         }
     }
     routineDeleteDialog.value?.let { routineFromDialog ->
