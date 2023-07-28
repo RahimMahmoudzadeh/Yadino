@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.provider.AlarmClock
 import com.rahim.data.broadcast.YadinoBroadCastReceiver
 import com.rahim.data.date.CalculateDate
 import com.rahim.utils.Constants.ALARM_MESSAGE
@@ -46,9 +47,8 @@ class AlarmManagement : CalculateDate {
         Timber.tag("time").d("calculateTime -> $t")
         Timber.tag("time").d("current time ->${Calendar.getInstance().time}")
         Timber.tag("time").d("current time yadino ->${t.time}")
-        alarmManager.setExact(
-            AlarmManager.RTC_WAKEUP,
-            t.timeInMillis,
+        alarmManager.setAlarmClock(
+            AlarmManager.AlarmClockInfo(t.timeInMillis, pendingIntent),
             pendingIntent
         )
     }
