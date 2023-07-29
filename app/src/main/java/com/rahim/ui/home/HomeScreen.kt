@@ -216,7 +216,7 @@ fun ItemsHome(
                 .fillMaxWidth()
         ) {
             Text(
-                text = "$currentYer/$currentMonth/$currentDay", fontSize = 18.sp,
+                text = "$currentDay/$currentMonth/$currentYer", fontSize = 18.sp,
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
