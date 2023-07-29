@@ -154,6 +154,12 @@ fun RoutineScreen(
                 },
                 routineChecked = {
                     viewModel.updateRoutine(it)
+                    setAlarm(
+                        it,
+                        alarmManagement,
+                        context,
+                        it.id ?: 0
+                    )
                 },
                 routineDeleteDialog = {
                     if (it.isSample)
