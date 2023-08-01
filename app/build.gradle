@@ -4,7 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
     id 'kotlin-parcelize'
-    id 'com.google.gms.google-services'
+//    id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
 }
 
@@ -61,6 +61,11 @@ android {
             dimension "rahim"
             applicationIdSuffix ".yadino"
             versionNameSuffix "-c"
+        }
+        myket {
+            dimension "rahim"
+            applicationIdSuffix ".yadino"
+            versionNameSuffix "-m"
         }
     }
     compileOptions {

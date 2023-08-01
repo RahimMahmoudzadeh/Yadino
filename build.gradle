@@ -35,7 +35,7 @@ buildscript {
         lottie_compose = "4.0.0"
     }
     dependencies {
-        classpath "com.google.gms:google-services:$google_services"
+//        classpath "com.google.gms:google-services:$google_services"
         classpath "com.google.firebase:firebase-crashlytics-gradle:$firebase_crashlytics"
     }
 }
