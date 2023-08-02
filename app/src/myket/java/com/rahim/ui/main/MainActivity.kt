@@ -2,6 +2,7 @@ package com.rahim.ui.main
 
 import android.Manifest
 import android.R
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -39,6 +40,7 @@ import com.rahim.ui.theme.Zircon
 import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.navigation.Screen
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -57,6 +59,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewModel
+        Timber.tag("packege").d(this.packageName)
         setContent {
             val systemUiController = rememberSystemUiController()
             val useDarkIcons = !isSystemInDarkTheme()
