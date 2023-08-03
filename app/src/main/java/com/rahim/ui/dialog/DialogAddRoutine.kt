@@ -336,6 +336,7 @@ fun DialogAddRoutine(
                                         routineExplanation = ""
                                         isErrorName.value = false
                                         isErrorExplanation.value = false
+                                        time.value = "12:00"
                                         openDialog(false)
                                     }
                                 })
