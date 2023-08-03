@@ -42,9 +42,7 @@ import com.rahim.utils.base.view.removeRoutine
 import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.base.view.setAlarm
 import com.rahim.utils.resours.Resource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Composable
@@ -66,10 +64,13 @@ fun HomeScreen(
     viewModel.getCurrentRoutines()
     val routines by viewModel.flowRoutines
         .collectAsStateWithLifecycle(initialValue = Resource.Success(emptyList()))
+    val coroutineScope = rememberCoroutineScope()
 
     val addRoutineId by viewModel.addRoutine
         .collectAsStateWithLifecycle(initialValue = 0L)
-
+    val routineAdded = rememberSaveable {
+        mutableStateOf<Routine?>(null)
+    }
 
     Scaffold(
         topBar = {
@@ -146,18 +147,25 @@ fun HomeScreen(
             isOpenDialog(it)
         },
         routineUpdate = routineUpdateDialog.value,
-        routine = {
+        routine = { routine ->
             if (routineUpdateDialog.value != null) {
-                routineUpdateDialog.value = null
-                viewModel.updateRoutine(it)
-                setAlarm(it, alarmManagement, context, it.id ?: 0)
+                viewModel.updateRoutine(routine)
+                setAlarm(routine, alarmManagement, context, routine.id ?: 0)
             } else {
-                routineUpdateDialog.value = null
-                viewModel.addRoutine(it)
-                if (addRoutineId != 0L) {
-                    setAlarm(it, alarmManagement, context, addRoutineId.toInt())
+                viewModel.addRoutine(routine)
+                routineAdded.value = routine
+                coroutineScope.launch {
+                    viewModel.addRoutine.collect { id ->
+                        if (id != 0L) {
+                            viewModel.addRoutine.value = 0
+                            routineAdded.value?.let {
+                                setAlarm(it, alarmManagement, context, id.toInt())
+                            }
+                        }
+                    }
                 }
             }
+            routineUpdateDialog.value = null
         },
         currentNumberDay = currentDay,
         currentNumberMonth = currentMonth,
