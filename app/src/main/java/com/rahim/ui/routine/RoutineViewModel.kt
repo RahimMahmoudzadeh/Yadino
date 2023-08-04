@@ -10,12 +10,10 @@ import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
 import com.rahim.utils.base.viewModel.BaseViewModel
 import com.rahim.utils.resours.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -46,10 +44,12 @@ class RoutineViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             _flowRoutines.value = Resource.Loading()
-            routineRepository.getRoutine(monthNumber, numberDay, yerNumber).catch {
+            routineRepository.getRoutines(monthNumber, numberDay, yerNumber).catch {
                 _flowRoutines.value = Resource.Error(errorGetProses)
             }.collect {
-                _flowRoutines.value = Resource.Success(it)
+                _flowRoutines.value = Resource.Success(it.sortedBy {
+                   it.timeHours?.replace(":", "")?.toInt()
+                })
             }
         }
     }

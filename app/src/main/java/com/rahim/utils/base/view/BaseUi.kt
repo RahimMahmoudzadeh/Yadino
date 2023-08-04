@@ -141,30 +141,8 @@ fun DialogButtonBorder(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarRightAlign(modifier: Modifier = Modifier, title: String) {
-    CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.onBackground),
-        modifier = modifier.shadow(elevation = 8.dp),
-        title = {
-            androidx.compose.material.Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 8.dp),
-                textAlign = TextAlign.End,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                text = title,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.secondary
-            )
-        }
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
 fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String) {
+
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.onBackground),
         modifier = modifier.shadow(elevation = 8.dp),
@@ -184,6 +162,7 @@ fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String) {
         }
     )
 }
+
 
 @Preview
 @Composable

@@ -35,7 +35,7 @@ import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.base.view.ShowStatusBar
-import com.rahim.utils.base.view.TopBarRightAlign
+import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -64,7 +64,7 @@ fun HomeScreen(
 
     Scaffold(
         topBar = {
-            TopBarRightAlign(
+            TopBarCenterAlign(
                 modifier, stringResource(id = R.string.hello_friend)
             )
         }, containerColor = MaterialTheme.colorScheme.background

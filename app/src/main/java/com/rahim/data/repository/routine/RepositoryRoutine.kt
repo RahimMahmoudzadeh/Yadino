@@ -15,7 +15,7 @@ interface RepositoryRoutine {
 
     suspend fun getRoutine(id: Int): Routine
 
-    fun getRoutine(monthNumber: Int, numberDay: Int,yerNumber:Int): Flow<List<Routine>>
+    fun getRoutines(monthNumber: Int, numberDay: Int, yerNumber:Int): Flow<List<Routine>>
 
     fun searchRoutine(name: String,monthNumber: Int?, dayNumber: Int?): Flow<List<Routine>>
 

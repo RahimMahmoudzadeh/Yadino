@@ -39,7 +39,9 @@ class HomeViewModel @Inject constructor(
             routineRepository.getCurrentRoutines().catch {
                 _flowRoutines.value = Resource.Error(errorGetProses)
             }.collect {
-                _flowRoutines.value = Resource.Success(it)
+                _flowRoutines.value = Resource.Success(it.sortedBy {
+                    it.timeHours?.replace(":", "")?.toInt()
+                })
             }
         }
     }
@@ -58,7 +60,7 @@ class HomeViewModel @Inject constructor(
 
     fun addRoutine(routine: Routine) {
         viewModelScope.launch {
-             routineRepository.addRoutine(routine)
+            routineRepository.addRoutine(routine)
         }
     }
 }
