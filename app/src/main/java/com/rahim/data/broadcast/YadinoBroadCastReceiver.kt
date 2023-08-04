@@ -23,7 +23,7 @@ class YadinoBroadCastReceiver() : BroadcastReceiver() {
         intent?.extras?.getString(ALARM_MESSAGE)?.let {
             val message=it
             val name=intent.extras?.getString(ALARM_NAME)
-            val alarmId=intent.extras?.getInt(Constants.ALARM_ID)
+            val alarmId=intent.extras?.getLong(Constants.ALARM_ID)
             val nothing = NotificationManager()
             context?.let {
                 Timber.tag("intentTitle").d("YadinoBroadCastReceiver-> $name")

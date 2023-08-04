@@ -1,8 +1,10 @@
 package com.rahim.data.repository.base
 
-import saman.zamani.persiandate.PersianDateFormat
+import kotlinx.coroutines.flow.Flow
 
 interface BaseRepository {
     fun getCurrentTime(): List<Int>
     suspend fun getCurrentNameDay(date:String,format:String):String
+    fun getIdAlarms(): Flow<List<Long>>
+
 }

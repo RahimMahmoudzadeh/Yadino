@@ -40,4 +40,7 @@ interface RoutineDao {
 
     @Query("DELETE FROM tbl_routine WHERE isSample=1")
     suspend fun removeSampleRoutine()
+
+    @Query("SELECT idAlarm FROM tbl_routine WHERE isChecked=0")
+    fun getIdAlarms():Flow<List<Long>>
 }

@@ -54,7 +54,7 @@ class RoutineViewModel @Inject constructor(
         }
     }
 
-    fun deleteRoutine(routine: Routine){
+    fun deleteRoutine(routine: Routine) {
         viewModelScope.launch {
             routineRepository.removeRoutine(routine)
         }
@@ -66,11 +66,9 @@ class RoutineViewModel @Inject constructor(
         }
     }
 
-    fun addRoutine(routine: Routine){
+    fun addRoutine(routine: Routine) {
         viewModelScope.launch {
-            val id = async {
-                routineRepository.addRoutine(routine)
-            }.await()
+            val id = routineRepository.addRoutine(routine)
             addRoutine.value = id
         }
     }

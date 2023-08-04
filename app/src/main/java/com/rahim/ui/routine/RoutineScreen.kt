@@ -48,8 +48,6 @@ import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.base.view.calculateHours
 import com.rahim.utils.base.view.calculateMinute
 import com.rahim.utils.base.view.gradientColors
-import com.rahim.utils.base.view.removeRoutine
-import com.rahim.utils.base.view.setAlarm
 import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.enums.WeekName
 import com.rahim.utils.extention.calculateMonthName
@@ -98,13 +96,8 @@ fun RoutineScreen(
             listState.firstVisibleItemIndex
         }
     }
-    //Kave
-    val addRoutineId by viewModel.addRoutine
-        .collectAsStateWithLifecycle(initialValue = 0L)
+    val idAlarms by viewModel.idAlarms.collectAsStateWithLifecycle()
 
-    val routineAdded = rememberSaveable {
-        mutableStateOf<Routine?>(null)
-    }
 
     checkDay(monthDay, dayChecked, coroutineScope, listState, index, {
         index += it
@@ -160,11 +153,10 @@ fun RoutineScreen(
                 },
                 routineChecked = {
                     viewModel.updateRoutine(it)
-                    setAlarm(
-                        it,
-                        alarmManagement,
+                    alarmManagement.setAlarm(
                         context,
-                        it.id ?: 0
+                        it,
+                        if (idAlarms == null) it.id?.toLong() else it.idAlarm
                     )
                 },
                 routineDeleteDialog = {
@@ -179,7 +171,13 @@ fun RoutineScreen(
         ErrorDialog(
             isOpen = true, isClickOk = {
                 if (it) {
-                    removeRoutine(routineDeleteDialog.value, viewModel, alarmManagement, context)
+                    routineDeleteDialog.value?.let {
+                        viewModel.deleteRoutine(it)
+                        alarmManagement.cancelAlarm(
+                            context,
+                            if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
+                        )
+                    }
                 }
                 routineDeleteDialog.value = null
             },
@@ -201,21 +199,13 @@ fun RoutineScreen(
         routine = { routine ->
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(routine)
-                setAlarm(routine, alarmManagement, context, routine.id ?: 0)
+                alarmManagement.setAlarm(
+                    context,
+                    routine,
+                    if (idAlarms == null) routine.id?.toLong() else routine.idAlarm
+                )
             } else {
-                //Kave
-                viewModel.addRoutine(routine)
-                routineAdded.value = routine
-                coroutineScope.launch {
-                    viewModel.addRoutine.collect { id ->
-                        if (id != 0L) {
-                            viewModel.addRoutine.value = 0
-                            routineAdded.value?.let {
-                                setAlarm(it, alarmManagement, context, id.toInt())
-                            }
-                        }
-                    }
-                }
+                viewModel.addRoutine(alarmManagement.setAlarm(context, routine, idAlarms))
             }
             routineUpdateDialog.value = null
         },

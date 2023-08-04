@@ -36,11 +36,6 @@ import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.base.view.ShowStatusBar
 import com.rahim.utils.base.view.TopBarRightAlign
-import com.rahim.utils.base.view.calculateHours
-import com.rahim.utils.base.view.calculateMinute
-import com.rahim.utils.base.view.removeRoutine
-import com.rahim.utils.base.view.requestPermissionNotification
-import com.rahim.utils.base.view.setAlarm
 import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -64,13 +59,8 @@ fun HomeScreen(
     viewModel.getCurrentRoutines()
     val routines by viewModel.flowRoutines
         .collectAsStateWithLifecycle(initialValue = Resource.Success(emptyList()))
-    val coroutineScope = rememberCoroutineScope()
 
-    val addRoutineId by viewModel.addRoutine
-        .collectAsStateWithLifecycle(initialValue = 0L)
-    val routineAdded = rememberSaveable {
-        mutableStateOf<Routine?>(null)
-    }
+    val idAlarms by viewModel.idAlarms.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -91,11 +81,10 @@ fun HomeScreen(
                             it,
                             { checkedRoutine ->
                                 viewModel.updateRoutine(checkedRoutine)
-                                setAlarm(
-                                    checkedRoutine,
-                                    alarmManagement,
+                                alarmManagement.setAlarm(
                                     context,
-                                    checkedRoutine.id ?: 0
+                                    checkedRoutine,
+                                    if (idAlarms == null) checkedRoutine.id?.toLong() else checkedRoutine.idAlarm
                                 )
                             },
                             { routineUpdate ->
@@ -124,12 +113,13 @@ fun HomeScreen(
             isOpen = routineDeleteDialog.value != null,
             isClickOk = {
                 if (it) {
-                    removeRoutine(
-                        routineDeleteDialog.value,
-                        viewModel,
-                        alarmManagement,
-                        context
-                    )
+                    routineDeleteDialog.value?.let {
+                        viewModel.deleteRoutine(it)
+                        alarmManagement.cancelAlarm(
+                            context,
+                            if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
+                        )
+                    }
                 }
                 routineDeleteDialog.value = null
             },
@@ -150,20 +140,13 @@ fun HomeScreen(
         routine = { routine ->
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(routine)
-                setAlarm(routine, alarmManagement, context, routine.id ?: 0)
+                alarmManagement.setAlarm(
+                    context,
+                    routine,
+                    if (idAlarms == null) routine.id?.toLong() else routine.idAlarm
+                )
             } else {
-                viewModel.addRoutine(routine)
-                routineAdded.value = routine
-                coroutineScope.launch {
-                    viewModel.addRoutine.collect { id ->
-                        if (id != 0L) {
-                            viewModel.addRoutine.value = 0
-                            routineAdded.value?.let {
-                                setAlarm(it, alarmManagement, context, id.toInt())
-                            }
-                        }
-                    }
-                }
+                viewModel.addRoutine(alarmManagement.setAlarm(context, routine, idAlarms))
             }
             routineUpdateDialog.value = null
         },

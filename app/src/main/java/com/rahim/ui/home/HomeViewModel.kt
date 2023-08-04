@@ -28,7 +28,6 @@ class HomeViewModel @Inject constructor(
     sharedPreferencesRepository: SharedPreferencesRepository
 ) :
     BaseViewModel(sharedPreferencesRepository, baseRepository) {
-    val addRoutine = MutableStateFlow(0L)
 
     private val _flowRoutines =
         MutableStateFlow<Resource<List<Routine>>>(Resource.Success(emptyList()))
@@ -59,10 +58,7 @@ class HomeViewModel @Inject constructor(
 
     fun addRoutine(routine: Routine) {
         viewModelScope.launch {
-            val id = async {
-                routineRepository.addRoutine(routine)
-            }.await()
-            addRoutine.value = id
+             routineRepository.addRoutine(routine)
         }
     }
 }
