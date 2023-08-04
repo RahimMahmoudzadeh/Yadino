@@ -249,7 +249,8 @@ fun DialogAddNote(
                                                     dayName = currentDayName,
                                                     yerNumber = currentYer,
                                                     monthNumber = currentMonth,
-                                                    dayNumber = currentDay
+                                                    dayNumber = currentDay,
+                                                    timeInMileSecond = System.currentTimeMillis()
                                                 )
                                             } else {
                                                 NoteModel(
@@ -259,7 +260,8 @@ fun DialogAddNote(
                                                     dayName = currentDayName,
                                                     yerNumber = currentYer,
                                                     monthNumber = currentMonth,
-                                                    dayNumber = currentDay
+                                                    dayNumber = currentDay,
+                                                    timeInMileSecond = System.currentTimeMillis()
                                                 )
                                             }
                                         )
