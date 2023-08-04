@@ -73,7 +73,6 @@ fun WelcomeScreens(
                 stringResource(id = R.string.hello),
                 stringResource(id = R.string.welcome_yadino),
                 stringResource(id = R.string.next),
-                22.sp,
                 R.drawable.welcome1
             ),
             WelcomeScreenModel(
@@ -83,14 +82,12 @@ fun WelcomeScreens(
                     id =
                     R.string.next
                 ),
-                22.sp,
                 R.drawable.welcome2
             ),
             WelcomeScreenModel(
                 stringResource(id = R.string.yadino_life),
                 stringResource(id = R.string.energetic_yadino),
                 stringResource(id = R.string.lets_go),
-                22.sp,
                 R.drawable.welcome3
             )
         )
@@ -103,7 +100,6 @@ fun WelcomeScreens(
                 WelcomePage(
                     textWelcomeTop = listItemWelcome[page].textWelcomeTop,
                     textWelcomeBottom = listItemWelcome[page].textWelcomeBottom,
-                    textSizeBottom = listItemWelcome[page].textSizeBottom,
                     imageRes = listItemWelcome[page].imageRes,
                 )
             }
@@ -135,7 +131,6 @@ fun WelcomePage(
     modifier: Modifier = Modifier,
     textWelcomeTop: String,
     textWelcomeBottom: String,
-    textSizeBottom: TextUnit,
     imageRes: Int
 ) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -154,11 +149,11 @@ fun WelcomePage(
                     brush = Brush.verticalGradient(
                         colors = gradientColors
                     ), fontWeight = FontWeight.Bold
-                ), fontSize = 22.sp, modifier = Modifier.padding(top = 6.dp)
+                ), fontSize = 26.sp, modifier = Modifier.padding(top = 6.dp)
             )
             Text(
                 text = textWelcomeBottom,
-                fontSize = textSizeBottom,
+                fontSize = 23.sp,
                 modifier = Modifier
                     .padding(top = 18.dp, start = 12.dp, end = 12.dp),
                 textAlign = TextAlign.Center,
@@ -180,7 +175,6 @@ private fun WelcomePreview1() {
             textWelcomeTop = "سلااام",
             textWelcomeBottom = "!به خانواده یادینو خوش آمدید",
             imageRes = R.drawable.welcome1,
-            textSizeBottom = 12.sp
         )
     }
 }
@@ -193,7 +187,6 @@ private fun WelcomePreview2() {
             textWelcomeTop = "! با یادینو دیگه ازکارات عقب نمیفتی",
             textWelcomeBottom = "اینجا ما بهت کمک میکنیم تا به همه هدفگذاری هات برسی",
             imageRes = R.drawable.welcome2,
-            textSizeBottom = 22.sp
         )
     }
 }
@@ -206,7 +199,6 @@ private fun WelcomePreview3() {
             textWelcomeTop = "!یادینو اپلیکیشنی برای زندگی بهتر",
             textWelcomeBottom = "با یادینو بانشاط تر منظم تر و هوشمندتر باشید",
             imageRes = R.drawable.welcome3,
-            textSizeBottom = 22.sp
         )
     }
 }
