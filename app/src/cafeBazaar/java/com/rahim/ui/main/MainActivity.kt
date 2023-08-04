@@ -2,8 +2,10 @@ package com.rahim.ui.main
 
 import android.Manifest
 import android.R
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -21,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.content.ContextCompat
@@ -61,6 +64,8 @@ class MainActivity : ComponentActivity() {
         mainViewModel
         Timber.tag("packege").d(this.packageName)
         setContent {
+            val context = LocalContext.current
+            (context as? Activity)?.requestedOrientation = ActivityInfo. SCREEN_ORIENTATION_PORTRAIT
             val systemUiController = rememberSystemUiController()
             val useDarkIcons = !isSystemInDarkTheme()
             var openDialog by rememberSaveable { mutableStateOf(StateOpenDialog(false, "")) }
