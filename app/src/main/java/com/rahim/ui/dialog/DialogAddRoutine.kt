@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -366,7 +365,7 @@ fun DialogAddRoutine(
             }
         }
     }
-    ShowTimePicker(alarmDialogState) {
+    ShowTimePicker(time.value, alarmDialogState) {
         time.value =
             it.hour.toString() + ":" + if (it.minute.toString().length == 1) "0" + it.minute else it.minute
     }
@@ -375,7 +374,11 @@ fun DialogAddRoutine(
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-fun ShowTimePicker(dialogState: MaterialDialogState, time: (LocalTime) -> Unit) {
+fun ShowTimePicker(
+    currentTime: String,
+    dialogState: MaterialDialogState,
+    time: (LocalTime) -> Unit
+) {
     MaterialDialog(properties = DialogProperties(dismissOnClickOutside = false),
         border = BorderStroke(2.dp, Brush.horizontalGradient(gradientColors)),
         backgroundColor = MaterialTheme.colorScheme.background,
@@ -407,11 +410,19 @@ fun ShowTimePicker(dialogState: MaterialDialogState, time: (LocalTime) -> Unit) 
             ),
             title = "  ",
             timeRange = LocalTime.MIDNIGHT..LocalTime.MAX,
-            is24HourClock = true
+            is24HourClock = true,
+            initialTime = calculateCurrentTime(currentTime)
         ) { time ->
             time(time)
         }
     }
+}
+
+fun calculateCurrentTime(currentTime: String): LocalTime {
+    val index = currentTime.indexOf(":")
+    val hours = currentTime.subSequence(0, index).toString().toInt()
+    val minute = currentTime.subSequence(index.plus(1), currentTime.length).toString().toInt()
+    return LocalTime.of(hours, minute, 0)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
