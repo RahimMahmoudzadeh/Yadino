@@ -1,6 +1,5 @@
 package com.rahim.ui.home
 
-import android.Manifest
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -12,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -23,22 +23,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
 import com.rahim.R
 import com.rahim.data.alarm.AlarmManagement
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.theme.YadinoTheme
+import com.rahim.utils.base.view.CircularProgressAnimated
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.base.view.ShowStatusBar
+import com.rahim.utils.base.view.ShowToastShort
 import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.resours.Resource
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @Composable
 fun HomeScreen(
@@ -56,11 +52,13 @@ fun HomeScreen(
 
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
+    val routineForAdd = rememberSaveable { mutableStateOf<Routine?>(null) }
     viewModel.getCurrentRoutines()
     val routines by viewModel.flowRoutines
         .collectAsStateWithLifecycle(initialValue = Resource.Success(emptyList()))
 
     val idAlarms by viewModel.idAlarms.collectAsStateWithLifecycle()
+    val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -135,6 +133,8 @@ fun HomeScreen(
         dayChecked = "",
         openDialog = {
             isOpenDialog(it)
+            routineUpdateDialog.value = null
+            routineForAdd.value = null
         },
         routineUpdate = routineUpdateDialog.value,
         routine = { routine ->
@@ -145,18 +145,48 @@ fun HomeScreen(
                     routine,
                     if (idAlarms == null) routine.id?.toLong() else routine.idAlarm
                 )
+                routineUpdateDialog.value = null
             } else {
+                routineForAdd.value = routine
                 viewModel.addRoutine(alarmManagement.setAlarm(context, routine, idAlarms))
             }
-            routineUpdateDialog.value = null
         },
         currentNumberDay = currentDay,
         currentNumberMonth = currentMonth,
-        currentNumberYer = currentYer,
-        cancel = {
-            routineUpdateDialog.value = null
-        }
+        currentNumberYer = currentYer
     )
+    if (routineForAdd.value != null)
+        ProcessRoutineAdded(addRoutine, context) {
+            if (!it)
+                isOpenDialog(false)
+            routineForAdd.value = null
+        }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun ProcessRoutineAdded(
+    addRoutine: Resource<Long>,
+    context: Context,
+    closeDialog: (Boolean) -> Unit
+) {
+    when (addRoutine) {
+        is Resource.Loading -> {
+            CircularProgressAnimated(true)
+        }
+
+        is Resource.Success -> {
+            CircularProgressAnimated(false)
+            if (addRoutine.data != 0L)
+                closeDialog(false)
+        }
+
+        is Resource.Error -> {
+            CircularProgressAnimated(false)
+            ShowToastShort(addRoutine.message, context)
+            closeDialog(true)
+        }
+    }
 }
 
 @Composable

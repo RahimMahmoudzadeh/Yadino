@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -32,7 +33,10 @@ class RoutineViewModel @Inject constructor(
     private val _flowRoutines =
         MutableStateFlow<Resource<List<Routine>>>(Resource.Success(emptyList()))
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
-    val addRoutine = MutableStateFlow(0L)
+
+    private val _addRoutine =
+        MutableStateFlow<Resource<Long>>(Resource.Success(0L))
+    val addRoutine: StateFlow<Resource<Long>> = _addRoutine
 
     init {
         getRoutines(currentMonth, currentDay, currentYer)
@@ -48,7 +52,7 @@ class RoutineViewModel @Inject constructor(
                 _flowRoutines.value = Resource.Error(errorGetProses)
             }.collect {
                 _flowRoutines.value = Resource.Success(it.sortedBy {
-                   it.timeHours?.replace(":", "")?.toInt()
+                    it.timeHours?.replace(":", "")?.toInt()
                 })
             }
         }
@@ -68,8 +72,9 @@ class RoutineViewModel @Inject constructor(
 
     fun addRoutine(routine: Routine) {
         viewModelScope.launch {
-            val id = routineRepository.addRoutine(routine)
-            addRoutine.value = id
+            routineRepository.addRoutine(routine).catch {}.collect {
+                _addRoutine.value = it
+            }
         }
     }
 

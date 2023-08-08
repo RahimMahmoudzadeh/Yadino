@@ -18,7 +18,8 @@ interface RoutineDao {
 
     @Query("SELECT * FROM tbl_routine WHERE monthNumber LIKE :monthNumber AND dayNumber LIKE :dayNumber AND yerNumber LIKE :yerNumber")
     fun getRoutines(monthNumber: Int, dayNumber: Int, yerNumber: Int): Flow<List<Routine>>
-
+    @Query("SELECT * FROM tbl_routine")
+    suspend fun getRoutines(): List<Routine>
     @Query("DELETE FROM tbl_routine WHERE dayNumber=:dayNumber AND monthNumber=:monthNumber AND yerNumber=:yerNumber")
     suspend fun removeAllRoutine(monthNumber: Int?, dayNumber: Int?, yerNumber: Int?)
 

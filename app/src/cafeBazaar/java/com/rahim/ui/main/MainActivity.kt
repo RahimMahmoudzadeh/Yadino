@@ -1,20 +1,12 @@
 package com.rahim.ui.main
 
 import android.Manifest
-import android.R
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,15 +18,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.rahim.data.modle.dialog.StateOpenDialog
-import com.rahim.data.notification.NotificationManager
-import com.rahim.ui.home.HomeViewModel
 import com.rahim.ui.navigation.NavGraph
 import com.rahim.ui.navigation.YadinoApp
 import com.rahim.ui.theme.BalticSea
@@ -65,10 +53,10 @@ class MainActivity : ComponentActivity() {
         Timber.tag("packege").d(this.packageName)
         setContent {
             val context = LocalContext.current
-            (context as? Activity)?.requestedOrientation = ActivityInfo. SCREEN_ORIENTATION_PORTRAIT
+            (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             val systemUiController = rememberSystemUiController()
             val useDarkIcons = !isSystemInDarkTheme()
-            var openDialog by rememberSaveable { mutableStateOf(StateOpenDialog(false, "")) }
+            var openDialog by rememberSaveable { mutableStateOf(StateOpenDialog(true, "")) }
             val notificationPermissionState =
                 rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
             val navController = rememberNavController()

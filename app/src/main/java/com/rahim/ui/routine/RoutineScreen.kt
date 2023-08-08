@@ -211,10 +211,7 @@ fun RoutineScreen(
         },
         currentNumberDay = dayChecked.toInt(),
         currentNumberMonth = currentMonth,
-        currentNumberYer = currentYer,
-        cancel = {
-            routineUpdateDialog.value = null
-        }
+        currentNumberYer = currentYer
     )
 }
 

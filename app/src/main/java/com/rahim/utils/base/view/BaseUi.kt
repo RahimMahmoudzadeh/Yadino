@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -35,6 +36,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
 
@@ -136,6 +138,25 @@ fun DialogButtonBorder(
                 modifier = Modifier.padding(end = 4.dp, start = 4.dp),
             )
         }
+    }
+}
+
+@Composable
+fun CircularProgressAnimated(isShow: Boolean) {
+    if (isShow) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            CircularProgressIndicator(color = CornflowerBlueLight)
+        }
+    }
+}
+@Composable
+fun ShowToastShort(message:String?,context:Context){
+    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
+        Toast.makeText(context,message, Toast.LENGTH_SHORT).show()
     }
 }
 

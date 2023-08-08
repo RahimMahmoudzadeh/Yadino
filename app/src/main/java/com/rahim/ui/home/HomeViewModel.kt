@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -32,6 +33,10 @@ class HomeViewModel @Inject constructor(
     private val _flowRoutines =
         MutableStateFlow<Resource<List<Routine>>>(Resource.Success(emptyList()))
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
+
+    private val _addRoutine =
+        MutableStateFlow<Resource<Long>>(Resource.Success(0L))
+    val addRoutine: StateFlow<Resource<Long>> = _addRoutine
 
     fun getCurrentRoutines() {
         viewModelScope.launch {
@@ -60,7 +65,9 @@ class HomeViewModel @Inject constructor(
 
     fun addRoutine(routine: Routine) {
         viewModelScope.launch {
-            routineRepository.addRoutine(routine)
+            routineRepository.addRoutine(routine).catch {}.collectLatest {
+                _addRoutine.value = it
+            }
         }
     }
 }
