@@ -27,7 +27,7 @@ class RoutineRepositoryImpl @Inject constructor(
     private val appDatabase: AppDatabase,
     private val sharedPreferencesCustom: SharedPreferencesCustom,
     @IODispatcher
-    private val ioDispatcher:CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher
 ) : RepositoryRoutine {
     private val persianData = PersianDate()
     private val currentTimeDay = persianData.shDay
@@ -78,13 +78,13 @@ class RoutineRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addRoutine(routine: Routine): Flow<Resource<Long>> = flow{
+    override suspend fun addRoutine(routine: Routine): Flow<Resource<Long>> = flow {
         emit(Resource.Loading())
         val routines = appDatabase.routineDao().getRoutines()
         val equalRoutine = routines.find {
             it.name == routine.name && it.dayName == routine.dayName && it.dayNumber == routine.dayNumber
                     && it.yerNumber == routine.yerNumber
-                    && it.monthNumber == routine.monthNumber
+                    && it.monthNumber == routine.monthNumber && it.explanation == routine.explanation
         }
         if (equalRoutine == null) {
             emit(Resource.Success(appDatabase.routineDao().addRoutine(routine)))

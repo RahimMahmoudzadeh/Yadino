@@ -31,9 +31,4 @@ class YadinoBroadCastReceiver() : BroadcastReceiver() {
             }
         }
     }
-
-    interface Receiver {
-        fun onReceive(context: Context?, intent: Intent?)
-    }
-
 }

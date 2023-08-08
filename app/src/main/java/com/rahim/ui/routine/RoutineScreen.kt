@@ -44,6 +44,7 @@ import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.Constants.YYYY_MM_DD
+import com.rahim.utils.base.view.ProcessRoutineAdded
 import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.base.view.calculateHours
 import com.rahim.utils.base.view.calculateMinute
@@ -86,6 +87,7 @@ fun RoutineScreen(
 
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
+    val routineForAdd = rememberSaveable { mutableStateOf<Routine?>(null) }
 
     var dayChecked by rememberSaveable { mutableStateOf("0") }
     var index by rememberSaveable { mutableStateOf(0) }
@@ -97,6 +99,7 @@ fun RoutineScreen(
         }
     }
     val idAlarms by viewModel.idAlarms.collectAsStateWithLifecycle()
+    val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
 
 
     checkDay(monthDay, dayChecked, coroutineScope, listState, index, {
@@ -193,6 +196,7 @@ fun RoutineScreen(
         dayChecked = currentNameDay,
         openDialog = {
             routineUpdateDialog.value = null
+            routineForAdd.value = null
             isOpenDialog(it)
         },
         routineUpdate = routineUpdateDialog.value,
@@ -205,6 +209,7 @@ fun RoutineScreen(
                     if (idAlarms == null) routine.id?.toLong() else routine.idAlarm
                 )
             } else {
+                routineForAdd.value = routine
                 viewModel.addRoutine(alarmManagement.setAlarm(context, routine, idAlarms))
             }
             routineUpdateDialog.value = null
@@ -213,6 +218,12 @@ fun RoutineScreen(
         currentNumberMonth = currentMonth,
         currentNumberYer = currentYer
     )
+    if (routineForAdd.value != null)
+        ProcessRoutineAdded(addRoutine, context) {
+            if (!it)
+                isOpenDialog(false)
+            routineForAdd.value = null
+        }
 }
 
 fun checkDay(

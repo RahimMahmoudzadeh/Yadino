@@ -31,6 +31,7 @@ import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.CircularProgressAnimated
 import com.rahim.utils.base.view.ItemRoutine
+import com.rahim.utils.base.view.ProcessRoutineAdded
 import com.rahim.utils.base.view.ShowStatusBar
 import com.rahim.utils.base.view.ShowToastShort
 import com.rahim.utils.base.view.TopBarCenterAlign
@@ -53,6 +54,7 @@ fun HomeScreen(
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineForAdd = rememberSaveable { mutableStateOf<Routine?>(null) }
+
     viewModel.getCurrentRoutines()
     val routines by viewModel.flowRoutines
         .collectAsStateWithLifecycle(initialValue = Resource.Success(emptyList()))
@@ -161,32 +163,6 @@ fun HomeScreen(
                 isOpenDialog(false)
             routineForAdd.value = null
         }
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun ProcessRoutineAdded(
-    addRoutine: Resource<Long>,
-    context: Context,
-    closeDialog: (Boolean) -> Unit
-) {
-    when (addRoutine) {
-        is Resource.Loading -> {
-            CircularProgressAnimated(true)
-        }
-
-        is Resource.Success -> {
-            CircularProgressAnimated(false)
-            if (addRoutine.data != 0L)
-                closeDialog(false)
-        }
-
-        is Resource.Error -> {
-            CircularProgressAnimated(false)
-            ShowToastShort(addRoutine.message, context)
-            closeDialog(true)
-        }
-    }
 }
 
 @Composable

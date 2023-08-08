@@ -39,6 +39,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
+import com.rahim.utils.resours.Resource
 
 val gradientColors = listOf(Purple, PurpleGrey)
 
@@ -150,6 +151,30 @@ fun CircularProgressAnimated(isShow: Boolean) {
             verticalArrangement = Arrangement.Center
         ) {
             CircularProgressIndicator(color = CornflowerBlueLight)
+        }
+    }
+}
+@Composable
+fun ProcessRoutineAdded(
+    addRoutine: Resource<Long>,
+    context: Context,
+    closeDialog: (Boolean) -> Unit
+) {
+    when (addRoutine) {
+        is Resource.Loading -> {
+            CircularProgressAnimated(true)
+        }
+
+        is Resource.Success -> {
+            CircularProgressAnimated(false)
+            if (addRoutine.data != 0L)
+                closeDialog(false)
+        }
+
+        is Resource.Error -> {
+            CircularProgressAnimated(false)
+            ShowToastShort(addRoutine.message, context)
+            closeDialog(true)
         }
     }
 }
