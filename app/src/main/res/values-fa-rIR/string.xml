@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Yadinoo</string>
+    <string name="app_name">یادینو</string>
     <string name="search_hint">جستجو...</string>
     <string name="add_item">لطفا روتین خود را اضافه بکنید!</string>
     <string name="add_routine">ساخت روتین جدید</string>

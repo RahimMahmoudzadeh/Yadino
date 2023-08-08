@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -22,6 +23,9 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
+import com.rahim.BuildConfig
 import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.ui.navigation.NavGraph
 import com.rahim.ui.navigation.YadinoApp
@@ -105,5 +109,14 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        getTokenFirebase()
+    }
+
+    private fun getTokenFirebase() {
+        if (BuildConfig.DEBUG)
+            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                val token = task.result
+                Timber.tag("token").d(token)
+            }
     }
 }
