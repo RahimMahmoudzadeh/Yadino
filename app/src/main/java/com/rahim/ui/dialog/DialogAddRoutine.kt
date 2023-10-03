@@ -315,10 +315,8 @@ fun DialogAddRoutine(
                     ) {
                         DialogButtonBackground(text = stringResource(id = R.string.confirmation),
                             gradient = Brush.verticalGradient(gradientColors),
-                            modifier = Modifier,
+                            modifier = Modifier.fillMaxWidth(0.3f).height(40.dp),
                             textSize = 14.sp,
-                            width = 0.3f,
-                            height = 40.dp,
                             onClick = {
                                 if (routineName.isEmpty()) {
                                     isErrorName.value = true

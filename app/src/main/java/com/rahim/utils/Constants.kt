@@ -1,6 +1,7 @@
 package com.rahim.utils
 
 object Constants {
+    //Static
     const val DATABASE_NAME = "main database"
     const val CHANNEL_ID = "Yadinoo"
     const val CHANNEL_Name = "Main Channel"
@@ -8,12 +9,15 @@ object Constants {
     const val WELCOME_SHARED = "WelcomeShared"
     const val SAMPLE_ROUTINE = "sampleRoutine"
     const val SAMPLE_NOTE = "sample note"
-
-    //Static
+    const val UPDATE_VERSION = "update version"
+    const val IS_FORCE = "is force"
+    const val VERSION = "version"
     const val YYYY_MM_DD = "yyyy-MM-dd"
     const val FIRST_YEAR = 1300
     const val END_YEAR = 1430
     const val TITLE_TASK = "title task"
+    const val UPDATE = "update"
+    const val CAFE_BAZAAR = "cafeBazaar"
 
     //Key
     const val ALARM_MESSAGE = "alarm Message"

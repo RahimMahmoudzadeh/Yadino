@@ -231,10 +231,8 @@ fun DialogAddNote(
                             DialogButtonBackground(
                                 text = stringResource(id = R.string.confirmation),
                                 gradient = Brush.verticalGradient(gradientColors),
-                                modifier = Modifier,
+                                modifier = Modifier.fillMaxWidth(0.3f).height(40.dp),
                                 textSize = 14.sp,
-                                width = 0.3f,
-                                height = 40.dp,
                                 onClick = {
                                     if (nameNote.isEmpty()) {
                                         isErrorName.value = true

@@ -1,7 +1,8 @@
 buildscript {
     ext {
         compose_version = '1.4.3'
-        core_ktx = "1.12.0-alpha05"
+        compose_test_version = '1.6.0-alpha05'
+        core_ktx = "1.12.0"
         activity_compose = "1.7.1"
         junit = "4.13.2"
         junit_test = "1.1.5"
@@ -11,11 +12,11 @@ buildscript {
         kotlin_version = "1.8.0"
         gradle_version = '8.0.0'
         constraintlayout = "2.1.4"
-        nav_version = "2.6.0"
+        nav_version = "2.7.2"
         appcompat = "1.5.1"
         persianData = "1.5.4"
         timber = "5.0.1"
-        lifecycle_aware = "2.6.1"
+        lifecycle_aware = "2.6.2"
         multisnaprecyclerview = "2.0.4"
         google_services = "4.3.14"
         firebase_crashlytics = "2.9.2"
@@ -25,7 +26,7 @@ buildscript {
         espresso_core = "3.5.1"
         datetime = "0.9.0"
         swipe = "1.2.0"
-        gradle_version = '8.1.0'
+        gradle_version = '8.1.1'
         accompanist_pager = "0.25.1"
         accompanist_pager_indicators = "0.19.0"
         accompanist_permissions = "0.31.4-beta"

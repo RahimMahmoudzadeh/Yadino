@@ -76,16 +76,12 @@ fun DialogButtonBackground(
     gradient: Brush,
     modifier: Modifier = Modifier,
     textSize: TextUnit,
-    width: Float,
-    height: Dp,
     onClick: () -> Unit = { },
 ) {
     Button(
         colors = ButtonDefaults.buttonColors(Color.Transparent),
         contentPadding = PaddingValues(),
-        modifier = modifier
-            .fillMaxWidth(width)
-            .height(height),
+        modifier = modifier,
         onClick = { onClick() },
         shape = RoundedCornerShape(12)
     ) {

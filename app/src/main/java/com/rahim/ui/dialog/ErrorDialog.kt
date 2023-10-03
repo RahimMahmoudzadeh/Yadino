@@ -84,10 +84,8 @@ fun ErrorDialog(
                         DialogButtonBackground(
                             text = okMessage,
                             gradient = Brush.verticalGradient(gradientColors),
-                            modifier = Modifier.padding(start = 16.dp),
+                            modifier = Modifier.fillMaxWidth(0.3f).height(40.dp).padding(start = 16.dp),
                             textSize = 14.sp,
-                            width = 0.3f,
-                            height = 40.dp,
                             onClick = {
                                 isClickOk(true)
                             }
