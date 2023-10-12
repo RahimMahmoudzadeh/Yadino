@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">یادینو</string>
-    <string name="search_hint">جستجو...</string>
+    <string name="search_hint">دنبال چی می گردی؟</string>
     <string name="add_item">لطفا روتین خود را اضافه بکنید!</string>
     <string name="add_routine">ساخت روتین جدید</string>
     <string-array name="day_weeks">
@@ -86,4 +86,5 @@
     <string name="forget_work"> !! یادت نره %1$s</string>
     <string name="update_version">لطفابرای ادامه نسخه اپ خود را به$% اپدیت کنید</string>
     <string name="update">آپدیت</string>
+    <string name="search_empty_routine">!!!روتین مورد نظر یافت نشد</string>
 </resources>

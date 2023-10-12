@@ -1,6 +1,7 @@
 package com.rahim.ui.routine
 
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,6 +17,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -42,6 +45,8 @@ import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.data.TimeData
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
+import com.rahim.ui.theme.Purple
+import com.rahim.ui.theme.PurpleGrey
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.ProcessRoutineAdded
@@ -98,6 +103,9 @@ fun RoutineScreen(
             listState.firstVisibleItemIndex
         }
     }
+    var searchName by rememberSaveable { mutableStateOf("") }
+    var clickSearch by rememberSaveable { mutableStateOf(false) }
+
     val idAlarms by viewModel.idAlarms.collectAsStateWithLifecycle()
     val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
 
@@ -111,7 +119,9 @@ fun RoutineScreen(
         topBar = {
             TopBarCenterAlign(
                 modifier, stringResource(id = R.string.list_routine)
-            )
+            ) {
+                clickSearch = !clickSearch
+            }
         }, containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
 
@@ -122,6 +132,26 @@ fun RoutineScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
 
             ) {
+            if (!routines.data.isNullOrEmpty()) {
+                AnimatedVisibility(visible = clickSearch) {
+                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                        TextField(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            label = { Text(text = stringResource(id = R.string.search_hint)) },
+                            value = searchName,
+                            onValueChange = { searchName = it },
+                            colors = TextFieldDefaults.colors(
+                                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                                focusedContainerColor = MaterialTheme.colorScheme.onBackground,
+                                unfocusedIndicatorColor = PurpleGrey,
+                                focusedIndicatorColor = Purple,
+                                disabledIndicatorColor = Color.Transparent,
+                            )
+                        )
+                    }
+                }
+            }
 
             ItemTimeDate(monthDay,
                 dayChecked,

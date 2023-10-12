@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,6 +38,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.rahim.R
 import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
@@ -150,6 +153,7 @@ fun CircularProgressAnimated(isShow: Boolean) {
         }
     }
 }
+
 @Composable
 fun ProcessRoutineAdded(
     addRoutine: Resource<Long>,
@@ -174,22 +178,23 @@ fun ProcessRoutineAdded(
         }
     }
 }
+
 @Composable
-fun ShowToastShort(message:String?,context:Context){
+fun ShowToastShort(message: String?, context: Context) {
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
-        Toast.makeText(context,message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String) {
+fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String,onClickSearch: () -> Unit) {
 
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.onBackground),
         modifier = modifier.shadow(elevation = 8.dp),
         title = {
-            androidx.compose.material.Text(
+            Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 8.dp),
@@ -201,6 +206,16 @@ fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String) {
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.secondary
             )
+        },
+        actions = {
+            IconButton(onClick = {
+                onClickSearch()
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_search),
+                    contentDescription = "search"
+                )
+            }
         }
     )
 }

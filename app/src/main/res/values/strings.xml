@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Yadino</string>
-    <string name="search_hint">جستجو...</string>
+    <string name="search_hint">دنبال چی می گردی؟</string>
     <string name="add_item">لطفا روتین خود را اضافه بکنید!</string>
     <string name="add_routine">ساخت روتین جدید</string>
     <string name="saturday">شنبه</string>
@@ -55,7 +55,7 @@
     <string name="set_reminder">تنظیم یادآور از روی تقویم</string>
     <string name="no">خیر</string>
     <string name="notes">یادداشت ها</string>
-    <string name="not_note">شما هنوز یادداشتی ثبت نکردید!</string>
+    <string name="not_note">!شما هنوز یادداشتی ثبت نکردید</string>
     <string name="creat_new_note">ایجاد یادداشت جدید</string>
     <string name="priority_level">میزان الویت:</string>
     <string name="up">بالا</string>
@@ -85,4 +85,5 @@
     <string name="my_firend">دوست خوبم</string>
     <string name="update_version">لطفابرای ادامه نسخه اپ خود را به$% اپدیت کنید</string>
     <string name="update">آپدیت</string>
+    <string name="search_empty_routine">!!!روتین مورد نظر یافت نشد</string>
 </resources>

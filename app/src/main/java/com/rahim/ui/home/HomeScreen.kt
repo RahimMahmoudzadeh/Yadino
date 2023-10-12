@@ -1,24 +1,34 @@
 package com.rahim.ui.home
 
 import android.content.Context
+import androidx.annotation.IdRes
+import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,8 +38,9 @@ import com.rahim.data.alarm.AlarmManagement
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
+import com.rahim.ui.theme.Purple
+import com.rahim.ui.theme.PurpleGrey
 import com.rahim.ui.theme.YadinoTheme
-import com.rahim.utils.base.view.CircularProgressAnimated
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.base.view.ProcessRoutineAdded
 import com.rahim.utils.base.view.ShowStatusBar
@@ -50,10 +61,13 @@ fun HomeScreen(
     val currentYer = viewModel.getCurrentTime()[0]
     val currentMonth = viewModel.getCurrentTime()[1]
     val currentDay = viewModel.getCurrentTime()[2]
+    val searchItems = ArrayList<Routine>()
 
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineForAdd = rememberSaveable { mutableStateOf<Routine?>(null) }
+    var searchText by rememberSaveable { mutableStateOf("") }
+    var clickSearch by rememberSaveable { mutableStateOf(false) }
 
     viewModel.getCurrentRoutines()
     val routines by viewModel.flowRoutines
@@ -65,7 +79,9 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopBarCenterAlign(
-                modifier, stringResource(id = R.string.hello_friend)
+                modifier, stringResource(id = R.string.hello_friend), onClickSearch = {
+                    clickSearch = !clickSearch
+                }
             )
         }, containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
@@ -73,32 +89,56 @@ fun HomeScreen(
             is Resource.Loading -> {}
             is Resource.Success -> {
                 routines.data?.let {
-                    if (it.isEmpty()) {
-                        EmptyHome(paddingValues)
-                    } else {
-                        ItemsHome(currentYer, currentMonth, currentDay,
-                            paddingValues,
-                            it,
-                            { checkedRoutine ->
-                                viewModel.updateRoutine(checkedRoutine)
-                                alarmManagement.setAlarm(
-                                    context,
-                                    checkedRoutine,
-                                    if (idAlarms == null) checkedRoutine.id?.toLong() else checkedRoutine.idAlarm
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = if (it.isEmpty()) Arrangement.Center else Arrangement.Top,
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .fillMaxSize()
+                    ) {
+                        ShowSearchBar(it, clickSearch, searchText = searchText) { search ->
+                            searchText = search
+                            if (search.isNotEmpty()) {
+                                searchItems.addAll(it.filter {
+                                    it.name == searchText
+                                })
+                            } else {
+                                searchItems.clear()
+                            }
+                        }
+                        if (it.isEmpty()) {
+                            EmptyHome()
+                        } else {
+                            if (searchItems.isEmpty() && searchText.isNotEmpty()) {
+                                EmptyHome(
+                                    Modifier.padding(top = 70.dp),
+                                    messageEmpty = R.string.search_empty_routine
                                 )
-                            },
-                            { routineUpdate ->
-                                if (routineUpdate.isSample)
-                                    viewModel.showSampleRoutine(true)
+                            } else {
+                                ItemsHome(currentYer, currentMonth, currentDay,
+                                    if (searchText.isEmpty()) it else searchItems,
+                                    { checkedRoutine ->
+                                        viewModel.updateRoutine(checkedRoutine)
+                                        alarmManagement.setAlarm(
+                                            context,
+                                            checkedRoutine,
+                                            if (idAlarms == null) checkedRoutine.id?.toLong() else checkedRoutine.idAlarm
+                                        )
+                                    },
+                                    { routineUpdate ->
+                                        if (routineUpdate.isSample)
+                                            viewModel.showSampleRoutine(true)
 
-                                routineUpdateDialog.value = routineUpdate
-                            },
-                            { deleteRoutine ->
-                                if (deleteRoutine.isSample)
-                                    viewModel.showSampleRoutine(true)
+                                        routineUpdateDialog.value = routineUpdate
+                                    },
+                                    { deleteRoutine ->
+                                        if (deleteRoutine.isSample)
+                                            viewModel.showSampleRoutine(true)
 
-                                routineDeleteDialog.value = deleteRoutine
-                            })
+                                        routineDeleteDialog.value = deleteRoutine
+                                    })
+                            }
+                        }
                     }
                 }
             }
@@ -107,6 +147,7 @@ fun HomeScreen(
 
             }
         }
+
     }
     routineDeleteDialog.value?.let { routineFromDialog ->
         ErrorDialog(
@@ -166,32 +207,55 @@ fun HomeScreen(
 }
 
 @Composable
-fun EmptyHome(paddingValues: PaddingValues) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxSize()
-    ) {
-
-        Image(
-            modifier = Modifier
-                .sizeIn(minHeight = 320.dp)
-                .fillMaxWidth(),
-            painter = painterResource(id = R.drawable.empty_list_home),
-            contentDescription = "empty list home"
-        )
-        Text(
-            text = stringResource(id = R.string.not_work_for_day),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 32.dp),
-            textAlign = TextAlign.Center,
-            fontSize = 18.sp,
-            color = MaterialTheme.colorScheme.primary
-        )
+fun ShowSearchBar(
+    routines: List<Routine>,
+    clickSearch: Boolean,
+    searchText: String,
+    searchValueText: (String) -> Unit
+) {
+    if (routines.isNotEmpty()) {
+        AnimatedVisibility(visible = clickSearch) {
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    label = { Text(text = stringResource(id = R.string.search_hint)) },
+                    value = searchText,
+                    onValueChange = { searchValueText(it) },
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                        focusedContainerColor = MaterialTheme.colorScheme.onBackground,
+                        unfocusedIndicatorColor = PurpleGrey,
+                        focusedIndicatorColor = Purple,
+                        disabledIndicatorColor = Color.Transparent,
+                    )
+                )
+            }
+        }
     }
+}
+
+@Composable
+fun EmptyHome(
+    modifier: Modifier = Modifier,
+    @StringRes messageEmpty: Int = R.string.not_work_for_day
+) {
+    Image(
+        modifier = modifier
+            .sizeIn(minHeight = 320.dp)
+            .fillMaxWidth(),
+        painter = painterResource(id = R.drawable.empty_list_home),
+        contentDescription = "empty list home"
+    )
+    Text(
+        text = stringResource(id = messageEmpty),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 32.dp),
+        textAlign = TextAlign.Center,
+        fontSize = 18.sp,
+        color = MaterialTheme.colorScheme.primary
+    )
 }
 
 @Composable
@@ -199,43 +263,40 @@ fun ItemsHome(
     currentDay: Int,
     currentMonth: Int,
     currentYer: Int,
-    paddingValues: PaddingValues,
     routines: List<Routine>,
     checkedRoutine: (Routine) -> Unit,
     updateRoutine: (Routine) -> Unit,
     deleteRoutine: (Routine) -> Unit
 ) {
-    Column(modifier = Modifier.padding(paddingValues)) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .padding(horizontal = 28.dp, vertical = 25.dp)
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = "$currentDay/$currentMonth/$currentYer", fontSize = 18.sp,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                text = stringResource(id = R.string.list_work_day), fontSize = 18.sp,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth(),
-            contentPadding = PaddingValues(top = 0.dp, start = 16.dp, end = 16.dp)
-        ) {
-            items(items = routines, itemContent = {
-                ItemRoutine(routine = it, onChecked = {
-                    checkedRoutine(it)
-                }, openDialogDelete = {
-                    deleteRoutine(it)
-                }, openDialogEdit = {
-                    updateRoutine(it)
-                })
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .padding(horizontal = 28.dp, vertical = 25.dp)
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = "$currentDay/$currentMonth/$currentYer", fontSize = 18.sp,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = stringResource(id = R.string.list_work_day), fontSize = 18.sp,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth(),
+        contentPadding = PaddingValues(top = 0.dp, start = 16.dp, end = 16.dp)
+    ) {
+        items(items = routines, itemContent = {
+            ItemRoutine(routine = it, onChecked = {
+                checkedRoutine(it)
+            }, openDialogDelete = {
+                deleteRoutine(it)
+            }, openDialogEdit = {
+                updateRoutine(it)
             })
-        }
+        })
     }
 }
 
