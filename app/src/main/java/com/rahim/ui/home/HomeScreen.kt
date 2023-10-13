@@ -47,6 +47,8 @@ import com.rahim.utils.base.view.ShowStatusBar
 import com.rahim.utils.base.view.ShowToastShort
 import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.resours.Resource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -68,6 +70,7 @@ fun HomeScreen(
     val routineForAdd = rememberSaveable { mutableStateOf<Routine?>(null) }
     var searchText by rememberSaveable { mutableStateOf("") }
     var clickSearch by rememberSaveable { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
     viewModel.getCurrentRoutines()
     val routines by viewModel.flowRoutines
@@ -98,12 +101,15 @@ fun HomeScreen(
                     ) {
                         ShowSearchBar(it, clickSearch, searchText = searchText) { search ->
                             searchText = search
-                            if (search.isNotEmpty()) {
-                                searchItems.addAll(it.filter {
-                                    it.name == searchText
-                                })
-                            } else {
-                                searchItems.clear()
+                            coroutineScope.launch(Dispatchers.IO) {
+                                if (search.isNotEmpty()) {
+                                    searchItems.clear()
+                                    searchItems.addAll(it.filter {
+                                        it.name == searchText
+                                    })
+                                } else {
+                                    searchItems.clear()
+                                }
                             }
                         }
                         if (it.isEmpty()) {

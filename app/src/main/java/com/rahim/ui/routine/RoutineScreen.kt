@@ -1,6 +1,7 @@
 package com.rahim.ui.routine
 
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -45,17 +46,15 @@ import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.data.TimeData
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
+import com.rahim.ui.home.EmptyHome
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.ProcessRoutineAdded
 import com.rahim.utils.base.view.TopBarCenterAlign
-import com.rahim.utils.base.view.calculateHours
-import com.rahim.utils.base.view.calculateMinute
 import com.rahim.utils.base.view.gradientColors
 import com.rahim.utils.enums.HalfWeekName
-import com.rahim.utils.enums.WeekName
 import com.rahim.utils.extention.calculateMonthName
 import com.rahim.utils.extention.calculateTimeFormat
 import com.rahim.utils.resours.Resource
@@ -63,9 +62,7 @@ import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @Composable
 fun RoutineScreen(
@@ -80,6 +77,7 @@ fun RoutineScreen(
     val currentYer = viewModel.currentYer
     val currentMonth = viewModel.currentMonth
 
+    val searchItems = ArrayList<Routine>()
 
     val routines by viewModel.flowRoutines.collectAsStateWithLifecycle(
         initialValue = Resource.Success(
@@ -103,7 +101,7 @@ fun RoutineScreen(
             listState.firstVisibleItemIndex
         }
     }
-    var searchName by rememberSaveable { mutableStateOf("") }
+    var searchText by rememberSaveable { mutableStateOf("") }
     var clickSearch by rememberSaveable { mutableStateOf(false) }
 
     val idAlarms by viewModel.idAlarms.collectAsStateWithLifecycle()
@@ -139,8 +137,22 @@ fun RoutineScreen(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             label = { Text(text = stringResource(id = R.string.search_hint)) },
-                            value = searchName,
-                            onValueChange = { searchName = it },
+                            value = searchText,
+                            onValueChange = { search ->
+                                searchText = search
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    if (search.isNotEmpty()) {
+                                        routines.data?.filter {
+                                            it.name == search
+                                        }?.let {
+                                            searchItems.clear()
+                                            searchItems.addAll(it)
+                                        }
+                                    } else {
+                                        searchItems.clear()
+                                    }
+                                }
+                            },
                             colors = TextFieldDefaults.colors(
                                 unfocusedContainerColor = MaterialTheme.colorScheme.background,
                                 focusedContainerColor = MaterialTheme.colorScheme.onBackground,
@@ -177,7 +189,10 @@ fun RoutineScreen(
 
                     }
                 })
-            GetRoutines(routines,
+            GetRoutines(
+                routines,
+                searchItems,
+                searchText,
                 routineUpdateDialog = {
                     if (it.isSample)
                         viewModel.showSampleRoutine(true)
@@ -323,6 +338,8 @@ private fun calculateIndex(currentDay: String, index: Int, monthDay: List<TimeDa
 @Composable
 private fun GetRoutines(
     routines: Resource<List<Routine>>,
+    searchItems: List<Routine>,
+    searchText: String,
     routineUpdateDialog: (Routine) -> Unit,
     routineChecked: (Routine) -> Unit,
     routineDeleteDialog: (Routine) -> Unit
@@ -334,19 +351,26 @@ private fun GetRoutines(
                 if (it.isEmpty()) {
                     EmptyRoutine()
                 } else {
-                    SetItemsRoutine(it, checkedRoutine = {
-                        routineChecked(it)
-                    }, updateRoutine = {
-                        routineUpdateDialog(it)
-                    }, deleteRoutine = {
-                        routineDeleteDialog(it)
-                    })
+                    if (searchItems.isEmpty() && searchText.isNotEmpty()) {
+                        EmptyRoutine(messageEmpty = R.string.search_empty_routine)
+                    } else {
+                        SetItemsRoutine(
+                            searchItems.ifEmpty { it },
+                            checkedRoutine = {
+                                routineChecked(it)
+                            },
+                            updateRoutine = {
+                                routineUpdateDialog(it)
+                            },
+                            deleteRoutine = {
+                                routineDeleteDialog(it)
+                            })
+                    }
                 }
             }
         }
 
         is Resource.Error -> {}
-        else -> {}
     }
 }
 
@@ -361,9 +385,12 @@ private fun SetItemsRoutine(
 }
 
 @Composable
-private fun EmptyRoutine() {
+private fun EmptyRoutine(
+    modifier: Modifier = Modifier,
+    @StringRes messageEmpty: Int = R.string.not_routine
+) {
     Image(
-        modifier = Modifier
+        modifier = modifier
             .padding(top = 40.dp)
             .sizeIn(minHeight = 320.dp)
             .fillMaxWidth(),
@@ -371,7 +398,7 @@ private fun EmptyRoutine() {
         contentDescription = "empty list home"
     )
     Text(
-        text = stringResource(id = R.string.not_routine),
+        text = stringResource(id = messageEmpty),
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 26.dp),
