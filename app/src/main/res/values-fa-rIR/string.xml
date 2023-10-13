@@ -87,4 +87,5 @@
     <string name="update_version">لطفابرای ادامه نسخه اپ خود را به$% اپدیت کنید</string>
     <string name="update">آپدیت</string>
     <string name="search_empty_routine">!!!روتین مورد نظر یافت نشد</string>
+    <string name="search_empty_note">!!!یادداشت مورد نظر یافت نشد</string>
 </resources>

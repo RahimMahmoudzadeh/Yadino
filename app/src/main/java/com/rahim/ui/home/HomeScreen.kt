@@ -43,6 +43,7 @@ import com.rahim.ui.theme.PurpleGrey
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.base.view.ProcessRoutineAdded
+import com.rahim.utils.base.view.ShowSearchBar
 import com.rahim.utils.base.view.ShowStatusBar
 import com.rahim.utils.base.view.ShowToastShort
 import com.rahim.utils.base.view.TopBarCenterAlign
@@ -99,16 +100,18 @@ fun HomeScreen(
                             .padding(paddingValues)
                             .fillMaxSize()
                     ) {
-                        ShowSearchBar(it, clickSearch, searchText = searchText) { search ->
-                            searchText = search
-                            coroutineScope.launch(Dispatchers.IO) {
-                                if (search.isNotEmpty()) {
-                                    searchItems.clear()
-                                    searchItems.addAll(it.filter {
-                                        it.name == searchText
-                                    })
-                                } else {
-                                    searchItems.clear()
+                        if (it.isNotEmpty()) {
+                            ShowSearchBar(clickSearch, searchText = searchText) { search ->
+                                searchText = search
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    if (search.isNotEmpty()) {
+                                        searchItems.clear()
+                                        searchItems.addAll(it.filter {
+                                            it.name == searchText
+                                        })
+                                    } else {
+                                        searchItems.clear()
+                                    }
                                 }
                             }
                         }
@@ -210,35 +213,6 @@ fun HomeScreen(
                 isOpenDialog(false)
             routineForAdd.value = null
         }
-}
-
-@Composable
-fun ShowSearchBar(
-    routines: List<Routine>,
-    clickSearch: Boolean,
-    searchText: String,
-    searchValueText: (String) -> Unit
-) {
-    if (routines.isNotEmpty()) {
-        AnimatedVisibility(visible = clickSearch) {
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    label = { Text(text = stringResource(id = R.string.search_hint)) },
-                    value = searchText,
-                    onValueChange = { searchValueText(it) },
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                        focusedContainerColor = MaterialTheme.colorScheme.onBackground,
-                        unfocusedIndicatorColor = PurpleGrey,
-                        focusedIndicatorColor = Purple,
-                        disabledIndicatorColor = Color.Transparent,
-                    )
-                )
-            }
-        }
-    }
 }
 
 @Composable

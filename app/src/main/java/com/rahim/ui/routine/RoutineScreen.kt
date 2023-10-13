@@ -52,6 +52,7 @@ import com.rahim.ui.theme.PurpleGrey
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.ProcessRoutineAdded
+import com.rahim.utils.base.view.ShowSearchBar
 import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.base.view.gradientColors
 import com.rahim.utils.enums.HalfWeekName
@@ -131,36 +132,18 @@ fun RoutineScreen(
 
             ) {
             if (!routines.data.isNullOrEmpty()) {
-                AnimatedVisibility(visible = clickSearch) {
-                    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                        TextField(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            label = { Text(text = stringResource(id = R.string.search_hint)) },
-                            value = searchText,
-                            onValueChange = { search ->
-                                searchText = search
-                                coroutineScope.launch(Dispatchers.IO) {
-                                    if (search.isNotEmpty()) {
-                                        routines.data?.filter {
-                                            it.name == search
-                                        }?.let {
-                                            searchItems.clear()
-                                            searchItems.addAll(it)
-                                        }
-                                    } else {
-                                        searchItems.clear()
-                                    }
-                                }
-                            },
-                            colors = TextFieldDefaults.colors(
-                                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                                focusedContainerColor = MaterialTheme.colorScheme.onBackground,
-                                unfocusedIndicatorColor = PurpleGrey,
-                                focusedIndicatorColor = Purple,
-                                disabledIndicatorColor = Color.Transparent,
-                            )
-                        )
+                ShowSearchBar(clickSearch = clickSearch, searchText =searchText){search->
+                    coroutineScope.launch(Dispatchers.IO) {
+                        if (search.isNotEmpty()) {
+                            routines.data?.filter {
+                                it.name == search
+                            }?.let {
+                                searchItems.clear()
+                                searchItems.addAll(it)
+                            }
+                        } else {
+                            searchItems.clear()
+                        }
                     }
                 }
             }
