@@ -13,6 +13,9 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
+    <queries>
+        <package android:name="com.farsitel.bazaar" />
+    </queries>
     <application
         android:name=".utils.App"
         android:allowBackup="true"
@@ -36,14 +39,14 @@
         </activity>
         <activity
             android:name=".ui.wakeup.WakeupActivity"
-            android:parentActivityName=".ui.main.MainActivity"
             android:excludeFromRecents="true"
+            android:launchMode="standard"
+            android:parentActivityName=".ui.main.MainActivity"
+            android:showForAllUsers="true"
             android:showOnLockScreen="true"
             android:showWhenLocked="true"
-            android:turnScreenOn="true"
-            android:showForAllUsers="true"
-            android:launchMode="standard"
-            />
+            android:turnScreenOn="true" />
+
         <receiver
             android:name=".data.broadcast.YadinoBroadCastReceiver"
             android:enabled="true"

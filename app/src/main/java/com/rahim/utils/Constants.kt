@@ -18,6 +18,9 @@ object Constants {
     const val TITLE_TASK = "title task"
     const val UPDATE = "update"
     const val CAFE_BAZAAR = "cafeBazaar"
+    const val CAFE_BAZAAR_INSTALL_LINK="https://cafebazaar.ir/install"
+    const val CAFE_BAZAAR_PACKAGE_NAME="com.farsitel.bazaar"
+    const val YADINO_PACKAGE_NAME="com.rahim.yadino"
 
     //Key
     const val ALARM_MESSAGE = "alarm Message"

@@ -2,50 +2,66 @@ package com.rahim.ui.main
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.ui.Modifier
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.BuildConfig
+import com.rahim.R
 import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.data.sharedPreferences.SharedPreferencesCustom
 import com.rahim.ui.dialog.DialogUpdateVersion
+import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.navigation.NavGraph
 import com.rahim.ui.navigation.YadinoApp
 import com.rahim.ui.theme.BalticSea
+import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
-import com.rahim.utils.Constants.CAFE_BAZAAR
+import com.rahim.utils.Constants.CAFE_BAZAAR_INSTALL_LINK
+import com.rahim.utils.Constants.CAFE_BAZAAR_PACKAGE_NAME
 import com.rahim.utils.Constants.IS_FORCE
 import com.rahim.utils.Constants.UPDATE
 import com.rahim.utils.Constants.VERSION
+import com.rahim.utils.Constants.YADINO_PACKAGE_NAME
+import com.rahim.utils.base.BaseActivity
+import com.rahim.utils.base.view.goSettingPermission
 import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.navigation.Screen
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : BaseActivity() {
+
 
     @Inject
     lateinit var sharedPreferencesCustom: SharedPreferencesCustom
@@ -68,6 +84,7 @@ class MainActivity : ComponentActivity() {
         getTokenFirebase()
         getNotificationDataFromBackground()
         setContent {
+            Timber.tag("packageName").d(this.packageName)
             val context = LocalContext.current
             (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             val systemUiController = rememberSystemUiController()
@@ -76,8 +93,14 @@ class MainActivity : ComponentActivity() {
             val notificationPermissionState =
                 rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
             val navController = rememberNavController()
-            val currentDestination = navController.currentBackStackEntry?.destination?.route
+            val destination = navController.currentBackStackEntry?.destination?.route
+            val currentDestination =
+                navController.currentBackStackEntryAsState().value?.destination?.route
             var showUpdateDialog by rememberSaveable { mutableStateOf(false) }
+            var onClickAdd by rememberSaveable { mutableStateOf(false) }
+            var showLinkUpdate by rememberSaveable {
+                mutableStateOf(false)
+            }
 
             if (sharedPreferencesCustom.isSendUpdateVersion() && sharedPreferencesCustom.versionUpdate() > BuildConfig.VERSION_CODE) {
                 showUpdateDialog = true
@@ -95,10 +118,18 @@ class MainActivity : ComponentActivity() {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 YadinoTheme {
                     if (showUpdateDialog) {
-                        ShowUpdateDialog {
-                            showUpdateDialog = false
-                        }
+                        ShowUpdateDialog(
+                            messageUpdate = R.string.update_app_version,
+                            successBtn = R.string.update,
+                            onDismiss = {
+                                showUpdateDialog = false
+                            },
+                            notInstallAppStore = {
+                                showUpdateDialog = false
+                                showLinkUpdate = true
+                            })
                     }
+
                     Surface(
                         modifier = Modifier
                             .fillMaxSize()
@@ -106,10 +137,33 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Scaffold(
                             bottomBar = {
-                                YadinoApp(navController, screenItems) {
-                                    openDialog = it
+                                YadinoApp(navController, screenItems)
+                            },
+                            containerColor = MaterialTheme.colorScheme.background,
+                            floatingActionButton = {
+                                FloatingActionButton(
+                                    containerColor = CornflowerBlueLight,
+                                    contentColor = Color.White,
+                                    onClick = {
+                                        requestPermissionNotification(isGranted = {
+                                            if (it) {
+                                                openDialog =
+                                                    StateOpenDialog(
+                                                        true,
+                                                        currentDestination.toString()
+                                                    )
+
+                                            } else {
+                                                onClickAdd = true
+                                            }
+                                        }, permissionState = {
+                                            it.launchPermissionRequest()
+                                        }, notificationPermission = notificationPermissionState)
+                                    },
+                                ) {
+                                    Icon(Icons.Filled.Add, "add item")
                                 }
-                            }, containerColor = MaterialTheme.colorScheme.background
+                            }
                         ) { innerPadding ->
                             NavGraph(
                                 navController,
@@ -118,7 +172,7 @@ class MainActivity : ComponentActivity() {
                                     openDialog = it
                                 }
                             )
-                            if (currentDestination == Screen.Home.route)
+                            if (destination == Screen.Home.route)
                                 requestPermissionNotification(
                                     notificationPermission = notificationPermissionState,
                                     isGranted = {},
@@ -127,21 +181,54 @@ class MainActivity : ComponentActivity() {
                                     })
                         }
                     }
+                    if (showLinkUpdate) {
+                        ShowUpdateDialog(
+                            messageUpdate = R.string.download_app_stor,
+                            successBtn = R.string.download,
+                            onDismiss = {
+                                showLinkUpdate = false
+                                showUpdateDialog = true
+                            }) {
+                            val url = CAFE_BAZAAR_INSTALL_LINK
+                            Intent(Intent.ACTION_VIEW).apply {
+                                data = Uri.parse(url)
+                                startActivity(this)
+                            }
+                            showLinkUpdate = false
+                            showUpdateDialog = true
+                        }
+                    }
                 }
+            }
+            if (onClickAdd) {
+                ClickAdd(context = this, click = {
+                    onClickAdd = it
+                })
             }
         }
     }
 
     @Composable
-    private fun ShowUpdateDialog(onDismiss: () -> Unit) {
+    private fun ShowUpdateDialog(
+        @StringRes messageUpdate: Int,
+        @StringRes successBtn: Int,
+        onDismiss: () -> Unit,
+        notInstallAppStore: () -> Unit
+    ) {
         DialogUpdateVersion(
             isForce = sharedPreferencesCustom.isForceUpdateVersion(),
             onDismiss = onDismiss,
+            messageUpdate = messageUpdate,
+            successBtn = successBtn,
             onUpdate = {
-                if (BuildConfig.FLAVOR.contains(CAFE_BAZAAR)) {
-
+                if (isPackageInstalled(CAFE_BAZAAR_PACKAGE_NAME, this.packageManager)) {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse("bazaar://details?id=$YADINO_PACKAGE_NAME")
+                    intent.setPackage(CAFE_BAZAAR_PACKAGE_NAME)
+                    startActivity(intent)
                 } else {
-
+                    onDismiss()
+                    notInstallAppStore()
                 }
             })
     }
@@ -163,5 +250,20 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    @Composable
+    fun ClickAdd(context: Context, click: (Boolean) -> Unit) {
+        ErrorDialog(
+            isOpen = true,
+            message = stringResource(id = R.string.better_performance_access),
+            okMessage = stringResource(id = R.string.setting),
+            isClickOk = {
+                if (it) {
+                    goSettingPermission(context)
+                }
+                click(false)
+            }
+        )
     }
 }

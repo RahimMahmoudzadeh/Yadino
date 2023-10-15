@@ -1,6 +1,7 @@
 package com.rahim.ui.dialog
 
 import android.content.res.Configuration
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,8 @@ import com.rahim.utils.base.view.gradientColors
 @Composable
 fun DialogUpdateVersion(
     isForce: Boolean,
+    @StringRes messageUpdate:Int= R.string.update_app_version,
+    @StringRes successBtn:Int=R.string.update,
     onUpdate: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -61,7 +64,7 @@ fun DialogUpdateVersion(
                             contentDescription = "app icon"
                         )
                         Text(
-                            text = "لطفا برای ادامه نسخه اپ خود را بروزرسانی کنید. ",
+                            text = stringResource(id = messageUpdate),
                             textAlign = TextAlign.Center,
                             style = TextStyle(color = MaterialTheme.colorScheme.primary),
                             fontSize = 16.sp
@@ -72,7 +75,7 @@ fun DialogUpdateVersion(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         DialogButtonBackground(
-                            text = stringResource(id = R.string.update),
+                            text = stringResource(id = successBtn),
                             gradient = Brush.verticalGradient(
                                 gradientColors
                             ),
@@ -107,6 +110,6 @@ fun DialogUpdateVersion(
 @Composable
 fun PreviewDialogUpdateVersionLight() {
     YadinoTheme {
-        DialogUpdateVersion( isForce = false, onUpdate = {}, onDismiss = {})
+        DialogUpdateVersion( messageUpdate = R.string.update_app_version, successBtn = R.string.update,isForce = false, onUpdate = {}, onDismiss = {})
     }
 }
