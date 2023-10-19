@@ -32,15 +32,6 @@ class FirebaseNotificationService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         remoteMessage.data?.let {
-            if (remoteMessage.data.containsKey(UPDATE)) {
-                val isForce = remoteMessage.data.getValue(UPDATE)
-                val version = remoteMessage.data.getValue(VERSION)
-                sharedPreferencesCustom.sendNotificationUpdate(
-                    true,
-                    isForce.contains(IS_FORCE),
-                    version.toInt()
-                )
-            }
             val pendingIntent =
                 PendingIntent.getActivity(
                     this,

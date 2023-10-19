@@ -34,15 +34,22 @@ import com.rahim.utils.base.view.goSettingPermission
 import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.navigation.Screen
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun YadinoApp(
     navController: NavController,
     screenItems: List<Screen>,
+    openDialog: (StateOpenDialog) -> Unit
 ) {
+    val context = LocalContext.current
+    val configuration = LocalConfiguration.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val destination = navBackStackEntry?.destination?.route
-
+    var onClickAdd by rememberSaveable { mutableStateOf(false) }
+    val notificationPermissionState = rememberPermissionState(
+        android.Manifest.permission.POST_NOTIFICATIONS
+    )
 
     if (destination != Screen.Welcome.route && destination != Screen.Splash.route) {
         BottomNavigation(backgroundColor = MaterialTheme.colorScheme.onBackground) {
@@ -73,26 +80,39 @@ fun YadinoApp(
         }
 //        x = (configuration.screenWidthDp.dp / 2) - 26.dp,
 //        y = -35.dp
-//        FloatingActionButton(
-//            containerColor = CornflowerBlueLight,
-//            contentColor = Color.White,
-//            modifier = Modifier.offset(
-//                x = (configuration.screenWidthDp.dp) - 70.dp,
-//                y = -65.dp
-//            ),
-//            onClick = {
-//                requestPermissionNotification(isGranted = {
-//                    if (it) {
-//                        openDialog(StateOpenDialog(true, destination.toString()))
-//                    } else {
-//                        onClickAdd = true
-//                    }
-//                }, permissionState = {
-//                    it.launchPermissionRequest()
-//                }, notificationPermission = notificationPermissionState)
-//            },
-//        ) {
-//            Icon(Icons.Filled.Add, "add item")
-//        }
+        FloatingActionButton(
+            containerColor = CornflowerBlueLight,
+            contentColor = Color.White,
+            modifier = Modifier.offset(
+                x = (configuration.screenWidthDp.dp) - 70.dp,
+                y = -65.dp
+            ),
+            onClick = {
+                requestPermissionNotification(isGranted = {
+                    if (it) {
+                        openDialog(StateOpenDialog(true, destination.toString()))
+                    } else {
+                        onClickAdd = true
+                    }
+                }, permissionState = {
+                    it.launchPermissionRequest()
+                }, notificationPermission = notificationPermissionState)
+            },
+        ) {
+            Icon(Icons.Filled.Add, "add item")
+        }
+    }
+    if (onClickAdd) {
+        ErrorDialog(
+            isOpen = true,
+            message = stringResource(id = R.string.better_performance_access),
+            okMessage = stringResource(id = R.string.setting),
+            isClickOk = {
+                if (it) {
+                    goSettingPermission(context)
+                }
+                onClickAdd = false
+            }
+        )
     }
 }

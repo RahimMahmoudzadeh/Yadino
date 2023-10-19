@@ -37,14 +37,4 @@ class SharedPreferencesCustom @Inject constructor(private val context: Context) 
 
     fun isSampleNote() = sharedPreferences.getBoolean(SAMPLE_NOTE, false)
 
-    fun sendNotificationUpdate(isSend: Boolean, isForce: Boolean, version: Int) {
-        edit.putBoolean(UPDATE_VERSION, isSend)
-        edit.putBoolean(IS_FORCE, isForce)
-        edit.putInt(VERSION, version)
-        edit.apply()
-    }
-
-    fun isSendUpdateVersion() = sharedPreferences.getBoolean(UPDATE_VERSION, false)
-    fun isForceUpdateVersion() = sharedPreferences.getBoolean(IS_FORCE, false)
-    fun versionUpdate() = sharedPreferences.getInt(VERSION, 0)
 }

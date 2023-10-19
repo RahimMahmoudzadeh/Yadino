@@ -42,13 +42,14 @@ import com.rahim.utils.base.view.gradientColors
 @Composable
 fun DialogUpdateVersion(
     isForce: Boolean,
-    @StringRes messageUpdate:Int= R.string.update_app_version,
-    @StringRes successBtn:Int=R.string.update,
+    @StringRes messageUpdate: Int = R.string.update_app_version,
+    @StringRes successBtn: Int = R.string.update,
     onUpdate: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        Dialog(onDismissRequest = onDismiss) {
+        Dialog(onDismissRequest =onDismissRequest) {
             Surface(
                 shape = RoundedCornerShape(4.dp),
                 modifier = Modifier.fillMaxWidth(),
@@ -110,6 +111,12 @@ fun DialogUpdateVersion(
 @Composable
 fun PreviewDialogUpdateVersionLight() {
     YadinoTheme {
-        DialogUpdateVersion( messageUpdate = R.string.update_app_version, successBtn = R.string.update,isForce = false, onUpdate = {}, onDismiss = {})
+        DialogUpdateVersion(
+            messageUpdate = R.string.update_app_version,
+            successBtn = R.string.update,
+            isForce = false,
+            onUpdate = {},
+            onDismiss = {},
+            onDismissRequest = {})
     }
 }
