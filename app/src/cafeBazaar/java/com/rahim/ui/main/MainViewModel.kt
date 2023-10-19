@@ -33,6 +33,9 @@ class MainViewModel @Inject constructor(
             launch {
                 noteRepository.addSampleNote()
             }
+            launch {
+                repositoryRoutine.changeRoutineId()
+            }
         }
     }
 }

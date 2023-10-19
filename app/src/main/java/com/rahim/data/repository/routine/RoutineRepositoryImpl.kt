@@ -20,8 +20,11 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.withContext
 import saman.zamani.persiandate.PersianDate
+import timber.log.Timber
 import javax.inject.Inject
+import kotlin.random.Random
 
 class RoutineRepositoryImpl @Inject constructor(
     private val appDatabase: AppDatabase,
@@ -34,7 +37,7 @@ class RoutineRepositoryImpl @Inject constructor(
     private val currentTimeMonth = persianData.shMonth
     private val currentTimeYer = persianData.shYear
 
-    val equalRoutineMessage = "روتین یکسان نمی توان ساخت!!"
+    private val equalRoutineMessage = "روتین یکسان نمی توان ساخت!!"
     override suspend fun addSampleRoutine() {
         val sampleRoutines = appDatabase.routineDao()
             .getSampleRoutine(currentTimeMonth, currentTimeDay, currentTimeYer)
@@ -58,7 +61,8 @@ class RoutineRepositoryImpl @Inject constructor(
                     "12:00",
                     false,
                     explanation = "من یک روتین تستی هستم لطفا من را به چپ بکشید",
-                    isSample = true
+                    isSample = true,
+                    idAlarm = 1
                 )
             } else {
                 Routine(
@@ -71,11 +75,42 @@ class RoutineRepositoryImpl @Inject constructor(
                     "12:00",
                     false,
                     explanation = "من یک روتین تستی هستم لطفا من را به راست بکشید",
-                    isSample = true
+                    isSample = true,
+                    idAlarm = 2
                 )
             }
             addRoutine(routine).catch {}.collect()
         }
+    }
+
+    override suspend fun changeRoutineId() = withContext(Dispatchers.IO) {
+        val routines = appDatabase.routineDao().getRoutines()
+
+        routines.forEach {
+            if (it.idAlarm == null) {
+                var idRandom = Random.nextInt(0, 10000000)
+                var equalIdAlarm = getIdAlarmsNotNull().find { it == idRandom.toLong() }
+                while (equalIdAlarm != null) {
+                    idRandom = Random.nextInt(0, 10000000)
+                    equalIdAlarm = getIdAlarmsNotNull().find { it == idRandom.toLong() }
+                }
+                it.apply {
+                    idAlarm = idRandom.toLong()
+                }
+                appDatabase.routineDao().updateRoutine(it)
+            }
+        }
+    }
+
+    private suspend fun getIdAlarmsNotNull(): List<Long> {
+        val idAlarms = appDatabase.routineDao().getIdAlarmsSuspend()
+        val idNotNull = ArrayList<Long>()
+        for (id in idAlarms.indices) {
+            if (idAlarms[id] != null) {
+                idNotNull.add(idAlarms[id])
+            }
+        }
+        return idNotNull
     }
 
     override suspend fun addRoutine(routine: Routine): Flow<Resource<Long>> = flow {

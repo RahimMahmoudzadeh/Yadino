@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.provider.AlarmClock
 import com.rahim.data.broadcast.YadinoBroadCastReceiver
 import com.rahim.data.date.CalculateDate
 import com.rahim.data.modle.Rotin.Routine
@@ -19,7 +18,7 @@ import java.util.Calendar
 import kotlin.random.Random
 
 class AlarmManagement : CalculateDate, Alarm {
-    fun setAlarm(
+    fun updateAlarm(
         context: Context,
         routine: Routine,
         alarmId: Long?,
