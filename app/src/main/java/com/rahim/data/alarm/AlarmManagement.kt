@@ -7,26 +7,30 @@ import android.content.Intent
 import android.provider.AlarmClock
 import com.rahim.data.broadcast.YadinoBroadCastReceiver
 import com.rahim.data.date.CalculateDate
+import com.rahim.data.modle.Rotin.Routine
 import com.rahim.utils.Constants.ALARM_ID
 import com.rahim.utils.Constants.ALARM_MESSAGE
 import com.rahim.utils.Constants.ALARM_NAME
+import com.rahim.utils.base.view.calculateHours
+import com.rahim.utils.base.view.calculateMinute
 import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.util.Calendar
-import java.util.Random
+import kotlin.random.Random
 
- class AlarmManagement : CalculateDate,Alarm {
+class AlarmManagement : CalculateDate, Alarm {
     fun setAlarm(
         context: Context,
-        hours: Int,
-        minute: Int,
-        yer: Int?,
-        month: Int?,
-        dayOfYer: Int?,
-        name: String,
-        message: String,
-        alarmId:Int,
+        routine: Routine,
+        alarmId: Long?,
     ) {
+        val hours = calculateHours(routine.timeHours.toString())
+        val minute = calculateMinute(routine.timeHours.toString())
+        val yer = routine.yerNumber
+        val month = routine.monthNumber
+        val dayOfYer = routine.dayNumber
+        val name = routine.name
+        val message = routine.explanation ?: ""
 
         val alarmManager =
             context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -38,7 +42,7 @@ import java.util.Random
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            alarmId,
+            alarmId?.toInt()?:0,
             alarmIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -46,13 +50,53 @@ import java.util.Random
         if (t.timeInMillis < System.currentTimeMillis())
             return
 
-        Timber.tag("time").d("calculateTime -> $t")
-        Timber.tag("time").d("current time ->${Calendar.getInstance().time}")
-        Timber.tag("time").d("current time yadino ->${t.time}")
         alarmManager.setAlarmClock(
             AlarmManager.AlarmClockInfo(t.timeInMillis, pendingIntent),
             pendingIntent
         )
+    }
+
+    fun setAlarm(
+        context: Context,
+        routine: Routine,
+        idAlarms: List<Long>
+    ): Routine {
+        val hours = calculateHours(routine.timeHours.toString())
+        val minute = calculateMinute(routine.timeHours.toString())
+        val yer = routine.yerNumber
+        val month = routine.monthNumber
+        val dayOfYer = routine.dayNumber
+        val name = routine.name
+        val message = routine.explanation ?: ""
+
+        val alarmManager =
+            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        var idRandom = Random.nextInt(0, 10000000)
+        var equalIdAlarm = idAlarms.find { it == idRandom.toLong() }
+        while (equalIdAlarm != null) {
+            idRandom = Random.nextInt(0, 10000000)
+            equalIdAlarm = idAlarms.find { it == idRandom.toLong() }
+        }
+        val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).let { intent ->
+            intent.putExtra(ALARM_MESSAGE, message)
+            intent.putExtra(ALARM_NAME, name)
+            intent.putExtra(ALARM_ID, idRandom)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            idRandom,
+            alarmIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val t = calculateTime(yer, month, dayOfYer, hours, minute)
+        if (t.timeInMillis >= System.currentTimeMillis()) {
+            alarmManager.setAlarmClock(
+                AlarmManager.AlarmClockInfo(t.timeInMillis, pendingIntent),
+                pendingIntent
+            )
+        }
+        return routine.apply { idAlarm = idRandom.toLong() }
     }
 
     override fun calculateTime(
@@ -82,10 +126,16 @@ import java.util.Random
         }
         return calendar
     }
-     override fun cancelAlarm(context: Context,idAlarm:Int?) {
-         val intent = Intent(context, YadinoBroadCastReceiver::class.java)
-         val pendingIntent = PendingIntent.getBroadcast(context, idAlarm?:0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
-         alarmManager!!.cancel(pendingIntent)
-     }
+
+    override fun cancelAlarm(context: Context, idAlarm: Long?) {
+        val intent = Intent(context, YadinoBroadCastReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            idAlarm?.toInt() ?: 0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
+        alarmManager!!.cancel(pendingIntent)
+    }
 }

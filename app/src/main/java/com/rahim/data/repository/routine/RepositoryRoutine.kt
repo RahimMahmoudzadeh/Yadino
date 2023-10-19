@@ -1,11 +1,12 @@
 package com.rahim.data.repository.routine
 
 import com.rahim.data.modle.Rotin.Routine
+import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface RepositoryRoutine {
     suspend fun addSampleRoutine()
-    suspend fun addRoutine(routine: Routine):Long
+    suspend fun addRoutine(routine: Routine):Flow<Resource<Long>>
 
     suspend fun removeRoutine(routine: Routine):Int
 
@@ -15,7 +16,7 @@ interface RepositoryRoutine {
 
     suspend fun getRoutine(id: Int): Routine
 
-    fun getRoutine(monthNumber: Int, numberDay: Int,yerNumber:Int): Flow<List<Routine>>
+    fun getRoutines(monthNumber: Int, numberDay: Int, yerNumber:Int): Flow<List<Routine>>
 
     fun searchRoutine(name: String,monthNumber: Int?, dayNumber: Int?): Flow<List<Routine>>
 

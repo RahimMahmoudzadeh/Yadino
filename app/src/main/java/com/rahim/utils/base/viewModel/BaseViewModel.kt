@@ -5,10 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.rahim.data.repository.base.BaseRepository
 import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,6 +17,7 @@ open class BaseViewModel @Inject constructor(
     private val baseRepository: BaseRepository
 ) :
     ViewModel() {
+
     val errorGetProses = "مشکلی در دریافت اطلاعات پیش امده است! لطفا دوباره امتحان کنید"
     val errorSaveProses = "مشکلی در ثبت اطلاعات پیش امده است! لطفا دوباره امتحان کنید"
     val successSave = "ثبت اطلاعات با موفقیت ثبت شد!"
@@ -32,6 +32,14 @@ open class BaseViewModel @Inject constructor(
         MutableStateFlow("")
     val flowNameDay: StateFlow<String> = _flowNameDay
 
+    private val _idAlarms =
+        MutableStateFlow(listOf(0L))
+    val idAlarms: StateFlow<List<Long>> = _idAlarms
+
+    init {
+        getIdAlarms()
+    }
+
     fun isShowWelcomeScreen() = sharedPreferencesRepository.isShowWelcomeScreen()
 
     fun getCurrentTime(): List<Int> = baseRepository.getCurrentTime()
@@ -43,14 +51,23 @@ open class BaseViewModel @Inject constructor(
         }
     }
 
-    fun showSampleRoutine(isShow:Boolean){
+    fun showSampleRoutine(isShow: Boolean) {
         viewModelScope.launch {
             sharedPreferencesRepository.isShowSampleRoutine(isShow)
         }
     }
-    fun showSampleNote(isShow:Boolean){
+
+    fun showSampleNote(isShow: Boolean) {
         viewModelScope.launch {
             sharedPreferencesRepository.isShowSampleNote(isShow)
+        }
+    }
+
+    private fun getIdAlarms() {
+        viewModelScope.launch {
+            baseRepository.getIdAlarms().catch {}.collect {
+                _idAlarms.value = it
+            }
         }
     }
 }

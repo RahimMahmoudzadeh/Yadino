@@ -1,6 +1,8 @@
 package com.rahim.ui.routine
 
 
+import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,6 +18,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -42,16 +46,16 @@ import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.data.TimeData
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
+import com.rahim.ui.home.EmptyHome
+import com.rahim.ui.theme.Purple
+import com.rahim.ui.theme.PurpleGrey
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.Constants.YYYY_MM_DD
+import com.rahim.utils.base.view.ProcessRoutineAdded
+import com.rahim.utils.base.view.ShowSearchBar
 import com.rahim.utils.base.view.TopBarCenterAlign
-import com.rahim.utils.base.view.calculateHours
-import com.rahim.utils.base.view.calculateMinute
 import com.rahim.utils.base.view.gradientColors
-import com.rahim.utils.base.view.removeRoutine
-import com.rahim.utils.base.view.setAlarm
 import com.rahim.utils.enums.HalfWeekName
-import com.rahim.utils.enums.WeekName
 import com.rahim.utils.extention.calculateMonthName
 import com.rahim.utils.extention.calculateTimeFormat
 import com.rahim.utils.resours.Resource
@@ -59,9 +63,7 @@ import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @Composable
 fun RoutineScreen(
@@ -76,6 +78,7 @@ fun RoutineScreen(
     val currentYer = viewModel.currentYer
     val currentMonth = viewModel.currentMonth
 
+    val searchItems = ArrayList<Routine>()
 
     val routines by viewModel.flowRoutines.collectAsStateWithLifecycle(
         initialValue = Resource.Success(
@@ -88,6 +91,7 @@ fun RoutineScreen(
 
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
+    val routineForAdd = rememberSaveable { mutableStateOf<Routine?>(null) }
 
     var dayChecked by rememberSaveable { mutableStateOf("0") }
     var index by rememberSaveable { mutableStateOf(0) }
@@ -98,13 +102,12 @@ fun RoutineScreen(
             listState.firstVisibleItemIndex
         }
     }
-    //Kave
-    val addRoutineId by viewModel.addRoutine
-        .collectAsStateWithLifecycle(initialValue = 0L)
+    var searchText by rememberSaveable { mutableStateOf("") }
+    var clickSearch by rememberSaveable { mutableStateOf(false) }
 
-    val routineAdded = rememberSaveable {
-        mutableStateOf<Routine?>(null)
-    }
+    val idAlarms by viewModel.idAlarms.collectAsStateWithLifecycle()
+    val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
+
 
     checkDay(monthDay, dayChecked, coroutineScope, listState, index, {
         index += it
@@ -115,7 +118,9 @@ fun RoutineScreen(
         topBar = {
             TopBarCenterAlign(
                 modifier, stringResource(id = R.string.list_routine)
-            )
+            ) {
+                clickSearch = !clickSearch
+            }
         }, containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
 
@@ -126,6 +131,22 @@ fun RoutineScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
 
             ) {
+            if (!routines.data.isNullOrEmpty()) {
+                ShowSearchBar(clickSearch = clickSearch, searchText =searchText){search->
+                    coroutineScope.launch(Dispatchers.IO) {
+                        if (search.isNotEmpty()) {
+                            routines.data?.filter {
+                                it.name == search
+                            }?.let {
+                                searchItems.clear()
+                                searchItems.addAll(it)
+                            }
+                        } else {
+                            searchItems.clear()
+                        }
+                    }
+                }
+            }
 
             ItemTimeDate(monthDay,
                 dayChecked,
@@ -151,7 +172,10 @@ fun RoutineScreen(
 
                     }
                 })
-            GetRoutines(routines,
+            GetRoutines(
+                routines,
+                searchItems,
+                searchText,
                 routineUpdateDialog = {
                     if (it.isSample)
                         viewModel.showSampleRoutine(true)
@@ -160,11 +184,10 @@ fun RoutineScreen(
                 },
                 routineChecked = {
                     viewModel.updateRoutine(it)
-                    setAlarm(
-                        it,
-                        alarmManagement,
+                    alarmManagement.setAlarm(
                         context,
-                        it.id ?: 0
+                        it,
+                        if (idAlarms == null) it.id?.toLong() else it.idAlarm
                     )
                 },
                 routineDeleteDialog = {
@@ -179,7 +202,13 @@ fun RoutineScreen(
         ErrorDialog(
             isOpen = true, isClickOk = {
                 if (it) {
-                    removeRoutine(routineDeleteDialog.value, viewModel, alarmManagement, context)
+                    routineDeleteDialog.value?.let {
+                        viewModel.deleteRoutine(it)
+                        alarmManagement.cancelAlarm(
+                            context,
+                            if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
+                        )
+                    }
                 }
                 routineDeleteDialog.value = null
             },
@@ -195,37 +224,34 @@ fun RoutineScreen(
         dayChecked = currentNameDay,
         openDialog = {
             routineUpdateDialog.value = null
+            routineForAdd.value = null
             isOpenDialog(it)
         },
         routineUpdate = routineUpdateDialog.value,
         routine = { routine ->
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(routine)
-                setAlarm(routine, alarmManagement, context, routine.id ?: 0)
+                alarmManagement.setAlarm(
+                    context,
+                    routine,
+                    if (idAlarms == null) routine.id?.toLong() else routine.idAlarm
+                )
             } else {
-                //Kave
-                viewModel.addRoutine(routine)
-                routineAdded.value = routine
-                coroutineScope.launch {
-                    viewModel.addRoutine.collect { id ->
-                        if (id != 0L) {
-                            viewModel.addRoutine.value = 0
-                            routineAdded.value?.let {
-                                setAlarm(it, alarmManagement, context, id.toInt())
-                            }
-                        }
-                    }
-                }
+                routineForAdd.value = routine
+                viewModel.addRoutine(alarmManagement.setAlarm(context, routine, idAlarms))
             }
             routineUpdateDialog.value = null
         },
         currentNumberDay = dayChecked.toInt(),
         currentNumberMonth = currentMonth,
-        currentNumberYer = currentYer,
-        cancel = {
-            routineUpdateDialog.value = null
-        }
+        currentNumberYer = currentYer
     )
+    if (routineForAdd.value != null)
+        ProcessRoutineAdded(addRoutine, context) {
+            if (!it)
+                isOpenDialog(false)
+            routineForAdd.value = null
+        }
 }
 
 fun checkDay(
@@ -295,6 +321,8 @@ private fun calculateIndex(currentDay: String, index: Int, monthDay: List<TimeDa
 @Composable
 private fun GetRoutines(
     routines: Resource<List<Routine>>,
+    searchItems: List<Routine>,
+    searchText: String,
     routineUpdateDialog: (Routine) -> Unit,
     routineChecked: (Routine) -> Unit,
     routineDeleteDialog: (Routine) -> Unit
@@ -306,19 +334,26 @@ private fun GetRoutines(
                 if (it.isEmpty()) {
                     EmptyRoutine()
                 } else {
-                    SetItemsRoutine(it, checkedRoutine = {
-                        routineChecked(it)
-                    }, updateRoutine = {
-                        routineUpdateDialog(it)
-                    }, deleteRoutine = {
-                        routineDeleteDialog(it)
-                    })
+                    if (searchItems.isEmpty() && searchText.isNotEmpty()) {
+                        EmptyRoutine(messageEmpty = R.string.search_empty_routine)
+                    } else {
+                        SetItemsRoutine(
+                            searchItems.ifEmpty { it },
+                            checkedRoutine = {
+                                routineChecked(it)
+                            },
+                            updateRoutine = {
+                                routineUpdateDialog(it)
+                            },
+                            deleteRoutine = {
+                                routineDeleteDialog(it)
+                            })
+                    }
                 }
             }
         }
 
         is Resource.Error -> {}
-        else -> {}
     }
 }
 
@@ -333,9 +368,12 @@ private fun SetItemsRoutine(
 }
 
 @Composable
-private fun EmptyRoutine() {
+private fun EmptyRoutine(
+    modifier: Modifier = Modifier,
+    @StringRes messageEmpty: Int = R.string.not_routine
+) {
     Image(
-        modifier = Modifier
+        modifier = modifier
             .padding(top = 40.dp)
             .sizeIn(minHeight = 320.dp)
             .fillMaxWidth(),
@@ -343,7 +381,7 @@ private fun EmptyRoutine() {
         contentDescription = "empty list home"
     )
     Text(
-        text = stringResource(id = R.string.not_routine),
+        text = stringResource(id = messageEmpty),
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 26.dp),

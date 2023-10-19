@@ -1,5 +1,6 @@
 package com.rahim.data.db.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.rahim.data.db.dao.NoteDao
@@ -11,8 +12,11 @@ import com.rahim.data.modle.note.NoteModel
 
 @Database(
     entities = [Routine::class, TimeData::class, NoteModel::class],
-    version = 1,
-    exportSchema = true
+    version = 2,
+    exportSchema = true,
+    autoMigrations = [
+        AutoMigration(1, 2)
+    ]
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun routineDao(): RoutineDao

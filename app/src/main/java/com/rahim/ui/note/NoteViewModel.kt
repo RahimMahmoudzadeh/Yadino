@@ -40,7 +40,11 @@ class NoteViewModel @Inject constructor(
         noteRepository.getNotes().catch {
             emit(Resource.Error(errorGetProses))
         }.collect {
-            emit(Resource.Success(it))
+            emit(Resource.Success(it.sortedBy {
+                it.timeInMileSecond?.let {
+                    it
+                }
+            }))
 
         }
     }

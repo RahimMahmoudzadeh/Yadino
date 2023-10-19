@@ -6,24 +6,31 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,8 +42,11 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.rahim.R
+import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
+import com.rahim.utils.resours.Resource
 
 val gradientColors = listOf(Purple, PurpleGrey)
 
@@ -73,16 +83,12 @@ fun DialogButtonBackground(
     gradient: Brush,
     modifier: Modifier = Modifier,
     textSize: TextUnit,
-    width: Float,
-    height: Dp,
     onClick: () -> Unit = { },
 ) {
     Button(
         colors = ButtonDefaults.buttonColors(Color.Transparent),
         contentPadding = PaddingValues(),
-        modifier = modifier
-            .fillMaxWidth(width)
-            .height(height),
+        modifier = modifier,
         onClick = { onClick() },
         shape = RoundedCornerShape(12)
     ) {
@@ -139,37 +145,60 @@ fun DialogButtonBorder(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarRightAlign(modifier: Modifier = Modifier, title: String) {
-    CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.onBackground),
-        modifier = modifier.shadow(elevation = 8.dp),
-        title = {
-            androidx.compose.material.Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 8.dp),
-                textAlign = TextAlign.End,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                text = title,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.secondary
-            )
+fun CircularProgressAnimated(isShow: Boolean) {
+    if (isShow) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            CircularProgressIndicator(color = CornflowerBlueLight)
         }
-    )
+    }
+}
+
+@Composable
+fun ProcessRoutineAdded(
+    addRoutine: Resource<Long>,
+    context: Context,
+    closeDialog: (Boolean) -> Unit
+) {
+    when (addRoutine) {
+        is Resource.Loading -> {
+            CircularProgressAnimated(true)
+        }
+
+        is Resource.Success -> {
+            CircularProgressAnimated(false)
+            if (addRoutine.data != 0L)
+                closeDialog(false)
+        }
+
+        is Resource.Error -> {
+            CircularProgressAnimated(false)
+            ShowToastShort(addRoutine.message, context)
+            closeDialog(true)
+        }
+    }
+}
+
+@Composable
+fun ShowToastShort(message: String?, context: Context) {
+    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String) {
+fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String,onClickSearch: () -> Unit) {
+
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.onBackground),
         modifier = modifier.shadow(elevation = 8.dp),
         title = {
-            androidx.compose.material.Text(
+            Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(end = 8.dp),
@@ -181,9 +210,20 @@ fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String) {
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.secondary
             )
+        },
+        actions = {
+            IconButton(onClick = {
+                onClickSearch()
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_search),
+                    contentDescription = "search"
+                )
+            }
         }
     )
 }
+
 
 @Preview
 @Composable
@@ -244,6 +284,32 @@ fun ShowStatusBar(isShow: Boolean) {
         isStatusBarVisible = isShow
         isNavigationBarVisible = isShow
         isSystemBarsVisible = isShow
+    }
+}
+
+@Composable
+fun ShowSearchBar(
+    clickSearch: Boolean,
+    searchText: String,
+    searchValueText: (String) -> Unit
+) {
+    AnimatedVisibility(visible = clickSearch) {
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                label = { Text(text = stringResource(id = R.string.search_hint)) },
+                value = searchText,
+                onValueChange = { searchValueText(it) },
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                    focusedContainerColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedIndicatorColor = PurpleGrey,
+                    focusedIndicatorColor = Purple,
+                    disabledIndicatorColor = Color.Transparent,
+                )
+            )
+        }
     }
 }
 

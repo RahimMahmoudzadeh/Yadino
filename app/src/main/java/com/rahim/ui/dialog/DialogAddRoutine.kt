@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -60,7 +59,6 @@ fun DialogAddRoutine(
     routineUpdate: Routine? = null,
     openDialog: (Boolean) -> Unit,
     routine: (Routine) -> Unit,
-    cancel: () -> Unit,
 ) {
     val maxName = 22
     val maxExplanation = 40
@@ -82,138 +80,145 @@ fun DialogAddRoutine(
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        if (isOpen) {
-            AlertDialog(properties = DialogProperties(
-                usePlatformDefaultWidth = false, dismissOnClickOutside = false
-            ), modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 22.dp)
-                .border(
-                    2.dp,
-                    brush = Brush.verticalGradient(gradientColors),
-                    shape = RoundedCornerShape(8.dp)
-                ), onDismissRequest = {
-                openDialog(false)
-            }) {
-                Surface(
-                    color = MaterialTheme.colorScheme.background,
-                    shape = RoundedCornerShape(percent = 4)
+        if (!isOpen) {
+            routineName = ""
+            routineExplanation = ""
+            isErrorName.value = false
+            isErrorExplanation.value = false
+            time.value = "12:00"
+            return@CompositionLocalProvider
+        }
+        AlertDialog(properties = DialogProperties(
+            usePlatformDefaultWidth = false, dismissOnClickOutside = false
+        ), modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 22.dp)
+            .border(
+                2.dp,
+                brush = Brush.verticalGradient(gradientColors),
+                shape = RoundedCornerShape(8.dp)
+            ), onDismissRequest = {
+            openDialog(false)
+        }) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                shape = RoundedCornerShape(percent = 4)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, end = 12.dp, start = 12.dp, bottom = 8.dp)
                 ) {
-                    Column(
+                    Text(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        text = stringResource(id = R.string.creat_new_work),
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        style = TextStyle(brush = Brush.verticalGradient(gradientColors))
+                    )
+                    TextField(
                         modifier = Modifier
+                            .background(MaterialTheme.colorScheme.background)
                             .fillMaxWidth()
-                            .padding(top = 16.dp, end = 12.dp, start = 12.dp, bottom = 8.dp)
-                    ) {
+                            .padding(top = 18.dp)
+                            .height(52.dp)
+                            .border(
+                                width = 1.dp,
+                                brush = Brush.verticalGradient(gradientColors),
+                                shape = RoundedCornerShape(4.dp)
+                            ),
+                        value = routineName,
+                        onValueChange = {
+                            isErrorName.value = it.length >= maxName
+                            routineName = if (it.length <= maxName) it else routineName
+                        },
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.name_hint_text_filed_routine),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        },
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.background,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
+                            disabledIndicatorColor = MaterialTheme.colorScheme.background,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.background
+                        )
+                    )
+                    if (isErrorName.value) {
                         Text(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            text = stringResource(id = R.string.creat_new_work),
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            style = TextStyle(brush = Brush.verticalGradient(gradientColors))
+                            modifier = Modifier.padding(start = 16.dp),
+                            text = if (routineName.isEmpty()) stringResource(id = R.string.emptyField) else stringResource(
+                                id = R.string.length_textFiled_name_routine
+                            ),
+                            color = MaterialTheme.colorScheme.error
                         )
-                        TextField(
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.background)
-                                .fillMaxWidth()
-                                .padding(top = 18.dp)
-                                .height(52.dp)
-                                .border(
-                                    width = 1.dp,
-                                    brush = Brush.verticalGradient(gradientColors),
-                                    shape = RoundedCornerShape(4.dp)
-                                ),
-                            value = routineName,
-                            onValueChange = {
-                                isErrorName.value = it.length >= maxName
-                                routineName = if (it.length <= maxName) it else routineName
-                            },
-                            placeholder = {
-                                Text(
-                                    text = stringResource(id = R.string.name_hint_text_filed_routine),
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            },
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = MaterialTheme.colorScheme.background,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
-                                disabledIndicatorColor = MaterialTheme.colorScheme.background,
-                                unfocusedContainerColor = MaterialTheme.colorScheme.background
-                            )
-                        )
-                        if (isErrorName.value) {
+                    }
+                    TextField(
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.background)
+                            .fillMaxWidth()
+                            .padding(top = 18.dp)
+                            .height(90.dp)
+                            .border(
+                                width = 1.dp,
+                                brush = Brush.verticalGradient(gradientColors),
+                                shape = RoundedCornerShape(4.dp)
+                            ),
+                        value = if (routineExplanation.isNullOrEmpty()) "" else routineExplanation,
+                        onValueChange = {
+                            isErrorExplanation.value = it.length >= maxExplanation
+                            routineExplanation =
+                                if (it.length <= maxExplanation) it else routineExplanation
+                        },
+                        placeholder = {
                             Text(
-                                modifier = Modifier.padding(start = 16.dp),
-                                text = if (routineName.isEmpty()) stringResource(id = R.string.emptyField) else stringResource(
-                                    id = R.string.length_textFiled_name_routine
-                                ),
-                                color = MaterialTheme.colorScheme.error
+                                text = stringResource(id = R.string.routine_explanation),
+                                color = MaterialTheme.colorScheme.primary
                             )
-                        }
-                        TextField(
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.background)
-                                .fillMaxWidth()
-                                .padding(top = 18.dp)
-                                .height(90.dp)
-                                .border(
-                                    width = 1.dp,
-                                    brush = Brush.verticalGradient(gradientColors),
-                                    shape = RoundedCornerShape(4.dp)
-                                ),
-                            value = if (routineExplanation.isNullOrEmpty()) "" else routineExplanation,
-                            onValueChange = {
-                                isErrorExplanation.value = it.length >= maxExplanation
-                                routineExplanation =
-                                    if (it.length <= maxExplanation) it else routineExplanation
-                            },
-                            placeholder = {
-                                Text(
-                                    text = stringResource(id = R.string.routine_explanation),
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            },
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = MaterialTheme.colorScheme.background,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
-                                disabledIndicatorColor = MaterialTheme.colorScheme.background,
-                                unfocusedContainerColor = MaterialTheme.colorScheme.background
-                            )
+                        },
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.background,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
+                            disabledIndicatorColor = MaterialTheme.colorScheme.background,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.background
                         )
-                        if (isErrorExplanation.value) {
-                            Text(
-                                modifier = Modifier.padding(start = 16.dp),
-                                text = stringResource(id = R.string.length_textFiled_explanation_routine),
-                                color = MaterialTheme.colorScheme.error
-                            )
-                        }
-                        if (isShowDay) {
-                            Row(
-                                modifier = Modifier.padding(top = 4.dp, end = 4.dp, start = 4.dp)
-                            ) {
-                                dayWeek.forEach { dayName ->
-                                    Box(
-                                        modifier = Modifier
-                                            .padding(
-                                                top = 9.dp,
-                                                end = 6.dp,
-                                            )
-                                            .size(30.dp)
-                                            .clip(CircleShape)
-                                            .background(
-                                                brush = if (checkedStateAllDay.value || dayChecked == dayName) {
-                                                    Brush.verticalGradient(
-                                                        gradientColors
-                                                    )
-                                                } else Brush.horizontalGradient(
-                                                    listOf(
-                                                        Color.White, Color.White
-                                                    )
+                    )
+                    if (isErrorExplanation.value) {
+                        Text(
+                            modifier = Modifier.padding(start = 16.dp),
+                            text = stringResource(id = R.string.length_textFiled_explanation_routine),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                    if (isShowDay) {
+                        Row(
+                            modifier = Modifier.padding(top = 4.dp, end = 4.dp, start = 4.dp)
+                        ) {
+                            dayWeek.forEach { dayName ->
+                                Box(
+                                    modifier = Modifier
+                                        .padding(
+                                            top = 9.dp,
+                                            end = 6.dp,
+                                        )
+                                        .size(30.dp)
+                                        .clip(CircleShape)
+                                        .background(
+                                            brush = if (checkedStateAllDay.value || dayChecked == dayName) {
+                                                Brush.verticalGradient(
+                                                    gradientColors
+                                                )
+                                            } else Brush.horizontalGradient(
+                                                listOf(
+                                                    Color.White, Color.White
                                                 )
                                             )
-                                    ) {
+                                        )
+                                ) {
 //                                        ClickableText(
 //                                            modifier = Modifier.padding(
 //                                                top = 8.dp,
@@ -228,61 +233,61 @@ fun DialogAddRoutine(
 //                                                else Color.Black
 //                                            )
 //                                        )
-                                    }
                                 }
-                                ClickableText(
-                                    onClick = {},
-                                    text = AnnotatedString(stringResource(id = R.string.all)),
-                                    modifier = Modifier.padding(top = 14.dp)
+                            }
+                            ClickableText(
+                                onClick = {},
+                                text = AnnotatedString(stringResource(id = R.string.all)),
+                                modifier = Modifier.padding(top = 14.dp)
+                            )
+                            Checkbox(
+                                modifier = Modifier.padding(start = 10.dp),
+                                checked = checkedStateAllDay.value,
+                                onCheckedChange = { checkedStateAllDay.value = it },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = Purple, uncheckedColor = CornflowerBlueLight
                                 )
-                                Checkbox(
-                                    modifier = Modifier.padding(start = 10.dp),
-                                    checked = checkedStateAllDay.value,
-                                    onCheckedChange = { checkedStateAllDay.value = it },
-                                    colors = CheckboxDefaults.colors(
-                                        checkedColor = Purple, uncheckedColor = CornflowerBlueLight
+                            )
+                        }
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                top = if (isShowDay) 0.dp else 10.dp,
+                                start = 20.dp,
+                                end = if (isShowDay) 15.dp else 0.dp
+                            )
+                    ) {
+                        Row() {
+                            Text(
+                                modifier = Modifier.padding(top = 14.dp),
+                                text = stringResource(id = R.string.set_alarms),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                modifier = Modifier.padding(top = 14.dp, start = 4.dp),
+                                text = time.value,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        OutlinedButton(border = BorderStroke(
+                            1.dp, Brush.horizontalGradient(gradientColors)
+                        ), onClick = {
+                            alarmDialogState.show()
+                        }) {
+                            Text(
+                                text = stringResource(id = R.string.time_change),
+                                style = TextStyle(
+                                    brush = Brush.verticalGradient(
+                                        gradientColors
                                     )
                                 )
-                            }
+                            )
                         }
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(
-                                    top = if (isShowDay) 0.dp else 10.dp,
-                                    start = 20.dp,
-                                    end = if (isShowDay) 15.dp else 0.dp
-                                )
-                        ) {
-                            Row() {
-                                Text(
-                                    modifier = Modifier.padding(top = 14.dp),
-                                    text = stringResource(id = R.string.set_alarms),
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                                Text(
-                                    modifier = Modifier.padding(top = 14.dp, start = 4.dp),
-                                    text = time.value,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                            OutlinedButton(border = BorderStroke(
-                                1.dp, Brush.horizontalGradient(gradientColors)
-                            ), onClick = {
-                                alarmDialogState.show()
-                            }) {
-                                Text(
-                                    text = stringResource(id = R.string.time_change),
-                                    style = TextStyle(
-                                        brush = Brush.verticalGradient(
-                                            gradientColors
-                                        )
-                                    )
-                                )
-                            }
-                        }
-                        //TODO for data
+                    }
+                    //TODO for data
 //                    Row(
 //                        horizontalArrangement = Arrangement.SpaceBetween,
 //                        modifier = Modifier.fillMaxWidth()
@@ -302,71 +307,61 @@ fun DialogAddRoutine(
 //                            )
 //                        }
 //                    }
-                        Spacer(modifier = Modifier.height(22.dp))
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(1f)
-                                .padding(12.dp)
-                        ) {
-                            DialogButtonBackground(text = stringResource(id = R.string.confirmation),
-                                gradient = Brush.verticalGradient(gradientColors),
-                                modifier = Modifier,
-                                textSize = 14.sp,
-                                width = 0.3f,
-                                height = 40.dp,
-                                onClick = {
-                                    if (routineName.isEmpty()) {
-                                        isErrorName.value = true
-                                    } else {
-                                        routine(routineUpdate?.apply {
-                                            name = routineName
-                                            timeHours = time.value
-                                            explanation = routineExplanation
-                                        } ?: Routine(
-                                            routineName,
-                                            null,
-                                            dayChecked,
-                                            currentNumberDay,
-                                            currentNumberMonth,
-                                            currentNumberYer,
-                                            time.value,
-                                            explanation = routineExplanation
-                                        ))
-                                        routineName = ""
-                                        routineExplanation = ""
-                                        isErrorName.value = false
-                                        isErrorExplanation.value = false
-                                        time.value = "12:00"
-                                        openDialog(false)
-                                    }
-                                })
-                            Spacer(modifier = Modifier.width(10.dp))
-                            TextButton(onClick = {
-                                routineName = ""
-                                routineExplanation = ""
-                                time.value = "12:00"
-                                isErrorName.value = false
-                                isErrorExplanation.value = false
-                                openDialog(false)
-                                cancel()
-                            }) {
-                                Text(
-                                    fontSize = 16.sp,
-                                    text = stringResource(id = R.string.cancel),
-                                    style = TextStyle(
-                                        brush = Brush.verticalGradient(
-                                            gradientColors
-                                        )
+                    Spacer(modifier = Modifier.height(22.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(1f)
+                            .padding(12.dp)
+                    ) {
+                        DialogButtonBackground(text = stringResource(id = R.string.confirmation),
+                            gradient = Brush.verticalGradient(gradientColors),
+                            modifier = Modifier.fillMaxWidth(0.3f).height(40.dp),
+                            textSize = 14.sp,
+                            onClick = {
+                                if (routineName.isEmpty()) {
+                                    isErrorName.value = true
+                                } else {
+                                    routine(routineUpdate?.apply {
+                                        name = routineName
+                                        timeHours = time.value
+                                        explanation = routineExplanation
+                                    } ?: Routine(
+                                        routineName,
+                                        null,
+                                        dayChecked,
+                                        currentNumberDay,
+                                        currentNumberMonth,
+                                        currentNumberYer,
+                                        time.value,
+                                        explanation = routineExplanation
+                                    ))
+                                }
+                            })
+                        Spacer(modifier = Modifier.width(10.dp))
+                        TextButton(onClick = {
+                            routineName = ""
+                            routineExplanation = ""
+                            time.value = "12:00"
+                            isErrorName.value = false
+                            isErrorExplanation.value = false
+                            openDialog(false)
+                        }) {
+                            Text(
+                                fontSize = 16.sp,
+                                text = stringResource(id = R.string.cancel),
+                                style = TextStyle(
+                                    brush = Brush.verticalGradient(
+                                        gradientColors
                                     )
                                 )
-                            }
+                            )
                         }
                     }
                 }
             }
         }
     }
-    ShowTimePicker(alarmDialogState) {
+    ShowTimePicker(time.value, alarmDialogState) {
         time.value =
             it.hour.toString() + ":" + if (it.minute.toString().length == 1) "0" + it.minute else it.minute
     }
@@ -375,7 +370,11 @@ fun DialogAddRoutine(
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-fun ShowTimePicker(dialogState: MaterialDialogState, time: (LocalTime) -> Unit) {
+fun ShowTimePicker(
+    currentTime: String,
+    dialogState: MaterialDialogState,
+    time: (LocalTime) -> Unit
+) {
     MaterialDialog(properties = DialogProperties(dismissOnClickOutside = false),
         border = BorderStroke(2.dp, Brush.horizontalGradient(gradientColors)),
         backgroundColor = MaterialTheme.colorScheme.background,
@@ -407,22 +406,17 @@ fun ShowTimePicker(dialogState: MaterialDialogState, time: (LocalTime) -> Unit) 
             ),
             title = "  ",
             timeRange = LocalTime.MIDNIGHT..LocalTime.MAX,
-            is24HourClock = true
+            is24HourClock = true,
+            initialTime = calculateCurrentTime(currentTime)
         ) { time ->
             time(time)
         }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true, backgroundColor = 0xFFFFFF, device = Devices.PIXEL_4)
-@Composable
-private fun DialogAddRoutinePreview() {
-    YadinoTheme() {
-//        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-//            DialogAddRoutine(isOpen = true, routine = {
-//
-//            }, openDialog = {}, routineName = "")
-//        }
-    }
+fun calculateCurrentTime(currentTime: String): LocalTime {
+    val index = currentTime.indexOf(":")
+    val hours = currentTime.subSequence(0, index).toString().toInt()
+    val minute = currentTime.subSequence(index.plus(1), currentTime.length).toString().toInt()
+    return LocalTime.of(hours, minute, 0)
 }

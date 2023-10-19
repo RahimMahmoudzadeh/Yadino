@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -28,11 +29,14 @@ class HomeViewModel @Inject constructor(
     sharedPreferencesRepository: SharedPreferencesRepository
 ) :
     BaseViewModel(sharedPreferencesRepository, baseRepository) {
-    val addRoutine = MutableStateFlow(0L)
 
     private val _flowRoutines =
         MutableStateFlow<Resource<List<Routine>>>(Resource.Success(emptyList()))
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
+
+    private val _addRoutine =
+        MutableStateFlow<Resource<Long>>(Resource.Success(0L))
+    val addRoutine: StateFlow<Resource<Long>> = _addRoutine
 
     fun getCurrentRoutines() {
         viewModelScope.launch {
@@ -40,7 +44,9 @@ class HomeViewModel @Inject constructor(
             routineRepository.getCurrentRoutines().catch {
                 _flowRoutines.value = Resource.Error(errorGetProses)
             }.collect {
-                _flowRoutines.value = Resource.Success(it)
+                _flowRoutines.value = Resource.Success(it.sortedBy {
+                    it.timeHours?.replace(":", "")?.toInt()
+                })
             }
         }
     }
@@ -59,10 +65,9 @@ class HomeViewModel @Inject constructor(
 
     fun addRoutine(routine: Routine) {
         viewModelScope.launch {
-            val id = async {
-                routineRepository.addRoutine(routine)
-            }.await()
-            addRoutine.value = id
+            routineRepository.addRoutine(routine).catch {}.collectLatest {
+                _addRoutine.value = it
+            }
         }
     }
 }

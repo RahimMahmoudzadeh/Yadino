@@ -10,7 +10,6 @@ import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
 import com.rahim.utils.base.viewModel.BaseViewModel
 import com.rahim.utils.resours.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,7 +33,10 @@ class RoutineViewModel @Inject constructor(
     private val _flowRoutines =
         MutableStateFlow<Resource<List<Routine>>>(Resource.Success(emptyList()))
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
-    val addRoutine = MutableStateFlow(0L)
+
+    private val _addRoutine =
+        MutableStateFlow<Resource<Long>>(Resource.Success(0L))
+    val addRoutine: StateFlow<Resource<Long>> = _addRoutine
 
     init {
         getRoutines(currentMonth, currentDay, currentYer)
@@ -46,15 +48,17 @@ class RoutineViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             _flowRoutines.value = Resource.Loading()
-            routineRepository.getRoutine(monthNumber, numberDay, yerNumber).catch {
+            routineRepository.getRoutines(monthNumber, numberDay, yerNumber).catch {
                 _flowRoutines.value = Resource.Error(errorGetProses)
             }.collect {
-                _flowRoutines.value = Resource.Success(it)
+                _flowRoutines.value = Resource.Success(it.sortedBy {
+                    it.timeHours?.replace(":", "")?.toInt()
+                })
             }
         }
     }
 
-    fun deleteRoutine(routine: Routine){
+    fun deleteRoutine(routine: Routine) {
         viewModelScope.launch {
             routineRepository.removeRoutine(routine)
         }
@@ -66,12 +70,11 @@ class RoutineViewModel @Inject constructor(
         }
     }
 
-    fun addRoutine(routine: Routine){
+    fun addRoutine(routine: Routine) {
         viewModelScope.launch {
-            val id = async {
-                routineRepository.addRoutine(routine)
-            }.await()
-            addRoutine.value = id
+            routineRepository.addRoutine(routine).catch {}.collect {
+                _addRoutine.value = it
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Yadino</string>
-    <string name="search_hint">جستجو...</string>
+    <string name="search_hint">دنبال چی می گردی؟</string>
     <string name="add_item">لطفا روتین خود را اضافه بکنید!</string>
     <string name="add_routine">ساخت روتین جدید</string>
     <string name="saturday">شنبه</string>
@@ -83,4 +83,12 @@
     <string name="better_performance_access">برای عملکرد بهتر نرم افزار لطفا اجازه دسترسی های لازم را بدهید</string>
     <string name="forget_work"> !! یادت نره %1$s</string>
     <string name="my_firend">دوست خوبم</string>
+    <string name="update_version">لطفابرای ادامه نسخه اپ خود را به$% اپدیت کنید</string>
+    <string name="update">آپدیت</string>
+    <string name="download">دانلود</string>
+    <string name="search_empty_routine">!!!روتین مورد نظر یافت نشد</string>
+    <string name="search_empty_note">!!!یادداشت مورد نظر یافت نشد</string>
+    <string name="isntall_cafeBazzar">.لطفا برای اپدیت نرم افزار کافه بازار را نصب کنید</string>
+    <string name="install">نصب</string>
+    <string name="update_app_version">لطفا برای ادامه نسخه اپ خود را بروزرسانی کنید. </string>
 </resources>
