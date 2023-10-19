@@ -100,7 +100,7 @@ fun NoteScreen(
                     if (search.isNotEmpty()) {
                         searchItems.clear()
                         notes.data?.filter {
-                            it.name == search
+                            it.name.contains(search)
                         }?.let {
                             searchItems.addAll(it)
                         }

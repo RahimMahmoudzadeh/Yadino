@@ -1,18 +1,18 @@
 buildscript {
     ext {
-        compose_version = '1.4.3'
+        compose_version = '1.5.1'
         compose_test_version = '1.6.0-alpha05'
         core_ktx = "1.12.0"
-        activity_compose = "1.7.1"
+        activity_compose = "1.8.0"
         junit = "4.13.2"
         junit_test = "1.1.5"
         espresso_core = "3.4.0"
-        room_version = "2.5.2"
-        hilt_android = "2.44.2"
-        kotlin_version = "1.8.0"
+        room_version = "2.6.0"
+        hilt_android = "2.47"
+        kotlin_version = "1.9.0"
         gradle_version = '8.0.0'
         constraintlayout = "2.1.4"
-        nav_version = "2.7.2"
+        nav_version = "2.7.4"
         appcompat = "1.5.1"
         persianData = "1.5.4"
         timber = "5.0.1"

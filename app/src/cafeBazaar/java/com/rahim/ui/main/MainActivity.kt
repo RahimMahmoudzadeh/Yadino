@@ -167,7 +167,6 @@ class MainActivity : BaseActivity() {
 
     private fun getTokenFirebase() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            val token = task.result
         }
     }
 }

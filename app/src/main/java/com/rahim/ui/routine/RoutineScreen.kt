@@ -2,7 +2,6 @@ package com.rahim.ui.routine
 
 
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,8 +17,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -46,9 +43,6 @@ import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.data.TimeData
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
-import com.rahim.ui.home.EmptyHome
-import com.rahim.ui.theme.Purple
-import com.rahim.ui.theme.PurpleGrey
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.ProcessRoutineAdded
@@ -132,11 +126,12 @@ fun RoutineScreen(
 
             ) {
             if (!routines.data.isNullOrEmpty()) {
-                ShowSearchBar(clickSearch = clickSearch, searchText =searchText){search->
+                ShowSearchBar(clickSearch = clickSearch, searchText = searchText) { search ->
+                    searchText=search
                     coroutineScope.launch(Dispatchers.IO) {
                         if (search.isNotEmpty()) {
                             routines.data?.filter {
-                                it.name == search
+                                it.name.contains(search)
                             }?.let {
                                 searchItems.clear()
                                 searchItems.addAll(it)
@@ -184,7 +179,7 @@ fun RoutineScreen(
                 },
                 routineChecked = {
                     viewModel.updateRoutine(it)
-                    alarmManagement.setAlarm(
+                    alarmManagement.updateAlarm(
                         context,
                         it,
                         if (idAlarms == null) it.id?.toLong() else it.idAlarm
@@ -231,7 +226,7 @@ fun RoutineScreen(
         routine = { routine ->
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(routine)
-                alarmManagement.setAlarm(
+                alarmManagement.updateAlarm(
                     context,
                     routine,
                     if (idAlarms == null) routine.id?.toLong() else routine.idAlarm

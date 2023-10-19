@@ -1,34 +1,23 @@
 package com.rahim.ui.home
 
-import android.content.Context
-import androidx.annotation.IdRes
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,14 +27,11 @@ import com.rahim.data.alarm.AlarmManagement
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
-import com.rahim.ui.theme.Purple
-import com.rahim.ui.theme.PurpleGrey
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.base.view.ProcessRoutineAdded
 import com.rahim.utils.base.view.ShowSearchBar
 import com.rahim.utils.base.view.ShowStatusBar
-import com.rahim.utils.base.view.ShowToastShort
 import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.Dispatchers
@@ -107,7 +93,7 @@ fun HomeScreen(
                                     if (search.isNotEmpty()) {
                                         searchItems.clear()
                                         searchItems.addAll(it.filter {
-                                            it.name == searchText
+                                            it.name.contains(searchText)
                                         })
                                     } else {
                                         searchItems.clear()
@@ -128,7 +114,7 @@ fun HomeScreen(
                                     if (searchText.isEmpty()) it else searchItems,
                                     { checkedRoutine ->
                                         viewModel.updateRoutine(checkedRoutine)
-                                        alarmManagement.setAlarm(
+                                        alarmManagement.updateAlarm(
                                             context,
                                             checkedRoutine,
                                             if (idAlarms == null) checkedRoutine.id?.toLong() else checkedRoutine.idAlarm
@@ -192,7 +178,7 @@ fun HomeScreen(
         routine = { routine ->
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(routine)
-                alarmManagement.setAlarm(
+                alarmManagement.updateAlarm(
                     context,
                     routine,
                     if (idAlarms == null) routine.id?.toLong() else routine.idAlarm
