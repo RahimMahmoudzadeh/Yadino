@@ -29,7 +29,7 @@ import com.rahim.utils.navigation.Screen
 @Composable
 fun NavGraph(
     navController: NavHostController = rememberNavController(),
-    startDestination: String = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) Screen.Splash.route else Screen.Welcome.route,
+    startDestination: String = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) Screen.Splash.route else Screen.Welcome.route,
     innerPadding: PaddingValues,
     isClickButtonAdd: StateOpenDialog,
     isOpenDialog: (StateOpenDialog) -> Unit,

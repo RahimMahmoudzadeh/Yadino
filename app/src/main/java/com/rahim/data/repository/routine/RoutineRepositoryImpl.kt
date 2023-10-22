@@ -41,6 +41,7 @@ class RoutineRepositoryImpl @Inject constructor(
     override suspend fun addSampleRoutine() {
         val sampleRoutines = appDatabase.routineDao()
             .getSampleRoutine(currentTimeMonth, currentTimeDay, currentTimeYer)
+        Timber.tag("sampleRoutines").d("sampleRoutines->$sampleRoutines")
         if (sharedPreferencesCustom.isShowSampleRoutine()) {
             appDatabase.routineDao().removeSampleRoutine()
             return
