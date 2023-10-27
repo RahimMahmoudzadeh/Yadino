@@ -36,6 +36,7 @@ import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 @Composable
 fun HomeScreen(
@@ -63,7 +64,6 @@ fun HomeScreen(
     val routines by viewModel.flowRoutines
         .collectAsStateWithLifecycle(initialValue = Resource.Success(emptyList()))
 
-    val idAlarms by viewModel.idAlarms.collectAsStateWithLifecycle()
     val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
 
     Scaffold(
@@ -117,7 +117,7 @@ fun HomeScreen(
                                         alarmManagement.updateAlarm(
                                             context,
                                             checkedRoutine,
-                                            if (idAlarms == null) checkedRoutine.id?.toLong() else checkedRoutine.idAlarm
+                                            checkedRoutine.idAlarm?:checkedRoutine.id?.toLong()
                                         )
                                     },
                                     { routineUpdate ->
@@ -168,7 +168,6 @@ fun HomeScreen(
     DialogAddRoutine(
         isOpen = onClickAdd || routineUpdateDialog.value != null,
         isShowDay = false,
-        dayChecked = "",
         openDialog = {
             isOpenDialog(it)
             routineUpdateDialog.value = null
@@ -181,12 +180,13 @@ fun HomeScreen(
                 alarmManagement.updateAlarm(
                     context,
                     routine,
-                    if (idAlarms == null) routine.id?.toLong() else routine.idAlarm
+//                    if (idAlarms == null) routine.id?.toLong() else routine.idAlarm
+                    routine.idAlarm
                 )
                 routineUpdateDialog.value = null
             } else {
                 routineForAdd.value = routine
-                viewModel.addRoutine(alarmManagement.setAlarm(context, routine, idAlarms))
+                viewModel.addRoutine(routine)
             }
         },
         currentNumberDay = currentDay,
@@ -195,9 +195,13 @@ fun HomeScreen(
     )
     if (routineForAdd.value != null)
         ProcessRoutineAdded(addRoutine, context) {
-            if (!it)
+            if (!it) {
                 isOpenDialog(false)
-            routineForAdd.value = null
+                routineForAdd.value?.let {
+                    alarmManagement.setAlarm(context, it)
+                }
+                routineForAdd.value = null
+            }
         }
 }
 

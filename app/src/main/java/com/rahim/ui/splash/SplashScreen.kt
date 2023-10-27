@@ -3,9 +3,11 @@ package com.rahim.ui.splash
 import android.window.SplashScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -31,7 +33,7 @@ fun SplashScreen(navController: NavController, viewModel: MainViewModel= hiltVie
         )
     }
     LaunchedEffect(key1 = true) {
-        delay(2000)
+        delay(2500)
         navController.navigate(if (viewModel.isShowWelcomeScreen()) Screen.Home.route else Screen.Welcome.route) {
             popUpTo(0)
         }

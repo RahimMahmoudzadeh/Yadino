@@ -65,7 +65,7 @@ class HomeViewModel @Inject constructor(
 
     fun addRoutine(routine: Routine) {
         viewModelScope.launch {
-            routineRepository.addRoutine(routine).catch {}.collectLatest {
+            routineRepository.addRoutine(routine).catch {}.collect {
                 _addRoutine.value = it
             }
         }

@@ -41,6 +41,7 @@ class RoutineRepositoryImpl @Inject constructor(
     override suspend fun addSampleRoutine() {
         val sampleRoutines = appDatabase.routineDao()
             .getSampleRoutine(currentTimeMonth, currentTimeDay, currentTimeYer)
+        Timber.tag("sampleRoutines").d("sampleRoutines->$sampleRoutines")
         if (sharedPreferencesCustom.isShowSampleRoutine()) {
             appDatabase.routineDao().removeSampleRoutine()
             return
@@ -115,11 +116,17 @@ class RoutineRepositoryImpl @Inject constructor(
 
     override suspend fun addRoutine(routine: Routine): Flow<Resource<Long>> = flow {
         emit(Resource.Loading())
+        routine.apply {
+            idAlarm = setRoutineId(getIdAlarms())
+            colorTask=0
+        }
         val routines = appDatabase.routineDao().getRoutines()
         val equalRoutine = routines.find {
-            it.name == routine.name && it.dayName == routine.dayName && it.dayNumber == routine.dayNumber
+            it.dayName == routine.dayName && it.dayNumber == routine.dayNumber
                     && it.yerNumber == routine.yerNumber
-                    && it.monthNumber == routine.monthNumber && it.explanation == routine.explanation
+                    && it.monthNumber == routine.monthNumber && it.timeHours.toString()
+                .replace(Regex(":"), "").toInt() == routine.timeHours.toString()
+                .replace(Regex(":"), "").toInt()
         }
         if (equalRoutine == null) {
             emit(Resource.Success(appDatabase.routineDao().addRoutine(routine)))
@@ -127,6 +134,16 @@ class RoutineRepositoryImpl @Inject constructor(
             emit(Resource.Error(equalRoutineMessage))
         }
     }.flowOn(ioDispatcher)
+
+    private fun setRoutineId(idAlarms: List<Long>): Long {
+        var idRandom = Random.nextInt(0, 10000000)
+        var equalIdAlarm = idAlarms.find { it == idRandom.toLong() }
+        while (equalIdAlarm != null) {
+            idRandom = Random.nextInt(0, 10000000)
+            equalIdAlarm = idAlarms.find { it == idRandom.toLong() }
+        }
+        return idRandom.toLong()
+    }
 
     override suspend fun removeRoutine(routine: Routine): Int {
         return appDatabase.routineDao().removeRoutine(routine)
@@ -162,4 +179,7 @@ class RoutineRepositoryImpl @Inject constructor(
         return appDatabase.routineDao()
             .getRoutines(currentTimeMonth, currentTimeDay, currentTimeYer)
     }
+
+    override fun getIdAlarms(): List<Long> =
+        appDatabase.routineDao().getIdAlarms()
 }

@@ -41,6 +41,7 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import saman.zamani.persiandate.PersianDate
 import java.time.LocalTime
 import java.util.*
 
@@ -50,7 +51,6 @@ import java.util.*
 @Composable
 fun DialogAddRoutine(
     modifier: Modifier = Modifier,
-    dayChecked: String,
     isOpen: Boolean,
     isShowDay: Boolean,
     currentNumberDay: Int,
@@ -69,6 +69,8 @@ fun DialogAddRoutine(
     val isErrorExplanation = remember { mutableStateOf(false) }
     val time = rememberSaveable { mutableStateOf("12:00") }
     val alarmDialogState = rememberMaterialDialogState()
+    val persianData = PersianDate()
+    val date=persianData.initJalaliDate(currentNumberYer,currentNumberMonth,currentNumberDay)
 
     if (routineUpdate != null) {
         routineName = routineUpdate.name
@@ -207,17 +209,17 @@ fun DialogAddRoutine(
                                         )
                                         .size(30.dp)
                                         .clip(CircleShape)
-                                        .background(
-                                            brush = if (checkedStateAllDay.value || dayChecked == dayName) {
-                                                Brush.verticalGradient(
-                                                    gradientColors
-                                                )
-                                            } else Brush.horizontalGradient(
-                                                listOf(
-                                                    Color.White, Color.White
-                                                )
-                                            )
-                                        )
+//                                        .background(
+//                                            brush = if (checkedStateAllDay.value || dayChecked == dayName) {
+//                                                Brush.verticalGradient(
+//                                                    gradientColors
+//                                                )
+//                                            } else Brush.horizontalGradient(
+//                                                listOf(
+//                                                    Color.White, Color.White
+//                                                )
+//                                            )
+//                                        )
                                 ) {
 //                                        ClickableText(
 //                                            modifier = Modifier.padding(
@@ -325,15 +327,16 @@ fun DialogAddRoutine(
                                         name = routineName
                                         timeHours = time.value
                                         explanation = routineExplanation
+                                        dayName=persianData.dayName(date)
                                     } ?: Routine(
                                         routineName,
                                         null,
-                                        dayChecked,
+                                        persianData.dayName(date),
                                         currentNumberDay,
                                         currentNumberMonth,
                                         currentNumberYer,
                                         time.value,
-                                        explanation = routineExplanation
+                                        explanation = routineExplanation,
                                     ))
                                 }
                             })
