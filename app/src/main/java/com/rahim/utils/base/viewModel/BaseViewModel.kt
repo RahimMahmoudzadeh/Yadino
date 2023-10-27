@@ -31,15 +31,6 @@ open class BaseViewModel @Inject constructor(
     private val _flowNameDay =
         MutableStateFlow("")
     val flowNameDay: StateFlow<String> = _flowNameDay
-
-    private val _idAlarms =
-        MutableStateFlow(listOf(0L))
-    val idAlarms: StateFlow<List<Long>> = _idAlarms
-
-    init {
-        getIdAlarms()
-    }
-
     fun isShowWelcomeScreen() = sharedPreferencesRepository.isShowWelcomeScreen()
 
     fun getCurrentTime(): List<Int> = baseRepository.getCurrentTime()
@@ -63,11 +54,4 @@ open class BaseViewModel @Inject constructor(
         }
     }
 
-    private fun getIdAlarms() {
-        viewModelScope.launch {
-            baseRepository.getIdAlarms().catch {}.collect {
-                _idAlarms.value = it
-            }
-        }
-    }
 }

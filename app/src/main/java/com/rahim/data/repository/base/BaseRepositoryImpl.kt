@@ -20,7 +20,4 @@ class BaseRepositoryImpl @Inject constructor(val appDatabase: AppDatabase) : Bas
         val da=persianDateFormat.parse(date,format)
         return persianData.dayName(da)
     }
-
-    override fun getIdAlarms(): Flow<List<Long>> =
-        appDatabase.routineDao().getIdAlarms().distinctUntilChanged()
 }

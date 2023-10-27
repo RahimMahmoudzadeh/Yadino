@@ -58,8 +58,7 @@ class AlarmManagement : CalculateDate, Alarm {
     fun setAlarm(
         context: Context,
         routine: Routine,
-        idAlarms: List<Long>
-    ): Routine {
+    ) {
         val hours = calculateHours(routine.timeHours.toString())
         val minute = calculateMinute(routine.timeHours.toString())
         val yer = routine.yerNumber
@@ -70,21 +69,16 @@ class AlarmManagement : CalculateDate, Alarm {
 
         val alarmManager =
             context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        var idRandom = Random.nextInt(0, 10000000)
-        var equalIdAlarm = idAlarms.find { it == idRandom.toLong() }
-        while (equalIdAlarm != null) {
-            idRandom = Random.nextInt(0, 10000000)
-            equalIdAlarm = idAlarms.find { it == idRandom.toLong() }
-        }
+
         val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).let { intent ->
             intent.putExtra(ALARM_MESSAGE, message)
             intent.putExtra(ALARM_NAME, name)
-            intent.putExtra(ALARM_ID, idRandom)
+            intent.putExtra(ALARM_ID, routine.idAlarm)
         }
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            idRandom,
+            routine.idAlarm?.toInt()?:0,
             alarmIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -95,7 +89,6 @@ class AlarmManagement : CalculateDate, Alarm {
                 pendingIntent
             )
         }
-        return routine.apply { idAlarm = idRandom.toLong() }
     }
 
     override fun calculateTime(

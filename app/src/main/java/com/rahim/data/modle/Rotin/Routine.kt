@@ -9,8 +9,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Routine(
     var name: String,
-    val colorTask: Int?,
-    val dayName: String,
+    var colorTask: Int?,
+    var dayName: String,
     val dayNumber: Int?,
     val monthNumber: Int?,
     val yerNumber: Int?,

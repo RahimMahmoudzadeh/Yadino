@@ -99,7 +99,6 @@ fun RoutineScreen(
     var searchText by rememberSaveable { mutableStateOf("") }
     var clickSearch by rememberSaveable { mutableStateOf(false) }
 
-    val idAlarms by viewModel.idAlarms.collectAsStateWithLifecycle()
     val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
 
 
@@ -182,7 +181,7 @@ fun RoutineScreen(
                     alarmManagement.updateAlarm(
                         context,
                         it,
-                        if (idAlarms == null) it.id?.toLong() else it.idAlarm
+                        it.idAlarm?:it.id?.toLong()
                     )
                 },
                 routineDeleteDialog = {
@@ -216,7 +215,6 @@ fun RoutineScreen(
     DialogAddRoutine(
         isOpen = onClickAdd || routineUpdateDialog.value != null,
         isShowDay = false,
-        dayChecked = currentNameDay,
         openDialog = {
             routineUpdateDialog.value = null
             routineForAdd.value = null
@@ -229,11 +227,11 @@ fun RoutineScreen(
                 alarmManagement.updateAlarm(
                     context,
                     routine,
-                    if (idAlarms == null) routine.id?.toLong() else routine.idAlarm
+                    routine.idAlarm?:routine.id?.toLong()
                 )
             } else {
                 routineForAdd.value = routine
-                viewModel.addRoutine(alarmManagement.setAlarm(context, routine, idAlarms))
+                viewModel.addRoutine(routine)
             }
             routineUpdateDialog.value = null
         },
@@ -243,9 +241,13 @@ fun RoutineScreen(
     )
     if (routineForAdd.value != null)
         ProcessRoutineAdded(addRoutine, context) {
-            if (!it)
+            if (!it) {
                 isOpenDialog(false)
-            routineForAdd.value = null
+                routineForAdd.value?.let {
+                    alarmManagement.setAlarm(context, it)
+                }
+                routineForAdd.value = null
+            }
         }
 }
 
