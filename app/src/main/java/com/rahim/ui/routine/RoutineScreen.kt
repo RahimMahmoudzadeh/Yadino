@@ -1,6 +1,7 @@
 package com.rahim.ui.routine
 
 
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -79,7 +80,6 @@ fun RoutineScreen(
             emptyList()
         )
     )
-    val currentNameDay by viewModel.flowNameDay.collectAsStateWithLifecycle()
     val monthDay by viewModel.getCurrentMonthDay(currentMonth, currentYer)
         .collectAsStateWithLifecycle(initialValue = emptyList())
 
@@ -171,6 +171,10 @@ fun RoutineScreen(
                 searchItems,
                 searchText,
                 routineUpdateDialog = {
+                    if (it.isChecked){
+                        Toast.makeText(context, R.string.not_update_checked_routine, Toast.LENGTH_SHORT).show()
+                        return@GetRoutines
+                    }
                     if (it.isSample)
                         viewModel.showSampleRoutine(true)
 
@@ -185,6 +189,10 @@ fun RoutineScreen(
                     )
                 },
                 routineDeleteDialog = {
+                    if (it.isChecked){
+                        Toast.makeText(context, R.string.not_removed_checked_routine, Toast.LENGTH_SHORT).show()
+                        return@GetRoutines
+                    }
                     if (it.isSample)
                         viewModel.showSampleRoutine(true)
 

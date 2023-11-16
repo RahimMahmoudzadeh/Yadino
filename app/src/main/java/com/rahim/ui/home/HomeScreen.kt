@@ -1,5 +1,6 @@
 package com.rahim.ui.home
 
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -121,12 +122,20 @@ fun HomeScreen(
                                         )
                                     },
                                     { routineUpdate ->
+                                        if (routineUpdate.isChecked){
+                                            Toast.makeText(context, R.string.not_update_checked_routine, Toast.LENGTH_SHORT).show()
+                                            return@ItemsHome
+                                        }
                                         if (routineUpdate.isSample)
                                             viewModel.showSampleRoutine(true)
 
                                         routineUpdateDialog.value = routineUpdate
                                     },
                                     { deleteRoutine ->
+                                        if (deleteRoutine.isChecked){
+                                            Toast.makeText(context, R.string.not_removed_checked_routine, Toast.LENGTH_SHORT).show()
+                                            return@ItemsHome
+                                        }
                                         if (deleteRoutine.isSample)
                                             viewModel.showSampleRoutine(true)
 

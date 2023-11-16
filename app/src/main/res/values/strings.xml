@@ -91,4 +91,6 @@
     <string name="isntall_cafeBazzar">.لطفا برای اپدیت نرم افزار کافه بازار را نصب کنید</string>
     <string name="install">نصب</string>
     <string name="update_app_version">لطفا برای ادامه نسخه اپ خود را بروزرسانی کنید. </string>
+    <string name="not_removed_checked_routine">روتین پایان یافته را نمی توان حذف کرد!</string>
+    <string name="not_update_checked_routine">روتین پایان یافته را نمی توان ویرایش کرد!</string>
 </resources>
