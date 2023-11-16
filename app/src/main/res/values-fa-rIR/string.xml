@@ -94,4 +94,6 @@
     <string name="download">دانلود</string>
     <string name="not_removed_checked_routine">روتین پایان یافته را نمی توان حذف کرد!</string>
     <string name="not_update_checked_routine">روتین پایان یافته را نمی توان ویرایش کرد!</string>
+    <string name="not_removed_checked_note">یادداشت پایان یافته را نمی توان حذف کرد!</string>
+    <string name="not_update_checked_note">یادداشت پایان یافته را نمی توان ویرایش کرد!</string>
 </resources>

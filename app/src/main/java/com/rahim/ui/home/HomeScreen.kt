@@ -146,10 +146,7 @@ fun HomeScreen(
                     }
                 }
             }
-
-            is Resource.Error -> {
-
-            }
+            is Resource.Error -> {}
         }
 
     }
