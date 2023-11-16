@@ -51,6 +51,7 @@ import java.util.*
 @Composable
 fun DialogAddRoutine(
     modifier: Modifier = Modifier,
+    isOpen: Boolean,
     isShowDay: Boolean,
     currentNumberDay: Int,
     currentNumberMonth: Int,
@@ -74,6 +75,14 @@ fun DialogAddRoutine(
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        if (!isOpen) {
+            routineName = ""
+            routineExplanation = ""
+            isErrorName.value = false
+            isErrorExplanation.value = false
+            time.value = "12:00"
+            return@CompositionLocalProvider
+        }
         AlertDialog(properties = DialogProperties(
             usePlatformDefaultWidth = false, dismissOnClickOutside = false
         ), modifier = modifier
@@ -322,20 +331,10 @@ fun DialogAddRoutine(
                                         time.value,
                                         explanation = routineExplanation,
                                     ))
-                                    routineName = ""
-                                    routineExplanation = ""
-                                    isErrorName.value = false
-                                    isErrorExplanation.value = false
-                                    time.value = "12:00"
                                 }
                             })
                         Spacer(modifier = Modifier.width(10.dp))
                         TextButton(onClick = {
-                            routineName = ""
-                            routineExplanation = ""
-                            time.value = "12:00"
-                            isErrorName.value = false
-                            isErrorExplanation.value = false
                             openDialog(false)
                         }) {
                             Text(

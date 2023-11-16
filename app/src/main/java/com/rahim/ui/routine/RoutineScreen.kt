@@ -58,6 +58,7 @@ import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -126,7 +127,7 @@ fun RoutineScreen(
             ) {
             if (!routines.data.isNullOrEmpty()) {
                 ShowSearchBar(clickSearch = clickSearch, searchText = searchText) { search ->
-                    searchText=search
+                    searchText = search
                     coroutineScope.launch(Dispatchers.IO) {
                         if (search.isNotEmpty()) {
                             routines.data?.filter {
@@ -171,8 +172,12 @@ fun RoutineScreen(
                 searchItems,
                 searchText,
                 routineUpdateDialog = {
-                    if (it.isChecked){
-                        Toast.makeText(context, R.string.not_update_checked_routine, Toast.LENGTH_SHORT).show()
+                    if (it.isChecked) {
+                        Toast.makeText(
+                            context,
+                            R.string.not_update_checked_routine,
+                            Toast.LENGTH_SHORT
+                        ).show()
                         return@GetRoutines
                     }
                     if (it.isSample)
@@ -185,12 +190,16 @@ fun RoutineScreen(
                     alarmManagement.updateAlarm(
                         context,
                         it,
-                        it.idAlarm?:it.id?.toLong()
+                        it.idAlarm ?: it.id?.toLong()
                     )
                 },
                 routineDeleteDialog = {
-                    if (it.isChecked){
-                        Toast.makeText(context, R.string.not_removed_checked_routine, Toast.LENGTH_SHORT).show()
+                    if (it.isChecked) {
+                        Toast.makeText(
+                            context,
+                            R.string.not_removed_checked_routine,
+                            Toast.LENGTH_SHORT
+                        ).show()
                         return@GetRoutines
                     }
                     if (it.isSample)
@@ -220,34 +229,37 @@ fun RoutineScreen(
             )
         )
     }
-    if (onClickAdd || routineUpdateDialog.value != null){
-        DialogAddRoutine(
-            isShowDay = false,
-            openDialog = {
-                routineUpdateDialog.value = null
-                routineForAdd.value = null
-                isOpenDialog(it)
-            },
-            routineUpdate = routineUpdateDialog.value,
-            routine = { routine ->
-                if (routineUpdateDialog.value != null) {
-                    viewModel.updateRoutine(routine)
-                    alarmManagement.updateAlarm(
-                        context,
-                        routine,
-                        routine.idAlarm?:routine.id?.toLong()
-                    )
-                } else {
+    DialogAddRoutine(
+        isShowDay = false,
+        isOpen = onClickAdd || routineUpdateDialog.value != null,
+        openDialog = {
+            routineUpdateDialog.value = null
+            routineForAdd.value = null
+            isOpenDialog(it)
+        },
+        routineUpdate = routineUpdateDialog.value,
+        routine = { routine ->
+            if (routineUpdateDialog.value != null) {
+                viewModel.updateRoutine(routine)
+                alarmManagement.updateAlarm(
+                    context,
+                    routine,
+                    routine.idAlarm ?: routine.id?.toLong()
+                )
+            } else {
+                coroutineScope.launch {
                     viewModel.addRoutine(routine)
+                    delay(200)
                     routineForAdd.value = routine
                 }
-                routineUpdateDialog.value = null
-            },
-            currentNumberDay = dayChecked.toInt(),
-            currentNumberMonth = currentMonth,
-            currentNumberYer = currentYer
-        )
-    }
+            }
+            routineUpdateDialog.value = null
+        },
+        currentNumberDay = dayChecked.toInt(),
+        currentNumberMonth = currentMonth,
+        currentNumberYer = currentYer
+    )
+
     if (routineForAdd.value != null)
         ProcessRoutineAdded(addRoutine, context) {
             if (!it) {

@@ -36,6 +36,7 @@ import com.rahim.utils.base.view.ShowStatusBar
 import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -122,8 +123,12 @@ fun HomeScreen(
                                         )
                                     },
                                     { routineUpdate ->
-                                        if (routineUpdate.isChecked){
-                                            Toast.makeText(context, R.string.not_update_checked_routine, Toast.LENGTH_SHORT).show()
+                                        if (routineUpdate.isChecked) {
+                                            Toast.makeText(
+                                                context,
+                                                R.string.not_update_checked_routine,
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                             return@ItemsHome
                                         }
                                         if (routineUpdate.isSample)
@@ -132,8 +137,12 @@ fun HomeScreen(
                                         routineUpdateDialog.value = routineUpdate
                                     },
                                     { deleteRoutine ->
-                                        if (deleteRoutine.isChecked){
-                                            Toast.makeText(context, R.string.not_removed_checked_routine, Toast.LENGTH_SHORT).show()
+                                        if (deleteRoutine.isChecked) {
+                                            Toast.makeText(
+                                                context,
+                                                R.string.not_removed_checked_routine,
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                             return@ItemsHome
                                         }
                                         if (deleteRoutine.isSample)
@@ -146,6 +155,7 @@ fun HomeScreen(
                     }
                 }
             }
+
             is Resource.Error -> {}
         }
 
@@ -171,35 +181,38 @@ fun HomeScreen(
             )
         )
     }
-    if (onClickAdd || routineUpdateDialog.value != null) {
-        DialogAddRoutine(
-            isShowDay = false,
-            openDialog = {
-                isOpenDialog(it)
-                routineUpdateDialog.value = null
-                routineForAdd.value = null
-            },
-            routineUpdate = routineUpdateDialog.value,
-            routine = { routine ->
-                if (routineUpdateDialog.value != null) {
-                    viewModel.updateRoutine(routine)
-                    alarmManagement.updateAlarm(
-                        context,
-                        routine,
+    DialogAddRoutine(
+        isShowDay = false,
+        isOpen = onClickAdd || routineUpdateDialog.value != null,
+        openDialog = {
+            isOpenDialog(it)
+            routineUpdateDialog.value = null
+            routineForAdd.value = null
+        },
+        routineUpdate = routineUpdateDialog.value,
+        routine = { routine ->
+            if (routineUpdateDialog.value != null) {
+                viewModel.updateRoutine(routine)
+                alarmManagement.updateAlarm(
+                    context,
+                    routine,
 //                    if (idAlarms == null) routine.id?.toLong() else routine.idAlarm
-                        routine.idAlarm
-                    )
-                    routineUpdateDialog.value = null
-                } else {
+                    routine.idAlarm
+                )
+                routineUpdateDialog.value = null
+            } else {
+                coroutineScope.launch {
                     viewModel.addRoutine(routine)
+                    delay(200)
                     routineForAdd.value = routine
                 }
-            },
-            currentNumberDay = currentDay,
-            currentNumberMonth = currentMonth,
-            currentNumberYer = currentYer
-        )
-    }
+            }
+        },
+        currentNumberDay = currentDay,
+        currentNumberMonth = currentMonth,
+        currentNumberYer = currentYer
+    )
+
     if (routineForAdd.value != null)
         ProcessRoutineAdded(addRoutine, context) {
             if (!it) {
