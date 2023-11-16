@@ -230,8 +230,8 @@ fun RoutineScreen(
                     routine.idAlarm?:routine.id?.toLong()
                 )
             } else {
-                routineForAdd.value = routine
                 viewModel.addRoutine(routine)
+                routineForAdd.value = routine
             }
             routineUpdateDialog.value = null
         },

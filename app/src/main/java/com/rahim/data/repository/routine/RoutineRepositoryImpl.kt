@@ -118,11 +118,12 @@ class RoutineRepositoryImpl @Inject constructor(
         emit(Resource.Loading())
         routine.apply {
             idAlarm = setRoutineId(getIdAlarms())
-            colorTask=0
+            colorTask = 0
         }
         val routines = appDatabase.routineDao().getRoutines()
         val equalRoutine = routines.find {
-            it.dayName == routine.dayName && it.dayNumber == routine.dayNumber
+            it.name == routine.name &&
+                    it.dayName == routine.dayName && it.dayNumber == routine.dayNumber
                     && it.yerNumber == routine.yerNumber
                     && it.monthNumber == routine.monthNumber && it.timeHours.toString()
                 .replace(Regex(":"), "").toInt() == routine.timeHours.toString()

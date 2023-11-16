@@ -185,8 +185,8 @@ fun HomeScreen(
                 )
                 routineUpdateDialog.value = null
             } else {
-                routineForAdd.value = routine
                 viewModel.addRoutine(routine)
+                routineForAdd.value = routine
             }
         },
         currentNumberDay = currentDay,

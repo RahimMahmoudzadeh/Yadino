@@ -47,6 +47,7 @@ import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
 import com.rahim.utils.resours.Resource
+import timber.log.Timber
 
 val gradientColors = listOf(Purple, PurpleGrey)
 
@@ -164,6 +165,8 @@ fun ProcessRoutineAdded(
     context: Context,
     closeDialog: (Boolean) -> Unit
 ) {
+    Timber.tag("routineAdd")
+        .d("ProcessRoutineAdded ->${if (addRoutine is Resource.Success) "success" else if (addRoutine is Resource.Error) "fail" else "loading"}")
     when (addRoutine) {
         is Resource.Loading -> {
             CircularProgressAnimated(true)
@@ -192,7 +195,7 @@ fun ShowToastShort(message: String?, context: Context) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String,onClickSearch: () -> Unit) {
+fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String, onClickSearch: () -> Unit) {
 
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.onBackground),
