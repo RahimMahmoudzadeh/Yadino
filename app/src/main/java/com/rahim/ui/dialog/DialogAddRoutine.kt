@@ -51,7 +51,6 @@ import java.util.*
 @Composable
 fun DialogAddRoutine(
     modifier: Modifier = Modifier,
-    isOpen: Boolean,
     isShowDay: Boolean,
     currentNumberDay: Int,
     currentNumberMonth: Int,
@@ -62,34 +61,19 @@ fun DialogAddRoutine(
 ) {
     val maxName = 22
     val maxExplanation = 40
-    var routineName by rememberSaveable { mutableStateOf("") }
-    var routineExplanation by rememberSaveable { mutableStateOf("") }
+    var routineName by rememberSaveable { mutableStateOf(routineUpdate?.name?:"") }
+    var routineExplanation by rememberSaveable { mutableStateOf(routineUpdate?.explanation?:"") }
     val checkedStateAllDay = remember { mutableStateOf(false) }
     val isErrorName = remember { mutableStateOf(false) }
     val isErrorExplanation = remember { mutableStateOf(false) }
-    val time = rememberSaveable { mutableStateOf("12:00") }
+    val time = rememberSaveable { mutableStateOf(routineUpdate?.timeHours?:"12:00") }
     val alarmDialogState = rememberMaterialDialogState()
     val persianData = PersianDate()
     val date=persianData.initJalaliDate(currentNumberYer,currentNumberMonth,currentNumberDay)
 
-    if (routineUpdate != null) {
-        routineName = routineUpdate.name
-        time.value = routineUpdate.timeHours.toString()
-        routineUpdate.explanation?.let {
-            routineExplanation = it
-        }
-    }
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        if (!isOpen) {
-            routineName = ""
-            routineExplanation = ""
-            isErrorName.value = false
-            isErrorExplanation.value = false
-            time.value = "12:00"
-            return@CompositionLocalProvider
-        }
         AlertDialog(properties = DialogProperties(
             usePlatformDefaultWidth = false, dismissOnClickOutside = false
         ), modifier = modifier
@@ -338,6 +322,11 @@ fun DialogAddRoutine(
                                         time.value,
                                         explanation = routineExplanation,
                                     ))
+                                    routineName = ""
+                                    routineExplanation = ""
+                                    isErrorName.value = false
+                                    isErrorExplanation.value = false
+                                    time.value = "12:00"
                                 }
                             })
                         Spacer(modifier = Modifier.width(10.dp))

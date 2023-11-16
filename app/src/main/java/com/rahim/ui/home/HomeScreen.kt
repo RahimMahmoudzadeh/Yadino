@@ -117,7 +117,7 @@ fun HomeScreen(
                                         alarmManagement.updateAlarm(
                                             context,
                                             checkedRoutine,
-                                            checkedRoutine.idAlarm?:checkedRoutine.id?.toLong()
+                                            checkedRoutine.idAlarm ?: checkedRoutine.id?.toLong()
                                         )
                                     },
                                     { routineUpdate ->
@@ -165,34 +165,35 @@ fun HomeScreen(
             )
         )
     }
-    DialogAddRoutine(
-        isOpen = onClickAdd || routineUpdateDialog.value != null,
-        isShowDay = false,
-        openDialog = {
-            isOpenDialog(it)
-            routineUpdateDialog.value = null
-            routineForAdd.value = null
-        },
-        routineUpdate = routineUpdateDialog.value,
-        routine = { routine ->
-            if (routineUpdateDialog.value != null) {
-                viewModel.updateRoutine(routine)
-                alarmManagement.updateAlarm(
-                    context,
-                    routine,
-//                    if (idAlarms == null) routine.id?.toLong() else routine.idAlarm
-                    routine.idAlarm
-                )
+    if (onClickAdd || routineUpdateDialog.value != null) {
+        DialogAddRoutine(
+            isShowDay = false,
+            openDialog = {
+                isOpenDialog(it)
                 routineUpdateDialog.value = null
-            } else {
-                viewModel.addRoutine(routine)
-                routineForAdd.value = routine
-            }
-        },
-        currentNumberDay = currentDay,
-        currentNumberMonth = currentMonth,
-        currentNumberYer = currentYer
-    )
+                routineForAdd.value = null
+            },
+            routineUpdate = routineUpdateDialog.value,
+            routine = { routine ->
+                if (routineUpdateDialog.value != null) {
+                    viewModel.updateRoutine(routine)
+                    alarmManagement.updateAlarm(
+                        context,
+                        routine,
+//                    if (idAlarms == null) routine.id?.toLong() else routine.idAlarm
+                        routine.idAlarm
+                    )
+                    routineUpdateDialog.value = null
+                } else {
+                    viewModel.addRoutine(routine)
+                    routineForAdd.value = routine
+                }
+            },
+            currentNumberDay = currentDay,
+            currentNumberMonth = currentMonth,
+            currentNumberYer = currentYer
+        )
+    }
     if (routineForAdd.value != null)
         ProcessRoutineAdded(addRoutine, context) {
             if (!it) {

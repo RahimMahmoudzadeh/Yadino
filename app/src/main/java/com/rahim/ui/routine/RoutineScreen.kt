@@ -212,33 +212,34 @@ fun RoutineScreen(
             )
         )
     }
-    DialogAddRoutine(
-        isOpen = onClickAdd || routineUpdateDialog.value != null,
-        isShowDay = false,
-        openDialog = {
-            routineUpdateDialog.value = null
-            routineForAdd.value = null
-            isOpenDialog(it)
-        },
-        routineUpdate = routineUpdateDialog.value,
-        routine = { routine ->
-            if (routineUpdateDialog.value != null) {
-                viewModel.updateRoutine(routine)
-                alarmManagement.updateAlarm(
-                    context,
-                    routine,
-                    routine.idAlarm?:routine.id?.toLong()
-                )
-            } else {
-                viewModel.addRoutine(routine)
-                routineForAdd.value = routine
-            }
-            routineUpdateDialog.value = null
-        },
-        currentNumberDay = dayChecked.toInt(),
-        currentNumberMonth = currentMonth,
-        currentNumberYer = currentYer
-    )
+    if (onClickAdd || routineUpdateDialog.value != null){
+        DialogAddRoutine(
+            isShowDay = false,
+            openDialog = {
+                routineUpdateDialog.value = null
+                routineForAdd.value = null
+                isOpenDialog(it)
+            },
+            routineUpdate = routineUpdateDialog.value,
+            routine = { routine ->
+                if (routineUpdateDialog.value != null) {
+                    viewModel.updateRoutine(routine)
+                    alarmManagement.updateAlarm(
+                        context,
+                        routine,
+                        routine.idAlarm?:routine.id?.toLong()
+                    )
+                } else {
+                    viewModel.addRoutine(routine)
+                    routineForAdd.value = routine
+                }
+                routineUpdateDialog.value = null
+            },
+            currentNumberDay = dayChecked.toInt(),
+            currentNumberMonth = currentMonth,
+            currentNumberYer = currentYer
+        )
+    }
     if (routineForAdd.value != null)
         ProcessRoutineAdded(addRoutine, context) {
             if (!it) {
