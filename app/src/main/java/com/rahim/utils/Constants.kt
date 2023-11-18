@@ -15,7 +15,6 @@ object Constants {
     const val YYYY_MM_DD = "yyyy-MM-dd"
     const val FIRST_YEAR = 1300
     const val END_YEAR = 1430
-    const val TITLE_TASK = "title task"
     const val UPDATE = "update"
     const val CAFE_BAZAAR = "cafeBazaar"
     const val CAFE_BAZAAR_INSTALL_LINK="https://cafebazaar.ir/install"
@@ -28,6 +27,8 @@ object Constants {
     const val ALARM_MESSAGE = "alarm Message"
     const val ALARM_NAME = "alarm name"
     const val ALARM_ID = "alarmId"
+    const val ALARM_RING_URI = "alarm ring uri"
+    const val TITLE_TASK = "title task"
 
     //Value
     const val IS_ALARM = "is Alarm"

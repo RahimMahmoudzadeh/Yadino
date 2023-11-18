@@ -2,6 +2,8 @@ package com.rahim.ui.wakeup
 
 import android.app.KeyguardManager
 import android.content.Intent
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
@@ -38,7 +40,10 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.rahim.R
+import com.rahim.data.alarm.AlarmManagement
 import com.rahim.ui.theme.YadinoTheme
+import com.rahim.utils.Constants.ALARM_ID
+import com.rahim.utils.Constants.ALARM_RING_URI
 import com.rahim.utils.Constants.TITLE_TASK
 import com.rahim.utils.base.view.gradientColors
 import timber.log.Timber
@@ -46,6 +51,9 @@ import timber.log.Timber
 
 class WakeupActivity : ComponentActivity() {
     private var titleText: String? = null
+    private var alarmId: Long? = null
+    private var alarmUri: Uri? = null
+    private val alarmManagement = AlarmManagement()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +98,12 @@ class WakeupActivity : ComponentActivity() {
                             text = resources.getString(R.string.forget_work, titleText)
                         )
                         Column(Modifier.clickable { finish() }) {
-                            ShowAnimation(isPlaying, speed, composition)
+                            ShowAnimation(isPlaying, speed, composition) {
+//                                val ringtone =
+//                                    RingtoneManager.getRingtone(this@WakeupActivity, alarmUri)
+//                                ringtone.stop()
+//                                alarmManagement.cancelAlarm(this@WakeupActivity, alarmId)
+                            }
                         }
                     }
                 }
@@ -101,10 +114,21 @@ class WakeupActivity : ComponentActivity() {
     private fun getIntentResult() {
         Timber.tag("intentTitle").d(intent.extras?.getString(TITLE_TASK))
         titleText = intent.getStringExtra(TITLE_TASK).toString()
+//        alarmId = intent.getLongExtra(ALARM_ID, 0)
+//        alarmUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            intent.getParcelableExtra(ALARM_RING_URI,Uri::class.java)
+//        }else{
+//            intent.getParcelableExtra(ALARM_RING_URI)
+//        }
     }
 
     @Composable
-    fun ShowAnimation(isPlaying: Boolean, speed: Float, composition: LottieComposition?) {
+    fun ShowAnimation(
+        isPlaying: Boolean,
+        speed: Float,
+        composition: LottieComposition?,
+        clickAnimation: () -> Unit
+    ) {
         val progress by animateLottieCompositionAsState(
             composition,
             iterations = LottieConstants.IterateForever,
@@ -113,7 +137,12 @@ class WakeupActivity : ComponentActivity() {
             restartOnPlay = false,
         )
         LottieAnimation(
-            composition, progress, modifier = Modifier.size(300.dp)
+            composition, progress,
+            modifier = Modifier
+                .size(300.dp)
+                .clickable {
+                    clickAnimation()
+                },
         )
     }
 
