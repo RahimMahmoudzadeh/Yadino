@@ -91,7 +91,6 @@ class MainActivity : BaseActivity() {
                 rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
             val navController = rememberNavController()
             val destination = navController.currentBackStackEntry?.destination?.route
-
             DisposableEffect(systemUiController, useDarkIcons) {
                 systemUiController.setSystemBarsColor(
                     color = if (useDarkIcons) Zircon else BalticSea,

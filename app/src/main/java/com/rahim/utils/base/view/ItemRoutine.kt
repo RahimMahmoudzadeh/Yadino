@@ -124,19 +124,21 @@ fun ItemRoutine(
                         )
                     )
                     Row(modifier = Modifier.padding(top = 12.dp)) {
-                        Text(
-                            textAlign = TextAlign.End,
-                            modifier = Modifier
-                                .weight(0.7f)
-                                .padding(bottom = 14.dp, end = 4.dp),
-                            text = if (routine.explanation.isNullOrEmpty()) stringResource(id = R.string.empty) + " " else routine.explanation.toString() + " ",
-                            color = MaterialTheme.colorScheme.secondaryContainer
-                        )
-                        Text(
-                            modifier = Modifier.weight(0.3f),
-                            text = stringResource(id = R.string.note),
-                            color = MaterialTheme.colorScheme.secondaryContainer
-                        )
+                        if (!routine.explanation.isNullOrEmpty()){
+                            Text(
+                                textAlign = TextAlign.End,
+                                modifier = Modifier
+                                    .weight(0.7f)
+                                    .padding(bottom = 14.dp, end = 4.dp),
+                                text = routine.explanation.toString() + " ",
+                                color = MaterialTheme.colorScheme.secondaryContainer
+                            )
+                            Text(
+                                modifier = Modifier.weight(0.3f),
+                                text = stringResource(id = R.string.explanation),
+                                color = MaterialTheme.colorScheme.secondaryContainer
+                            )
+                        }
                     }
                 }
             }

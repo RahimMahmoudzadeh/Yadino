@@ -204,7 +204,7 @@ fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String, onClickSearc
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 8.dp),
+                    .padding(start = 38.dp),
                 textAlign = TextAlign.Center,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,

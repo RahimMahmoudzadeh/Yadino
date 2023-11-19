@@ -74,6 +74,7 @@
     <string name="issue">موضوع یادداشت خود را بنویسید</string>
     <string name="issue_explanation">توضیح برای یادداشت خود بنویسید</string>
     <string name="routine_explanation">توضیح برای روتین خود بنویسید</string>
+    <string name="explanation">: توضیحات</string>
     <string name="not_routine">!شما هنوز روتینی ثبت نکردید</string>
     <string name="list_routine">لیست روتین</string>
     <string name="length_textFiled_name_routine">نام انتخابی باید حداکثر 22 کاراکتر باشد!</string>
