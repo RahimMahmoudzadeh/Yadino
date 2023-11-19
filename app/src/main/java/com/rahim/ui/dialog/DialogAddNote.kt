@@ -56,7 +56,7 @@ fun DialogAddNote(
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         if (isOpen) {
-            AlertDialog(properties = DialogProperties(
+            BasicAlertDialog(properties = DialogProperties(
                 usePlatformDefaultWidth = false,
                 dismissOnClickOutside = false
             ),
