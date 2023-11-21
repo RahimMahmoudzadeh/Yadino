@@ -11,6 +11,7 @@ import com.rahim.data.sharedPreferences.SharedPreferencesCustom
 import com.rahim.utils.base.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,6 +29,7 @@ class MainViewModel @Inject constructor(
                 dataTimeRepository.addTime()
             }
             launch {
+                Timber.tag("sampleRoutines").d("mainViewModel")
                 repositoryRoutine.addSampleRoutine()
             }
             launch {

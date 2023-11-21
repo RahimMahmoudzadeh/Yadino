@@ -78,7 +78,6 @@ class MainActivity : BaseActivity() {
     @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mainViewModel
         Timber.tag("packege").d(this.packageName)
         getTokenFirebase()
         setContent {

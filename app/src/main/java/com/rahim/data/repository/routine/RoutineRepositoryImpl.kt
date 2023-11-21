@@ -1,5 +1,6 @@
 package com.rahim.data.repository.routine
 
+import com.rahim.data.db.dao.RoutineDao
 import com.rahim.data.db.database.AppDatabase
 import com.rahim.data.di.IODispatcher
 import com.rahim.data.modle.Rotin.Routine
@@ -25,12 +26,12 @@ import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
-
+private const val ROUTINE_LEFT_SAMPLE="من یک روتین تستی هستم لطفا من را به چپ بکشید"
+private const val ROUTINE_RIGHT_SAMPLE="من یک روتین تستی هستم لطفا من را به راست بکشید"
 class RoutineRepositoryImpl @Inject constructor(
-    private val appDatabase: AppDatabase,
+    private val routineDao: RoutineDao,
     private val sharedPreferencesCustom: SharedPreferencesCustom,
-    @IODispatcher
-    private val ioDispatcher: CoroutineDispatcher
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RepositoryRoutine {
     private val persianData = PersianDate()
     private val currentTimeDay = persianData.shDay
@@ -39,53 +40,35 @@ class RoutineRepositoryImpl @Inject constructor(
 
     private val equalRoutineMessage = "روتین یکسان نمی توان ساخت!!"
     override suspend fun addSampleRoutine() {
-        val sampleRoutines = appDatabase.routineDao()
-            .getSampleRoutine(currentTimeMonth, currentTimeDay, currentTimeYer)
+        val sampleRoutines =
+            routineDao.getSampleRoutines(currentTimeMonth, currentTimeDay, currentTimeYer)
         Timber.tag("sampleRoutines").d("sampleRoutines->$sampleRoutines")
         if (sharedPreferencesCustom.isShowSampleRoutine()) {
-            appDatabase.routineDao().removeSampleRoutine()
+            routineDao.removeSampleRoutine()
             return
         }
 
-        if (sampleRoutines.isNotEmpty())
-            return
-        appDatabase.routineDao().removeSampleRoutine()
-        (0..1).forEach {
-            val routine = if (it == 0) {
-                Routine(
-                    "تست1",
-                    0,
-                    currentTimeDay.toString(),
-                    currentTimeDay,
-                    currentTimeMonth,
-                    currentTimeYer,
-                    "12:00",
-                    false,
-                    explanation = "من یک روتین تستی هستم لطفا من را به چپ بکشید",
-                    isSample = true,
-                    idAlarm = 1
-                )
-            } else {
-                Routine(
-                    "تست2",
-                    0,
-                    currentTimeDay.toString(),
-                    currentTimeDay,
-                    currentTimeMonth,
-                    currentTimeYer,
-                    "12:00",
-                    false,
-                    explanation = "من یک روتین تستی هستم لطفا من را به راست بکشید",
-                    isSample = true,
-                    idAlarm = 2
-                )
-            }
-            addRoutine(routine).catch {}.collect()
+        if (sampleRoutines.isNotEmpty()) return
+        (0..1).forEachIndexed {index,it ->
+            val routine =  Routine(
+                "تست${index.plus(1)}",
+                0,
+                currentTimeDay.toString(),
+                currentTimeDay,
+                currentTimeMonth,
+                currentTimeYer,
+                "12:00",
+                false,
+                explanation = if (index==1) ROUTINE_LEFT_SAMPLE else ROUTINE_RIGHT_SAMPLE,
+                isSample = true,
+                idAlarm = index.plus(1).toLong()
+            )
+            routineDao.addRoutine(routine)
         }
     }
 
     override suspend fun changeRoutineId() = withContext(Dispatchers.IO) {
-        val routines = appDatabase.routineDao().getRoutines()
+        val routines = routineDao.getRoutines()
 
         routines.forEach {
             if (it.idAlarm == null) {
@@ -98,13 +81,13 @@ class RoutineRepositoryImpl @Inject constructor(
                 it.apply {
                     idAlarm = idRandom.toLong()
                 }
-                appDatabase.routineDao().updateRoutine(it)
+                routineDao.updateRoutine(it)
             }
         }
     }
 
     private suspend fun getIdAlarmsNotNull(): List<Long> {
-        val idAlarms = appDatabase.routineDao().getIdAlarmsSuspend()
+        val idAlarms = routineDao.getIdAlarmsSuspend()
         val idNotNull = ArrayList<Long>()
         for (id in idAlarms.indices) {
             if (idAlarms[id] != null) {
@@ -117,20 +100,17 @@ class RoutineRepositoryImpl @Inject constructor(
     override suspend fun addRoutine(routine: Routine): Flow<Resource<Long>> = flow {
         emit(Resource.Loading())
         routine.apply {
-            idAlarm = setRoutineId(getIdAlarms())
+            idAlarm = setRoutineId(routineDao.getIdAlarmsSuspend())
             colorTask = 0
         }
-        val routines = appDatabase.routineDao().getRoutines()
+        val routines = routineDao.getRoutines()
         val equalRoutine = routines.find {
-            it.name == routine.name &&
-                    it.dayName == routine.dayName && it.dayNumber == routine.dayNumber
-                    && it.yerNumber == routine.yerNumber
-                    && it.monthNumber == routine.monthNumber && it.timeHours.toString()
+            it.name == routine.name && it.dayName == routine.dayName && it.dayNumber == routine.dayNumber && it.yerNumber == routine.yerNumber && it.monthNumber == routine.monthNumber && it.timeHours.toString()
                 .replace(Regex(":"), "").toInt() == routine.timeHours.toString()
                 .replace(Regex(":"), "").toInt()
         }
         if (equalRoutine == null) {
-            emit(Resource.Success(appDatabase.routineDao().addRoutine(routine)))
+            emit(Resource.Success(routineDao.addRoutine(routine)))
         } else {
             emit(Resource.Error(equalRoutineMessage))
         }
@@ -147,40 +127,31 @@ class RoutineRepositoryImpl @Inject constructor(
     }
 
     override suspend fun removeRoutine(routine: Routine): Int {
-        return appDatabase.routineDao().removeRoutine(routine)
+        return routineDao.removeRoutine(routine)
     }
 
     override suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yerNumber: Int?) {
-        appDatabase.routineDao().removeAllRoutine(nameMonth, dayNumber, yerNumber)
+        routineDao.removeAllRoutine(nameMonth, dayNumber, yerNumber)
     }
 
     override suspend fun updateRoutine(routine: Routine) {
-        appDatabase.routineDao().updateRoutine(routine)
+        routineDao.updateRoutine(routine)
     }
 
-    override suspend fun getRoutine(id: Int): Routine = appDatabase.routineDao().getRoutine(id)
+    override suspend fun getRoutine(id: Int): Routine = routineDao.getRoutine(id)
 
 
     override fun getRoutines(
-        monthNumber: Int,
-        numberDay: Int,
-        yerNumber: Int
+        monthNumber: Int, numberDay: Int, yerNumber: Int
     ): Flow<List<Routine>> =
-        appDatabase.routineDao().getRoutines(monthNumber, numberDay, yerNumber)
-            .distinctUntilChanged()
+        routineDao.getRoutines(monthNumber, numberDay, yerNumber).distinctUntilChanged()
 
     override fun searchRoutine(
-        name: String,
-        monthNumber: Int?,
-        dayNumber: Int?
+        name: String, monthNumber: Int?, dayNumber: Int?
     ): Flow<List<Routine>> =
-        appDatabase.routineDao().searchRoutine(name, monthNumber, dayNumber).distinctUntilChanged()
+        routineDao.searchRoutine(name, monthNumber, dayNumber).distinctUntilChanged()
 
     override suspend fun getCurrentRoutines(): Flow<List<Routine>> {
-        return appDatabase.routineDao()
-            .getRoutines(currentTimeMonth, currentTimeDay, currentTimeYer)
+        return routineDao.getRoutines(currentTimeMonth, currentTimeDay, currentTimeYer)
     }
-
-    override fun getIdAlarms(): List<Long> =
-        appDatabase.routineDao().getIdAlarms()
 }

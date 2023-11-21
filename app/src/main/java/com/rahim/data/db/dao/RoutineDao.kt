@@ -38,13 +38,9 @@ interface RoutineDao {
     ): Flow<List<Routine>>
 
     @Query("SELECT * FROM tbl_routine WHERE isSample=1 AND  monthNumber LIKE :monthNumber AND dayNumber LIKE :dayNumber AND yerNumber LIKE :yerNumber")
-    suspend fun getSampleRoutine(monthNumber: Int, dayNumber: Int, yerNumber: Int):List<Routine>
-
+    suspend fun getSampleRoutines(monthNumber: Int, dayNumber: Int, yerNumber: Int):List<Routine>
     @Query("DELETE FROM tbl_routine WHERE isSample=1")
     suspend fun removeSampleRoutine()
-
-    @Query("SELECT idAlarm FROM tbl_routine WHERE isChecked=0")
-    fun getIdAlarms():List<Long>
     @Query("SELECT idAlarm FROM tbl_routine WHERE isChecked=0")
     suspend fun getIdAlarmsSuspend():List<Long>
 }

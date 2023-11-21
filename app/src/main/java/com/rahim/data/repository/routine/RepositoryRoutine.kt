@@ -24,6 +24,4 @@ interface RepositoryRoutine {
 
     suspend fun changeRoutineId()
 
-    fun getIdAlarms(): List<Long>
-
 }
