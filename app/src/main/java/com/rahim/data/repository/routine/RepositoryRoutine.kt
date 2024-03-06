@@ -23,5 +23,5 @@ interface RepositoryRoutine {
     suspend fun getCurrentRoutines(): Flow<List<Routine>>
 
     suspend fun changeRoutineId()
-
+    suspend fun updateCheckedByAlarmId(id:Long)
 }

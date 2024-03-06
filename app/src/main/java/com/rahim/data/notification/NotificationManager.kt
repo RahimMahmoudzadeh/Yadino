@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_MULTIPLE_TASK
 import android.content.pm.PackageManager
 import android.media.Ringtone
 import android.media.RingtoneManager
@@ -20,11 +21,13 @@ import com.rahim.data.alarm.Alarm
 import com.rahim.data.alarm.AlarmManagement
 import com.rahim.data.alarm.AlarmSong
 import com.rahim.data.broadcast.YadinoBroadCastReceiver
+import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.main.MainActivity
 import com.rahim.ui.wakeup.WakeupActivity
 import com.rahim.utils.Constants.ALARM_ID
 import com.rahim.utils.Constants.ALARM_RING_URI
 import com.rahim.utils.Constants.CHANNEL_ID
+import com.rahim.utils.Constants.ROUTINE
 import com.rahim.utils.Constants.TITLE_TASK
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -67,56 +70,41 @@ class NotificationManager @Inject constructor() : AlarmSong, Alarm {
     }
 
     fun createFullNotification(
-        textTitle: String,
-        textContent: String,
         context: Context,
-        alarmId: Long?
+        routine:Routine?
     ) {
-        Timber.tag("intentTitle").d("notification-> $textTitle")
-//        val ringUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-
-        val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {
-            putExtra(TITLE_TASK, textTitle)
-//            putExtra(ALARM_ID, alarmId)
-//            putExtra(ALARM_RING_URI, ringUri)
-        }
-        val fullScreenPendingIntent = PendingIntent.getActivity(
-            context, 0,
-            fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        playRingtone(context, alarmId)
-//        playRingtone(context,alarmId,ringUri)
-        val notificationBuilder =
-            NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_round_notifications_24)
-                .setContentTitle(textTitle)
-                .setContentText(textContent)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_ALARM)
-                .setFullScreenIntent(fullScreenPendingIntent, true)
-
-        with(NotificationManagerCompat.from(context)) {
-            if (ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                return
+        routine?.let {routine->
+            val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {
+                addFlags(FLAG_ACTIVITY_MULTIPLE_TASK)
+                putExtra(ROUTINE, routine)
             }
-            notify(Random().nextInt(), notificationBuilder.build())
+            val fullScreenPendingIntent = PendingIntent.getActivity(
+                context, 0,
+                fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            playRingtone(context, routine.idAlarm)
+            val notificationBuilder =
+                NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_round_notifications_24)
+                    .setContentTitle(routine.name)
+                    .setContentText(routine.explanation)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setCategory(NotificationCompat.CATEGORY_ALARM)
+                    .setFullScreenIntent(fullScreenPendingIntent, true)
+
+            with(NotificationManagerCompat.from(context)) {
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    return
+                }
+                notify(Random().nextInt(), notificationBuilder.build())
+            }
         }
     }
 
-    //    override fun playRingtone(context: Context,alarmId:Long?,uri: Uri?) {
-//        val ringtone = RingtoneManager.getRingtone(context, uri)
-//        ringtone.play()
-//        object : CountDownTimer(30000, 1000) {
-//            override fun onTick(millisUntilFinished: Long) {}
-//            override fun onFinish() {
-//                stopRingtone(ringtone,context,alarmId)
-//            }
-//        }.start()
-//    }
     override fun playRingtone(context: Context, alarmId: Long?) {
         val notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         val ringtone = RingtoneManager.getRingtone(context, notification)
@@ -124,11 +112,6 @@ class NotificationManager @Inject constructor() : AlarmSong, Alarm {
         stopRingtone(ringtone, context, alarmId)
     }
 
-    //    override fun stopRingtone(ringtone: Ringtone?, context: Context, alarmId: Long?) {
-//        ringtone?.stop()
-//        cancelAlarm(context, alarmId)
-//
-//    }
     override fun stopRingtone(ringtone: Ringtone?, context: Context, alarmId: Long?) {
         object : CountDownTimer(6000, 1000) {
             override fun onTick(millisUntilFinished: Long) {}

@@ -154,4 +154,8 @@ class RoutineRepositoryImpl @Inject constructor(
     override suspend fun getCurrentRoutines(): Flow<List<Routine>> {
         return routineDao.getRoutines(currentTimeMonth, currentTimeDay, currentTimeYer)
     }
+
+    override suspend fun updateCheckedByAlarmId(id:Long){
+        routineDao.updateCheckedByAlarmId(id)
+    }
 }

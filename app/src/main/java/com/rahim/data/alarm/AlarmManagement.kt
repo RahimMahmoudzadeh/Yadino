@@ -10,6 +10,7 @@ import com.rahim.data.modle.Rotin.Routine
 import com.rahim.utils.Constants.ALARM_ID
 import com.rahim.utils.Constants.ALARM_MESSAGE
 import com.rahim.utils.Constants.ALARM_NAME
+import com.rahim.utils.Constants.ROUTINE
 import com.rahim.utils.base.view.calculateHours
 import com.rahim.utils.base.view.calculateMinute
 import saman.zamani.persiandate.PersianDate
@@ -64,16 +65,12 @@ class AlarmManagement : CalculateDate, Alarm {
         val yer = routine.yerNumber
         val month = routine.monthNumber
         val dayOfYer = routine.dayNumber
-        val name = routine.name
-        val message = routine.explanation ?: ""
 
         val alarmManager =
             context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).let { intent ->
-            intent.putExtra(ALARM_MESSAGE, message)
-            intent.putExtra(ALARM_NAME, name)
-            intent.putExtra(ALARM_ID, routine.idAlarm)
+            intent.putExtra(ROUTINE, routine)
         }
 
         val pendingIntent = PendingIntent.getBroadcast(

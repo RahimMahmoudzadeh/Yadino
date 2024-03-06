@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,24 +42,25 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.rahim.R
 import com.rahim.data.alarm.AlarmManagement
+import com.rahim.data.modle.Rotin.Routine
+import com.rahim.ui.routine.RoutineViewModel
 import com.rahim.ui.theme.YadinoTheme
+import com.rahim.utils.Constants
 import com.rahim.utils.Constants.ALARM_ID
 import com.rahim.utils.Constants.ALARM_RING_URI
 import com.rahim.utils.Constants.TITLE_TASK
 import com.rahim.utils.base.view.gradientColors
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-
+@AndroidEntryPoint
 class WakeupActivity : ComponentActivity() {
-    private var titleText: String? = null
-    private var alarmId: Long? = null
-    private var alarmUri: Uri? = null
+    private var routine: Routine? = null
     private val alarmManagement = AlarmManagement()
 
+    private val routineViewModel: RoutineViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getIntentResult()
-        setWakeupSetting()
         setContent {
             var isPlaying by remember { mutableStateOf(true) }
             var speed by remember { mutableStateOf(1f) }
@@ -95,15 +97,32 @@ class WakeupActivity : ComponentActivity() {
                                 .padding(top = 10.dp)
                                 .fillMaxWidth(),
                             color = Color.White,
-                            text = resources.getString(R.string.forget_work, titleText)
+                            text = resources.getString(R.string.forget_work, routine?.name)
                         )
-                        Column(Modifier.clickable { finish() }) {
-                            ShowAnimation(isPlaying, speed, composition) {
-//                                val ringtone =
+                        Column {
+                            val progress by animateLottieCompositionAsState(
+                                composition,
+                                iterations = LottieConstants.IterateForever,
+                                isPlaying = isPlaying,
+                                speed = speed,
+                                restartOnPlay = false,
+                            )
+                            LottieAnimation(
+                                composition,
+                                {
+                                    progress
+                                },
+                                modifier = Modifier
+                                    .size(300.dp)
+                                    .clickable {
+                                        //                                val ringtone =
 //                                    RingtoneManager.getRingtone(this@WakeupActivity, alarmUri)
 //                                ringtone.stop()
 //                                alarmManagement.cancelAlarm(this@WakeupActivity, alarmId)
-                            }
+                                        finish()
+                                    },
+                            )
+
                         }
                     }
                 }
@@ -111,39 +130,32 @@ class WakeupActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        setWakeupSetting()
+        getIntentResult()
+    }
     private fun getIntentResult() {
         Timber.tag("intentTitle").d(intent.extras?.getString(TITLE_TASK))
-        titleText = intent.getStringExtra(TITLE_TASK).toString()
-//        alarmId = intent.getLongExtra(ALARM_ID, 0)
-//        alarmUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//            intent.getParcelableExtra(ALARM_RING_URI,Uri::class.java)
-//        }else{
-//            intent.getParcelableExtra(ALARM_RING_URI)
-//        }
+        routine = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(Constants.ROUTINE, Routine::class.java)
+        } else {
+            intent.getParcelableExtra(Constants.ROUTINE)
+        }
+        checkAlarm()
     }
 
-    @Composable
-    fun ShowAnimation(
-        isPlaying: Boolean,
-        speed: Float,
-        composition: LottieComposition?,
-        clickAnimation: () -> Unit
-    ) {
-        val progress by animateLottieCompositionAsState(
-            composition,
-            iterations = LottieConstants.IterateForever,
-            isPlaying = isPlaying,
-            speed = speed,
-            restartOnPlay = false,
-        )
-        LottieAnimation(
-            composition, progress,
-            modifier = Modifier
-                .size(300.dp)
-                .clickable {
-                    clickAnimation()
-                },
-        )
+    private fun checkAlarm() {
+        routine?.let { routine ->
+            routine.idAlarm?.let { idAlarm ->
+                routineViewModel.updateCheckedByAlarmId(idAlarm)
+                alarmManagement.updateAlarm(
+                    this,
+                    routine,
+                    idAlarm
+                )
+            }
+        }
     }
 
     private fun setWakeupSetting() {
@@ -152,14 +164,13 @@ class WakeupActivity : ComponentActivity() {
             setTurnScreenOn(true)
         } else {
             window.addFlags(
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON or
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
             )
         }
 
         with(getSystemService(KEYGUARD_SERVICE) as KeyguardManager) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                requestDismissKeyguard(this@WakeupActivity, null)
-            }
+            requestDismissKeyguard(this@WakeupActivity, null)
         }
     }
 }

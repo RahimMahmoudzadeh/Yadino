@@ -26,6 +26,9 @@ class MainViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             launch {
+                dataTimeRepository.calculateToday()
+            }
+            launch {
                 dataTimeRepository.addTime()
             }
             launch {
