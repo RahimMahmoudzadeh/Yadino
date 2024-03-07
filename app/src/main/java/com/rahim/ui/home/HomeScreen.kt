@@ -116,9 +116,8 @@ fun HomeScreen(
                                     if (searchText.isEmpty()) it else searchItems,
                                     { checkedRoutine ->
                                         viewModel.updateRoutine(checkedRoutine)
-                                        alarmManagement.updateAlarm(
+                                        alarmManagement.cancelAlarm(
                                             context,
-                                            checkedRoutine,
                                             checkedRoutine.idAlarm ?: checkedRoutine.id?.toLong()
                                         )
                                     },

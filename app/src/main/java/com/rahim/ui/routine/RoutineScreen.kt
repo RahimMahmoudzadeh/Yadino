@@ -181,9 +181,8 @@ fun RoutineScreen(
                 },
                 routineChecked = {
                     viewModel.updateRoutine(it)
-                    alarmManagement.updateAlarm(
+                    alarmManagement.cancelAlarm(
                         context,
-                        it,
                         it.idAlarm ?: it.id?.toLong()
                     )
                 },
