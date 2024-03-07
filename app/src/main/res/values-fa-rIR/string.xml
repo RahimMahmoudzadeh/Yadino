@@ -74,6 +74,7 @@
     <string name="issue">موضوع یادداشت خود را بنویسید</string>
     <string name="issue_explanation">توضیح برای یادداشت خود بنویسید</string>
     <string name="routine_explanation">توضیح برای روتین خود بنویسید</string>
+    <string name="explanation">: توضیحات</string>
     <string name="not_routine">!شما هنوز روتینی ثبت نکردید</string>
     <string name="list_routine">لیست روتین</string>
     <string name="length_textFiled_name_routine">نام انتخابی باید حداکثر 22 کاراکتر باشد!</string>
@@ -92,4 +93,8 @@
     <string name="install">نصب</string>
     <string name="update_app_version">لطفا برای ادامه نسخه اپ خود را بروزرسانی کنید. </string>
     <string name="download">دانلود</string>
+    <string name="not_removed_checked_routine">روتین پایان یافته را نمی توان حذف کرد!</string>
+    <string name="not_update_checked_routine">روتین پایان یافته را نمی توان ویرایش کرد!</string>
+    <string name="not_removed_checked_note">یادداشت پایان یافته را نمی توان حذف کرد!</string>
+    <string name="not_update_checked_note">یادداشت پایان یافته را نمی توان ویرایش کرد!</string>
 </resources>

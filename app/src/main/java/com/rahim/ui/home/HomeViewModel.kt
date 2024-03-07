@@ -66,6 +66,8 @@ class HomeViewModel @Inject constructor(
     fun addRoutine(routine: Routine) {
         viewModelScope.launch {
             routineRepository.addRoutine(routine).catch {}.collect {
+                Timber.tag("routineAdd")
+                    .d("view model ->${if (it is Resource.Success) "success" else if (it is Resource.Error) "fail" else "loading"}")
                 _addRoutine.value = it
             }
         }

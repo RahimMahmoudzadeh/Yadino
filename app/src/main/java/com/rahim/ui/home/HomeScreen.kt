@@ -1,5 +1,6 @@
 package com.rahim.ui.home
 
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -35,6 +36,7 @@ import com.rahim.utils.base.view.ShowStatusBar
 import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -114,19 +116,34 @@ fun HomeScreen(
                                     if (searchText.isEmpty()) it else searchItems,
                                     { checkedRoutine ->
                                         viewModel.updateRoutine(checkedRoutine)
-                                        alarmManagement.updateAlarm(
+                                        alarmManagement.cancelAlarm(
                                             context,
-                                            checkedRoutine,
-                                            checkedRoutine.idAlarm?:checkedRoutine.id?.toLong()
+                                            checkedRoutine.idAlarm ?: checkedRoutine.id?.toLong()
                                         )
                                     },
                                     { routineUpdate ->
+                                        if (routineUpdate.isChecked) {
+                                            Toast.makeText(
+                                                context,
+                                                R.string.not_update_checked_routine,
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                            return@ItemsHome
+                                        }
                                         if (routineUpdate.isSample)
                                             viewModel.showSampleRoutine(true)
 
                                         routineUpdateDialog.value = routineUpdate
                                     },
                                     { deleteRoutine ->
+                                        if (deleteRoutine.isChecked) {
+                                            Toast.makeText(
+                                                context,
+                                                R.string.not_removed_checked_routine,
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                            return@ItemsHome
+                                        }
                                         if (deleteRoutine.isSample)
                                             viewModel.showSampleRoutine(true)
 
@@ -138,9 +155,7 @@ fun HomeScreen(
                 }
             }
 
-            is Resource.Error -> {
-
-            }
+            is Resource.Error -> {}
         }
 
     }
@@ -166,8 +181,8 @@ fun HomeScreen(
         )
     }
     DialogAddRoutine(
-        isOpen = onClickAdd || routineUpdateDialog.value != null,
         isShowDay = false,
+        isOpen = onClickAdd || routineUpdateDialog.value != null,
         openDialog = {
             isOpenDialog(it)
             routineUpdateDialog.value = null
@@ -185,14 +200,18 @@ fun HomeScreen(
                 )
                 routineUpdateDialog.value = null
             } else {
-                routineForAdd.value = routine
-                viewModel.addRoutine(routine)
+                coroutineScope.launch {
+                    viewModel.addRoutine(routine)
+                    delay(200)
+                    routineForAdd.value = routine
+                }
             }
         },
         currentNumberDay = currentDay,
         currentNumberMonth = currentMonth,
         currentNumberYer = currentYer
     )
+
     if (routineForAdd.value != null)
         ProcessRoutineAdded(addRoutine, context) {
             if (!it) {

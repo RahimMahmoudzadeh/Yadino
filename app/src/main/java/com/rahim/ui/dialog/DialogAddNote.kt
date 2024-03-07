@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.*
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -56,7 +57,7 @@ fun DialogAddNote(
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         if (isOpen) {
-            AlertDialog(properties = DialogProperties(
+            BasicAlertDialog(properties = DialogProperties(
                 usePlatformDefaultWidth = false,
                 dismissOnClickOutside = false
             ),

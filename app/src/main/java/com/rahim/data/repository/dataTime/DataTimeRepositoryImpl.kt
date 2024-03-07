@@ -29,19 +29,13 @@ class DataTimeRepositoryImpl @Inject constructor(
     private val currentTimeMonth = persianData.shMonth
     private val currentTimeYer = persianData.shYear
 
-    init {
-        CoroutineScope(ioDispatcher).launch {
-            calculateToday()
-        }
-    }
-
     override suspend fun addTime() {
         if (!timeDao.getAllTime().isNullOrEmpty())
             return
         appDatabase.timeDataDao().insertAllTime(calculateDate())
     }
 
-    private suspend fun calculateToday() {
+    override suspend fun calculateToday() {
         val times = timeDao.getAllTime()
         val today = timeDao.getToday()
 

@@ -1,6 +1,7 @@
 package com.rahim.ui.dialog
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -42,6 +43,7 @@ import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import saman.zamani.persiandate.PersianDate
+import timber.log.Timber
 import java.time.LocalTime
 import java.util.*
 
@@ -67,19 +69,16 @@ fun DialogAddRoutine(
     val checkedStateAllDay = remember { mutableStateOf(false) }
     val isErrorName = remember { mutableStateOf(false) }
     val isErrorExplanation = remember { mutableStateOf(false) }
-    val time = rememberSaveable { mutableStateOf("12:00") }
+    var time by rememberSaveable { mutableStateOf("12:00") }
     val alarmDialogState = rememberMaterialDialogState()
     val persianData = PersianDate()
     val date=persianData.initJalaliDate(currentNumberYer,currentNumberMonth,currentNumberDay)
-
-    if (routineUpdate != null) {
-        routineName = routineUpdate.name
-        time.value = routineUpdate.timeHours.toString()
-        routineUpdate.explanation?.let {
-            routineExplanation = it
-        }
-    }
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
+    if (routineUpdate!=null){
+        routineName=routineUpdate.name
+        routineExplanation=routineUpdate.explanation?:""
+        time=routineUpdate.timeHours?:"12:00"
+    }
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         if (!isOpen) {
@@ -87,10 +86,10 @@ fun DialogAddRoutine(
             routineExplanation = ""
             isErrorName.value = false
             isErrorExplanation.value = false
-            time.value = "12:00"
+            time = "12:00"
             return@CompositionLocalProvider
         }
-        AlertDialog(properties = DialogProperties(
+        BasicAlertDialog(properties = DialogProperties(
             usePlatformDefaultWidth = false, dismissOnClickOutside = false
         ), modifier = modifier
             .fillMaxWidth()
@@ -149,6 +148,7 @@ fun DialogAddRoutine(
                             unfocusedContainerColor = MaterialTheme.colorScheme.background
                         )
                     )
+
                     if (isErrorName.value) {
                         Text(
                             modifier = Modifier.padding(start = 16.dp),
@@ -262,7 +262,7 @@ fun DialogAddRoutine(
                                 end = if (isShowDay) 15.dp else 0.dp
                             )
                     ) {
-                        Row() {
+                        Row{
                             Text(
                                 modifier = Modifier.padding(top = 14.dp),
                                 text = stringResource(id = R.string.set_alarms),
@@ -270,7 +270,7 @@ fun DialogAddRoutine(
                             )
                             Text(
                                 modifier = Modifier.padding(top = 14.dp, start = 4.dp),
-                                text = time.value,
+                                text = time,
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -317,15 +317,19 @@ fun DialogAddRoutine(
                     ) {
                         DialogButtonBackground(text = stringResource(id = R.string.confirmation),
                             gradient = Brush.verticalGradient(gradientColors),
-                            modifier = Modifier.fillMaxWidth(0.3f).height(40.dp),
+                            modifier = Modifier
+                                .fillMaxWidth(0.3f)
+                                .height(40.dp),
                             textSize = 14.sp,
                             onClick = {
+                                Timber.tag("tagNameRoutine").d(routineName.length.toString())
+
                                 if (routineName.isEmpty()) {
                                     isErrorName.value = true
                                 } else {
                                     routine(routineUpdate?.apply {
                                         name = routineName
-                                        timeHours = time.value
+                                        timeHours = time
                                         explanation = routineExplanation
                                         dayName=persianData.dayName(date)
                                     } ?: Routine(
@@ -335,18 +339,13 @@ fun DialogAddRoutine(
                                         currentNumberDay,
                                         currentNumberMonth,
                                         currentNumberYer,
-                                        time.value,
+                                        time,
                                         explanation = routineExplanation,
                                     ))
                                 }
                             })
                         Spacer(modifier = Modifier.width(10.dp))
                         TextButton(onClick = {
-                            routineName = ""
-                            routineExplanation = ""
-                            time.value = "12:00"
-                            isErrorName.value = false
-                            isErrorExplanation.value = false
                             openDialog(false)
                         }) {
                             Text(
@@ -364,8 +363,8 @@ fun DialogAddRoutine(
             }
         }
     }
-    ShowTimePicker(time.value, alarmDialogState) {
-        time.value =
+    ShowTimePicker(time, alarmDialogState) {
+        time =
             it.hour.toString() + ":" + if (it.minute.toString().length == 1) "0" + it.minute else it.minute
     }
 }

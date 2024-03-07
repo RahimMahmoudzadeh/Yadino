@@ -70,6 +70,11 @@ class RoutineViewModel @Inject constructor(
         }
     }
 
+    fun updateCheckedByAlarmId(id:Long){
+        viewModelScope.launch {
+            routineRepository.updateCheckedByAlarmId(id)
+        }
+    }
     fun addRoutine(routine: Routine) {
         viewModelScope.launch {
             routineRepository.addRoutine(routine).catch {}.collect {

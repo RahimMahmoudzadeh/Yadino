@@ -1,5 +1,6 @@
 package com.rahim.ui.note
 
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -21,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -60,6 +62,7 @@ fun NoteScreen(
     var searchText by rememberSaveable { mutableStateOf("") }
     var clickSearch by rememberSaveable { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     val currentYer = viewModel.currentYer
     val currentMonth = viewModel.currentMonth
@@ -132,11 +135,19 @@ fun NoteScreen(
                                     viewModel.updateNote(it)
                                 },
                                 updateNote = {
+                                    if (it.isChecked){
+                                        Toast.makeText(context, R.string.not_update_checked_note, Toast.LENGTH_SHORT).show()
+                                        return@ItemsNote
+                                    }
                                     if (it.isSample) viewModel.showSampleNote(true)
 
                                     noteUpdateDialog.value = it
                                 },
                                 deleteNote = {
+                                    if (it.isChecked){
+                                        Toast.makeText(context, R.string.not_removed_checked_note, Toast.LENGTH_SHORT).show()
+                                        return@ItemsNote
+                                    }
                                     if (it.isSample) viewModel.showSampleNote(true)
 
                                     noteDeleteDialog.value = it

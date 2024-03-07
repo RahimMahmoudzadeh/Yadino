@@ -1,6 +1,7 @@
 package com.rahim.ui.routine
 
 
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Icon
@@ -57,6 +59,7 @@ import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -79,7 +82,6 @@ fun RoutineScreen(
             emptyList()
         )
     )
-    val currentNameDay by viewModel.flowNameDay.collectAsStateWithLifecycle()
     val monthDay by viewModel.getCurrentMonthDay(currentMonth, currentYer)
         .collectAsStateWithLifecycle(initialValue = emptyList())
 
@@ -91,11 +93,6 @@ fun RoutineScreen(
     var index by rememberSaveable { mutableStateOf(0) }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-    val currentIndex by remember {
-        derivedStateOf {
-            listState.firstVisibleItemIndex
-        }
-    }
     var searchText by rememberSaveable { mutableStateOf("") }
     var clickSearch by rememberSaveable { mutableStateOf(false) }
 
@@ -126,7 +123,7 @@ fun RoutineScreen(
             ) {
             if (!routines.data.isNullOrEmpty()) {
                 ShowSearchBar(clickSearch = clickSearch, searchText = searchText) { search ->
-                    searchText=search
+                    searchText = search
                     coroutineScope.launch(Dispatchers.IO) {
                         if (search.isNotEmpty()) {
                             routines.data?.filter {
@@ -156,14 +153,12 @@ fun RoutineScreen(
                     )
                     viewModel.getRoutines(currentMonth, it.toInt(), currentYer)
                 },
-                currentIndex = currentIndex,
                 indexScroll = {
                     if (it != monthDay.size) {
                         index = it
                         coroutineScope.launch {
                             listState.animateScrollToItem(index)
                         }
-
                     }
                 })
             GetRoutines(
@@ -171,6 +166,14 @@ fun RoutineScreen(
                 searchItems,
                 searchText,
                 routineUpdateDialog = {
+                    if (it.isChecked) {
+                        Toast.makeText(
+                            context,
+                            R.string.not_update_checked_routine,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@GetRoutines
+                    }
                     if (it.isSample)
                         viewModel.showSampleRoutine(true)
 
@@ -178,13 +181,20 @@ fun RoutineScreen(
                 },
                 routineChecked = {
                     viewModel.updateRoutine(it)
-                    alarmManagement.updateAlarm(
+                    alarmManagement.cancelAlarm(
                         context,
-                        it,
-                        it.idAlarm?:it.id?.toLong()
+                        it.idAlarm ?: it.id?.toLong()
                     )
                 },
                 routineDeleteDialog = {
+                    if (it.isChecked) {
+                        Toast.makeText(
+                            context,
+                            R.string.not_removed_checked_routine,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@GetRoutines
+                    }
                     if (it.isSample)
                         viewModel.showSampleRoutine(true)
 
@@ -213,8 +223,8 @@ fun RoutineScreen(
         )
     }
     DialogAddRoutine(
-        isOpen = onClickAdd || routineUpdateDialog.value != null,
         isShowDay = false,
+        isOpen = onClickAdd || routineUpdateDialog.value != null,
         openDialog = {
             routineUpdateDialog.value = null
             routineForAdd.value = null
@@ -227,11 +237,14 @@ fun RoutineScreen(
                 alarmManagement.updateAlarm(
                     context,
                     routine,
-                    routine.idAlarm?:routine.id?.toLong()
+                    routine.idAlarm ?: routine.id?.toLong()
                 )
             } else {
-                routineForAdd.value = routine
-                viewModel.addRoutine(routine)
+                coroutineScope.launch {
+                    viewModel.addRoutine(routine)
+                    delay(200)
+                    routineForAdd.value = routine
+                }
             }
             routineUpdateDialog.value = null
         },
@@ -239,6 +252,7 @@ fun RoutineScreen(
         currentNumberMonth = currentMonth,
         currentNumberYer = currentYer
     )
+
     if (routineForAdd.value != null)
         ProcessRoutineAdded(addRoutine, context) {
             if (!it) {
@@ -276,19 +290,6 @@ fun checkDay(
         }
     }
 }
-
-private fun calculateCurrentIndex(currentIndex: Int, previousIndex: Int): Int {
-    return if (currentIndex > previousIndex) {
-        previousIndex + 7
-    } else {
-        if (previousIndex - 7 < 0) {
-            previousIndex
-        } else {
-            previousIndex - 7
-        }
-    }
-}
-
 
 private fun calculateIndex(currentDay: String, index: Int, monthDay: List<TimeData>): Int {
     var currentIndex = index
@@ -397,7 +398,6 @@ private fun ItemTimeDate(
     currentYer: String,
     listState: LazyListState,
     index: Int,
-    currentIndex: Int,
     dayCheckedNumber: (String) -> Unit,
     indexScroll: (Int) -> Unit,
 ) {
@@ -413,7 +413,7 @@ private fun ItemTimeDate(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            modifier = Modifier.padding(start = 13.dp),
+            modifier = Modifier.padding(start = 11.dp),
             fontSize = 14.sp,
             text = HalfWeekName.FRIDAY.nameDay,
             color = MaterialTheme.colorScheme.primary
@@ -451,7 +451,7 @@ private fun ItemTimeDate(
         )
     }
 
-    Row() {
+    Row(Modifier.padding(top = 12.dp)) {
         IconButton(modifier = Modifier.padding(top = 10.dp), onClick = {
             indexScroll(
                 if (monthDay.size <= index + 7) {
@@ -470,23 +470,23 @@ private fun ItemTimeDate(
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
 
             LazyRow(
+                userScrollEnabled = false,
                 modifier = Modifier
                     .weight(1f)
                     .padding(top = 6.dp),
                 state = listState,
                 flingBehavior = rememberSnapperFlingBehavior(
                     lazyListState = listState,
-                    snapIndex = { _, start, targetIndex ->
-                        indexScroll(calculateCurrentIndex(currentIndex, index))
-                        index
-                    }),
+                ),
             ) {
                 items(items = monthDay, itemContent = {
-                    DayItems(it, dayChecked, dayCheckedNumber = { dayCheckedNumber(it) })
+                    DayItems(it, dayChecked, dayCheckedNumber = {
+                        dayCheckedNumber(it)
+                    })
                 })
             }
         }
-        IconButton(modifier = Modifier.padding(top = 10.dp, start = 0.dp), onClick = {
+        IconButton(modifier = Modifier.padding(top = 10.dp), onClick = {
             indexScroll(
                 if (index <= 6) {
                     0
@@ -536,12 +536,11 @@ private fun DayItems(
     dayChecked: String,
     dayCheckedNumber: (String) -> Unit,
 ) {
-    Box(
+    ClickableText(
         modifier = Modifier
             .padding(
-                top = 12.dp, end = 9.dp
+                top = 10.dp, start = 10.dp
             )
-            .size(34.dp)
             .clip(CircleShape)
             .background(
                 brush = if (dayChecked == timeData.dayNumber.toString()) {
@@ -550,24 +549,27 @@ private fun DayItems(
                     )
                 } else Brush.horizontalGradient(
                     listOf(
-                        MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.background
+                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.background
                     )
                 )
             )
-    ) {
-        ClickableText(
-            modifier = Modifier.padding(
-                top = 4.dp, start = if (dayChecked.length == 1) 12.dp else 8.dp
+            .padding(
+                end = 12.dp,
+                start = 14.dp,
+                top = 10.dp,
+                bottom = 10.dp
             ),
-            onClick = { dayCheckedNumber(timeData.dayNumber.toString()) },
-            text = AnnotatedString(if (timeData.dayNumber != 0) timeData.dayNumber.toString() else ""),
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = if (dayChecked == timeData.dayNumber.toString()) (Color.White) else MaterialTheme.colorScheme.primary
-            )
+        onClick = {
+            dayCheckedNumber(timeData.dayNumber.toString())
+        },
+        text = AnnotatedString(if (timeData.dayNumber != 0) timeData.dayNumber.toString() else ""),
+        style = TextStyle(
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = if (dayChecked == timeData.dayNumber.toString()) (Color.White) else MaterialTheme.colorScheme.primary
         )
-    }
+    )
 }
 
 private fun checkToday(timeData: List<TimeData>, dayChecked: (String) -> Unit) {

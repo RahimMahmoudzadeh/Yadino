@@ -3,6 +3,7 @@ package com.rahim.data.alarm
 import android.content.Context
 import android.media.Ringtone
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Vibrator
 
 interface AlarmSong {
@@ -21,6 +22,7 @@ interface AlarmSong {
 //
 //    // play ringtone
 //    ringtone.play()
+//    fun playRingtone(context:Context,alarmId: Long?,ringUri: Uri?)
     fun playRingtone(context:Context,alarmId: Long?)
     fun stopRingtone(ringtone: Ringtone?,context:Context,alarmId: Long?)
 }
