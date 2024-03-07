@@ -1,17 +1,17 @@
 [versions]
 ksp = "1.9.22-1.0.17"
 androidx-core = "1.12.0"
-compose-bom = "2024.01.00"
+compose-bom = "2024.02.01"
 activity-compose = "1.8.2"
 androidx-lifecycle = "2.7.0"
 androidx-room = "2.6.1"
 hilt = "2.49"
-hilt_navigation_compose = "1.1.0"
-androidx-navigation = "2.7.6"
+hilt_navigation_compose = "1.2.0"
+androidx-navigation = "2.7.7"
 timber = "5.0.1"
-firebaseBom = "32.7.1"
+firebaseBom = "32.7.3"
 samanzamani = "1.5.4"
-nav-version = '2.7.6'
+nav-version = '2.7.7'
 datetime = "0.9.0"
 swipe = "1.2.0"
 accompanist_pager = "0.25.1"
@@ -20,12 +20,15 @@ accompanist_permissions = '0.34.0'
 lottie_compose = "6.1.0"
 junit = "4.13.2"
 junit-test = "3.5.1"
+androidx-ext-junit = "1.1.5"
 espresso_core = "3.5.1"
-agp = "8.2.2"
+agp = "8.3.0"
 kotlin = "1.9.22"
-google-services = "4.4.0"
+google-services = "4.4.1"
 firebase-crashlytics-plugin="2.9.9"
-material3Android = "1.2.0-rc01"
+material3Android = "1.2.1"
+compose-compiler="1.5.8"
+compose-vewrsion="1.6.3"
 
 [libraries]
 #core
@@ -90,9 +93,9 @@ accompanist-systemuicontroller = { group = "com.google.accompanist", name = "acc
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 #test
-androidx-test-ext = { group = "androidx.test.ext", name = "junit", version.ref = "junit-test" }
+androidx-test-ext = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-ext-junit" }
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso_core" }
-androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "espresso_core" }
+androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose-vewrsion" }
 
 [bundles]
 compose = ["androidx-compose-activity", "androidx-material3-android", "lifecycle-runtime-compose",
@@ -115,3 +118,4 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 com-android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize",  version.ref = "kotlin"  }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics",  version.ref = "firebase-crashlytics-plugin"  }
+androidx-room = { id = "androidx.room", version.ref = "androidx-room" }

@@ -8,5 +8,6 @@ plugins {
         alias(hilt.plugin) apply false
         alias(ksp) apply false
         alias(kotlin.parcelize) apply false
+        alias(androidx.room) apply false
     }
 }

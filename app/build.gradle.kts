@@ -10,7 +10,11 @@ plugins {
         alias(kotlin.parcelize)
         alias(google.services)
         alias(firebase.crashlytics)
+        alias(androidx.room)
     }
+}
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 android {
@@ -44,9 +48,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
-        }
-        ksp {
-            arg(RoomSchemaArgProvider(File(projectDir, "schemas")))
         }
     }
 
@@ -85,7 +86,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
     packagingOptions {
         resources {
