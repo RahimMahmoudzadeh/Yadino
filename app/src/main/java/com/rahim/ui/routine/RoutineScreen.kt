@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Icon
@@ -93,6 +92,11 @@ fun RoutineScreen(
     var index by rememberSaveable { mutableStateOf(0) }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val currentIndex by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex
+        }
+    }
     var searchText by rememberSaveable { mutableStateOf("") }
     var clickSearch by rememberSaveable { mutableStateOf(false) }
 
@@ -153,6 +157,7 @@ fun RoutineScreen(
                     )
                     viewModel.getRoutines(currentMonth, it.toInt(), currentYer)
                 },
+                currentIndex = currentIndex,
                 indexScroll = {
                     if (it != monthDay.size) {
                         index = it
@@ -291,6 +296,19 @@ fun checkDay(
     }
 }
 
+private fun calculateCurrentIndex(currentIndex: Int, previousIndex: Int): Int {
+    return if (currentIndex > previousIndex) {
+        previousIndex + 7
+    } else {
+        if (previousIndex - 7 < 0) {
+            previousIndex
+        } else {
+            previousIndex - 7
+        }
+    }
+}
+
+
 private fun calculateIndex(currentDay: String, index: Int, monthDay: List<TimeData>): Int {
     var currentIndex = index
     var currentIndexPlus = currentIndex + 7
@@ -398,6 +416,7 @@ private fun ItemTimeDate(
     currentYer: String,
     listState: LazyListState,
     index: Int,
+    currentIndex: Int,
     dayCheckedNumber: (String) -> Unit,
     indexScroll: (Int) -> Unit,
 ) {
@@ -413,7 +432,7 @@ private fun ItemTimeDate(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            modifier = Modifier.padding(start = 11.dp),
+            modifier = Modifier.padding(start = 13.dp),
             fontSize = 14.sp,
             text = HalfWeekName.FRIDAY.nameDay,
             color = MaterialTheme.colorScheme.primary
@@ -451,7 +470,7 @@ private fun ItemTimeDate(
         )
     }
 
-    Row(Modifier.padding(top = 12.dp)) {
+    Row() {
         IconButton(modifier = Modifier.padding(top = 10.dp), onClick = {
             indexScroll(
                 if (monthDay.size <= index + 7) {
@@ -470,23 +489,23 @@ private fun ItemTimeDate(
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
 
             LazyRow(
-                userScrollEnabled = false,
                 modifier = Modifier
                     .weight(1f)
                     .padding(top = 6.dp),
                 state = listState,
                 flingBehavior = rememberSnapperFlingBehavior(
                     lazyListState = listState,
-                ),
+                    snapIndex = { _, start, targetIndex ->
+                        indexScroll(calculateCurrentIndex(currentIndex, index))
+                        index
+                    }),
             ) {
                 items(items = monthDay, itemContent = {
-                    DayItems(it, dayChecked, dayCheckedNumber = {
-                        dayCheckedNumber(it)
-                    })
+                    DayItems(it, dayChecked, dayCheckedNumber = { dayCheckedNumber(it) })
                 })
             }
         }
-        IconButton(modifier = Modifier.padding(top = 10.dp), onClick = {
+        IconButton(modifier = Modifier.padding(top = 10.dp, start = 0.dp), onClick = {
             indexScroll(
                 if (index <= 6) {
                     0
@@ -536,11 +555,12 @@ private fun DayItems(
     dayChecked: String,
     dayCheckedNumber: (String) -> Unit,
 ) {
-    ClickableText(
+    Box(
         modifier = Modifier
             .padding(
-                top = 10.dp, start = 10.dp
+                top = 12.dp, end = 9.dp
             )
+            .size(34.dp)
             .clip(CircleShape)
             .background(
                 brush = if (dayChecked == timeData.dayNumber.toString()) {
@@ -549,27 +569,24 @@ private fun DayItems(
                     )
                 } else Brush.horizontalGradient(
                     listOf(
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.background
+                        MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.background
                     )
                 )
             )
-            .padding(
-                end = 12.dp,
-                start = 14.dp,
-                top = 10.dp,
-                bottom = 10.dp
+    ) {
+        ClickableText(
+            modifier = Modifier.padding(
+                top = 4.dp, start = if (dayChecked.length == 1) 12.dp else 8.dp
             ),
-        onClick = {
-            dayCheckedNumber(timeData.dayNumber.toString())
-        },
-        text = AnnotatedString(if (timeData.dayNumber != 0) timeData.dayNumber.toString() else ""),
-        style = TextStyle(
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            color = if (dayChecked == timeData.dayNumber.toString()) (Color.White) else MaterialTheme.colorScheme.primary
+            onClick = { dayCheckedNumber(timeData.dayNumber.toString()) },
+            text = AnnotatedString(if (timeData.dayNumber != 0) timeData.dayNumber.toString() else ""),
+            style = TextStyle(
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = if (dayChecked == timeData.dayNumber.toString()) (Color.White) else MaterialTheme.colorScheme.primary
+            )
         )
-    )
+    }
 }
 
 private fun checkToday(timeData: List<TimeData>, dayChecked: (String) -> Unit) {
