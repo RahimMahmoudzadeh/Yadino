@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
@@ -471,7 +472,7 @@ private fun ItemTimeDate(
     }
 
     Row() {
-        IconButton(modifier = Modifier.padding(top = 10.dp), onClick = {
+        IconButton(modifier = Modifier.padding(top = 6.dp), onClick = {
             indexScroll(
                 if (monthDay.size <= index + 7) {
                     monthDay.size
@@ -489,6 +490,7 @@ private fun ItemTimeDate(
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
 
             LazyRow(
+                userScrollEnabled = false,
                 modifier = Modifier
                     .weight(1f)
                     .padding(top = 6.dp),
@@ -505,7 +507,7 @@ private fun ItemTimeDate(
                 })
             }
         }
-        IconButton(modifier = Modifier.padding(top = 10.dp, start = 0.dp), onClick = {
+        IconButton(modifier = Modifier.padding(top = 6.dp), onClick = {
             indexScroll(
                 if (index <= 6) {
                     0
@@ -555,12 +557,15 @@ private fun DayItems(
     dayChecked: String,
     dayCheckedNumber: (String) -> Unit,
 ) {
-    Box(
+    val configuration = LocalConfiguration.current
+
+    val screenWidth = configuration.screenWidthDp
+    ClickableText(
         modifier = Modifier
             .padding(
-                top = 12.dp, end = 9.dp
+                top = 4.dp, start = if (dayChecked.length == 1) if (screenWidth<=420) 5.dp else 7.dp else 6.dp
             )
-            .size(34.dp)
+            .size(if (screenWidth<=400) 36.dp else if (screenWidth in 400..420) 39.dp else 43.dp)
             .clip(CircleShape)
             .background(
                 brush = if (dayChecked == timeData.dayNumber.toString()) {
@@ -573,20 +578,18 @@ private fun DayItems(
                     )
                 )
             )
-    ) {
-        ClickableText(
-            modifier = Modifier.padding(
-                top = 4.dp, start = if (dayChecked.length == 1) 12.dp else 8.dp
+            .padding(
+                top =  if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp
             ),
-            onClick = { dayCheckedNumber(timeData.dayNumber.toString()) },
-            text = AnnotatedString(if (timeData.dayNumber != 0) timeData.dayNumber.toString() else ""),
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = if (dayChecked == timeData.dayNumber.toString()) (Color.White) else MaterialTheme.colorScheme.primary
-            )
+        onClick = { dayCheckedNumber(timeData.dayNumber.toString()) },
+        text = AnnotatedString(if (timeData.dayNumber != 0) timeData.dayNumber.toString() else ""),
+        style = TextStyle(
+            fontSize = if (screenWidth <= 420) 16.sp else 18.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            color = if (dayChecked == timeData.dayNumber.toString()) (Color.White) else MaterialTheme.colorScheme.primary
         )
-    }
+    )
 }
 
 private fun checkToday(timeData: List<TimeData>, dayChecked: (String) -> Unit) {
