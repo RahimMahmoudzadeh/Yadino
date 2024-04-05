@@ -30,6 +30,32 @@ material3Android = "1.2.1"
 compose-compiler="1.5.8"
 compose-vewrsion="1.6.5"
 
+#target version
+project-target-sdk-version = "34"
+project-min-sdk-version = "26"
+
+#project version
+version-code = "111"
+version-name = "1.1.1"
+
+#gradle static
+project-application-id = "com.rahim"
+diimension = "rahim"
+cafe-bazaar = "cafeBazaar"
+myket = "myket"
+direct-download = "directDownload"
+yadion = ".yadino"
+host-name-w = "hostNameW"
+metrix-app-id = "metrixAppId"
+application-id-cafeBazaar-suffix = "-c"
+application-id-myket-suffix = "-m"
+schemas = "schemas"
+store-file-address = "storeFileAddress"
+store-password = "storePassword"
+key-alias = "keyAlias"
+key-password = "keyPassword"
+release = "release"
+
 [libraries]
 #core
 androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }

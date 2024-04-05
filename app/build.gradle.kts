@@ -14,19 +14,19 @@ plugins {
     }
 }
 room {
-    schemaDirectory("$projectDir/schemas")
+    schemaDirectory("$projectDir/${libs.versions.schemas.get()}")
 }
 
 android {
     val localProperties = Properties()
     localProperties.load(FileInputStream(File(rootProject.rootDir, "local.properties")))
     localProperties.run {
-        val storeFileAddress = getProperty("storeFileAddress")
-        val storePasswordProperties = getProperty("storePassword")
-        val keyAliasProperties = getProperty("keyAlias")
-        val keyPasswordProperties = getProperty("keyPassword")
+        val storeFileAddress = getProperty(libs.versions.store.file.address.get())
+        val storePasswordProperties = getProperty(libs.versions.store.password.get())
+        val keyAliasProperties = getProperty(libs.versions.key.alias.get())
+        val keyPasswordProperties = getProperty(libs.versions.key.password.get())
         signingConfigs {
-            create("release") {
+            create(libs.versions.release.get()) {
                 storeFile = file(storeFileAddress)
                 storePassword = storePasswordProperties
                 keyAlias = keyAliasProperties
@@ -35,15 +35,15 @@ android {
         }
     }
 
-    namespace = "com.rahim"
-    compileSdk = 34
+    namespace = libs.versions.project.application.id.get()
+    compileSdk = libs.versions.project.target.sdk.version.get().toInt()
 
     defaultConfig {
-        applicationId = "com.rahim"
-        minSdk = 26
-        targetSdk = 34
-        versionCode = 111
-        versionName = "1.1.1"
+        applicationId = libs.versions.project.application.id.get()
+        minSdk = libs.versions.project.min.sdk.version.get().toInt()
+        targetSdk = libs.versions.project.target.sdk.version.get().toInt()
+        versionCode = libs.versions.version.code.get().toInt()
+        versionName = libs.versions.version.name.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -62,17 +62,17 @@ android {
 //            signingConfig = signingConfigs.release
         }
     }
-    flavorDimensions += "rahim"
+    flavorDimensions += libs.versions.diimension.get()
     productFlavors {
-        create("cafeBazaar") {
-            dimension = "rahim"
-            applicationIdSuffix = ".yadino"
-            versionNameSuffix = "-c"
+        create(libs.versions.cafe.bazaar.get()) {
+            dimension = libs.versions.diimension.get()
+            applicationIdSuffix = libs.versions.yadion.get()
+            versionNameSuffix = libs.versions.application.id.cafeBazaar.suffix.get()
         }
-        create("myket") {
-            dimension = "rahim"
-            applicationIdSuffix = ".yadino"
-            versionNameSuffix = "-m"
+        create(libs.versions.myket.get()) {
+            dimension = libs.versions.diimension.get()
+            applicationIdSuffix = libs.versions.yadion.get()
+            versionNameSuffix = libs.versions.application.id.myket.suffix.get()
         }
     }
     compileOptions {
