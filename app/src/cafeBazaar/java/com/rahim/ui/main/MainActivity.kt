@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
@@ -28,11 +29,13 @@ import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.data.sharedPreferences.SharedPreferencesCustom
 import com.rahim.ui.navigation.NavGraph
 import com.rahim.ui.navigation.YadinoApp
+import com.rahim.ui.routine.RoutineViewModel
 import com.rahim.ui.theme.BalticSea
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.navigation.Screen
+import com.rahim.utils.resours.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -63,7 +66,6 @@ class MainActivity : ComponentActivity() {
             (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             val systemUiController = rememberSystemUiController()
             val useDarkIcons = !isSystemInDarkTheme()
-            var openDialog by rememberSaveable { mutableStateOf(StateOpenDialog(true, "")) }
             val notificationPermissionState =
                 rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
             val navController = rememberNavController()
@@ -87,17 +89,12 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Scaffold(
                             bottomBar = {
-                                YadinoApp(navController, screenItems) {
-                                    openDialog = it
-                                }
+                                YadinoApp(navController, screenItems)
                             }, containerColor = MaterialTheme.colorScheme.background
                         ) { innerPadding ->
                             NavGraph(
                                 navController,
-                                innerPadding = innerPadding,
-                                isClickButtonAdd = openDialog, isOpenDialog = {
-                                    openDialog = it
-                                }
+                                innerPadding = innerPadding
                             )
                             if (destination == Screen.Home.route)
                                 requestPermissionNotification(

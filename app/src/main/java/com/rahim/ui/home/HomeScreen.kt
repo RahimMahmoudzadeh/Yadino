@@ -1,11 +1,16 @@
 package com.rahim.ui.home
 
+import android.Manifest
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -13,6 +18,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -23,29 +30,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.rahim.R
 import com.rahim.data.alarm.AlarmManagement
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
+import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.base.view.ProcessRoutineAdded
 import com.rahim.utils.base.view.ShowSearchBar
 import com.rahim.utils.base.view.ShowStatusBar
 import com.rahim.utils.base.view.TopBarCenterAlign
+import com.rahim.utils.base.view.goSettingPermission
+import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
-    onClickAdd: Boolean,
-    isOpenDialog: (Boolean) -> Unit,
 ) {
     ShowStatusBar(true)
     val context = LocalContext.current
@@ -60,8 +70,13 @@ fun HomeScreen(
     val routineForAdd = rememberSaveable { mutableStateOf<Routine?>(null) }
     var searchText by rememberSaveable { mutableStateOf("") }
     var clickSearch by rememberSaveable { mutableStateOf(false) }
+    var openDialog by rememberSaveable { mutableStateOf(false) }
+    var errorClick by rememberSaveable { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-
+    val configuration = LocalConfiguration.current
+    val notificationPermissionState = rememberPermissionState(
+        Manifest.permission.POST_NOTIFICATIONS
+    )
     viewModel.getCurrentRoutines()
     val routines by viewModel.flowRoutines
         .collectAsStateWithLifecycle(initialValue = Resource.Success(emptyList()))
@@ -77,32 +92,34 @@ fun HomeScreen(
             )
         }, containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
-        when (routines) {
-            is Resource.Loading -> {}
-            is Resource.Success -> {
-                routines.data?.let {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = if (it.isEmpty()) Arrangement.Center else Arrangement.Top,
-                        modifier = Modifier
-                            .padding(paddingValues)
-                            .fillMaxSize()
-                    ) {
-                        if (it.isNotEmpty()) {
-                            ShowSearchBar(clickSearch, searchText = searchText) { search ->
-                                searchText = search
-                                coroutineScope.launch(Dispatchers.IO) {
-                                    if (search.isNotEmpty()) {
-                                        searchItems.clear()
-                                        searchItems.addAll(it.filter {
-                                            it.name.contains(searchText)
-                                        })
-                                    } else {
-                                        searchItems.clear()
-                                    }
-                                }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = if (routines.data?.isEmpty() == true) Arrangement.Center else Arrangement.Top,
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+        ) {
+            if (routines.data?.isNotEmpty() == true) {
+                ShowSearchBar(clickSearch, searchText = searchText) { search ->
+                    searchText = search
+                    coroutineScope.launch(Dispatchers.IO) {
+                        if (search.isNotEmpty()) {
+                            searchItems.clear()
+                            routines.data?.let {
+                                searchItems.addAll(it.filter {
+                                    it.name.contains(searchText)
+                                })
                             }
+                        } else {
+                            searchItems.clear()
                         }
+                    }
+                }
+            }
+            when (routines) {
+                is Resource.Loading -> {}
+                is Resource.Success -> {
+                    routines.data?.let {
                         if (it.isEmpty()) {
                             EmptyHome()
                         } else {
@@ -153,11 +170,33 @@ fun HomeScreen(
                         }
                     }
                 }
+
+                is Resource.Error -> {}
             }
-
-            is Resource.Error -> {}
         }
+        FloatingActionButton(
+            containerColor = CornflowerBlueLight,
+            contentColor = Color.White,
+            modifier = modifier
+                .padding(paddingValues)
+                .offset(
+                    x = (configuration.screenWidthDp.dp) - 70.dp,
+                    y = (configuration.screenHeightDp.dp) - 190.dp
+                ),
+            onClick = {
+                requestPermissionNotification(isGranted = {
+                    if (it)
+                        openDialog = true
+                    else
+                        errorClick = true
+                }, permissionState = {
+                    it.launchPermissionRequest()
+                }, notificationPermission = notificationPermissionState)
 
+            },
+        ) {
+            Icon(Icons.Filled.Add, "add item")
+        }
     }
     routineDeleteDialog.value?.let { routineFromDialog ->
         ErrorDialog(
@@ -182,9 +221,9 @@ fun HomeScreen(
     }
     DialogAddRoutine(
         isShowDay = false,
-        isOpen = onClickAdd || routineUpdateDialog.value != null,
+        isOpen = openDialog || routineUpdateDialog.value != null,
         openDialog = {
-            isOpenDialog(it)
+            openDialog = it
             routineUpdateDialog.value = null
             routineForAdd.value = null
         },
@@ -215,13 +254,26 @@ fun HomeScreen(
     if (routineForAdd.value != null)
         ProcessRoutineAdded(addRoutine, context) {
             if (!it) {
-                isOpenDialog(false)
+                openDialog = false
                 routineForAdd.value?.let {
                     alarmManagement.setAlarm(context, it)
                 }
                 routineForAdd.value = null
             }
         }
+    if (errorClick) {
+        ErrorDialog(
+            isOpen = true,
+            message = stringResource(id = R.string.better_performance_access),
+            okMessage = stringResource(id = R.string.setting),
+            isClickOk = {
+                if (it) {
+                    goSettingPermission(context)
+                }
+                errorClick = false
+            }
+        )
+    }
 }
 
 @Composable
