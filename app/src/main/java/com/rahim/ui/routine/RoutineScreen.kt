@@ -1,6 +1,7 @@
 package com.rahim.ui.routine
 
 
+import android.Manifest
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -11,9 +12,11 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -26,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
@@ -39,18 +43,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.rahim.R
 import com.rahim.data.alarm.AlarmManagement
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.data.TimeData
+import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
+import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.ProcessRoutineAdded
 import com.rahim.utils.base.view.ShowSearchBar
 import com.rahim.utils.base.view.TopBarCenterAlign
+import com.rahim.utils.base.view.goSettingPermission
 import com.rahim.utils.base.view.gradientColors
+import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.extention.calculateMonthName
 import com.rahim.utils.extention.calculateTimeFormat
@@ -61,13 +72,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun RoutineScreen(
     modifier: Modifier = Modifier,
-    viewModel: RoutineViewModel = hiltViewModel(),
-    onClickAdd: Boolean,
-    isOpenDialog: (Boolean) -> Unit,
+    viewModel: RoutineViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val alarmManagement = AlarmManagement()
@@ -88,15 +99,26 @@ fun RoutineScreen(
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineForAdd = rememberSaveable { mutableStateOf<Routine?>(null) }
-
+    var openDialog by rememberSaveable { mutableStateOf(false) }
+    var errorClick by rememberSaveable { mutableStateOf(false) }
     var dayChecked by rememberSaveable { mutableStateOf("0") }
+    var routineChecked by rememberSaveable { mutableStateOf<Routine?>(null) }
     var index by rememberSaveable { mutableStateOf(0) }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val currentIndex by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex
+        }
+    }
+    val notificationPermissionState = rememberPermissionState(
+        Manifest.permission.POST_NOTIFICATIONS
+    )
     var searchText by rememberSaveable { mutableStateOf("") }
     var clickSearch by rememberSaveable { mutableStateOf(false) }
 
     val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
+    val configuration = LocalConfiguration.current
 
 
     checkDay(monthDay, dayChecked, coroutineScope, listState, index, {
@@ -151,8 +173,12 @@ fun RoutineScreen(
                         String().calculateTimeFormat(currentYer, currentMonth, it),
                         YYYY_MM_DD
                     )
+                    Timber.tag("routineGetNameDay").d("getRoutines view monthNumber->$currentMonth")
+                    Timber.tag("routineGetNameDay").d("getRoutines view numberDay->$it")
+                    Timber.tag("routineGetNameDay").d("getRoutines view yerNumber->$currentYer")
                     viewModel.getRoutines(currentMonth, it.toInt(), currentYer)
                 },
+                currentIndex = currentIndex,
                 indexScroll = {
                     if (it != monthDay.size) {
                         index = it
@@ -201,6 +227,29 @@ fun RoutineScreen(
                     routineDeleteDialog.value = it
                 })
         }
+        FloatingActionButton(
+            containerColor = CornflowerBlueLight,
+            contentColor = Color.White,
+            modifier = modifier
+                .padding(padding)
+                .offset(
+                    x = (configuration.screenWidthDp.dp) - 70.dp,
+                    y = (configuration.screenHeightDp.dp) - 190.dp
+                ),
+            onClick = {
+                requestPermissionNotification(isGranted = {
+                    if (it)
+                        openDialog = true
+                    else
+                        errorClick = true
+                }, permissionState = {
+                    it.launchPermissionRequest()
+                }, notificationPermission = notificationPermissionState)
+
+            },
+        ) {
+            Icon(Icons.Filled.Add, "add item")
+        }
     }
     routineDeleteDialog.value?.let { routineFromDialog ->
         ErrorDialog(
@@ -224,11 +273,11 @@ fun RoutineScreen(
     }
     DialogAddRoutine(
         isShowDay = false,
-        isOpen = onClickAdd || routineUpdateDialog.value != null,
+        isOpen = openDialog || routineUpdateDialog.value != null,
         openDialog = {
             routineUpdateDialog.value = null
             routineForAdd.value = null
-            isOpenDialog(it)
+            openDialog = it
         },
         routineUpdate = routineUpdateDialog.value,
         routine = { routine ->
@@ -256,13 +305,26 @@ fun RoutineScreen(
     if (routineForAdd.value != null)
         ProcessRoutineAdded(addRoutine, context) {
             if (!it) {
-                isOpenDialog(false)
+                openDialog = false
                 routineForAdd.value?.let {
                     alarmManagement.setAlarm(context, it)
                 }
                 routineForAdd.value = null
             }
         }
+    if (errorClick) {
+        ErrorDialog(
+            isOpen = true,
+            message = stringResource(id = R.string.better_performance_access),
+            okMessage = stringResource(id = R.string.setting),
+            isClickOk = {
+                if (it) {
+                    goSettingPermission(context)
+                }
+                errorClick = false
+            }
+        )
+    }
 }
 
 fun checkDay(
@@ -290,6 +352,19 @@ fun checkDay(
         }
     }
 }
+
+private fun calculateCurrentIndex(currentIndex: Int, previousIndex: Int): Int {
+    return if (currentIndex > previousIndex) {
+        previousIndex + 7
+    } else {
+        if (previousIndex - 7 < 0) {
+            previousIndex
+        } else {
+            previousIndex - 7
+        }
+    }
+}
+
 
 private fun calculateIndex(currentDay: String, index: Int, monthDay: List<TimeData>): Int {
     var currentIndex = index
@@ -398,6 +473,7 @@ private fun ItemTimeDate(
     currentYer: String,
     listState: LazyListState,
     index: Int,
+    currentIndex: Int,
     dayCheckedNumber: (String) -> Unit,
     indexScroll: (Int) -> Unit,
 ) {
@@ -413,7 +489,7 @@ private fun ItemTimeDate(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            modifier = Modifier.padding(start = 11.dp),
+            modifier = Modifier.padding(start = 13.dp),
             fontSize = 14.sp,
             text = HalfWeekName.FRIDAY.nameDay,
             color = MaterialTheme.colorScheme.primary
@@ -451,8 +527,8 @@ private fun ItemTimeDate(
         )
     }
 
-    Row(Modifier.padding(top = 12.dp)) {
-        IconButton(modifier = Modifier.padding(top = 10.dp), onClick = {
+    Row() {
+        IconButton(modifier = Modifier.padding(top = 6.dp), onClick = {
             indexScroll(
                 if (monthDay.size <= index + 7) {
                     monthDay.size
@@ -477,16 +553,17 @@ private fun ItemTimeDate(
                 state = listState,
                 flingBehavior = rememberSnapperFlingBehavior(
                     lazyListState = listState,
-                ),
+                    snapIndex = { _, start, targetIndex ->
+                        indexScroll(calculateCurrentIndex(currentIndex, index))
+                        index
+                    }),
             ) {
                 items(items = monthDay, itemContent = {
-                    DayItems(it, dayChecked, dayCheckedNumber = {
-                        dayCheckedNumber(it)
-                    })
+                    DayItems(it, dayChecked, dayCheckedNumber = { dayCheckedNumber(it) })
                 })
             }
         }
-        IconButton(modifier = Modifier.padding(top = 10.dp), onClick = {
+        IconButton(modifier = Modifier.padding(top = 6.dp), onClick = {
             indexScroll(
                 if (index <= 6) {
                     0
@@ -536,11 +613,16 @@ private fun DayItems(
     dayChecked: String,
     dayCheckedNumber: (String) -> Unit,
 ) {
+    val configuration = LocalConfiguration.current
+
+    val screenWidth = configuration.screenWidthDp
     ClickableText(
         modifier = Modifier
             .padding(
-                top = 10.dp, start = 10.dp
+                top = 4.dp,
+                start = if (dayChecked.length == 1) if (screenWidth <= 420) 5.dp else 7.dp else 6.dp
             )
+            .size(if (screenWidth <= 400) 36.dp else if (screenWidth in 400..420) 39.dp else 43.dp)
             .clip(CircleShape)
             .background(
                 brush = if (dayChecked == timeData.dayNumber.toString()) {
@@ -549,24 +631,19 @@ private fun DayItems(
                     )
                 } else Brush.horizontalGradient(
                     listOf(
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.background
+                        MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.background
                     )
                 )
             )
             .padding(
-                end = 12.dp,
-                start = 14.dp,
-                top = 10.dp,
-                bottom = 10.dp
+                top = if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp
             ),
-        onClick = {
-            dayCheckedNumber(timeData.dayNumber.toString())
-        },
+        onClick = { dayCheckedNumber(timeData.dayNumber.toString()) },
         text = AnnotatedString(if (timeData.dayNumber != 0) timeData.dayNumber.toString() else ""),
         style = TextStyle(
-            fontSize = 16.sp,
+            fontSize = if (screenWidth <= 420) 16.sp else 18.sp,
             fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
             color = if (dayChecked == timeData.dayNumber.toString()) (Color.White) else MaterialTheme.colorScheme.primary
         )
     )

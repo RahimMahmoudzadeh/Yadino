@@ -26,13 +26,18 @@ import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
-private const val ROUTINE_LEFT_SAMPLE="من یک روتین تستی هستم لطفا من را به چپ بکشید"
-private const val ROUTINE_RIGHT_SAMPLE="من یک روتین تستی هستم لطفا من را به راست بکشید"
+
+private const val ROUTINE_LEFT_SAMPLE = "من یک روتین تستی هستم لطفا من را به چپ بکشید"
+private const val ROUTINE_RIGHT_SAMPLE = "من یک روتین تستی هستم لطفا من را به راست بکشید"
+
 class RoutineRepositoryImpl @Inject constructor(
     private val routineDao: RoutineDao,
     private val sharedPreferencesCustom: SharedPreferencesCustom,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RepositoryRoutine {
+    private var yerNumber = 0
+    private var numberDay = 0
+    private var monthNumber: Int = 0
     private val persianData = PersianDate()
     private val currentTimeDay = persianData.shDay
     private val currentTimeMonth = persianData.shMonth
@@ -49,8 +54,8 @@ class RoutineRepositoryImpl @Inject constructor(
         }
 
         if (sampleRoutines.isNotEmpty()) return
-        (0..1).forEachIndexed {index,it ->
-            val routine =  Routine(
+        (0..1).forEachIndexed { index, it ->
+            val routine = Routine(
                 "تست${index.plus(1)}",
                 0,
                 currentTimeDay.toString(),
@@ -59,7 +64,7 @@ class RoutineRepositoryImpl @Inject constructor(
                 currentTimeYer,
                 "12:00",
                 false,
-                explanation = if (index==1) ROUTINE_LEFT_SAMPLE else ROUTINE_RIGHT_SAMPLE,
+                explanation = if (index == 1) ROUTINE_LEFT_SAMPLE else ROUTINE_RIGHT_SAMPLE,
                 isSample = true,
                 idAlarm = index.plus(1).toLong()
             )
@@ -143,8 +148,12 @@ class RoutineRepositoryImpl @Inject constructor(
 
     override fun getRoutines(
         monthNumber: Int, numberDay: Int, yerNumber: Int
-    ): Flow<List<Routine>> =
-        routineDao.getRoutines(monthNumber, numberDay, yerNumber).distinctUntilChanged()
+    ): Flow<List<Routine>> {
+        Timber.tag("routineGetNameDay").d("getRoutines repo monthNumber->$monthNumber")
+        Timber.tag("routineGetNameDay").d("getRoutines repo numberDay->$numberDay")
+        Timber.tag("routineGetNameDay").d("getRoutines repo yerNumber->$yerNumber")
+        return routineDao.getRoutines(monthNumber, numberDay, yerNumber)
+    }
 
     override fun searchRoutine(
         name: String, monthNumber: Int?, dayNumber: Int?
@@ -155,7 +164,7 @@ class RoutineRepositoryImpl @Inject constructor(
         return routineDao.getRoutines(currentTimeMonth, currentTimeDay, currentTimeYer)
     }
 
-    override suspend fun updateCheckedByAlarmId(id:Long){
+    override suspend fun updateCheckedByAlarmId(id: Long) {
         routineDao.updateCheckedByAlarmId(id)
     }
 }

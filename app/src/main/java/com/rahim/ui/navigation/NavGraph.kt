@@ -31,34 +31,19 @@ fun NavGraph(
     navController: NavHostController = rememberNavController(),
     startDestination: String = if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) Screen.Splash.route else Screen.Welcome.route,
     innerPadding: PaddingValues,
-    isClickButtonAdd: StateOpenDialog,
-    isOpenDialog: (StateOpenDialog) -> Unit,
 ) {
     NavHost(navController, startDestination = startDestination, Modifier.padding(innerPadding)) {
         composable(Screen.Welcome.route) {
             WelcomeScreens(navController)
         }
         composable(Screen.Home.route) {
-            HomeScreen(
-                onClickAdd = if (isClickButtonAdd.destination == Screen.Home.route) isClickButtonAdd.isOpen else false,
-                isOpenDialog = {
-                    isOpenDialog(StateOpenDialog(it, Screen.Home.route))
-                })
+            HomeScreen()
         }
         composable(Screen.Routine.route) {
-            RoutineScreen(
-                onClickAdd = if (isClickButtonAdd.destination == Screen.Routine.route) isClickButtonAdd.isOpen else false,
-                isOpenDialog = {
-                    isOpenDialog(StateOpenDialog(it, Screen.Routine.route))
-                }
-            )
+            RoutineScreen()
         }
         composable(Screen.Note.route) {
-            NoteScreen(
-                onClickAdd = if (isClickButtonAdd.destination == Screen.Note.route) isClickButtonAdd.isOpen else false,
-                isOpenDialog = {
-                    isOpenDialog(StateOpenDialog(it, Screen.Note.route))
-                })
+            NoteScreen()
         }
         composable(Screen.Splash.route) {
             SplashScreen(navController = navController)

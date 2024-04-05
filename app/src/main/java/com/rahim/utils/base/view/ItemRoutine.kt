@@ -23,7 +23,6 @@ import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 import me.saket.swipe.rememberSwipeableActionsState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemRoutine(
     routine: Routine,
@@ -32,7 +31,6 @@ fun ItemRoutine(
     openDialogEdit: (Routine) -> Unit,
     openDialogDelete: (Routine) -> Unit,
 ) {
-    val checkBox = rememberSaveable { mutableStateOf(routine.isChecked) }
     val delete = SwipeAction(
         icon = painterResource(id = R.drawable.delete),
         background = MaterialTheme.colorScheme.background,
@@ -55,12 +53,11 @@ fun ItemRoutine(
     ) {
         Card(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-            border = if (checkBox.value) BorderStroke(1.dp, color = Porcelain) else BorderStroke(
+            border = if (routine.isChecked) BorderStroke(1.dp, color = Porcelain) else BorderStroke(
                 1.dp,
                 Brush.verticalGradient(gradientColors)
             ),
             onClick = {
-                checkBox.value = !routine.isChecked
                 onChecked(routine.apply {
                     isChecked = !isChecked
                 })
@@ -81,10 +78,9 @@ fun ItemRoutine(
                     modifier = Modifier.weight(0.3f)
                 ) {
                     Checkbox(
-                        checked = checkBox.value,
+                        checked = routine.isChecked,
                         onCheckedChange = {
                             onChecked(routine.apply {
-                                checkBox.value = it
                                 isChecked = it
                             })
                         },
