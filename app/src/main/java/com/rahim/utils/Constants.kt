@@ -27,8 +27,6 @@ object Constants {
     const val ALARM_MESSAGE = "alarm Message"
     const val ALARM_NAME = "alarm name"
     const val ALARM_ID = "alarmId"
-    const val ALARM_RING_URI = "alarm ring uri"
-    const val TITLE_TASK = "title task"
     const val ROUTINE = "routine"
 
     //Value

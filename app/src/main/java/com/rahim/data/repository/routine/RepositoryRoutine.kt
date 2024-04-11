@@ -24,4 +24,5 @@ interface RepositoryRoutine {
 
     suspend fun changeRoutineId()
     suspend fun updateCheckedByAlarmId(id:Long)
+    suspend fun checkEdAllRoutinePastTime()
 }

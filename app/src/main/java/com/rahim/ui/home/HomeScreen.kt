@@ -233,9 +233,7 @@ fun HomeScreen(
                 viewModel.updateRoutine(routine)
                 alarmManagement.updateAlarm(
                     context,
-                    routine,
-//                    if (idAlarms == null) routine.id?.toLong() else routine.idAlarm
-                    routine.idAlarm
+                    routine
                 )
                 routineUpdateDialog.value = null
             } else {

@@ -56,9 +56,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R){
-            mainViewModel
-        }
+        mainViewModel
         Timber.tag("packege").d(this.packageName)
         getTokenFirebase()
         setContent {
@@ -110,6 +108,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        mainViewModel.checkEdAllRoutinePastTime()
+    }
     private fun getTokenFirebase() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
         }

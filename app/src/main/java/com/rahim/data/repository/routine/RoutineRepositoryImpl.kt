@@ -1,28 +1,20 @@
 package com.rahim.data.repository.routine
 
 import com.rahim.data.db.dao.RoutineDao
-import com.rahim.data.db.database.AppDatabase
 import com.rahim.data.di.IODispatcher
 import com.rahim.data.modle.Rotin.Routine
-import com.rahim.data.repository.base.BaseRepository
 import com.rahim.data.sharedPreferences.SharedPreferencesCustom
 import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 import saman.zamani.persiandate.PersianDate
+import saman.zamani.persiandate.PersianDateFormat
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
@@ -35,9 +27,6 @@ class RoutineRepositoryImpl @Inject constructor(
     private val sharedPreferencesCustom: SharedPreferencesCustom,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RepositoryRoutine {
-    private var yerNumber = 0
-    private var numberDay = 0
-    private var monthNumber: Int = 0
     private val persianData = PersianDate()
     private val currentTimeDay = persianData.shDay
     private val currentTimeMonth = persianData.shMonth
@@ -45,6 +34,7 @@ class RoutineRepositoryImpl @Inject constructor(
 
     private val equalRoutineMessage = "روتین یکسان نمی توان ساخت!!"
     override suspend fun addSampleRoutine() {
+        delay(500)
         val sampleRoutines =
             routineDao.getSampleRoutines(currentTimeMonth, currentTimeDay, currentTimeYer)
         Timber.tag("sampleRoutines").d("sampleRoutines->$sampleRoutines")
@@ -66,7 +56,8 @@ class RoutineRepositoryImpl @Inject constructor(
                 false,
                 explanation = if (index == 1) ROUTINE_LEFT_SAMPLE else ROUTINE_RIGHT_SAMPLE,
                 isSample = true,
-                idAlarm = index.plus(1).toLong()
+                idAlarm = index.plus(1).toLong(),
+                timeInMillisecond = persianData.time
             )
             routineDao.addRoutine(routine)
         }
@@ -102,11 +93,35 @@ class RoutineRepositoryImpl @Inject constructor(
         return idNotNull
     }
 
+    override suspend fun checkEdAllRoutinePastTime() {
+        withContext(ioDispatcher){
+            val routines = routineDao.getRoutines().filter { it.timeInMillisecond != null }
+            val pastTimeRoutine = routines.filter {
+                (it.timeInMillisecond ?: 0) < System.currentTimeMillis() && !it.isSample
+            }
+            pastTimeRoutine.forEach {
+                routineDao.updateRoutine(it.apply {
+                    isChecked = true
+                })
+            }
+        }
+    }
+
     override suspend fun addRoutine(routine: Routine): Flow<Resource<Long>> = flow {
         emit(Resource.Loading())
+        val persianDateFormat = PersianDateFormat()
+        val monthDate =
+            if (routine.monthNumber.toString().length == 1) "0${routine.monthNumber.toString()}" else routine.monthNumber
+        val t =
+            "${routine.yerNumber}-${monthDate}-${routine.dayNumber} ${routine.timeHours}:00"
+        val persianDate = persianDateFormat.parse(
+            t,
+            "yyyy-MM-dd HH:mm:ss a"
+        )
         routine.apply {
-            idAlarm = setRoutineId(routineDao.getIdAlarmsSuspend())
+            idAlarm = getRoutineAlarmId()
             colorTask = 0
+            timeInMillisecond = persianDate.time
         }
         val routines = routineDao.getRoutines()
         val equalRoutine = routines.find {
@@ -121,7 +136,8 @@ class RoutineRepositoryImpl @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
-    private fun setRoutineId(idAlarms: List<Long>): Long {
+    private suspend fun getRoutineAlarmId(): Long {
+        val idAlarms = routineDao.getIdAlarmsSuspend()
         var idRandom = Random.nextInt(0, 10000000)
         var equalIdAlarm = idAlarms.find { it == idRandom.toLong() }
         while (equalIdAlarm != null) {

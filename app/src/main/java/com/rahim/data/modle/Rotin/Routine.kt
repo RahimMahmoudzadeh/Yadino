@@ -3,7 +3,7 @@ package com.rahim.data.modle.Rotin
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "tbl_routine")
 @Parcelize
@@ -20,5 +20,6 @@ data class Routine(
     var id: Int? = null,
     var explanation: String? = null,
     var isSample:Boolean = false,
-    var idAlarm:Long?=null
+    var idAlarm:Long?=null,
+    var timeInMillisecond:Long?=null
 ) : Parcelable

@@ -24,22 +24,13 @@ import com.rahim.data.broadcast.YadinoBroadCastReceiver
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.main.MainActivity
 import com.rahim.ui.wakeup.WakeupActivity
-import com.rahim.utils.Constants.ALARM_ID
-import com.rahim.utils.Constants.ALARM_RING_URI
 import com.rahim.utils.Constants.CHANNEL_ID
 import com.rahim.utils.Constants.ROUTINE
-import com.rahim.utils.Constants.TITLE_TASK
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.Random
 import javax.inject.Inject
 
 
 class NotificationManager @Inject constructor() : AlarmSong, Alarm {
-
     fun createNotification(textTitle: String, textContent: String, context: Context) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -71,9 +62,9 @@ class NotificationManager @Inject constructor() : AlarmSong, Alarm {
 
     fun createFullNotification(
         context: Context,
-        routine:Routine?
+        routine: Routine?
     ) {
-        routine?.let {routine->
+        routine?.let { routine ->
             val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {
                 addFlags(FLAG_ACTIVITY_MULTIPLE_TASK)
                 putExtra(ROUTINE, routine)
@@ -122,7 +113,7 @@ class NotificationManager @Inject constructor() : AlarmSong, Alarm {
         }.start()
     }
 
-    override fun cancelAlarm(context: Context,idAlarm:Long?) {
+    override fun cancelAlarm(context: Context, idAlarm: Long?) {
         val intent = Intent(context, YadinoBroadCastReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,

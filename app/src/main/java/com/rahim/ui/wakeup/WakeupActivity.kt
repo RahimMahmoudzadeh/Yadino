@@ -46,9 +46,6 @@ import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.routine.RoutineViewModel
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.Constants
-import com.rahim.utils.Constants.ALARM_ID
-import com.rahim.utils.Constants.ALARM_RING_URI
-import com.rahim.utils.Constants.TITLE_TASK
 import com.rahim.utils.base.view.gradientColors
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -56,9 +53,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class WakeupActivity : ComponentActivity() {
     private var routine: Routine? = null
-    private val alarmManagement = AlarmManagement()
 
-    private val routineViewModel: RoutineViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -136,25 +131,10 @@ class WakeupActivity : ComponentActivity() {
         getIntentResult()
     }
     private fun getIntentResult() {
-        Timber.tag("intentTitle").d(intent.extras?.getString(TITLE_TASK))
         routine = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(Constants.ROUTINE, Routine::class.java)
         } else {
             intent.getParcelableExtra(Constants.ROUTINE)
-        }
-        checkAlarm()
-    }
-
-    private fun checkAlarm() {
-        routine?.let { routine ->
-            routine.idAlarm?.let { idAlarm ->
-                routineViewModel.updateCheckedByAlarmId(idAlarm)
-                alarmManagement.updateAlarm(
-                    this,
-                    routine,
-                    idAlarm
-                )
-            }
         }
     }
 

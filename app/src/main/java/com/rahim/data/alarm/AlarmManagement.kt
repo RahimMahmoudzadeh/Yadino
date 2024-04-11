@@ -18,11 +18,10 @@ import timber.log.Timber
 import java.util.Calendar
 import kotlin.random.Random
 
-class AlarmManagement : CalculateDate, Alarm {
+class AlarmManagement : CalculateDate {
     fun updateAlarm(
         context: Context,
         routine: Routine,
-        alarmId: Long?,
     ) {
         val hours = calculateHours(routine.timeHours.toString())
         val minute = calculateMinute(routine.timeHours.toString())
@@ -37,12 +36,12 @@ class AlarmManagement : CalculateDate, Alarm {
         val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).let { intent ->
             intent.putExtra(ALARM_MESSAGE, message)
             intent.putExtra(ALARM_NAME, name)
-            intent.putExtra(ALARM_ID, alarmId)
+            intent.putExtra(ALARM_ID, routine.idAlarm)
         }
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            alarmId?.toInt()?:0,
+            routine.idAlarm?.toInt()?:0,
             alarmIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -116,7 +115,7 @@ class AlarmManagement : CalculateDate, Alarm {
         return calendar
     }
 
-    override fun cancelAlarm(context: Context, idAlarm: Long?) {
+    fun cancelAlarm(context: Context, idAlarm: Long?) {
         val intent = Intent(context, YadinoBroadCastReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,

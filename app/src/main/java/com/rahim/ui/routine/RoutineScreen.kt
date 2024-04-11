@@ -291,9 +291,7 @@ fun RoutineScreen(
                 viewModel.updateRoutine(routine)
                 alarmManagement.updateAlarm(
                     context,
-                    routine,
-                    routine.idAlarm ?: routine.id?.toLong()
-                )
+                    routine)
             } else {
                 coroutineScope.launch {
                     viewModel.addRoutine(routine)
