@@ -101,9 +101,8 @@ fun RoutineScreen(
     val routineForAdd = rememberSaveable { mutableStateOf<Routine?>(null) }
     var openDialog by rememberSaveable { mutableStateOf(false) }
     var errorClick by rememberSaveable { mutableStateOf(false) }
-    var dayChecked by rememberSaveable { mutableStateOf("0") }
-    var routineChecked by rememberSaveable { mutableStateOf<Routine?>(null) }
-    var index by rememberSaveable { mutableStateOf(0) }
+    var dayChecked by rememberSaveable { mutableIntStateOf(0) }
+    var index by rememberSaveable { mutableIntStateOf(-1) }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val currentIndex by remember {
@@ -120,11 +119,15 @@ fun RoutineScreen(
     val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
 
-
-    checkDay(monthDay, dayChecked, coroutineScope, listState, index, {
-        index += it
-    }, {
-        dayChecked = it
+    checkDay(monthDay, coroutineScope, index, calculateIndex = { currentIndex, day ->
+        coroutineScope.launch(Dispatchers.Main) {
+            if (currentIndex >= 0) {
+                dayChecked = day
+                if (currentIndex != 0)
+                    index = currentIndex
+                listState.animateScrollToItem(currentIndex)
+            }
+        }
     })
     Scaffold(
         topBar = {
@@ -143,6 +146,7 @@ fun RoutineScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
 
             ) {
+
             if (!routines.data.isNullOrEmpty()) {
                 ShowSearchBar(clickSearch = clickSearch, searchText = searchText) { search ->
                     searchText = search
@@ -162,13 +166,15 @@ fun RoutineScreen(
             }
 
             ItemTimeDate(monthDay,
-                dayChecked,
+                dayChecked.toString(),
                 currentMonth.calculateMonthName(),
                 currentYer.toString(),
                 listState,
                 index,
                 dayCheckedNumber = {
-                    dayChecked = it
+                    Timber.tag("deyChecked").d("dayCheckedNumber-> $it")
+
+                    dayChecked = it.toInt()
                     viewModel.getCurrentNameDay(
                         String().calculateTimeFormat(currentYer, currentMonth, it),
                         YYYY_MM_DD
@@ -297,7 +303,7 @@ fun RoutineScreen(
             }
             routineUpdateDialog.value = null
         },
-        currentNumberDay = dayChecked.toInt(),
+        currentNumberDay = dayChecked,
         currentNumberMonth = currentMonth,
         currentNumberYer = currentYer
     )
@@ -329,26 +335,16 @@ fun RoutineScreen(
 
 fun checkDay(
     monthDay: List<TimeData>,
-    dayChecked: String,
     coroutineScope: CoroutineScope,
-    listState: LazyListState,
     index: Int,
-    calculateIndex: (Int) -> Unit,
-    dayCheckedIsChecked: (String) -> Unit
+    calculateIndex: (index: Int, day: Int) -> Unit
 ) {
     coroutineScope.launch(Dispatchers.IO) {
-        var i = index
-        var day = dayChecked
-        checkToday(monthDay) {
-            if (day == "0") {
-                day = it
-                dayCheckedIsChecked(day)
-                i += calculateIndex(it, i, monthDay)
-                calculateIndex(i)
-                coroutineScope.launch(Dispatchers.Main) {
-                    listState.animateScrollToItem(i)
-                }
-            }
+        if (index == -1) {
+            var i = 0
+            val currentDay = monthDay.find { it.isToday }?.dayNumber ?: 0
+            i += calculateIndex(currentDay.toString(), i, monthDay)
+            calculateIndex(i, currentDay)
         }
     }
 }
@@ -368,21 +364,10 @@ private fun calculateCurrentIndex(currentIndex: Int, previousIndex: Int): Int {
 
 private fun calculateIndex(currentDay: String, index: Int, monthDay: List<TimeData>): Int {
     var currentIndex = index
-    var currentIndexPlus = currentIndex + 7
-    var dayNumber = 0
-    var i = 0
-    val emptyDay = ArrayList<Int>()
-    while (dayNumber == 0) {
-        dayNumber = monthDay[i].dayNumber
-        if (dayNumber == 0) {
-            emptyDay.add(monthDay[i].dayNumber)
-        }
-        i++
-    }
+    val emptyDay = monthDay.map { it.dayNumber }.filter { it == 0 }
     val currentDayInt = currentDay.toInt().plus(emptyDay.size)
     while (true) {
         currentIndex += 7
-        currentIndexPlus += 7
         if (currentIndex >= currentDayInt) {
             currentIndex -= 7
             break
@@ -638,7 +623,10 @@ private fun DayItems(
             .padding(
                 top = if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp
             ),
-        onClick = { dayCheckedNumber(timeData.dayNumber.toString()) },
+        onClick = {
+            if (timeData.dayNumber > 0)
+                dayCheckedNumber(timeData.dayNumber.toString())
+        },
         text = AnnotatedString(if (timeData.dayNumber != 0) timeData.dayNumber.toString() else ""),
         style = TextStyle(
             fontSize = if (screenWidth <= 420) 16.sp else 18.sp,
@@ -647,12 +635,4 @@ private fun DayItems(
             color = if (dayChecked == timeData.dayNumber.toString()) (Color.White) else MaterialTheme.colorScheme.primary
         )
     )
-}
-
-private fun checkToday(timeData: List<TimeData>, dayChecked: (String) -> Unit) {
-    timeData.forEach {
-        if (it.isToday) {
-            dayChecked(it.dayNumber.toString())
-        }
-    }
 }

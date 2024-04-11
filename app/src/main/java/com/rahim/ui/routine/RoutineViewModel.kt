@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -38,6 +39,7 @@ class RoutineViewModel @Inject constructor(
     private var monthNumber: Int? = null
     private var yerNumber: Int? = null
     private var dayNumber: Int? = null
+    private var currentDayNumber:Int?=null
 
     private val _flowRoutines =
         MutableStateFlow<Resource<List<Routine>>>(Resource.Success(emptyList()))

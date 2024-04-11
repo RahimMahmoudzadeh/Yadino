@@ -5,6 +5,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.rahim.BuildConfig
 import com.rahim.R
 import com.rahim.utils.Constants.CHANNEL_ID
@@ -21,8 +23,12 @@ class App : Application() {
             Timber.plant(Timber.DebugTree())
         }
         createNotificationChannel()
+        setFirebaseAnalyse()
     }
-
+    private fun setFirebaseAnalyse() {
+        FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(!BuildConfig.DEBUG)
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
+    }
     private fun createNotificationChannel() {
         val descriptionText = getString(R.string.channel_description)
         val importance = NotificationManager.IMPORTANCE_HIGH

@@ -17,7 +17,7 @@ interface RoutineDao {
     @Query("SELECT * FROM tbl_routine WHERE id =:id")
     suspend fun getRoutine(id: Int): Routine
 
-    @Query("SELECT * FROM tbl_routine WHERE monthNumber LIKE :monthNumber AND dayNumber LIKE :dayNumber AND yerNumber LIKE :yerNumber")
+    @Query("SELECT * FROM tbl_routine WHERE monthNumber =:monthNumber AND dayNumber =:dayNumber AND yerNumber =:yerNumber")
     fun getRoutines(monthNumber: Int, dayNumber: Int, yerNumber: Int): Flow<List<Routine>>
 
     @Query("SELECT * FROM tbl_routine")
