@@ -118,17 +118,18 @@ fun RoutineScreen(
 
     val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
-
-    checkDay(monthDay, coroutineScope, index, calculateIndex = { currentIndex, day ->
-        coroutineScope.launch(Dispatchers.Main) {
-            if (currentIndex >= 0) {
-                dayChecked = day
-                if (currentIndex != 0)
-                    index = currentIndex
-                listState.animateScrollToItem(currentIndex)
+    if (dayChecked==0){
+        checkDay(monthDay, coroutineScope, index, calculateIndex = { currentIndex, day ->
+            coroutineScope.launch(Dispatchers.Main) {
+                if (currentIndex >= 0) {
+                    dayChecked = day
+                    if (currentIndex != 0)
+                        index = currentIndex
+                    listState.animateScrollToItem(currentIndex)
+                }
             }
-        }
-    })
+        })
+    }
     Scaffold(
         topBar = {
             TopBarCenterAlign(
