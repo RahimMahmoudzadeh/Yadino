@@ -59,7 +59,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-//            signingConfig = signingConfigs.release
+            signingConfig = signingConfigs[libs.versions.release.get()]
         }
     }
     flavorDimensions += libs.versions.diimension.get()
@@ -133,5 +133,7 @@ dependencies {
         implementation(swipe)
         //pager
         implementation(bundles.accompanist)
+        //preview
+        implementation(ui.tooling.preview)
     }
 }
