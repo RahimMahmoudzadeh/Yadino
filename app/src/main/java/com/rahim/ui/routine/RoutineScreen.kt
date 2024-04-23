@@ -291,7 +291,8 @@ fun RoutineScreen(
                 viewModel.updateRoutine(routine)
                 alarmManagement.updateAlarm(
                     context,
-                    routine)
+                    routine
+                )
             } else {
                 coroutineScope.launch {
                     viewModel.addRoutine(routine)
@@ -363,7 +364,9 @@ private fun calculateCurrentIndex(currentIndex: Int, previousIndex: Int): Int {
 private fun calculateIndex(currentDay: String, index: Int, monthDay: List<TimeData>): Int {
     var currentIndex = index
     val emptyDay = monthDay.map { it.dayNumber }.filter { it == 0 }
-    val currentDayInt = currentDay.toInt().plus(emptyDay.size)
+    val indexEmptyItem = monthDay.indexOfFirst { it.dayNumber == 0 }
+    val currentDayInt =
+        if (indexEmptyItem != 0) currentDay.toInt() else currentDay.toInt().plus(emptyDay.size)
     while (true) {
         currentIndex += 7
         if (currentIndex >= currentDayInt) {
