@@ -112,10 +112,12 @@ class RoutineRepositoryImpl @Inject constructor(
         val persianDateFormat = PersianDateFormat()
         val monthDate =
             if (routine.monthNumber.toString().length == 1) "0${routine.monthNumber.toString()}" else routine.monthNumber
+        val dayNumber =
+            if (routine.dayNumber.toString().length == 1) "0${routine.dayNumber.toString()}" else routine.dayNumber
         val hoursDate =
             if (routine.timeHours.toString().length == 4) "0${routine.timeHours.toString()}" else routine.timeHours
         val time =
-            "${routine.yerNumber}-${monthDate}-${routine.dayNumber} ${hoursDate}:00"
+            "${routine.yerNumber}-${monthDate}-${dayNumber} ${hoursDate}:00"
         val persianDate = persianDateFormat.parse(
             time,
             "yyyy-MM-dd HH:mm:ss a"
