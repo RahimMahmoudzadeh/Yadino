@@ -168,12 +168,7 @@ class RoutineRepositoryImpl @Inject constructor(
 
     override fun getRoutines(
         monthNumber: Int, numberDay: Int, yerNumber: Int
-    ): Flow<List<Routine>> {
-        Timber.tag("routineGetNameDay").d("getRoutines repo monthNumber->$monthNumber")
-        Timber.tag("routineGetNameDay").d("getRoutines repo numberDay->$numberDay")
-        Timber.tag("routineGetNameDay").d("getRoutines repo yerNumber->$yerNumber")
-        return routineDao.getRoutines(monthNumber, numberDay, yerNumber)
-    }
+    ): Flow<List<Routine>> = routineDao.getRoutines(monthNumber, numberDay, yerNumber).distinctUntilChanged()
 
     override fun searchRoutine(
         name: String, monthNumber: Int?, dayNumber: Int?

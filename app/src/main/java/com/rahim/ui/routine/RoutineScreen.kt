@@ -98,6 +98,7 @@ fun RoutineScreen(
 
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
+    val routineChecked = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineForAdd = rememberSaveable { mutableStateOf<Routine?>(null) }
     var openDialog by rememberSaveable { mutableStateOf(false) }
     var errorClick by rememberSaveable { mutableStateOf(false) }
@@ -118,7 +119,7 @@ fun RoutineScreen(
 
     val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
-    if (dayChecked==0){
+    if (dayChecked == 0) {
         checkDay(monthDay, coroutineScope, index, calculateIndex = { currentIndex, day ->
             coroutineScope.launch(Dispatchers.Main) {
                 if (currentIndex >= 0) {
@@ -213,11 +214,8 @@ fun RoutineScreen(
                     routineUpdateDialog.value = it
                 },
                 routineChecked = {
-                    viewModel.updateRoutine(it)
-                    alarmManagement.cancelAlarm(
-                        context,
-                        it.idAlarm ?: it.id?.toLong()
-                    )
+                    routineChecked.value = it
+                    Timber.tag("routineGetNameDay").d("GetRoutines routineChecked->$it")
                 },
                 routineDeleteDialog = {
                     if (it.isChecked) {
@@ -277,6 +275,14 @@ fun RoutineScreen(
                 id = R.string.ok
             )
         )
+    }
+    routineChecked.value?.let {
+        viewModel.updateRoutine(it)
+        alarmManagement.cancelAlarm(
+            context,
+            it.idAlarm ?: it.id?.toLong()
+        )
+        routineChecked.value = null
     }
     DialogAddRoutine(
         isShowDay = false,
@@ -397,9 +403,11 @@ private fun GetRoutines(
                     if (searchItems.isEmpty() && searchText.isNotEmpty()) {
                         EmptyRoutine(messageEmpty = R.string.search_empty_routine)
                     } else {
-                        SetItemsRoutine(
+                        ItemsRoutine(
                             searchItems.ifEmpty { it },
                             checkedRoutine = {
+                                Timber.tag("routineGetNameDay")
+                                    .d("ItemsRoutine checkedRoutine->$it")
                                 routineChecked(it)
                             },
                             updateRoutine = {
@@ -407,7 +415,8 @@ private fun GetRoutines(
                             },
                             deleteRoutine = {
                                 routineDeleteDialog(it)
-                            })
+                            }
+                        )
                     }
                 }
             }
@@ -415,16 +424,6 @@ private fun GetRoutines(
 
         is Resource.Error -> {}
     }
-}
-
-@Composable
-private fun SetItemsRoutine(
-    routines: List<Routine>,
-    checkedRoutine: (Routine) -> Unit,
-    updateRoutine: (Routine) -> Unit,
-    deleteRoutine: (Routine) -> Unit,
-) {
-    ItemsRoutine(routines, checkedRoutine, updateRoutine, deleteRoutine)
 }
 
 @Composable

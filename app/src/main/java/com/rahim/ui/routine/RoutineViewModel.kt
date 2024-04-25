@@ -36,11 +36,6 @@ class RoutineViewModel @Inject constructor(
 ) :
     BaseViewModel(sharedPreferencesRepository, baseRepository) {
 
-    private var monthNumber: Int? = null
-    private var yerNumber: Int? = null
-    private var dayNumber: Int? = null
-    private var currentDayNumber:Int?=null
-
     private val _flowRoutines =
         MutableStateFlow<Resource<List<Routine>>>(Resource.Success(emptyList()))
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
@@ -53,13 +48,9 @@ class RoutineViewModel @Inject constructor(
         getRoutines(currentMonth, currentDay, currentYer)
     }
 
-
     fun getRoutines(
         monthNumber: Int, numberDay: Int, yerNumber: Int
     ) {
-        this.monthNumber = monthNumber
-        this.yerNumber = yerNumber
-        this.dayNumber = numberDay
         viewModelScope.launch {
             _flowRoutines.value = Resource.Loading()
             Timber.tag("routineGetNameDay").d("getRoutines model monthNumber->$monthNumber")
@@ -67,19 +58,11 @@ class RoutineViewModel @Inject constructor(
             Timber.tag("routineGetNameDay").d("getRoutines model yerNumber->$yerNumber")
             routineRepository.getRoutines(monthNumber, numberDay, yerNumber).catch {
                 _flowRoutines.value = Resource.Error(errorGetProses)
-            }.collect {
-                if (it.isEmpty())
-                    _flowRoutines.value = Resource.Success(it.sortedBy {
-                        it.timeHours?.replace(":", "")?.toInt()
-                    })
-                else {
-                    val firstItem = it.first()
-                    if (firstItem.dayNumber == this@RoutineViewModel.dayNumber && firstItem.yerNumber == this@RoutineViewModel.yerNumber && firstItem.monthNumber == this@RoutineViewModel.monthNumber) {
-                        _flowRoutines.value = Resource.Success(it.sortedBy {
-                            it.timeHours?.replace(":", "")?.toInt()
-                        })
-                    }
-                }
+            }.collectLatest {
+                Timber.tag("routineGetNameDay").d("getRoutines routines->$it")
+                _flowRoutines.value = Resource.Success(it.sortedBy {
+                    it.timeHours?.replace(":", "")?.toInt()
+                })
             }
         }
     }
