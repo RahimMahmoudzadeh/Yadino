@@ -35,15 +35,11 @@ class RoutineRepositoryImpl @Inject constructor(
     private val equalRoutineMessage = "روتین یکسان نمی توان ساخت!!"
     override suspend fun addSampleRoutine() {
         delay(500)
-        val sampleRoutines =
-            routineDao.getSampleRoutines(currentTimeMonth, currentTimeDay, currentTimeYer)
-        Timber.tag("sampleRoutines").d("sampleRoutines->$sampleRoutines")
         if (sharedPreferencesCustom.isShowSampleRoutine()) {
             routineDao.removeSampleRoutine()
             return
         }
 
-        if (sampleRoutines.isNotEmpty()) return
         (0..1).forEachIndexed { index, it ->
             val routine = Routine(
                 "تست${index.plus(1)}",
@@ -57,7 +53,8 @@ class RoutineRepositoryImpl @Inject constructor(
                 explanation = if (index == 1) ROUTINE_LEFT_SAMPLE else ROUTINE_RIGHT_SAMPLE,
                 isSample = true,
                 idAlarm = index.plus(1).toLong(),
-                timeInMillisecond = persianData.time
+                timeInMillisecond = persianData.time,
+                id = index,
             )
             routineDao.addRoutine(routine)
         }
@@ -94,7 +91,7 @@ class RoutineRepositoryImpl @Inject constructor(
     }
 
     override suspend fun checkEdAllRoutinePastTime() {
-        withContext(ioDispatcher){
+        withContext(ioDispatcher) {
             val routines = routineDao.getRoutines().filter { it.timeInMillisecond != null }
             val pastTimeRoutine = routines.filter {
                 (it.timeInMillisecond ?: 0) < System.currentTimeMillis() && !it.isSample
@@ -168,7 +165,8 @@ class RoutineRepositoryImpl @Inject constructor(
 
     override fun getRoutines(
         monthNumber: Int, numberDay: Int, yerNumber: Int
-    ): Flow<List<Routine>> = routineDao.getRoutines(monthNumber, numberDay, yerNumber).distinctUntilChanged()
+    ): Flow<List<Routine>> =
+        routineDao.getRoutines(monthNumber, numberDay, yerNumber).distinctUntilChanged()
 
     override fun searchRoutine(
         name: String, monthNumber: Int?, dayNumber: Int?

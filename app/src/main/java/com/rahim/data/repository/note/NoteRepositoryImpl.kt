@@ -11,25 +11,18 @@ import javax.inject.Inject
 private const val SAMPLE_NOTE_RIGHT="من یک یادداشت تستی هستم لطفا من را به راست بکشید"
 private const val SAMPLE_NOTE_LEFT="من یک یادداشت تستی هستم لطفا من را به چپ بکشید"
 class NoteRepositoryImpl @Inject constructor(
-    val noteDao: NoteDao,
-    val sharedPreferencesCustom: SharedPreferencesCustom
+    private val noteDao: NoteDao,
+    private val sharedPreferencesCustom: SharedPreferencesCustom
 ) : NoteRepository {
     private val persianData = PersianDate()
     private val currentTimeDay = persianData.shDay
     private val currentTimeMonth = persianData.shMonth
     private val currentTimeYer = persianData.shYear
     override suspend fun addSampleNote() {
-        val sampleNotes = noteDao
-            .getSampleNote()
-
         if (sharedPreferencesCustom.isSampleNote()) {
             noteDao.removeSampleNote()
             return
         }
-
-        if (sampleNotes.isNotEmpty())
-            return
-
         (0..1).forEachIndexed { index, it ->
             val note =
                 NoteModel(
@@ -40,7 +33,8 @@ class NoteRepositoryImpl @Inject constructor(
                     dayNumber = currentTimeDay,
                     yerNumber = currentTimeYer,
                     monthNumber = currentTimeMonth,
-                    isSample = true
+                    isSample = true,
+                    id = index
                 )
             addNote(note)
         }

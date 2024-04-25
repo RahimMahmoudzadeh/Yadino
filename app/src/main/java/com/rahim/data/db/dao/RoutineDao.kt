@@ -42,8 +42,8 @@ interface RoutineDao {
         dayNumber: Int?
     ): Flow<List<Routine>>
 
-    @Query("SELECT * FROM tbl_routine WHERE isSample=1 AND  monthNumber LIKE :monthNumber AND dayNumber LIKE :dayNumber AND yerNumber LIKE :yerNumber")
-    suspend fun getSampleRoutines(monthNumber: Int, dayNumber: Int, yerNumber: Int): List<Routine>
+    @Query("SELECT * FROM tbl_routine WHERE isSample=1")
+    suspend fun getSampleRoutines(): List<Routine>
 
     @Query("DELETE FROM tbl_routine WHERE isSample=1")
     suspend fun removeSampleRoutine()
