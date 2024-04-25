@@ -518,7 +518,9 @@ private fun ItemTimeDate(
             indexScroll(
                 if (monthDay.size <= index + 7) {
                     monthDay.size
-                } else {
+                } else if (index==-1) {
+                    index + 8
+                }else{
                     index + 7
                 }
             )
