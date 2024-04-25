@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface RepositoryRoutine {
     suspend fun addSampleRoutine()
-    suspend fun addRoutine(routine: Routine):Flow<Resource<Long>>
+    suspend fun addRoutine(routine: Routine):Flow<Resource<Routine?>>
 
     suspend fun removeRoutine(routine: Routine):Int
 

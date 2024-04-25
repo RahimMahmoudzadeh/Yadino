@@ -41,8 +41,8 @@ class RoutineViewModel @Inject constructor(
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
 
     private val _addRoutine =
-        MutableStateFlow<Resource<Long>>(Resource.Success(0L))
-    val addRoutine: StateFlow<Resource<Long>> = _addRoutine
+        MutableStateFlow<Resource<Routine?>>(Resource.Success(null))
+    val addRoutine: StateFlow<Resource<Routine?>> = _addRoutine
 
     init {
         getRoutines(currentMonth, currentDay, currentYer)
@@ -87,7 +87,7 @@ class RoutineViewModel @Inject constructor(
 
     fun addRoutine(routine: Routine) {
         viewModelScope.launch {
-            routineRepository.addRoutine(routine).catch {}.collect {
+            routineRepository.addRoutine(routine).catch {}.collectLatest {
                 _addRoutine.value = it
             }
         }

@@ -35,8 +35,8 @@ class HomeViewModel @Inject constructor(
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
 
     private val _addRoutine =
-        MutableStateFlow<Resource<Long>>(Resource.Success(0L))
-    val addRoutine: StateFlow<Resource<Long>> = _addRoutine
+        MutableStateFlow<Resource<Routine?>>(Resource.Success(null))
+    val addRoutine: StateFlow<Resource<Routine?>> = _addRoutine
 
     fun getCurrentRoutines() {
         viewModelScope.launch {

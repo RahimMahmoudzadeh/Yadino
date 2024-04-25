@@ -43,6 +43,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.rahim.R
+import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
@@ -161,7 +162,7 @@ fun CircularProgressAnimated(isShow: Boolean) {
 
 @Composable
 fun ProcessRoutineAdded(
-    addRoutine: Resource<Long>,
+    addRoutine: Resource<Routine?>,
     context: Context,
     closeDialog: (Boolean) -> Unit
 ) {
@@ -174,7 +175,7 @@ fun ProcessRoutineAdded(
 
         is Resource.Success -> {
             CircularProgressAnimated(false)
-            if (addRoutine.data != 0L)
+            if (addRoutine.data != null)
                 closeDialog(false)
         }
 

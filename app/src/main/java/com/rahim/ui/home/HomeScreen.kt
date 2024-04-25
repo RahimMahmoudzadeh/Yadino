@@ -253,7 +253,7 @@ fun HomeScreen(
         ProcessRoutineAdded(addRoutine, context) {
             if (!it) {
                 openDialog = false
-                routineForAdd.value?.let {
+                addRoutine.data?.let {
                     alarmManagement.setAlarm(context, it)
                 }
                 routineForAdd.value = null

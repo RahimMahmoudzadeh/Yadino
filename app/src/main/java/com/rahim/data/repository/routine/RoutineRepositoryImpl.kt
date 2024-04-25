@@ -104,7 +104,7 @@ class RoutineRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addRoutine(routine: Routine): Flow<Resource<Long>> = flow {
+    override suspend fun addRoutine(routine: Routine): Flow<Resource<Routine?>> = flow<Resource<Routine?>> {
         emit(Resource.Loading())
         val persianDateFormat = PersianDateFormat()
         val monthDate =
@@ -131,7 +131,13 @@ class RoutineRepositoryImpl @Inject constructor(
                 .replace(Regex(":"), "").toInt()
         }
         if (equalRoutine == null) {
-            emit(Resource.Success(routineDao.addRoutine(routine)))
+            runCatching {
+                routineDao.addRoutine(routine)
+            }.onSuccess {
+                emit(Resource.Success(routine))
+            }.onFailure {
+                emit(Resource.Error(equalRoutineMessage))
+            }
         } else {
             emit(Resource.Error(equalRoutineMessage))
         }
