@@ -31,4 +31,7 @@ object DataBaseModule {
     @Singleton
     @Provides
     fun providesNoteDao(appDatabase: AppDatabase) = appDatabase.noteDao()
+    @Singleton
+    @Provides
+    fun providesTimeDao(appDatabase: AppDatabase) = appDatabase.timeDataDao()
 }
