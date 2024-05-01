@@ -48,22 +48,15 @@ class DataTimeRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getTimes(): Flow<List<TimeData>> = timeDao.getAllTimeFlow()
-
-    override suspend fun getCurrentMonthDay(
-        monthNumber: Int,
-        yerNumber: Int?
-    ): Flow<List<TimeData>> = flow {
-        timeDao.getSpecificMonthFromYer(monthNumber, yerNumber).catch {}.collect {
-            if (it.isNotEmpty()) {
-                val spaceStart = calculateDaySpaceStartMonth(it[0].nameDay)
-                val spaceEnd = calculateDaySpaceEndMonth(it[it.size - 1].nameDay)
-                val list = ArrayList<TimeData>()
-                list.addAll(spaceStart)
-                list.addAll(it)
-                list.addAll(spaceEnd)
-                emit(list)
-            }
+    override fun getTimes(): Flow<List<TimeData>> = flow{
+        timeDao.getAllTimeFlow().catch {}.collect{
+            val spaceStart = calculateDaySpaceStartMonth(it[0].nameDay)
+            val spaceEnd = calculateDaySpaceEndMonth(it[it.size - 1].nameDay)
+            val list = ArrayList<TimeData>()
+            list.addAll(spaceStart)
+            list.addAll(it)
+            list.addAll(spaceEnd)
+            emit(list)
         }
     }.flowOn(ioDispatcher)
 
@@ -209,11 +202,9 @@ class DataTimeRepositoryImpl @Inject constructor(
                 }
                 for (month in 1..12) {
                     val dayNumber = if (month == 12) {
-                        val d=index % 4
-                        if (((( d== 0 && yer != 1308) || yer == FIRST_KABISE_DATA) && differentBetweenYer !in 29..32) || differentBetweenYer==33) {
-                            if (yer == FIRST_KABISE_DATA || differentBetweenYer == 33)
-                            {
-                                differentBetweenYer=0
+                        if ((((index % 4 == 0 && yer != 1308) || yer == FIRST_KABISE_DATA) && differentBetweenYer !in 29..32) || differentBetweenYer == 33) {
+                            if (yer == FIRST_KABISE_DATA || differentBetweenYer == 33) {
+                                differentBetweenYer = 0
                                 index = 0
                             }
                             30

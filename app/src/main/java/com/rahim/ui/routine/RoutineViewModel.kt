@@ -93,7 +93,7 @@ class RoutineViewModel @Inject constructor(
         }
     }
 
-    fun getCurrentMonthDay(monthNumber: Int, yerNumber: Int?): Flow<List<TimeData>> = flow {
-        emitAll(dateTimeRepository.getCurrentMonthDay(monthNumber, yerNumber))
+    fun getTimes(): Flow<List<TimeData>> = flow {
+        emitAll(dateTimeRepository.getTimes())
     }
 }

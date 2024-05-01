@@ -17,23 +17,22 @@ interface TimeDao {
     suspend fun insertTime(timesData: TimeData)
 
     @Query("SELECT * FROM tbl_timeData Where isToday = 1 ")
-    suspend fun getToday(): TimeData
+    suspend fun getToday(): TimeData?
 
     @Query("SELECT * FROM tbl_timeData")
     suspend fun getAllTime(): List<TimeData>
-
     @Query("SELECT * FROM tbl_timeData")
-    suspend fun getAllMonthDayNotFlow(): List<TimeData>
-
+    fun getAllTimeFlow(): Flow<List<TimeData>>
     @Query("SELECT * FROM tbl_timeData WHERE monthNumber=:monthNumber And yerNumber=:yerNumber")
     fun getIsSpecificMonthFromYer(monthNumber: Int, yerNumber: Int?): Boolean
-
     @Query("SELECT * FROM tbl_timeData WHERE monthNumber=:monthNumber And yerNumber=:yerNumber")
     fun getSpecificMonthFromYer(monthNumber: Int, yerNumber: Int?): Flow<List<TimeData>>
-
     @Update
     suspend fun updateTimeData(timeData: TimeData)
-
+    @Query("UPDATE tbl_timeData SET isToday=1 WHERE dayNumber=:currentDay AND yerNumber=:currentYer AND monthNumber=:currentMonth")
+    suspend fun updateDayToToday(currentDay:Int, currentYer:Int, currentMonth:Int)
+    @Query("UPDATE tbl_timeData SET isToday=0 WHERE dayNumber=:currentDay AND yerNumber=:currentYer AND monthNumber=:currentMonth")
+    suspend fun updateDayToNotToday(currentDay:Int, currentYer:Int, currentMonth:Int)
     @Query("DELETE FROM tbl_timeData")
     suspend fun deleteAllTimes()
 }
