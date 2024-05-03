@@ -1,10 +1,9 @@
 package com.rahim.data.modle.data
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity(tableName = "tbl_timeData")
-data class TimeData(
+@Entity(tableName = "tbl_timeDate", primaryKeys = ["dayNumber","yerNumber","monthNumber"])
+data class TimeDate(
     val dayNumber: Int,
     val haveTask: Boolean,
     var isToday: Boolean = false,
@@ -12,6 +11,5 @@ data class TimeData(
     val yerNumber: Int,
     val monthNumber: Int,
     var isChecked: Boolean,
-    @PrimaryKey(autoGenerate = true)
-    var id: Int? = null
+    var monthName: String? = null,
 )

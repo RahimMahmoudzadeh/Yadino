@@ -45,12 +45,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.rahim.R
 import com.rahim.data.alarm.AlarmManagement
 import com.rahim.data.modle.Rotin.Routine
-import com.rahim.data.modle.data.TimeData
-import com.rahim.data.modle.dialog.StateOpenDialog
+import com.rahim.data.modle.data.TimeDate
+import com.rahim.data.modle.data.TimeDataMonthAndYear
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.theme.CornflowerBlueLight
@@ -68,7 +67,6 @@ import com.rahim.utils.extention.calculateTimeFormat
 import com.rahim.utils.resours.Resource
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -82,9 +80,6 @@ fun RoutineScreen(
 ) {
     val context = LocalContext.current
     val alarmManagement = AlarmManagement()
-
-    val currentYer = viewModel.currentYer
-    val currentMonth = viewModel.currentMonth
 
     val searchItems = ArrayList<Routine>()
 
@@ -106,12 +101,13 @@ fun RoutineScreen(
     var dayChecked by rememberSaveable { mutableIntStateOf(0) }
     var dayMonthChecked by rememberSaveable { mutableIntStateOf(0) }
     var dayYerChecked by rememberSaveable { mutableIntStateOf(0) }
-    var index by rememberSaveable { mutableIntStateOf(-1) }
-    val listState = rememberLazyListState()
+    var timesSize by rememberSaveable { mutableIntStateOf(0) }
+    var indexDay by rememberSaveable { mutableIntStateOf(-1) }
+    val listStateDay = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-    val currentIndex by remember {
+    val currentDayIndex by remember {
         derivedStateOf {
-            listState.firstVisibleItemIndex
+            listStateDay.firstVisibleItemIndex
         }
     }
     val notificationPermissionState = rememberPermissionState(
@@ -122,22 +118,23 @@ fun RoutineScreen(
 
     val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
-    if (dayChecked == 0) {
+    if (timesSize != times.size) {
+        timesSize = times.size
         val currentTime = times.find { it.isToday }
         var indexCurrentDay = times.indexOf(currentTime)
         val currentDay = currentTime?.dayNumber ?: 0
         val currentYerNumber = currentTime?.yerNumber ?: 0
         val monthNumber = currentTime?.monthNumber ?: 0
         coroutineScope.launch(Dispatchers.IO) {
-            val calculateIndex = calculateIndex(indexCurrentDay)
+            val calculateDayIndex = calculateIndexDay(indexCurrentDay)
             coroutineScope.launch(Dispatchers.Main) {
-                if (calculateIndex >= 0) {
+                if (calculateDayIndex >= 0) {
                     dayChecked = currentDay
                     dayYerChecked = currentYerNumber
                     dayMonthChecked = monthNumber
-                    if (calculateIndex != 0) {
-                        index = calculateIndex
-                        listState.scrollToItem(calculateIndex)
+                    if (calculateDayIndex > 0) {
+                        indexDay = calculateDayIndex
+                        listStateDay.scrollToItem(calculateDayIndex)
                     }
                 }
             }
@@ -179,14 +176,13 @@ fun RoutineScreen(
                 }
             }
 
-            ItemTimeDate(times,
+            ItemTimeDate(
+                times,
                 dayChecked.toString(),
                 dayYerChecked,
                 dayMonthChecked,
-                currentMonth.calculateMonthName(),
-                currentYer.toString(),
-                listState,
-                index,
+                listStateDay = listStateDay,
+                indexDay = indexDay,
                 dayCheckedNumber = { day, yer, month ->
                     dayChecked = day.toInt()
                     dayMonthChecked = month
@@ -197,15 +193,16 @@ fun RoutineScreen(
                     )
                     viewModel.getRoutines(month, day.toInt(), yer)
                 },
-                currentIndex = currentIndex,
-                indexScroll = {
+                currentIndexDay = currentDayIndex,
+                indexScrollDay = {
                     if (it != times.size) {
-                        index = it
+                        indexDay = it
                         coroutineScope.launch {
-                            listState.animateScrollToItem(index)
+                            listStateDay.animateScrollToItem(indexDay)
                         }
                     }
-                })
+                },
+            )
             GetRoutines(
                 routines,
                 searchItems,
@@ -321,8 +318,8 @@ fun RoutineScreen(
             routineUpdateDialog.value = null
         },
         currentNumberDay = dayChecked,
-        currentNumberMonth = currentMonth,
-        currentNumberYer = currentYer
+        currentNumberMonth = dayMonthChecked,
+        currentNumberYer = dayYerChecked
     )
 
     if (routineForAdd.value != null)
@@ -351,7 +348,7 @@ fun RoutineScreen(
 }
 
 
-private fun calculateCurrentIndex(currentIndex: Int, previousIndex: Int): Int {
+private fun calculateCurrentIndexDay(currentIndex: Int, previousIndex: Int): Int {
     return if (currentIndex > previousIndex) {
         previousIndex + 7
     } else {
@@ -363,18 +360,15 @@ private fun calculateCurrentIndex(currentIndex: Int, previousIndex: Int): Int {
     }
 }
 
-
-private fun calculateIndex(index: Int): Int {
-    var currentIndex = index
+private fun calculateIndexDay(index: Int): Int {
     var indexPosition = 0
     while (true) {
         indexPosition += 7
-        if (indexPosition >= currentIndex) {
+        if (indexPosition > index) {
             indexPosition -= 7
             break
         }
     }
-
     return indexPosition
 }
 
@@ -447,23 +441,35 @@ private fun EmptyRoutine(
 @OptIn(ExperimentalSnapperApi::class)
 @Composable
 private fun ItemTimeDate(
-    times: List<TimeData>,
+    times: List<TimeDate>,
     dayChecked: String,
     dayYerChecked: Int,
     dayMonthChecked: Int,
-    currentMonth: String,
-    currentYer: String,
-    listState: LazyListState,
-    index: Int,
-    currentIndex: Int,
+    listStateDay: LazyListState,
+    indexDay: Int,
+    currentIndexDay: Int,
     dayCheckedNumber: (day: String, yer: Int, month: Int) -> Unit,
-    indexScroll: (Int) -> Unit,
+    indexScrollDay: (Int) -> Unit,
 ) {
     Row(
         modifier = Modifier.padding(top = 28.dp),
     ) {
         IconButton(onClick = {
-
+            var month = dayMonthChecked.plus(1)
+            var year = dayYerChecked
+            if (month > 12) {
+                month = 1
+                year = dayYerChecked.plus(1)
+            }
+            val time =
+                times.find { it.monthNumber == month && it.yerNumber == year && it.dayNumber == 1 }
+            if (time != null) {
+                dayCheckedNumber("1", year, month)
+                val index = times.indexOf(time)
+                indexScrollDay(
+                    calculateIndexDay(index)
+                )
+            }
         }) {
             Icon(
                 tint = MaterialTheme.colorScheme.primary,
@@ -471,29 +477,28 @@ private fun ItemTimeDate(
                 contentDescription = "less then sign"
             )
         }
-        LazyRow(
-            userScrollEnabled = false,
-            modifier = Modifier
-                .weight(1f)
-                .padding(top = 6.dp),
-            state = listState,
-            flingBehavior = rememberSnapperFlingBehavior(
-                lazyListState = listState,
-                snapIndex = { _, start, targetIndex ->
-                    indexScroll(calculateCurrentIndex(currentIndex, index))
-                    index
-                }),
-        ) {
-            items(items = times, itemContent = {
-                Text(
-                    modifier = Modifier.padding(top = 12.dp),
-                    text = "$currentYer $currentMonth",
-                    color = MaterialTheme.colorScheme.primary
-                )
-            })
-        }
+        Text(
+            modifier = Modifier.padding(top = 12.dp).fillMaxWidth(0.3f),
+            text = "$dayYerChecked ${dayMonthChecked.calculateMonthName()}",
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
+        )
         IconButton(onClick = {
-
+            var month = dayMonthChecked.minus(1)
+            var year = dayYerChecked
+            if (month < 1) {
+                month = 12
+                year = dayYerChecked.minus(1)
+            }
+            val time =
+                times.find { it.monthNumber == month && it.yerNumber == year && it.dayNumber == 1 }
+            if (time!=null){
+                dayCheckedNumber("1", year, month)
+                val index = times.indexOf(time)
+                indexScrollDay(
+                    calculateIndexDay(index)
+                )
+            }
         }) {
             Icon(
                 painterResource(id = R.drawable.greater_then),
@@ -550,13 +555,13 @@ private fun ItemTimeDate(
 
     Row() {
         IconButton(modifier = Modifier.padding(top = 6.dp), onClick = {
-            indexScroll(
-                if (times.size <= index + 7) {
+            indexScrollDay(
+                if (times.size <= indexDay + 7) {
                     times.size
-                } else if (index == -1) {
-                    index + 8
+                } else if (indexDay == -1) {
+                    indexDay + 8
                 } else {
-                    index + 7
+                    indexDay + 7
                 }
             )
         }) {
@@ -573,12 +578,12 @@ private fun ItemTimeDate(
                 modifier = Modifier
                     .weight(1f)
                     .padding(top = 6.dp),
-                state = listState,
+                state = listStateDay,
                 flingBehavior = rememberSnapperFlingBehavior(
-                    lazyListState = listState,
+                    lazyListState = listStateDay,
                     snapIndex = { _, start, targetIndex ->
-                        indexScroll(calculateCurrentIndex(currentIndex, index))
-                        index
+                        indexScrollDay(calculateCurrentIndexDay(currentIndexDay, indexDay))
+                        indexDay
                     }),
             ) {
                 items(items = times, itemContent = {
@@ -594,11 +599,11 @@ private fun ItemTimeDate(
             }
         }
         IconButton(modifier = Modifier.padding(top = 6.dp), onClick = {
-            indexScroll(
-                if (index <= 6) {
+            indexScrollDay(
+                if (indexDay <= 6) {
                     0
                 } else {
-                    index - 7
+                    indexDay - 7
                 }
             )
         }) {
@@ -639,7 +644,7 @@ private fun ItemsRoutine(
 
 @Composable
 private fun DayItems(
-    timeData: TimeData,
+    timeDate: TimeDate,
     dayChecked: String,
     dayYerChecked: Int,
     dayMonthChecked: Int,
@@ -649,7 +654,7 @@ private fun DayItems(
     Timber.tag("timeClicked").d("dayChecked->$dayChecked")
     Timber.tag("timeClicked").d("dayYerChecked->$dayYerChecked")
     Timber.tag("timeClicked").d("dayMonthChecked->$dayMonthChecked")
-    Timber.tag("timeClicked").d("timeData->$timeData")
+    Timber.tag("timeClicked").d("timeData->$timeDate")
     val screenWidth = configuration.screenWidthDp
     ClickableText(
         modifier = Modifier
@@ -660,7 +665,7 @@ private fun DayItems(
             .size(if (screenWidth <= 400) 36.dp else if (screenWidth in 400..420) 39.dp else 43.dp)
             .clip(CircleShape)
             .background(
-                brush = if (dayChecked == timeData.dayNumber.toString() && dayMonthChecked == timeData.monthNumber && dayYerChecked == timeData.yerNumber) {
+                brush = if (dayChecked == timeDate.dayNumber.toString() && dayMonthChecked == timeDate.monthNumber && dayYerChecked == timeDate.yerNumber) {
                     Brush.verticalGradient(
                         gradientColors
                     )
@@ -674,19 +679,19 @@ private fun DayItems(
                 top = if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp
             ),
         onClick = {
-            if (timeData.dayNumber > 0)
+            if (timeDate.dayNumber > 0)
                 dayCheckedNumber(
-                    timeData.dayNumber.toString(),
-                    timeData.yerNumber,
-                    timeData.monthNumber
+                    timeDate.dayNumber.toString(),
+                    timeDate.yerNumber,
+                    timeDate.monthNumber
                 )
         },
-        text = AnnotatedString(if (timeData.dayNumber != 0) timeData.dayNumber.toString() else ""),
+        text = AnnotatedString(if (timeDate.dayNumber > 0) timeDate.dayNumber.toString() else ""),
         style = TextStyle(
             fontSize = if (screenWidth <= 420) 16.sp else 18.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            color = if (dayChecked == timeData.dayNumber.toString() && dayMonthChecked == timeData.monthNumber && dayYerChecked == timeData.yerNumber) (Color.White) else MaterialTheme.colorScheme.primary
+            color = if (dayChecked == timeDate.dayNumber.toString() && dayMonthChecked == timeDate.monthNumber && dayYerChecked == timeDate.yerNumber) (Color.White) else MaterialTheme.colorScheme.primary
         )
     )
 }
