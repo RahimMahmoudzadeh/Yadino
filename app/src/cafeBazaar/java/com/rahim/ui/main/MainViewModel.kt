@@ -2,6 +2,7 @@ package com.rahim.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rahim.data.di.IODispatcher
 import com.rahim.data.repository.base.BaseRepository
 import com.rahim.data.repository.dataTime.DataTimeRepository
 import com.rahim.data.repository.note.NoteRepository
@@ -10,6 +11,7 @@ import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
 import com.rahim.data.sharedPreferences.SharedPreferencesCustom
 import com.rahim.utils.base.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -19,12 +21,14 @@ class MainViewModel @Inject constructor(
     private val dataTimeRepository: DataTimeRepository,
     private val repositoryRoutine: RepositoryRoutine,
     private val noteRepository: NoteRepository,
+    @IODispatcher
+    private val ioDispatcher: CoroutineDispatcher,
     baseRepository: BaseRepository,
     sharedPreferencesRepository: SharedPreferencesRepository
 ) :
     BaseViewModel(sharedPreferencesRepository, baseRepository) {
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             launch {
                 dataTimeRepository.calculateToday()
             }
@@ -43,7 +47,8 @@ class MainViewModel @Inject constructor(
             }
         }
     }
-    fun checkEdAllRoutinePastTime(){
+
+    fun checkEdAllRoutinePastTime() {
         viewModelScope.launch {
             repositoryRoutine.checkEdAllRoutinePastTime()
         }

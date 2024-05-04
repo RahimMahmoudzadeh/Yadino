@@ -13,8 +13,9 @@ object Constants {
     const val IS_FORCE = "is force"
     const val VERSION = "version"
     const val YYYY_MM_DD = "yyyy-MM-dd"
-    const val FIRST_YEAR = 1300
-    const val END_YEAR = 1430
+    const val FIRST_YEAR = 1350
+    const val END_YEAR = 1450
+    const val FIRST_KABISE_DATA = 1350
     const val UPDATE = "update"
     const val CAFE_BAZAAR = "cafeBazaar"
     const val CAFE_BAZAAR_INSTALL_LINK="https://cafebazaar.ir/install"
