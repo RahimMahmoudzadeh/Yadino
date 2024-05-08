@@ -8,6 +8,7 @@ import com.rahim.data.modle.data.TimeDataMonthAndYear
 import com.rahim.utils.Constants.END_YEAR
 import com.rahim.utils.Constants.FIRST_KABISE_DATA
 import com.rahim.utils.Constants.FIRST_YEAR
+import com.rahim.utils.Constants.VERSION_TIME_DB
 import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.enums.WeekName
 import kotlinx.coroutines.*
@@ -34,21 +35,13 @@ class DataTimeRepositoryImpl @Inject constructor(
 
     override suspend fun addTime() {
         val times = timeDao.getAllTime()
-        val monthName = times.filter { it.monthName == null }
-        if ((times.firstOrNull()?.dayNumber ?: 0) > 0) {
-            val emptyTimes = calculateDaySpaceStartMonth(times.first())
-            timeDao.insertAllTime(emptyTimes)
-        }
-        if ((times.lastOrNull()?.dayNumber ?: 31) <= 30) {
-            val emptyTimes = calculateDaySpaceEndMonth(times.last())
-            timeDao.insertAllTime(emptyTimes)
-        }
-        Timber.tag("times").d("$monthName")
-        if (!times.isNullOrEmpty() && monthName.isNullOrEmpty())
+        val firstTime = times.find { it.yerNumber == FIRST_YEAR }
+        if (firstTime?.versionNumber == VERSION_TIME_DB) {
             return
-        if (times.isNotEmpty()) {
-            timeDao.deleteAllTimes()
         }
+        if (times.isNotEmpty())
+            timeDao.deleteAllTimes()
+
         calculateDate()
     }
 
@@ -239,7 +232,8 @@ class DataTimeRepositoryImpl @Inject constructor(
                                 year,
                                 month,
                                 checkDayIsToday(year, month, day),
-                                monthName = persianData.monthName()
+                                monthName = persianData.monthName(),
+                                versionNumber = if (year == FIRST_YEAR) VERSION_TIME_DB else 0
                             )
                             dates.add(date)
                         }

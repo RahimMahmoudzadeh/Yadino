@@ -15,13 +15,14 @@ import com.rahim.data.modle.note.NoteModel
 
 @Database(
     entities = [Routine::class, TimeDate::class, NoteModel::class],
-    //2024/05/02
-    version = 4,
+    //2024/08/05
+    version = 5,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(1, 2),
         AutoMigration(2, 3),
         AutoMigration(3, 4, spec = AppDatabase.Version3::class),
+        AutoMigration(4, 5),
     ]
 )
 abstract class AppDatabase : RoomDatabase() {
