@@ -1,15 +1,15 @@
 [versions]
 ksp = "1.9.22-1.0.17"
-androidx-core = "1.12.0"
-compose-bom = "2024.04.00"
-activity-compose = "1.8.2"
+androidx-core = "1.13.1"
+compose-bom = "2024.05.00"
+activity-compose = "1.9.0"
 androidx-lifecycle = "2.7.0"
 androidx-room = "2.6.1"
 hilt = "2.49"
 hilt_navigation_compose = "1.2.0"
 androidx-navigation = "2.7.7"
 timber = "5.0.1"
-firebaseBom = "32.8.0"
+firebaseBom = "33.0.0"
 samanzamani = "1.5.4"
 nav-version = '2.7.7'
 datetime = "0.9.0"
@@ -28,7 +28,7 @@ google-services = "4.4.1"
 firebase-crashlytics-plugin="2.9.9"
 material3Android = "1.2.1"
 compose-compiler="1.5.8"
-compose-vewrsion="1.6.5"
+compose-vewrsion="1.6.7"
 
 #target version
 project-target-sdk-version = "34"
