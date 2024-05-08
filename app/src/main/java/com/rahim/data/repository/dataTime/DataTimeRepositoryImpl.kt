@@ -35,8 +35,9 @@ class DataTimeRepositoryImpl @Inject constructor(
 
     override suspend fun addTime() {
         val times = timeDao.getAllTime()
-        val firstTime = times.find { it.yerNumber == FIRST_YEAR }
-        if (firstTime?.versionNumber == VERSION_TIME_DB) {
+        val firstTime =
+            times.find { it.yerNumber == FIRST_YEAR && it.versionNumber == VERSION_TIME_DB }
+        if (firstTime != null) {
             return
         }
         if (times.isNotEmpty())
