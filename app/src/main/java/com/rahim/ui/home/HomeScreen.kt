@@ -246,7 +246,9 @@ fun HomeScreen(
         },
         currentNumberDay = currentDay,
         currentNumberMonth = currentMonth,
-        currentNumberYer = currentYer
+        currentNumberYer = currentYer,
+        times = null,
+        dayCheckedNumber = {day, yer, month ->  }
     )
 
     if (routineForAdd.value != null)

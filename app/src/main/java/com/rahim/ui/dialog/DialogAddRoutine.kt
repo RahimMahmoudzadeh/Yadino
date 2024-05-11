@@ -1,8 +1,5 @@
 package com.rahim.ui.dialog
 
-import android.os.Build
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
+import com.rahim.data.modle.data.TimeDate
 import com.rahim.ui.theme.*
 import com.rahim.utils.base.view.DialogButtonBackground
 import com.rahim.utils.base.view.gradientColors
@@ -43,7 +41,6 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.time.LocalTime
-import java.util.*
 
 @OptIn(
     ExperimentalMaterial3Api::class,
@@ -57,8 +54,10 @@ fun DialogAddRoutine(
     currentNumberMonth: Int,
     currentNumberYer: Int,
     routineUpdate: Routine? = null,
+    times: List<TimeDate>? = null,
     openDialog: (Boolean) -> Unit,
     routine: (Routine) -> Unit,
+    dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit
 ) {
     val maxName = 22
     val maxExplanation = 40
@@ -66,18 +65,28 @@ fun DialogAddRoutine(
     var routineExplanation by rememberSaveable { mutableStateOf("") }
     val checkedStateAllDay = remember { mutableStateOf(false) }
     val isErrorName = remember { mutableStateOf(false) }
+    val isShowDateDialog = remember { mutableStateOf(false) }
     val isErrorExplanation = remember { mutableStateOf(false) }
+    var isHaveClicked by rememberSaveable { mutableStateOf(false) }
+    var dayMonthCheckedDialog by rememberSaveable { mutableIntStateOf(0) }
+    var dayYerCheckedDialog by rememberSaveable { mutableIntStateOf(0) }
+    var dayCheckedDialog by rememberSaveable { mutableIntStateOf(0) }
+    if (!isHaveClicked) {
+        dayMonthCheckedDialog = currentNumberMonth
+        dayYerCheckedDialog = currentNumberYer
+        dayCheckedDialog = currentNumberDay
+    }
     var time by rememberSaveable { mutableStateOf("12:00") }
     val alarmDialogState = rememberMaterialDialogState()
     val persianData = PersianDate()
-    val date=persianData.initJalaliDate(currentNumberYer,currentNumberMonth,currentNumberDay)
+    val date =
+        persianData.initJalaliDate(dayYerCheckedDialog, dayMonthCheckedDialog, dayCheckedDialog)
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
-    if (routineUpdate!=null){
-        routineName=routineUpdate.name
-        routineExplanation=routineUpdate.explanation?:""
-        time=routineUpdate.timeHours?:"12:00"
+    if (routineUpdate != null) {
+        routineName = routineUpdate.name
+        routineExplanation = routineUpdate.explanation ?: ""
+        time = routineUpdate.timeHours ?: "12:00"
     }
-
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         if (!isOpen) {
             routineName = ""
@@ -97,6 +106,7 @@ fun DialogAddRoutine(
                 brush = Brush.verticalGradient(gradientColors),
                 shape = RoundedCornerShape(8.dp)
             ), onDismissRequest = {
+            dayCheckedDialog=0
             openDialog(false)
         }) {
             Surface(
@@ -260,7 +270,7 @@ fun DialogAddRoutine(
                                 end = if (isShowDay) 15.dp else 0.dp
                             )
                     ) {
-                        Row{
+                        Row {
                             Text(
                                 modifier = Modifier.padding(top = 14.dp),
                                 text = stringResource(id = R.string.set_alarms),
@@ -287,26 +297,34 @@ fun DialogAddRoutine(
                             )
                         }
                     }
-                    //TODO for data
-//                    Row(
-//                        horizontalArrangement = Arrangement.SpaceBetween,
-//                        modifier = Modifier.fillMaxWidth()
-//                    ) {
-//                        Text(
-//                            modifier = Modifier.padding(top = 14.dp),
-//                            text = stringResource(id = R.string.set_reminder)
-//                        )
-//                        OutlinedButton(
-//                            border = BorderStroke(
-//                                1.dp,
-//                                Brush.horizontalGradient(gradientColors)
-//                            ), onClick = { /*TODO*/ }) {
-//                            Text(
-//                                text = stringResource(id = R.string.data_change),
-//                                style = TextStyle(brush = Brush.verticalGradient(gradientColors))
-//                            )
-//                        }
-//                    }
+                    if (!times.isNullOrEmpty()) {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    top = if (isShowDay) 0.dp else 10.dp,
+                                    start = 20.dp,
+                                    end = if (isShowDay) 15.dp else 0.dp
+                                ),
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(top = 14.dp),
+                                text = stringResource(id = R.string.set_reminder),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            OutlinedButton(
+                                border = BorderStroke(
+                                    1.dp,
+                                    Brush.horizontalGradient(gradientColors)
+                                ), onClick = { isShowDateDialog.value = true }) {
+                                Text(
+                                    text = stringResource(id = R.string.data_change),
+                                    style = TextStyle(brush = Brush.verticalGradient(gradientColors))
+                                )
+                            }
+                        }
+                    }
                     Spacer(modifier = Modifier.height(22.dp))
                     Row(
                         modifier = Modifier
@@ -329,21 +347,23 @@ fun DialogAddRoutine(
                                         name = routineName
                                         timeHours = time
                                         explanation = routineExplanation
-                                        dayName=persianData.dayName(date)
+                                        dayName = persianData.dayName(date)
                                     } ?: Routine(
                                         routineName,
                                         null,
                                         persianData.dayName(date),
-                                        currentNumberDay,
-                                        currentNumberMonth,
-                                        currentNumberYer,
+                                        dayCheckedDialog,
+                                        dayMonthCheckedDialog,
+                                        dayYerCheckedDialog,
                                         time,
                                         explanation = routineExplanation,
                                     ))
                                 }
+                                dayCheckedDialog=0
                             })
                         Spacer(modifier = Modifier.width(10.dp))
                         TextButton(onClick = {
+                            dayCheckedDialog=0
                             openDialog(false)
                         }) {
                             Text(
@@ -357,10 +377,37 @@ fun DialogAddRoutine(
                             )
                         }
                     }
+                    if (isShowDateDialog.value) {
+                        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                            DialogChoseDate(
+                                dayYerChecked = dayYerCheckedDialog,
+                                times = times ?: emptyList(),
+                                dayMonthChecked = dayMonthCheckedDialog,
+                                dayChecked = dayCheckedDialog,
+                                closeDialog = {
+                                    dayCheckedNumber(0, 0, 0)
+                                    isShowDateDialog.value = it
+                                },
+                                dayCheckedNumber = { yer, month, day ->
+                                    isHaveClicked=true
+                                    dayCheckedDialog = day
+                                    dayMonthCheckedDialog = month
+                                    dayYerCheckedDialog = yer
+                                }, monthChange = { yer, month ->
+                                    dayCheckedDialog =
+                                        if (month == currentNumberMonth) currentNumberDay else 1
+                                    isHaveClicked=true
+                                    dayMonthCheckedDialog = month
+                                    dayYerCheckedDialog = yer
+                                    dayCheckedNumber(1, yer, month)
+                                })
+                        }
+                    }
                 }
             }
         }
     }
+
     ShowTimePicker(time, alarmDialogState) {
         time =
             it.hour.toString() + ":" + if (it.minute.toString().length == 1) "0" + it.minute else it.minute

@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -85,8 +86,10 @@ fun DialogButtonBackground(
     gradient: Brush,
     modifier: Modifier = Modifier,
     textSize: TextUnit,
+    textStyle: TextStyle = TextStyle(),
     onClick: () -> Unit = { },
 ) {
+
     Button(
         colors = ButtonDefaults.buttonColors(Color.Transparent),
         contentPadding = PaddingValues(),
@@ -104,6 +107,7 @@ fun DialogButtonBackground(
             Text(
                 text = text,
                 fontSize = textSize,
+                style = textStyle,
                 modifier = Modifier.padding(end = 4.dp, start = 4.dp),
                 color = Color.White
             )
@@ -239,6 +243,21 @@ fun GradientButtonPreview() {
             .width(150.dp)
             .wrapContentHeight(),
         textSize = 14.sp
+    )
+}
+
+@Preview
+@Composable
+fun DialogButtonBackgroundWrapper() {
+    DialogButtonBackground(
+        "انتخاب",
+        gradient = Brush.horizontalGradient(gradientColors),
+        modifier = Modifier
+            .width(150.dp)
+            .wrapContentHeight(),
+        textSize = 14.sp,
+        textStyle = TextStyle(fontWeight = FontWeight.Bold),
+        onClick = {}
     )
 }
 

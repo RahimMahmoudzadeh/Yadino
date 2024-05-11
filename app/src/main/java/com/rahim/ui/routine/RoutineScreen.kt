@@ -101,8 +101,13 @@ fun RoutineScreen(
     var dayChecked by rememberSaveable { mutableIntStateOf(0) }
     var dayMonthChecked by rememberSaveable { mutableIntStateOf(0) }
     var dayYerChecked by rememberSaveable { mutableIntStateOf(0) }
+    var dayMonthCheckedDialog by rememberSaveable { mutableIntStateOf(viewModel.currentMonth) }
+    var dayYerCheckedDialog by rememberSaveable { mutableIntStateOf(viewModel.currentYer) }
+    var dayCheckedDialog by rememberSaveable { mutableIntStateOf(viewModel.currentDay) }
     var timesSize by rememberSaveable { mutableIntStateOf(0) }
     var indexDay by rememberSaveable { mutableIntStateOf(-1) }
+    val timeMonth by viewModel.getTimesMonth(dayYerCheckedDialog, dayMonthCheckedDialog)
+        .collectAsStateWithLifecycle(initialValue = emptyList())
     val listStateDay = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val currentDayIndex by remember {
@@ -149,7 +154,6 @@ fun RoutineScreen(
             }
         }, containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -319,7 +323,19 @@ fun RoutineScreen(
         },
         currentNumberDay = dayChecked,
         currentNumberMonth = dayMonthChecked,
-        currentNumberYer = dayYerChecked
+        currentNumberYer = dayYerChecked,
+        times = timeMonth,
+        dayCheckedNumber = { day, yer, month ->
+            if (day == 0 && yer == 0 && month == 0) {
+                dayMonthCheckedDialog = viewModel.currentMonth
+                dayYerCheckedDialog = viewModel.currentYer
+                dayCheckedDialog = viewModel.currentDay
+            } else {
+                dayMonthCheckedDialog = month
+                dayYerCheckedDialog = yer
+                dayCheckedDialog = day
+            }
+        }
     )
 
     if (routineForAdd.value != null)
@@ -478,7 +494,9 @@ private fun ItemTimeDate(
             )
         }
         Text(
-            modifier = Modifier.padding(top = 12.dp).fillMaxWidth(0.3f),
+            modifier = Modifier
+                .padding(top = 12.dp)
+                .fillMaxWidth(0.3f),
             text = "$dayYerChecked ${dayMonthChecked.calculateMonthName()}",
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center
@@ -492,7 +510,7 @@ private fun ItemTimeDate(
             }
             val time =
                 times.find { it.monthNumber == month && it.yerNumber == year && it.dayNumber == 1 }
-            if (time!=null){
+            if (time != null) {
                 dayCheckedNumber("1", year, month)
                 val index = times.indexOf(time)
                 indexScrollDay(

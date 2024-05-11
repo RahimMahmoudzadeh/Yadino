@@ -13,7 +13,11 @@ import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.enums.WeekName
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
@@ -59,6 +63,25 @@ class DataTimeRepositoryImpl @Inject constructor(
     }
 
     override fun getTimes(): Flow<List<TimeDate>> = timeDao.getAllTimeFlow().distinctUntilChanged()
+    override fun getTimesMonth(yerNumber: Int, monthNumber: Int): Flow<List<TimeDate>> = flow {
+        if (yerNumber != FIRST_YEAR || yerNumber != END_YEAR) {
+            timeDao.getSpecificMonthFromYer(monthNumber, yerNumber).distinctUntilChanged().catch {}
+                .collect {
+                    if (it.isNotEmpty()){
+                        val times=ArrayList<TimeDate>()
+                        val spaceStart = calculateDaySpaceStartMonth(it.first())
+                        val spaceEnd = calculateDaySpaceEndMonth(it.last())
+                        times.addAll(spaceStart)
+                        times.addAll(it)
+                        times.addAll(spaceEnd)
+                        emit(times)
+                    }
+                }
+        } else {
+            emitAll(timeDao.getSpecificMonthFromYer(monthNumber, yerNumber).distinctUntilChanged())
+        }
+    }
+
 
     private fun calculateDaySpaceStartMonth(timeDate: TimeDate): List<TimeDate> {
         val emptyTimes = ArrayList<TimeDate>()
