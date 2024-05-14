@@ -302,10 +302,16 @@ fun RoutineScreen(
         openDialog = {
             routineUpdateDialog.value = null
             routineForAdd.value = null
-            openDialog = it
+            dayMonthCheckedDialog = viewModel.currentMonth
+            dayYerCheckedDialog = viewModel.currentYer
+            dayCheckedDialog = viewModel.currentDay
+            openDialog = false
         },
         routineUpdate = routineUpdateDialog.value,
         routine = { routine ->
+            dayMonthCheckedDialog = viewModel.currentMonth
+            dayYerCheckedDialog = viewModel.currentYer
+            dayCheckedDialog = viewModel.currentDay
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(routine)
                 alarmManagement.updateAlarm(
@@ -321,9 +327,9 @@ fun RoutineScreen(
             }
             routineUpdateDialog.value = null
         },
-        currentNumberDay = dayChecked,
-        currentNumberMonth = dayMonthChecked,
-        currentNumberYer = dayYerChecked,
+        currentNumberDay = dayCheckedDialog,
+        currentNumberMonth = dayMonthCheckedDialog,
+        currentNumberYer = dayYerCheckedDialog,
         times = timeMonth,
         dayCheckedNumber = { day, yer, month ->
             if (day == 0 && yer == 0 && month == 0) {

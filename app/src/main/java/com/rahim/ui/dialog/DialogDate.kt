@@ -63,7 +63,7 @@ fun DialogChoseDate(
     dayYerChecked: Int,
     dayMonthChecked: Int,
     dayChecked: Int,
-    closeDialog: (cancel: Boolean) -> Unit,
+    closeDialog: (isSelection:Boolean) -> Unit,
     dayCheckedNumber: (yer: Int, month: Int, day: Int) -> Unit,
     monthChange: (yer: Int, month: Int) -> Unit,
 ) {
@@ -198,7 +198,7 @@ fun DialogChoseDate(
                             textSize = 16.sp,
                             textStyle = TextStyle(fontWeight = FontWeight.Bold),
                             onClick = {
-                                closeDialog(false)
+                                closeDialog(true)
                             })
                         Spacer(modifier = Modifier.width(10.dp))
                         TextButton(onClick = {

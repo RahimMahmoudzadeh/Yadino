@@ -223,7 +223,7 @@ fun HomeScreen(
         isShowDay = false,
         isOpen = openDialog || routineUpdateDialog.value != null,
         openDialog = {
-            openDialog = it
+            openDialog = false
             routineUpdateDialog.value = null
             routineForAdd.value = null
         },

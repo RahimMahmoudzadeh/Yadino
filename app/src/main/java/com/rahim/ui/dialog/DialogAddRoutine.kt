@@ -55,7 +55,7 @@ fun DialogAddRoutine(
     currentNumberYer: Int,
     routineUpdate: Routine? = null,
     times: List<TimeDate>? = null,
-    openDialog: (Boolean) -> Unit,
+    openDialog: () -> Unit,
     routine: (Routine) -> Unit,
     dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit
 ) {
@@ -67,20 +67,12 @@ fun DialogAddRoutine(
     val isErrorName = remember { mutableStateOf(false) }
     val isShowDateDialog = remember { mutableStateOf(false) }
     val isErrorExplanation = remember { mutableStateOf(false) }
-    var isHaveClicked by rememberSaveable { mutableStateOf(false) }
-    var dayMonthCheckedDialog by rememberSaveable { mutableIntStateOf(0) }
-    var dayYerCheckedDialog by rememberSaveable { mutableIntStateOf(0) }
-    var dayCheckedDialog by rememberSaveable { mutableIntStateOf(0) }
-    if (!isHaveClicked) {
-        dayMonthCheckedDialog = currentNumberMonth
-        dayYerCheckedDialog = currentNumberYer
-        dayCheckedDialog = currentNumberDay
-    }
+
     var time by rememberSaveable { mutableStateOf("12:00") }
     val alarmDialogState = rememberMaterialDialogState()
     val persianData = PersianDate()
-    val date =
-        persianData.initJalaliDate(dayYerCheckedDialog, dayMonthCheckedDialog, dayCheckedDialog)
+    val date = persianData.initJalaliDate(currentNumberYer, currentNumberMonth, currentNumberDay)
+
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
     if (routineUpdate != null) {
         routineName = routineUpdate.name
@@ -106,8 +98,7 @@ fun DialogAddRoutine(
                 brush = Brush.verticalGradient(gradientColors),
                 shape = RoundedCornerShape(8.dp)
             ), onDismissRequest = {
-            dayCheckedDialog=0
-            openDialog(false)
+            openDialog()
         }) {
             Surface(
                 color = MaterialTheme.colorScheme.background,
@@ -126,35 +117,30 @@ fun DialogAddRoutine(
                         textAlign = TextAlign.Center,
                         style = TextStyle(brush = Brush.verticalGradient(gradientColors))
                     )
-                    TextField(
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.background)
-                            .fillMaxWidth()
-                            .padding(top = 18.dp)
-                            .height(52.dp)
-                            .border(
-                                width = 1.dp,
-                                brush = Brush.verticalGradient(gradientColors),
-                                shape = RoundedCornerShape(4.dp)
-                            ),
-                        value = routineName,
-                        onValueChange = {
-                            isErrorName.value = it.length >= maxName
-                            routineName = if (it.length <= maxName) it else routineName
-                        },
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.name_hint_text_filed_routine),
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.background,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
-                            disabledIndicatorColor = MaterialTheme.colorScheme.background,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.background
+                    TextField(modifier = Modifier
+                        .background(MaterialTheme.colorScheme.background)
+                        .fillMaxWidth()
+                        .padding(top = 18.dp)
+                        .height(52.dp)
+                        .border(
+                            width = 1.dp,
+                            brush = Brush.verticalGradient(gradientColors),
+                            shape = RoundedCornerShape(4.dp)
+                        ), value = routineName, onValueChange = {
+                        isErrorName.value = it.length >= maxName
+                        routineName = if (it.length <= maxName) it else routineName
+                    }, placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.name_hint_text_filed_routine),
+                            color = MaterialTheme.colorScheme.primary
                         )
+                    }, colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
+                        disabledIndicatorColor = MaterialTheme.colorScheme.background,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background
+                    )
                     )
 
                     if (isErrorName.value) {
@@ -288,8 +274,7 @@ fun DialogAddRoutine(
                             alarmDialogState.show()
                         }) {
                             Text(
-                                text = stringResource(id = R.string.time_change),
-                                style = TextStyle(
+                                text = stringResource(id = R.string.time_change), style = TextStyle(
                                     brush = Brush.verticalGradient(
                                         gradientColors
                                     )
@@ -313,11 +298,9 @@ fun DialogAddRoutine(
                                 text = stringResource(id = R.string.set_reminder),
                                 color = MaterialTheme.colorScheme.primary
                             )
-                            OutlinedButton(
-                                border = BorderStroke(
-                                    1.dp,
-                                    Brush.horizontalGradient(gradientColors)
-                                ), onClick = { isShowDateDialog.value = true }) {
+                            OutlinedButton(border = BorderStroke(
+                                1.dp, Brush.horizontalGradient(gradientColors)
+                            ), onClick = { isShowDateDialog.value = true }) {
                                 Text(
                                     text = stringResource(id = R.string.data_change),
                                     style = TextStyle(brush = Brush.verticalGradient(gradientColors))
@@ -352,19 +335,17 @@ fun DialogAddRoutine(
                                         routineName,
                                         null,
                                         persianData.dayName(date),
-                                        dayCheckedDialog,
-                                        dayMonthCheckedDialog,
-                                        dayYerCheckedDialog,
+                                        currentNumberDay,
+                                        currentNumberMonth,
+                                        currentNumberYer,
                                         time,
                                         explanation = routineExplanation,
                                     ))
                                 }
-                                dayCheckedDialog=0
                             })
                         Spacer(modifier = Modifier.width(10.dp))
                         TextButton(onClick = {
-                            dayCheckedDialog=0
-                            openDialog(false)
+                            openDialog()
                         }) {
                             Text(
                                 fontSize = 16.sp,
@@ -379,27 +360,23 @@ fun DialogAddRoutine(
                     }
                     if (isShowDateDialog.value) {
                         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                            DialogChoseDate(
-                                dayYerChecked = dayYerCheckedDialog,
+                            DialogChoseDate(dayYerChecked = currentNumberYer,
                                 times = times ?: emptyList(),
-                                dayMonthChecked = dayMonthCheckedDialog,
-                                dayChecked = dayCheckedDialog,
+                                dayMonthChecked = currentNumberMonth,
+                                dayChecked = currentNumberDay,
                                 closeDialog = {
-                                    dayCheckedNumber(0, 0, 0)
-                                    isShowDateDialog.value = it
+                                    if (!it) dayCheckedNumber(0, 0, 0)
+                                    isShowDateDialog.value = false
                                 },
                                 dayCheckedNumber = { yer, month, day ->
-                                    isHaveClicked=true
-                                    dayCheckedDialog = day
-                                    dayMonthCheckedDialog = month
-                                    dayYerCheckedDialog = yer
-                                }, monthChange = { yer, month ->
-                                    dayCheckedDialog =
-                                        if (month == currentNumberMonth) currentNumberDay else 1
-                                    isHaveClicked=true
-                                    dayMonthCheckedDialog = month
-                                    dayYerCheckedDialog = yer
-                                    dayCheckedNumber(1, yer, month)
+                                    dayCheckedNumber(day, yer, month)
+                                },
+                                monthChange = { yer, month ->
+                                    dayCheckedNumber(
+                                        if (month == currentNumberMonth) currentNumberDay else 1,
+                                        yer,
+                                        month
+                                    )
                                 })
                         }
                     }
@@ -418,9 +395,7 @@ fun DialogAddRoutine(
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun ShowTimePicker(
-    currentTime: String,
-    dialogState: MaterialDialogState,
-    time: (LocalTime) -> Unit
+    currentTime: String, dialogState: MaterialDialogState, time: (LocalTime) -> Unit
 ) {
     MaterialDialog(properties = DialogProperties(dismissOnClickOutside = false),
         border = BorderStroke(2.dp, Brush.horizontalGradient(gradientColors)),
@@ -436,10 +411,8 @@ fun ShowTimePicker(
             )
             negativeButton(
                 textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 14.sp
-                ),
-                text = stringResource(id = R.string.cancel)
+                    color = MaterialTheme.colorScheme.primary, fontSize = 14.sp
+                ), text = stringResource(id = R.string.cancel)
             )
         }) {
         timepicker(
