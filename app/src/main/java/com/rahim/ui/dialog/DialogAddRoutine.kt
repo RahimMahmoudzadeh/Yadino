@@ -57,7 +57,8 @@ fun DialogAddRoutine(
     times: List<TimeDate>? = null,
     openDialog: () -> Unit,
     routine: (Routine) -> Unit,
-    dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit
+    dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit,
+    monthChange: ((year: Int, month: Int) -> Unit)? = null,
 ) {
     val maxName = 22
     val maxExplanation = 40
@@ -68,16 +69,27 @@ fun DialogAddRoutine(
     val isShowDateDialog = remember { mutableStateOf(false) }
     val isErrorExplanation = remember { mutableStateOf(false) }
 
-    var time by rememberSaveable { mutableStateOf("12:00") }
+    var time by rememberSaveable { mutableStateOf("") }
     val alarmDialogState = rememberMaterialDialogState()
     val persianData = PersianDate()
-    val date = persianData.initJalaliDate(currentNumberYer, currentNumberMonth, currentNumberDay)
+    var date: PersianDate? = null
 
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
     if (routineUpdate != null) {
+        date = persianData.initJalaliDate(
+            routineUpdate.yerNumber ?: 0,
+            routineUpdate.monthNumber ?: 0,
+            routineUpdate.dayNumber ?: 0
+        )
         routineName = routineUpdate.name
         routineExplanation = routineUpdate.explanation ?: ""
-        time = routineUpdate.timeHours ?: "12:00"
+        time = time.ifEmpty { routineUpdate.timeHours ?: "12:00" }
+    } else {
+        date = persianData.initJalaliDate(
+            currentNumberYer,
+            currentNumberMonth,
+            currentNumberDay)
+        time = "12:00"
     }
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         if (!isOpen) {
@@ -360,23 +372,17 @@ fun DialogAddRoutine(
                     }
                     if (isShowDateDialog.value) {
                         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                            DialogChoseDate(dayYerChecked = currentNumberYer,
+                            DialogChoseDate(yearNumber = currentNumberYer,
                                 times = times ?: emptyList(),
-                                dayMonthChecked = currentNumberMonth,
-                                dayChecked = currentNumberDay,
+                                monthNumber = currentNumberMonth,
+                                dayNumber = currentNumberDay,
                                 closeDialog = {
-                                    if (!it) dayCheckedNumber(0, 0, 0)
                                     isShowDateDialog.value = false
                                 },
                                 dayCheckedNumber = { yer, month, day ->
                                     dayCheckedNumber(day, yer, month)
-                                },
-                                monthChange = { yer, month ->
-                                    dayCheckedNumber(
-                                        if (month == currentNumberMonth) currentNumberDay else 1,
-                                        yer,
-                                        month
-                                    )
+                                }, monthChange = { yer, month ->
+                                    monthChange?.let { it(yer, month) }
                                 })
                         }
                     }

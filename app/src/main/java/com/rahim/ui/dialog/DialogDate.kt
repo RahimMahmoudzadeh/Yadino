@@ -28,6 +28,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -45,7 +49,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.R
-import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.data.TimeDate
 import com.rahim.ui.theme.Periwinkle
 import com.rahim.ui.theme.YadinoTheme
@@ -53,20 +56,24 @@ import com.rahim.utils.base.view.DialogButtonBackground
 import com.rahim.utils.base.view.gradientColors
 import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.extention.calculateMonthName
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialogChoseDate(
     modifier: Modifier = Modifier,
     times: List<TimeDate>,
-    dayYerChecked: Int,
-    dayMonthChecked: Int,
-    dayChecked: Int,
-    closeDialog: (isSelection:Boolean) -> Unit,
+    yearNumber: Int,
+    monthNumber: Int,
+    dayNumber: Int,
+    closeDialog: () -> Unit,
     dayCheckedNumber: (yer: Int, month: Int, day: Int) -> Unit,
     monthChange: (yer: Int, month: Int) -> Unit,
 ) {
+    var dayClicked by rememberSaveable { mutableIntStateOf(dayNumber) }
+    var currentDay by rememberSaveable { mutableIntStateOf(dayNumber) }
+    var currentMonth by rememberSaveable { mutableIntStateOf(monthNumber) }
+    var yearClicked by rememberSaveable { mutableIntStateOf(yearNumber) }
+    var monthClicked by rememberSaveable { mutableIntStateOf(monthNumber) }
     BasicAlertDialog(properties = DialogProperties(
         usePlatformDefaultWidth = false, dismissOnClickOutside = true
     ), modifier = modifier
@@ -85,12 +92,15 @@ fun DialogChoseDate(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     IconButton(onClick = {
-                        var month = dayMonthChecked.plus(1)
-                        var year = dayYerChecked
+                        var month = monthNumber.plus(1)
+                        var year = yearNumber
                         if (month > 12) {
                             month = 1
-                            year = dayYerChecked.plus(1)
+                            year = yearNumber.plus(1)
                         }
+                        dayClicked = if (month == currentMonth) currentDay else 1
+                        monthClicked = month
+                        yearClicked = year
                         monthChange(year, month)
                     }) {
                         Icon(
@@ -103,17 +113,20 @@ fun DialogChoseDate(
                         modifier = Modifier
                             .padding(top = 12.dp)
                             .fillMaxWidth(0.5f),
-                        text = "$dayYerChecked ${dayMonthChecked.calculateMonthName()}",
+                        text = "$yearClicked ${monthClicked.calculateMonthName()}",
                         color = Color.White,
                         textAlign = TextAlign.Center
                     )
                     IconButton(onClick = {
-                        var month = dayMonthChecked.minus(1)
-                        var year = dayYerChecked
+                        var month = monthNumber.minus(1)
+                        var year = yearNumber
                         if (month < 1) {
                             month = 12
-                            year = dayYerChecked.minus(1)
+                            year = yearNumber.minus(1)
                         }
+                        dayClicked = if (month == currentMonth) currentDay else 1
+                        monthClicked = month
+                        yearClicked = year
                         monthChange(year, month)
                     }) {
                         Icon(
@@ -177,11 +190,13 @@ fun DialogChoseDate(
                         items(times) {
                             TimeItems(
                                 it,
-                                dayChecked,
-                                dayMonthChecked,
-                                dayYerChecked,
+                                dayClicked,
+                                monthClicked,
+                                yearClicked,
                                 dayCheckedNumber = { yer, month, day ->
-                                    dayCheckedNumber(yer, month, day)
+                                    yearClicked = yer
+                                    monthClicked = month
+                                    dayClicked = day
                                 })
                         }
                     }
@@ -198,11 +213,13 @@ fun DialogChoseDate(
                             textSize = 16.sp,
                             textStyle = TextStyle(fontWeight = FontWeight.Bold),
                             onClick = {
-                                closeDialog(true)
+                                dayCheckedNumber(yearClicked, monthClicked, dayClicked)
+                                closeDialog()
                             })
                         Spacer(modifier = Modifier.width(10.dp))
                         TextButton(onClick = {
-                            closeDialog(false)
+                            dayCheckedNumber(0, 0, 0)
+                            closeDialog()
                         }) {
                             Text(
                                 fontSize = 16.sp,
@@ -348,12 +365,12 @@ fun DialogChoseDateWrapperLight() {
     YadinoTheme {
         DialogChoseDate(
             times = times,
-            dayYerChecked = 1403,
-            dayMonthChecked = 2,
-            dayChecked = 21,
+            yearNumber = 1403,
+            monthNumber = 2,
+            dayNumber = 21,
             closeDialog = {},
             dayCheckedNumber = { yer, month, day -> },
-            monthChange = { yer, month ->}
+            monthChange = { yer, month -> }
         )
     }
 }
@@ -379,12 +396,12 @@ fun DialogChoseDateWrapperDark() {
     YadinoTheme {
         DialogChoseDate(
             times = times,
-            dayYerChecked = 1403,
-            dayMonthChecked = 2,
-            dayChecked = 22,
+            yearNumber = 1403,
+            monthNumber = 2,
+            dayNumber = 22,
             closeDialog = {},
             dayCheckedNumber = { yer, month, day -> },
-            monthChange = { yer, month ->}
+            monthChange = { yer, month -> }
         )
     }
 }
