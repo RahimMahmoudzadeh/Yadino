@@ -35,8 +35,12 @@ class HomeViewModel @Inject constructor(
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
 
     private val _addRoutine =
-        MutableStateFlow<Resource<Routine?>>(Resource.Success(null))
-    val addRoutine: StateFlow<Resource<Routine?>> = _addRoutine
+        MutableStateFlow<Resource<Routine?>?>(null)
+    val addRoutine: StateFlow<Resource<Routine?>?> = _addRoutine
+
+    private val _updateRoutine =
+        MutableStateFlow<Resource<Routine?>?>(null)
+    val updateRoutine: StateFlow<Resource<Routine?>?> = _updateRoutine
 
     fun getCurrentRoutines() {
         viewModelScope.launch {
@@ -59,7 +63,14 @@ class HomeViewModel @Inject constructor(
 
     fun updateRoutine(routine: Routine) {
         viewModelScope.launch {
-            routineRepository.updateRoutine(routine)
+            routineRepository.updateRoutine(routine).catch {}.collectLatest {
+                _updateRoutine.value = it
+            }
+        }
+    }
+    fun checkedRoutine(routine: Routine) {
+        viewModelScope.launch {
+            routineRepository.checkedRoutine(routine)
         }
     }
 
@@ -71,5 +82,11 @@ class HomeViewModel @Inject constructor(
                 _addRoutine.value = it
             }
         }
+    }
+    fun clearAddRoutine(){
+        _addRoutine.value=null
+    }
+    fun clearUpdateRoutine(){
+        _updateRoutine.value=null
     }
 }

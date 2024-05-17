@@ -60,46 +60,27 @@ fun DialogAddRoutine(
     dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit,
     monthChange: ((year: Int, month: Int) -> Unit)? = null,
 ) {
+    if (!isOpen) return
     val maxName = 22
     val maxExplanation = 40
-    var routineName by rememberSaveable { mutableStateOf("") }
-    var routineExplanation by rememberSaveable { mutableStateOf("") }
-    val checkedStateAllDay = remember { mutableStateOf(false) }
-    val isErrorName = remember { mutableStateOf(false) }
-    val isShowDateDialog = remember { mutableStateOf(false) }
-    val isErrorExplanation = remember { mutableStateOf(false) }
-
-    var time by rememberSaveable { mutableStateOf("") }
+    var routineName by rememberSaveable { mutableStateOf(routineUpdate?.name ?: "") }
+    var routineExplanation by rememberSaveable { mutableStateOf(routineUpdate?.explanation ?: "") }
+    var checkedStateAllDay by remember { mutableStateOf(false) }
+    var isErrorName by remember { mutableStateOf(false) }
+    var isShowDateDialog by remember { mutableStateOf(false) }
+    var isErrorExplanation by remember { mutableStateOf(false) }
+    val t = routineUpdate?.timeHours ?: "12:00"
+    var time by rememberSaveable { mutableStateOf(t) }
     val alarmDialogState = rememberMaterialDialogState()
     val persianData = PersianDate()
-    var date: PersianDate? = null
-
+    val date = persianData.initJalaliDate(
+        routineUpdate?.yerNumber ?: currentNumberYer,
+        routineUpdate?.monthNumber ?: currentNumberMonth,
+        routineUpdate?.dayNumber ?: currentNumberDay
+    )
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
-    if (routineUpdate != null) {
-        date = persianData.initJalaliDate(
-            routineUpdate.yerNumber ?: 0,
-            routineUpdate.monthNumber ?: 0,
-            routineUpdate.dayNumber ?: 0
-        )
-        routineName = routineUpdate.name
-        routineExplanation = routineUpdate.explanation ?: ""
-        time = time.ifEmpty { routineUpdate.timeHours ?: "12:00" }
-    } else {
-        date = persianData.initJalaliDate(
-            currentNumberYer,
-            currentNumberMonth,
-            currentNumberDay)
-        time = "12:00"
-    }
+
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        if (!isOpen) {
-            routineName = ""
-            routineExplanation = ""
-            isErrorName.value = false
-            isErrorExplanation.value = false
-            time = "12:00"
-            return@CompositionLocalProvider
-        }
         BasicAlertDialog(properties = DialogProperties(
             usePlatformDefaultWidth = false, dismissOnClickOutside = false
         ), modifier = modifier
@@ -139,7 +120,7 @@ fun DialogAddRoutine(
                             brush = Brush.verticalGradient(gradientColors),
                             shape = RoundedCornerShape(4.dp)
                         ), value = routineName, onValueChange = {
-                        isErrorName.value = it.length >= maxName
+                        isErrorName = it.length >= maxName
                         routineName = if (it.length <= maxName) it else routineName
                     }, placeholder = {
                         Text(
@@ -155,7 +136,7 @@ fun DialogAddRoutine(
                     )
                     )
 
-                    if (isErrorName.value) {
+                    if (isErrorName) {
                         Text(
                             modifier = Modifier.padding(start = 16.dp),
                             text = if (routineName.isEmpty()) stringResource(id = R.string.emptyField) else stringResource(
@@ -177,7 +158,7 @@ fun DialogAddRoutine(
                             ),
                         value = if (routineExplanation.isNullOrEmpty()) "" else routineExplanation,
                         onValueChange = {
-                            isErrorExplanation.value = it.length >= maxExplanation
+                            isErrorExplanation = it.length >= maxExplanation
                             routineExplanation =
                                 if (it.length <= maxExplanation) it else routineExplanation
                         },
@@ -195,7 +176,7 @@ fun DialogAddRoutine(
                             unfocusedContainerColor = MaterialTheme.colorScheme.background
                         )
                     )
-                    if (isErrorExplanation.value) {
+                    if (isErrorExplanation) {
                         Text(
                             modifier = Modifier.padding(start = 16.dp),
                             text = stringResource(id = R.string.length_textFiled_explanation_routine),
@@ -250,8 +231,8 @@ fun DialogAddRoutine(
                             )
                             Checkbox(
                                 modifier = Modifier.padding(start = 10.dp),
-                                checked = checkedStateAllDay.value,
-                                onCheckedChange = { checkedStateAllDay.value = it },
+                                checked = checkedStateAllDay,
+                                onCheckedChange = { checkedStateAllDay = it },
                                 colors = CheckboxDefaults.colors(
                                     checkedColor = Purple, uncheckedColor = CornflowerBlueLight
                                 )
@@ -312,7 +293,7 @@ fun DialogAddRoutine(
                             )
                             OutlinedButton(border = BorderStroke(
                                 1.dp, Brush.horizontalGradient(gradientColors)
-                            ), onClick = { isShowDateDialog.value = true }) {
+                            ), onClick = { isShowDateDialog = true }) {
                                 Text(
                                     text = stringResource(id = R.string.data_change),
                                     style = TextStyle(brush = Brush.verticalGradient(gradientColors))
@@ -336,7 +317,7 @@ fun DialogAddRoutine(
                                 Timber.tag("tagNameRoutine").d(routineName.length.toString())
 
                                 if (routineName.isEmpty()) {
-                                    isErrorName.value = true
+                                    isErrorName = true
                                 } else {
                                     routine(routineUpdate?.apply {
                                         name = routineName
@@ -370,14 +351,14 @@ fun DialogAddRoutine(
                             )
                         }
                     }
-                    if (isShowDateDialog.value) {
+                    if (isShowDateDialog) {
                         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                             DialogChoseDate(yearNumber = currentNumberYer,
                                 times = times ?: emptyList(),
                                 monthNumber = currentNumberMonth,
                                 dayNumber = currentNumberDay,
                                 closeDialog = {
-                                    isShowDateDialog.value = false
+                                    isShowDateDialog = false
                                 },
                                 dayCheckedNumber = { yer, month, day ->
                                     dayCheckedNumber(day, yer, month)
@@ -392,8 +373,7 @@ fun DialogAddRoutine(
     }
 
     ShowTimePicker(time, alarmDialogState) {
-        time =
-            it.hour.toString() + ":" + if (it.minute.toString().length == 1) "0" + it.minute else it.minute
+        time = it.toString()
     }
 }
 

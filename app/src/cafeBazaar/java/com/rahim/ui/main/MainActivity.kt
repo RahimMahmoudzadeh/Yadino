@@ -3,7 +3,6 @@ package com.rahim.ui.main
 import android.Manifest
 import android.app.Activity
 import android.content.pm.ActivityInfo
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,32 +12,25 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.messaging.FirebaseMessaging
-import com.rahim.data.modle.dialog.StateOpenDialog
-import com.rahim.data.sharedPreferences.SharedPreferencesCustom
 import com.rahim.ui.navigation.NavGraph
 import com.rahim.ui.navigation.YadinoApp
-import com.rahim.ui.routine.RoutineViewModel
 import com.rahim.ui.theme.BalticSea
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.navigation.Screen
-import com.rahim.utils.resours.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -110,7 +102,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        mainViewModel.checkEdAllRoutinePastTime()
+        mainViewModel.checkedAllRoutinePastTime()
     }
     private fun getTokenFirebase() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->

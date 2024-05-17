@@ -1,6 +1,5 @@
 package com.rahim.utils.base.view
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -15,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -25,7 +23,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -38,9 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.rahim.R
@@ -165,28 +160,29 @@ fun CircularProgressAnimated(isShow: Boolean) {
 }
 
 @Composable
-fun ProcessRoutineAdded(
-    addRoutine: Resource<Routine?>,
+fun <T>ProcessRoutineAdded(
+    response: Resource<T?>?,
     context: Context,
-    closeDialog: (Boolean) -> Unit
+    closeDialog: (responseData:T?) -> Unit
 ) {
     Timber.tag("routineAdd")
-        .d("ProcessRoutineAdded ->${if (addRoutine is Resource.Success) "success" else if (addRoutine is Resource.Error) "fail" else "loading"}")
-    when (addRoutine) {
-        is Resource.Loading -> {
-            CircularProgressAnimated(true)
-        }
+        .d("ProcessRoutineAdded ->${if (response is Resource.Success) "success" else if (response is Resource.Error) "fail" else "loading"}")
+    response?.let {
+        when (response) {
+            is Resource.Loading -> {
+                CircularProgressAnimated(true)
+            }
 
-        is Resource.Success -> {
-            CircularProgressAnimated(false)
-            if (addRoutine.data != null)
-                closeDialog(false)
-        }
+            is Resource.Success -> {
+                CircularProgressAnimated(false)
+                closeDialog(response.data)
+            }
 
-        is Resource.Error -> {
-            CircularProgressAnimated(false)
-            ShowToastShort(addRoutine.message, context)
-            closeDialog(true)
+            is Resource.Error -> {
+                CircularProgressAnimated(false)
+                ShowToastShort(response.message, context)
+                closeDialog(response.data)
+            }
         }
     }
 }

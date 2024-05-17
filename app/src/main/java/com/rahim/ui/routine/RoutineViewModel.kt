@@ -40,9 +40,11 @@ class RoutineViewModel @Inject constructor(
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
 
     private val _addRoutine =
-        MutableStateFlow<Resource<Routine?>>(Resource.Success(null))
-    val addRoutine: StateFlow<Resource<Routine?>> = _addRoutine
-
+        MutableStateFlow<Resource<Routine?>?>(null)
+    val addRoutine: StateFlow<Resource<Routine?>?> = _addRoutine
+    private val _updateRoutine =
+        MutableStateFlow<Resource<Routine?>?>(null)
+    val updateRoutine: StateFlow<Resource<Routine?>?> = _updateRoutine
     init {
         getRoutines(currentMonth, currentDay, currentYer)
     }
@@ -74,13 +76,15 @@ class RoutineViewModel @Inject constructor(
 
     fun updateRoutine(routine: Routine) {
         viewModelScope.launch {
-            routineRepository.updateRoutine(routine)
+            routineRepository.updateRoutine(routine).catch {}.collectLatest {
+                _updateRoutine.value = it
+            }
         }
     }
 
-    fun updateCheckedByAlarmId(id: Long) {
+    fun checkedRoutine(routine: Routine) {
         viewModelScope.launch {
-            routineRepository.updateCheckedByAlarmId(id)
+            routineRepository.checkedRoutine(routine)
         }
     }
 
@@ -98,5 +102,11 @@ class RoutineViewModel @Inject constructor(
 
     fun getTimesMonth(yerNumber: Int, monthNumber: Int): Flow<List<TimeDate>> = flow {
         emitAll(dateTimeRepository.getTimesMonth(yerNumber, monthNumber))
+    }
+    fun clearAddRoutine(){
+        _addRoutine.value=null
+    }
+    fun clearUpdateRoutine(){
+        _updateRoutine.value=null
     }
 }

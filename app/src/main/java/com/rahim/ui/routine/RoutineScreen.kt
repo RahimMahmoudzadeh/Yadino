@@ -95,7 +95,6 @@ fun RoutineScreen(
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineChecked = rememberSaveable { mutableStateOf<Routine?>(null) }
-    val routineForAdd = rememberSaveable { mutableStateOf<Routine?>(null) }
     var openDialog by rememberSaveable { mutableStateOf(false) }
     var errorClick by rememberSaveable { mutableStateOf(false) }
     var dayChecked by rememberSaveable { mutableIntStateOf(0) }
@@ -122,6 +121,7 @@ fun RoutineScreen(
     var clickSearch by rememberSaveable { mutableStateOf(false) }
 
     val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
+    val updateRoutine by viewModel.updateRoutine.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
     if (timesSize != times.size) {
         timesSize = times.size
@@ -277,10 +277,12 @@ fun RoutineScreen(
                 if (it) {
                     routineDeleteDialog.value?.let {
                         viewModel.deleteRoutine(it)
-                        alarmManagement.cancelAlarm(
-                            context,
-                            if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
-                        )
+                        coroutineScope.launch {
+                            alarmManagement.cancelAlarm(
+                                context,
+                                if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
+                            )
+                        }
                     }
                 }
                 routineDeleteDialog.value = null
@@ -292,11 +294,13 @@ fun RoutineScreen(
         )
     }
     routineChecked.value?.let {
-        viewModel.updateRoutine(it)
-        alarmManagement.cancelAlarm(
-            context,
-            it.idAlarm ?: it.id?.toLong()
-        )
+        viewModel.checkedRoutine(it)
+        coroutineScope.launch {
+            alarmManagement.cancelAlarm(
+                context,
+                it.idAlarm ?: it.id?.toLong()
+            )
+        }
         routineChecked.value = null
     }
     DialogAddRoutine(
@@ -304,7 +308,6 @@ fun RoutineScreen(
         isOpen = openDialog || routineUpdateDialog.value != null,
         openDialog = {
             routineUpdateDialog.value = null
-            routineForAdd.value = null
             monthCheckedDialog = dayMonthChecked
             yerCheckedDialog = dayYerChecked
             dayCheckedDialog = dayChecked
@@ -317,18 +320,11 @@ fun RoutineScreen(
             dayCheckedDialog = dayChecked
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(routine)
-                alarmManagement.updateAlarm(
-                    context,
-                    routine
-                )
             } else {
                 coroutineScope.launch {
                     viewModel.addRoutine(routine)
-                    delay(200)
-                    routineForAdd.value = routine
                 }
             }
-            routineUpdateDialog.value = null
         },
         currentNumberDay = dayCheckedDialog,
         currentNumberMonth = monthCheckedDialog,
@@ -344,23 +340,29 @@ fun RoutineScreen(
                 yerCheckedDialog = yer
                 dayCheckedDialog = day
             }
-        }, monthChange = { year , month ->
+        }, monthChange = { year, month ->
             monthCheckedDialog = month
             yerCheckedDialog = year
             dayCheckedDialog = 1
         }
     )
-
-    if (routineForAdd.value != null)
-        ProcessRoutineAdded(addRoutine, context) {
-            if (!it) {
-                openDialog = false
-                addRoutine.data?.let {
-                    alarmManagement.setAlarm(context, it)
-                }
-                routineForAdd.value = null
-            }
+    ProcessRoutineAdded(addRoutine, context) {
+        it?.let {
+            openDialog = false
+            alarmManagement.setAlarm(context, it)
+            viewModel.clearAddRoutine()
         }
+    }
+    ProcessRoutineAdded(updateRoutine, context) {
+        it?.let {
+            openDialog = false
+            coroutineScope.launch {
+                alarmManagement.updateAlarm(context, it)
+                viewModel.clearUpdateRoutine()
+            }
+            routineUpdateDialog.value = null
+        }
+    }
     if (errorClick) {
         ErrorDialog(
             isOpen = true,
