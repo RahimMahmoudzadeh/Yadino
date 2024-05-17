@@ -95,14 +95,18 @@ fun RoutineScreen(
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineChecked = rememberSaveable { mutableStateOf<Routine?>(null) }
-    val routineForAdd = rememberSaveable { mutableStateOf<Routine?>(null) }
     var openDialog by rememberSaveable { mutableStateOf(false) }
     var errorClick by rememberSaveable { mutableStateOf(false) }
     var dayChecked by rememberSaveable { mutableIntStateOf(0) }
     var dayMonthChecked by rememberSaveable { mutableIntStateOf(0) }
     var dayYerChecked by rememberSaveable { mutableIntStateOf(0) }
+    var monthCheckedDialog by rememberSaveable { mutableIntStateOf(viewModel.currentMonth) }
+    var yerCheckedDialog by rememberSaveable { mutableIntStateOf(viewModel.currentYer) }
+    var dayCheckedDialog by rememberSaveable { mutableIntStateOf(viewModel.currentDay) }
     var timesSize by rememberSaveable { mutableIntStateOf(0) }
     var indexDay by rememberSaveable { mutableIntStateOf(-1) }
+    val timeMonth by viewModel.getTimesMonth(yerCheckedDialog, monthCheckedDialog)
+        .collectAsStateWithLifecycle(initialValue = emptyList())
     val listStateDay = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val currentDayIndex by remember {
@@ -117,6 +121,7 @@ fun RoutineScreen(
     var clickSearch by rememberSaveable { mutableStateOf(false) }
 
     val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
+    val updateRoutine by viewModel.updateRoutine.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
     if (timesSize != times.size) {
         timesSize = times.size
@@ -149,7 +154,6 @@ fun RoutineScreen(
             }
         }, containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -187,6 +191,9 @@ fun RoutineScreen(
                     dayChecked = day.toInt()
                     dayMonthChecked = month
                     dayYerChecked = yer
+                    monthCheckedDialog = dayMonthChecked
+                    yerCheckedDialog = dayYerChecked
+                    dayCheckedDialog = dayChecked
                     viewModel.getCurrentNameDay(
                         String().calculateTimeFormat(yer, month, day),
                         YYYY_MM_DD
@@ -270,10 +277,12 @@ fun RoutineScreen(
                 if (it) {
                     routineDeleteDialog.value?.let {
                         viewModel.deleteRoutine(it)
-                        alarmManagement.cancelAlarm(
-                            context,
-                            if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
-                        )
+                        coroutineScope.launch {
+                            alarmManagement.cancelAlarm(
+                                context,
+                                if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
+                            )
+                        }
                     }
                 }
                 routineDeleteDialog.value = null
@@ -285,11 +294,13 @@ fun RoutineScreen(
         )
     }
     routineChecked.value?.let {
-        viewModel.updateRoutine(it)
-        alarmManagement.cancelAlarm(
-            context,
-            it.idAlarm ?: it.id?.toLong()
-        )
+        viewModel.checkedRoutine(it)
+        coroutineScope.launch {
+            alarmManagement.cancelAlarm(
+                context,
+                it.idAlarm ?: it.id?.toLong()
+            )
+        }
         routineChecked.value = null
     }
     DialogAddRoutine(
@@ -297,41 +308,61 @@ fun RoutineScreen(
         isOpen = openDialog || routineUpdateDialog.value != null,
         openDialog = {
             routineUpdateDialog.value = null
-            routineForAdd.value = null
-            openDialog = it
+            monthCheckedDialog = dayMonthChecked
+            yerCheckedDialog = dayYerChecked
+            dayCheckedDialog = dayChecked
+            openDialog = false
         },
         routineUpdate = routineUpdateDialog.value,
         routine = { routine ->
+            monthCheckedDialog = dayMonthChecked
+            yerCheckedDialog = dayYerChecked
+            dayCheckedDialog = dayChecked
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(routine)
-                alarmManagement.updateAlarm(
-                    context,
-                    routine
-                )
             } else {
                 coroutineScope.launch {
                     viewModel.addRoutine(routine)
-                    delay(200)
-                    routineForAdd.value = routine
                 }
+            }
+        },
+        currentNumberDay = dayCheckedDialog,
+        currentNumberMonth = monthCheckedDialog,
+        currentNumberYer = yerCheckedDialog,
+        times = timeMonth,
+        dayCheckedNumber = { day, yer, month ->
+            if (day == 0 && yer == 0 && month == 0) {
+                monthCheckedDialog = dayMonthChecked
+                yerCheckedDialog = dayYerChecked
+                dayCheckedDialog = dayChecked
+            } else {
+                monthCheckedDialog = month
+                yerCheckedDialog = yer
+                dayCheckedDialog = day
+            }
+        }, monthChange = { year, month ->
+            monthCheckedDialog = month
+            yerCheckedDialog = year
+            dayCheckedDialog = 1
+        }
+    )
+    ProcessRoutineAdded(addRoutine, context) {
+        it?.let {
+            openDialog = false
+            alarmManagement.setAlarm(context, it)
+            viewModel.clearAddRoutine()
+        }
+    }
+    ProcessRoutineAdded(updateRoutine, context) {
+        it?.let {
+            openDialog = false
+            coroutineScope.launch {
+                alarmManagement.updateAlarm(context, it)
+                viewModel.clearUpdateRoutine()
             }
             routineUpdateDialog.value = null
-        },
-        currentNumberDay = dayChecked,
-        currentNumberMonth = dayMonthChecked,
-        currentNumberYer = dayYerChecked
-    )
-
-    if (routineForAdd.value != null)
-        ProcessRoutineAdded(addRoutine, context) {
-            if (!it) {
-                openDialog = false
-                addRoutine.data?.let {
-                    alarmManagement.setAlarm(context, it)
-                }
-                routineForAdd.value = null
-            }
         }
+    }
     if (errorClick) {
         ErrorDialog(
             isOpen = true,
@@ -478,7 +509,9 @@ private fun ItemTimeDate(
             )
         }
         Text(
-            modifier = Modifier.padding(top = 12.dp).fillMaxWidth(0.3f),
+            modifier = Modifier
+                .padding(top = 12.dp)
+                .fillMaxWidth(0.3f),
             text = "$dayYerChecked ${dayMonthChecked.calculateMonthName()}",
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center
@@ -492,7 +525,7 @@ private fun ItemTimeDate(
             }
             val time =
                 times.find { it.monthNumber == month && it.yerNumber == year && it.dayNumber == 1 }
-            if (time!=null){
+            if (time != null) {
                 dayCheckedNumber("1", year, month)
                 val index = times.indexOf(time)
                 indexScrollDay(

@@ -96,4 +96,5 @@
     <string name="not_removed_checked_note">یادداشت پایان یافته را نمی توان حذف کرد!</string>
     <string name="not_update_checked_note">یادداشت پایان یافته را نمی توان ویرایش کرد!</string>
     <string name="explanation">: توضیحات</string>
+    <string name="selection">انتخاب</string>
 </resources>

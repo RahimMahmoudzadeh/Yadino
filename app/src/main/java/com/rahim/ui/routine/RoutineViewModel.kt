@@ -11,13 +11,17 @@ import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
 import com.rahim.utils.base.viewModel.BaseViewModel
 import com.rahim.utils.resours.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -36,9 +40,11 @@ class RoutineViewModel @Inject constructor(
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
 
     private val _addRoutine =
-        MutableStateFlow<Resource<Routine?>>(Resource.Success(null))
-    val addRoutine: StateFlow<Resource<Routine?>> = _addRoutine
-
+        MutableStateFlow<Resource<Routine?>?>(null)
+    val addRoutine: StateFlow<Resource<Routine?>?> = _addRoutine
+    private val _updateRoutine =
+        MutableStateFlow<Resource<Routine?>?>(null)
+    val updateRoutine: StateFlow<Resource<Routine?>?> = _updateRoutine
     init {
         getRoutines(currentMonth, currentDay, currentYer)
     }
@@ -70,13 +76,15 @@ class RoutineViewModel @Inject constructor(
 
     fun updateRoutine(routine: Routine) {
         viewModelScope.launch {
-            routineRepository.updateRoutine(routine)
+            routineRepository.updateRoutine(routine).catch {}.collectLatest {
+                _updateRoutine.value = it
+            }
         }
     }
 
-    fun updateCheckedByAlarmId(id: Long) {
+    fun checkedRoutine(routine: Routine) {
         viewModelScope.launch {
-            routineRepository.updateCheckedByAlarmId(id)
+            routineRepository.checkedRoutine(routine)
         }
     }
 
@@ -90,5 +98,15 @@ class RoutineViewModel @Inject constructor(
 
     fun getTimes(): Flow<List<TimeDate>> = flow {
         emitAll(dateTimeRepository.getTimes())
+    }
+
+    fun getTimesMonth(yerNumber: Int, monthNumber: Int): Flow<List<TimeDate>> = flow {
+        emitAll(dateTimeRepository.getTimesMonth(yerNumber, monthNumber))
+    }
+    fun clearAddRoutine(){
+        _addRoutine.value=null
+    }
+    fun clearUpdateRoutine(){
+        _updateRoutine.value=null
     }
 }

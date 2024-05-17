@@ -12,4 +12,5 @@ data class TimeDate(
     val monthNumber: Int,
     var isChecked: Boolean,
     var monthName: String? = null,
+    var versionNumber: Long? = null,
 )

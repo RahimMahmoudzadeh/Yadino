@@ -12,7 +12,8 @@ interface RepositoryRoutine {
 
     suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yerNumber: Int?)
 
-    suspend fun updateRoutine(routine: Routine)
+    suspend fun updateRoutine(routine: Routine):Flow<Resource<Routine?>>
+    suspend fun checkedRoutine(routine: Routine)
 
     suspend fun getRoutine(id: Int): Routine
 
@@ -23,6 +24,5 @@ interface RepositoryRoutine {
     suspend fun getCurrentRoutines(): Flow<List<Routine>>
 
     suspend fun changeRoutineId()
-    suspend fun updateCheckedByAlarmId(id:Long)
     suspend fun checkEdAllRoutinePastTime()
 }

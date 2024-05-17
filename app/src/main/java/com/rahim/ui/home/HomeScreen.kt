@@ -67,7 +67,6 @@ fun HomeScreen(
 
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
-    val routineForAdd = rememberSaveable { mutableStateOf<Routine?>(null) }
     var searchText by rememberSaveable { mutableStateOf("") }
     var clickSearch by rememberSaveable { mutableStateOf(false) }
     var openDialog by rememberSaveable { mutableStateOf(false) }
@@ -82,6 +81,7 @@ fun HomeScreen(
         .collectAsStateWithLifecycle(initialValue = Resource.Success(emptyList()))
 
     val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
+    val updateRoutine by viewModel.updateRoutine.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -132,11 +132,12 @@ fun HomeScreen(
                                 ItemsHome(currentYer, currentMonth, currentDay,
                                     if (searchText.isEmpty()) it else searchItems,
                                     { checkedRoutine ->
-                                        viewModel.updateRoutine(checkedRoutine)
+                                        viewModel.checkedRoutine(checkedRoutine)
+                                        coroutineScope.launch {
                                         alarmManagement.cancelAlarm(
                                             context,
                                             checkedRoutine.idAlarm ?: checkedRoutine.id?.toLong()
-                                        )
+                                        )}
                                     },
                                     { routineUpdate ->
                                         if (routineUpdate.isChecked) {
@@ -151,6 +152,7 @@ fun HomeScreen(
                                             viewModel.showSampleRoutine(true)
 
                                         routineUpdateDialog.value = routineUpdate
+                                        openDialog = true
                                     },
                                     { deleteRoutine ->
                                         if (deleteRoutine.isChecked) {
@@ -205,10 +207,11 @@ fun HomeScreen(
                 if (it) {
                     routineDeleteDialog.value?.let {
                         viewModel.deleteRoutine(it)
+                        coroutineScope.launch {
                         alarmManagement.cancelAlarm(
                             context,
                             if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
-                        )
+                        )}
                     }
                 }
                 routineDeleteDialog.value = null
@@ -221,44 +224,45 @@ fun HomeScreen(
     }
     DialogAddRoutine(
         isShowDay = false,
-        isOpen = openDialog || routineUpdateDialog.value != null,
+        isOpen = openDialog,
         openDialog = {
-            openDialog = it
+            openDialog = false
             routineUpdateDialog.value = null
-            routineForAdd.value = null
         },
         routineUpdate = routineUpdateDialog.value,
         routine = { routine ->
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(routine)
-                alarmManagement.updateAlarm(
-                    context,
-                    routine
-                )
-                routineUpdateDialog.value = null
             } else {
                 coroutineScope.launch {
                     viewModel.addRoutine(routine)
-                    delay(200)
-                    routineForAdd.value = routine
                 }
             }
         },
         currentNumberDay = currentDay,
         currentNumberMonth = currentMonth,
-        currentNumberYer = currentYer
+        currentNumberYer = currentYer,
+        times = null,
+        dayCheckedNumber = { day, yer, month -> }
     )
-
-    if (routineForAdd.value != null)
-        ProcessRoutineAdded(addRoutine, context) {
-            if (!it) {
-                openDialog = false
-                addRoutine.data?.let {
-                    alarmManagement.setAlarm(context, it)
-                }
-                routineForAdd.value = null
-            }
+    ProcessRoutineAdded(addRoutine, context) {
+        it?.let {
+            openDialog = false
+            alarmManagement.setAlarm(context, it)
+            viewModel.clearAddRoutine()
         }
+    }
+    ProcessRoutineAdded(updateRoutine, context) {
+        it?.let {
+            openDialog = false
+            coroutineScope.launch {
+                alarmManagement.updateAlarm(context, it)
+            }
+            viewModel.clearUpdateRoutine()
+            routineUpdateDialog.value = null
+        }
+    }
+
     if (errorClick) {
         ErrorDialog(
             isOpen = true,

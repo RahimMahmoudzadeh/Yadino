@@ -1,8 +1,5 @@
 package com.rahim.ui.dialog
 
-import android.os.Build
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
+import com.rahim.data.modle.data.TimeDate
 import com.rahim.ui.theme.*
 import com.rahim.utils.base.view.DialogButtonBackground
 import com.rahim.utils.base.view.gradientColors
@@ -43,7 +41,6 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.time.LocalTime
-import java.util.*
 
 @OptIn(
     ExperimentalMaterial3Api::class,
@@ -57,36 +54,33 @@ fun DialogAddRoutine(
     currentNumberMonth: Int,
     currentNumberYer: Int,
     routineUpdate: Routine? = null,
-    openDialog: (Boolean) -> Unit,
+    times: List<TimeDate>? = null,
+    openDialog: () -> Unit,
     routine: (Routine) -> Unit,
+    dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit,
+    monthChange: ((year: Int, month: Int) -> Unit)? = null,
 ) {
+    if (!isOpen) return
     val maxName = 22
     val maxExplanation = 40
-    var routineName by rememberSaveable { mutableStateOf("") }
-    var routineExplanation by rememberSaveable { mutableStateOf("") }
-    val checkedStateAllDay = remember { mutableStateOf(false) }
-    val isErrorName = remember { mutableStateOf(false) }
-    val isErrorExplanation = remember { mutableStateOf(false) }
-    var time by rememberSaveable { mutableStateOf("12:00") }
+    var routineName by rememberSaveable { mutableStateOf(routineUpdate?.name ?: "") }
+    var routineExplanation by rememberSaveable { mutableStateOf(routineUpdate?.explanation ?: "") }
+    var checkedStateAllDay by remember { mutableStateOf(false) }
+    var isErrorName by remember { mutableStateOf(false) }
+    var isShowDateDialog by remember { mutableStateOf(false) }
+    var isErrorExplanation by remember { mutableStateOf(false) }
+    val t = routineUpdate?.timeHours ?: "12:00"
+    var time by rememberSaveable { mutableStateOf(t) }
     val alarmDialogState = rememberMaterialDialogState()
     val persianData = PersianDate()
-    val date=persianData.initJalaliDate(currentNumberYer,currentNumberMonth,currentNumberDay)
+    val date = persianData.initJalaliDate(
+        routineUpdate?.yerNumber ?: currentNumberYer,
+        routineUpdate?.monthNumber ?: currentNumberMonth,
+        routineUpdate?.dayNumber ?: currentNumberDay
+    )
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
-    if (routineUpdate!=null){
-        routineName=routineUpdate.name
-        routineExplanation=routineUpdate.explanation?:""
-        time=routineUpdate.timeHours?:"12:00"
-    }
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        if (!isOpen) {
-            routineName = ""
-            routineExplanation = ""
-            isErrorName.value = false
-            isErrorExplanation.value = false
-            time = "12:00"
-            return@CompositionLocalProvider
-        }
         BasicAlertDialog(properties = DialogProperties(
             usePlatformDefaultWidth = false, dismissOnClickOutside = false
         ), modifier = modifier
@@ -97,7 +91,7 @@ fun DialogAddRoutine(
                 brush = Brush.verticalGradient(gradientColors),
                 shape = RoundedCornerShape(8.dp)
             ), onDismissRequest = {
-            openDialog(false)
+            openDialog()
         }) {
             Surface(
                 color = MaterialTheme.colorScheme.background,
@@ -116,38 +110,33 @@ fun DialogAddRoutine(
                         textAlign = TextAlign.Center,
                         style = TextStyle(brush = Brush.verticalGradient(gradientColors))
                     )
-                    TextField(
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.background)
-                            .fillMaxWidth()
-                            .padding(top = 18.dp)
-                            .height(52.dp)
-                            .border(
-                                width = 1.dp,
-                                brush = Brush.verticalGradient(gradientColors),
-                                shape = RoundedCornerShape(4.dp)
-                            ),
-                        value = routineName,
-                        onValueChange = {
-                            isErrorName.value = it.length >= maxName
-                            routineName = if (it.length <= maxName) it else routineName
-                        },
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.name_hint_text_filed_routine),
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        },
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.background,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
-                            disabledIndicatorColor = MaterialTheme.colorScheme.background,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.background
+                    TextField(modifier = Modifier
+                        .background(MaterialTheme.colorScheme.background)
+                        .fillMaxWidth()
+                        .padding(top = 18.dp)
+                        .height(52.dp)
+                        .border(
+                            width = 1.dp,
+                            brush = Brush.verticalGradient(gradientColors),
+                            shape = RoundedCornerShape(4.dp)
+                        ), value = routineName, onValueChange = {
+                        isErrorName = it.length >= maxName
+                        routineName = if (it.length <= maxName) it else routineName
+                    }, placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.name_hint_text_filed_routine),
+                            color = MaterialTheme.colorScheme.primary
                         )
+                    }, colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
+                        disabledIndicatorColor = MaterialTheme.colorScheme.background,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background
+                    )
                     )
 
-                    if (isErrorName.value) {
+                    if (isErrorName) {
                         Text(
                             modifier = Modifier.padding(start = 16.dp),
                             text = if (routineName.isEmpty()) stringResource(id = R.string.emptyField) else stringResource(
@@ -169,7 +158,7 @@ fun DialogAddRoutine(
                             ),
                         value = if (routineExplanation.isNullOrEmpty()) "" else routineExplanation,
                         onValueChange = {
-                            isErrorExplanation.value = it.length >= maxExplanation
+                            isErrorExplanation = it.length >= maxExplanation
                             routineExplanation =
                                 if (it.length <= maxExplanation) it else routineExplanation
                         },
@@ -187,7 +176,7 @@ fun DialogAddRoutine(
                             unfocusedContainerColor = MaterialTheme.colorScheme.background
                         )
                     )
-                    if (isErrorExplanation.value) {
+                    if (isErrorExplanation) {
                         Text(
                             modifier = Modifier.padding(start = 16.dp),
                             text = stringResource(id = R.string.length_textFiled_explanation_routine),
@@ -242,8 +231,8 @@ fun DialogAddRoutine(
                             )
                             Checkbox(
                                 modifier = Modifier.padding(start = 10.dp),
-                                checked = checkedStateAllDay.value,
-                                onCheckedChange = { checkedStateAllDay.value = it },
+                                checked = checkedStateAllDay,
+                                onCheckedChange = { checkedStateAllDay = it },
                                 colors = CheckboxDefaults.colors(
                                     checkedColor = Purple, uncheckedColor = CornflowerBlueLight
                                 )
@@ -260,7 +249,7 @@ fun DialogAddRoutine(
                                 end = if (isShowDay) 15.dp else 0.dp
                             )
                     ) {
-                        Row{
+                        Row {
                             Text(
                                 modifier = Modifier.padding(top = 14.dp),
                                 text = stringResource(id = R.string.set_alarms),
@@ -278,8 +267,7 @@ fun DialogAddRoutine(
                             alarmDialogState.show()
                         }) {
                             Text(
-                                text = stringResource(id = R.string.time_change),
-                                style = TextStyle(
+                                text = stringResource(id = R.string.time_change), style = TextStyle(
                                     brush = Brush.verticalGradient(
                                         gradientColors
                                     )
@@ -287,26 +275,32 @@ fun DialogAddRoutine(
                             )
                         }
                     }
-                    //TODO for data
-//                    Row(
-//                        horizontalArrangement = Arrangement.SpaceBetween,
-//                        modifier = Modifier.fillMaxWidth()
-//                    ) {
-//                        Text(
-//                            modifier = Modifier.padding(top = 14.dp),
-//                            text = stringResource(id = R.string.set_reminder)
-//                        )
-//                        OutlinedButton(
-//                            border = BorderStroke(
-//                                1.dp,
-//                                Brush.horizontalGradient(gradientColors)
-//                            ), onClick = { /*TODO*/ }) {
-//                            Text(
-//                                text = stringResource(id = R.string.data_change),
-//                                style = TextStyle(brush = Brush.verticalGradient(gradientColors))
-//                            )
-//                        }
-//                    }
+                    if (!times.isNullOrEmpty()) {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    top = if (isShowDay) 0.dp else 10.dp,
+                                    start = 20.dp,
+                                    end = if (isShowDay) 15.dp else 0.dp
+                                ),
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(top = 14.dp),
+                                text = stringResource(id = R.string.set_reminder),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            OutlinedButton(border = BorderStroke(
+                                1.dp, Brush.horizontalGradient(gradientColors)
+                            ), onClick = { isShowDateDialog = true }) {
+                                Text(
+                                    text = stringResource(id = R.string.data_change),
+                                    style = TextStyle(brush = Brush.verticalGradient(gradientColors))
+                                )
+                            }
+                        }
+                    }
                     Spacer(modifier = Modifier.height(22.dp))
                     Row(
                         modifier = Modifier
@@ -323,13 +317,13 @@ fun DialogAddRoutine(
                                 Timber.tag("tagNameRoutine").d(routineName.length.toString())
 
                                 if (routineName.isEmpty()) {
-                                    isErrorName.value = true
+                                    isErrorName = true
                                 } else {
                                     routine(routineUpdate?.apply {
                                         name = routineName
                                         timeHours = time
                                         explanation = routineExplanation
-                                        dayName=persianData.dayName(date)
+                                        dayName = persianData.dayName(date)
                                     } ?: Routine(
                                         routineName,
                                         null,
@@ -344,7 +338,7 @@ fun DialogAddRoutine(
                             })
                         Spacer(modifier = Modifier.width(10.dp))
                         TextButton(onClick = {
-                            openDialog(false)
+                            openDialog()
                         }) {
                             Text(
                                 fontSize = 16.sp,
@@ -357,13 +351,29 @@ fun DialogAddRoutine(
                             )
                         }
                     }
+                    if (isShowDateDialog) {
+                        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                            DialogChoseDate(yearNumber = currentNumberYer,
+                                times = times ?: emptyList(),
+                                monthNumber = currentNumberMonth,
+                                dayNumber = currentNumberDay,
+                                closeDialog = {
+                                    isShowDateDialog = false
+                                },
+                                dayCheckedNumber = { yer, month, day ->
+                                    dayCheckedNumber(day, yer, month)
+                                }, monthChange = { yer, month ->
+                                    monthChange?.let { it(yer, month) }
+                                })
+                        }
+                    }
                 }
             }
         }
     }
+
     ShowTimePicker(time, alarmDialogState) {
-        time =
-            it.hour.toString() + ":" + if (it.minute.toString().length == 1) "0" + it.minute else it.minute
+        time = it.toString()
     }
 }
 
@@ -371,9 +381,7 @@ fun DialogAddRoutine(
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun ShowTimePicker(
-    currentTime: String,
-    dialogState: MaterialDialogState,
-    time: (LocalTime) -> Unit
+    currentTime: String, dialogState: MaterialDialogState, time: (LocalTime) -> Unit
 ) {
     MaterialDialog(properties = DialogProperties(dismissOnClickOutside = false),
         border = BorderStroke(2.dp, Brush.horizontalGradient(gradientColors)),
@@ -389,10 +397,8 @@ fun ShowTimePicker(
             )
             negativeButton(
                 textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 14.sp
-                ),
-                text = stringResource(id = R.string.cancel)
+                    color = MaterialTheme.colorScheme.primary, fontSize = 14.sp
+                ), text = stringResource(id = R.string.cancel)
             )
         }) {
         timepicker(

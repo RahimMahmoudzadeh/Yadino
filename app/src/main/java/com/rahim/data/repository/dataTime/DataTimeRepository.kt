@@ -8,4 +8,5 @@ interface DataTimeRepository {
     suspend fun addTime()
     suspend fun calculateToday()
     fun getTimes(): Flow<List<TimeDate>>
+    fun getTimesMonth(yerNumber: Int, monthNumber: Int): Flow<List<TimeDate>>
 }

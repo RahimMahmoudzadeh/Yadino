@@ -8,11 +8,16 @@ import com.rahim.data.modle.data.TimeDataMonthAndYear
 import com.rahim.utils.Constants.END_YEAR
 import com.rahim.utils.Constants.FIRST_KABISE_DATA
 import com.rahim.utils.Constants.FIRST_YEAR
+import com.rahim.utils.Constants.VERSION_TIME_DB
 import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.enums.WeekName
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
@@ -34,21 +39,14 @@ class DataTimeRepositoryImpl @Inject constructor(
 
     override suspend fun addTime() {
         val times = timeDao.getAllTime()
-        val monthName = times.filter { it.monthName == null }
-        if ((times.firstOrNull()?.dayNumber ?: 0) > 0) {
-            val emptyTimes = calculateDaySpaceStartMonth(times.first())
-            timeDao.insertAllTime(emptyTimes)
-        }
-        if ((times.lastOrNull()?.dayNumber ?: 31) <= 30) {
-            val emptyTimes = calculateDaySpaceEndMonth(times.last())
-            timeDao.insertAllTime(emptyTimes)
-        }
-        Timber.tag("times").d("$monthName")
-        if (!times.isNullOrEmpty() && monthName.isNullOrEmpty())
+        val firstTime =
+            times.find { it.yerNumber == FIRST_YEAR && it.versionNumber == VERSION_TIME_DB }
+        if (firstTime != null) {
             return
-        if (times.isNotEmpty()) {
-            timeDao.deleteAllTimes()
         }
+        if (times.isNotEmpty())
+            timeDao.deleteAllTimes()
+
         calculateDate()
     }
 
@@ -65,6 +63,25 @@ class DataTimeRepositoryImpl @Inject constructor(
     }
 
     override fun getTimes(): Flow<List<TimeDate>> = timeDao.getAllTimeFlow().distinctUntilChanged()
+    override fun getTimesMonth(yerNumber: Int, monthNumber: Int): Flow<List<TimeDate>> = flow {
+        if (yerNumber != FIRST_YEAR || yerNumber != END_YEAR) {
+            timeDao.getSpecificMonthFromYer(monthNumber, yerNumber).distinctUntilChanged().catch {}
+                .collect {
+                    if (it.isNotEmpty()){
+                        val times=ArrayList<TimeDate>()
+                        val spaceStart = calculateDaySpaceStartMonth(it.first())
+                        val spaceEnd = calculateDaySpaceEndMonth(it.last())
+                        times.addAll(spaceStart)
+                        times.addAll(it)
+                        times.addAll(spaceEnd)
+                        emit(times)
+                    }
+                }
+        } else {
+            emitAll(timeDao.getSpecificMonthFromYer(monthNumber, yerNumber).distinctUntilChanged())
+        }
+    }
+
 
     private fun calculateDaySpaceStartMonth(timeDate: TimeDate): List<TimeDate> {
         val emptyTimes = ArrayList<TimeDate>()
@@ -239,7 +256,8 @@ class DataTimeRepositoryImpl @Inject constructor(
                                 year,
                                 month,
                                 checkDayIsToday(year, month, day),
-                                monthName = persianData.monthName()
+                                monthName = persianData.monthName(),
+                                versionNumber = if (year == FIRST_YEAR) VERSION_TIME_DB else 0
                             )
                             dates.add(date)
                         }

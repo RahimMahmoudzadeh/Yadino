@@ -18,6 +18,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -163,64 +165,74 @@ fun DialogAddNote(
                                 color = MaterialTheme.colorScheme.error
                             )
                         }
-                        Row(modifier = Modifier.padding(top = 20.dp, start = 12.dp, end = 10.dp)) {
+                        Row(
+                            modifier = Modifier.padding(top = 20.dp, start = 6.dp, end = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
                             Text(
+                                modifier = Modifier.weight(0.22f),
                                 fontSize = 18.sp,
                                 text = stringResource(id = R.string.priority_level),
                                 color = MaterialTheme.colorScheme.tertiary,
                             )
-                            Text(
-                                fontSize = 16.sp,
-                                text = stringResource(id = R.string.up),
-                                modifier = Modifier.padding(start = 24.dp), color = Punch
-                            )
-                            RadioButton(
-                                colors = RadioButtonDefaults.colors(
-                                    selectedColor = Punch,
-                                    unselectedColor = Punch
-                                ),
-                                selected = state == 2,
-                                onClick = { state = 2 },
-                                modifier = Modifier
-                                    .semantics { contentDescription = "Localized Description" }
-                                    .size(20.dp)
-                                    .padding(start = 8.dp)
-                            )
-                            Text(
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(start = 24.dp),
-                                text = stringResource(id = R.string.medium),
-                                color = CornflowerBlueDark
-                            )
-                            RadioButton(
-                                colors = RadioButtonDefaults.colors(
-                                    selectedColor = CornflowerBlueDark,
-                                    unselectedColor = CornflowerBlueDark
-                                ),
-                                selected = state == 1,
-                                onClick = { state = 1 },
-                                modifier = Modifier
-                                    .semantics { contentDescription = "Localized Description" }
-                                    .size(20.dp)
-                                    .padding(start = 8.dp)
-                            )
-                            Text(
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(start = 24.dp),
-                                text = stringResource(id = R.string.low), color = Mantis
-                            )
-                            RadioButton(
-                                colors = RadioButtonDefaults.colors(
-                                    selectedColor = Mantis,
-                                    unselectedColor = Mantis
-                                ),
-                                selected = state == 0,
-                                onClick = { state = 0 },
-                                modifier = Modifier
-                                    .semantics { contentDescription = "Localized Description" }
-                                    .size(20.dp)
-                                    .padding(start = 8.dp)
-                            )
+                            Row(modifier = Modifier.weight(0.1f)) {
+                                Text(
+                                    fontSize = 16.sp,
+                                    text = stringResource(id = R.string.up),
+                                    color = Punch
+                                )
+                                RadioButton(
+                                    colors = RadioButtonDefaults.colors(
+                                        selectedColor = Punch,
+                                        unselectedColor = Punch
+                                    ),
+                                    selected = state == 2,
+                                    onClick = { state = 2 },
+                                    modifier = Modifier
+                                        .semantics { contentDescription = "Localized Description" }
+                                        .size(20.dp)
+                                        .padding(start = 8.dp)
+                                )
+                            }
+                            Row(modifier = Modifier.weight(0.2f)) {
+                                Text(
+                                    fontSize = 16.sp,
+                                    modifier = Modifier.padding(start = 24.dp),
+                                    text = stringResource(id = R.string.medium),
+                                    color = CornflowerBlueDark
+                                )
+                                RadioButton(
+                                    colors = RadioButtonDefaults.colors(
+                                        selectedColor = CornflowerBlueDark,
+                                        unselectedColor = CornflowerBlueDark
+                                    ),
+                                    selected = state == 1,
+                                    onClick = { state = 1 },
+                                    modifier = Modifier
+                                        .semantics { contentDescription = "Localized Description" }
+                                        .size(20.dp)
+                                        .padding(start = 8.dp)
+                                )
+                            }
+                            Row(modifier = Modifier.weight(0.13f)) {
+                                Text(
+                                    fontSize = 16.sp,
+                                    modifier = Modifier.padding(start = 24.dp),
+                                    text = stringResource(id = R.string.low), color = Mantis
+                                )
+                                RadioButton(
+                                    colors = RadioButtonDefaults.colors(
+                                        selectedColor = Mantis,
+                                        unselectedColor = Mantis
+                                    ),
+                                    selected = state == 0,
+                                    onClick = { state = 0 },
+                                    modifier = Modifier
+                                        .semantics { contentDescription = "Localized Description" }
+                                        .size(20.dp)
+                                        .padding(start = 8.dp)
+                                )
+                            }
                         }
 
                         Spacer(modifier = Modifier.height(22.dp))
@@ -232,7 +244,9 @@ fun DialogAddNote(
                             DialogButtonBackground(
                                 text = stringResource(id = R.string.confirmation),
                                 gradient = Brush.verticalGradient(gradientColors),
-                                modifier = Modifier.fillMaxWidth(0.3f).height(40.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth(0.3f)
+                                    .height(40.dp),
                                 textSize = 14.sp,
                                 onClick = {
                                     if (nameNote.isEmpty()) {
@@ -294,5 +308,19 @@ fun DialogAddNote(
             }
         }
     }
+}
 
+@Preview()
+@Composable
+fun DialogAddNoteWrapper() {
+    DialogAddNote(
+        noteUpdate = null,
+        isOpen = true,
+        currentDay = 1,
+        currentMonth = 2,
+        currentYer = 1403,
+        openDialog = {},
+        note = {},
+        currentDayName = "a"
+    )
 }
