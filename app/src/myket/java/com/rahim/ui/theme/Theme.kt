@@ -17,7 +17,9 @@ private val DarkColorScheme = darkColorScheme(
     onTertiary = Color.White,
     tertiaryContainer = White65,
     secondaryContainer = Gallery,
-    onSecondary = BalticSea
+    onSecondary = BalticSea,
+    onTertiaryContainer = BonJour,
+    surface = Abbey
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -30,7 +32,9 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = Color.Black,
     tertiaryContainer = Black45,
     secondaryContainer = Black45,
-    onSecondary = CornflowerBlueLight
+    onSecondary = CornflowerBlueLight,
+    onTertiaryContainer = WildSand,
+    surface = Color.Black,
 )
 
 @Composable
