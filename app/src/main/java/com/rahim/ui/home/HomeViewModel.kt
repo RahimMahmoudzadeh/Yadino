@@ -14,6 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -32,17 +33,19 @@ class HomeViewModel @Inject constructor(
     BaseViewModel(sharedPreferencesRepository, baseRepository) {
     private val _flowRoutines =
         MutableStateFlow<Resource<List<Routine>>>(Resource.Success(emptyList()))
-    val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
+    val flowRoutines = _flowRoutines.asStateFlow()
 
     private val _addRoutine =
         MutableStateFlow<Resource<Routine?>?>(null)
-    val addRoutine: StateFlow<Resource<Routine?>?> = _addRoutine
+    val addRoutine = _addRoutine.asStateFlow()
 
     private val _updateRoutine =
         MutableStateFlow<Resource<Routine?>?>(null)
-    val updateRoutine: StateFlow<Resource<Routine?>?> = _updateRoutine
-
-    fun getCurrentRoutines() {
+    val updateRoutine = _updateRoutine.asStateFlow()
+    init {
+        getCurrentRoutines()
+    }
+    private fun getCurrentRoutines() {
         viewModelScope.launch {
             _flowRoutines.value = Resource.Loading()
             routineRepository.getCurrentRoutines().catch {
@@ -76,7 +79,9 @@ class HomeViewModel @Inject constructor(
 
     fun addRoutine(routine: Routine) {
         viewModelScope.launch {
-            routineRepository.addRoutine(routine).catch {}.collect {
+            routineRepository.addRoutine(routine).catch {
+                _addRoutine.value=Resource.Error(errorSaveProses)
+            }.collect {
                 Timber.tag("routineAdd")
                     .d("view model ->${if (it is Resource.Success) "success" else if (it is Resource.Error) "fail" else "loading"}")
                 _addRoutine.value = it

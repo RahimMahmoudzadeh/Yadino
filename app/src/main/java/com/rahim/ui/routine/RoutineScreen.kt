@@ -80,17 +80,12 @@ fun RoutineScreen(
 ) {
     val context = LocalContext.current
     val alarmManagement = AlarmManagement()
-
     val searchItems = ArrayList<Routine>()
 
-    val routines by viewModel.flowRoutines.collectAsStateWithLifecycle(
-        initialValue = Resource.Success(
-            emptyList()
-        )
-    )
-
-    val times by viewModel.getTimes()
-        .collectAsStateWithLifecycle(initialValue = emptyList())
+    val routines by viewModel.flowRoutines.collectAsStateWithLifecycle()
+    val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
+    val updateRoutine by viewModel.updateRoutine.collectAsStateWithLifecycle()
+    val times by viewModel.getTimes().collectAsStateWithLifecycle(initialValue = emptyList())
 
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
@@ -119,14 +114,13 @@ fun RoutineScreen(
     )
     var searchText by rememberSaveable { mutableStateOf("") }
     var clickSearch by rememberSaveable { mutableStateOf(false) }
-
-    val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
-    val updateRoutine by viewModel.updateRoutine.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp
+
     if (timesSize != times.size) {
         timesSize = times.size
         val currentTime = times.find { it.isToday }
-        var indexCurrentDay = times.indexOf(currentTime)
+        val indexCurrentDay = times.indexOf(currentTime)
         val currentDay = currentTime?.dayNumber ?: 0
         val currentYerNumber = currentTime?.yerNumber ?: 0
         val monthNumber = currentTime?.monthNumber ?: 0
@@ -209,6 +203,7 @@ fun RoutineScreen(
                         }
                     }
                 },
+                screenWidth = screenWidth
             )
             GetRoutines(
                 routines,
@@ -271,28 +266,26 @@ fun RoutineScreen(
             Icon(Icons.Filled.Add, "add item")
         }
     }
-    routineDeleteDialog.value?.let { routineFromDialog ->
-        ErrorDialog(
-            isOpen = true, isClickOk = {
-                if (it) {
-                    routineDeleteDialog.value?.let {
-                        viewModel.deleteRoutine(it)
-                        coroutineScope.launch {
-                            alarmManagement.cancelAlarm(
-                                context,
-                                if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
-                            )
-                        }
+    ErrorDialog(
+        isOpen = routineDeleteDialog.value != null, isClickOk = {
+            if (it) {
+                routineDeleteDialog.value?.let {
+                    viewModel.deleteRoutine(it)
+                    coroutineScope.launch {
+                        alarmManagement.cancelAlarm(
+                            context,
+                            if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
+                        )
                     }
                 }
-                routineDeleteDialog.value = null
-            },
-            message = stringResource(id = R.string.can_you_delete),
-            okMessage = stringResource(
-                id = R.string.ok
-            )
+            }
+            routineDeleteDialog.value = null
+        },
+        message = stringResource(id = R.string.can_you_delete),
+        okMessage = stringResource(
+            id = R.string.ok
         )
-    }
+    )
     routineChecked.value?.let {
         viewModel.checkedRoutine(it)
         coroutineScope.launch {
@@ -318,6 +311,7 @@ fun RoutineScreen(
             monthCheckedDialog = dayMonthChecked
             yerCheckedDialog = dayYerChecked
             dayCheckedDialog = dayChecked
+            viewModel.showSampleRoutine(true)
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(routine)
             } else {
@@ -363,19 +357,17 @@ fun RoutineScreen(
             routineUpdateDialog.value = null
         }
     }
-    if (errorClick) {
-        ErrorDialog(
-            isOpen = true,
-            message = stringResource(id = R.string.better_performance_access),
-            okMessage = stringResource(id = R.string.setting),
-            isClickOk = {
-                if (it) {
-                    goSettingPermission(context)
-                }
-                errorClick = false
+    ErrorDialog(
+        isOpen = errorClick,
+        message = stringResource(id = R.string.better_performance_access),
+        okMessage = stringResource(id = R.string.setting),
+        isClickOk = {
+            if (it) {
+                goSettingPermission(context)
             }
-        )
-    }
+            errorClick = false
+        }
+    )
 }
 
 
@@ -479,6 +471,7 @@ private fun ItemTimeDate(
     listStateDay: LazyListState,
     indexDay: Int,
     currentIndexDay: Int,
+    screenWidth:Int,
     dayCheckedNumber: (day: String, yer: Int, month: Int) -> Unit,
     indexScrollDay: (Int) -> Unit,
 ) {
@@ -625,6 +618,7 @@ private fun ItemTimeDate(
                         dayChecked,
                         dayYerChecked,
                         dayMonthChecked,
+                        screenWidth = screenWidth,
                         dayCheckedNumber = { day, yer, month ->
                             dayCheckedNumber(day, yer, month)
                         })
@@ -681,14 +675,14 @@ private fun DayItems(
     dayChecked: String,
     dayYerChecked: Int,
     dayMonthChecked: Int,
+    screenWidth:Int,
     dayCheckedNumber: (day: String, yer: Int, month: Int) -> Unit,
 ) {
-    val configuration = LocalConfiguration.current
+
     Timber.tag("timeClicked").d("dayChecked->$dayChecked")
     Timber.tag("timeClicked").d("dayYerChecked->$dayYerChecked")
     Timber.tag("timeClicked").d("dayMonthChecked->$dayMonthChecked")
     Timber.tag("timeClicked").d("timeData->$timeDate")
-    val screenWidth = configuration.screenWidthDp
     ClickableText(
         modifier = Modifier
             .padding(

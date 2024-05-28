@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface RepositoryRoutine {
     suspend fun addSampleRoutine()
-    suspend fun addRoutine(routine: Routine):Flow<Resource<Routine?>>
+    fun addRoutine(routine: Routine):Flow<Resource<Routine?>>
 
     suspend fun removeRoutine(routine: Routine):Int
 
@@ -21,7 +21,7 @@ interface RepositoryRoutine {
 
     fun searchRoutine(name: String,monthNumber: Int?, dayNumber: Int?): Flow<List<Routine>>
 
-    suspend fun getCurrentRoutines(): Flow<List<Routine>>
+    fun getCurrentRoutines(): Flow<List<Routine>>
 
     suspend fun changeRoutineId()
     suspend fun checkEdAllRoutinePastTime()

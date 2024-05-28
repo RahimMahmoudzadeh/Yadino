@@ -11,9 +11,16 @@ class SharedPreferencesRepositoryImpl @Inject constructor(private val sharedPref
 
     override fun isShowWelcomeScreen(): Boolean = sharedPreferencesCustom.isShowWelcome()
     override fun isShowSampleRoutine(isShow: Boolean) {
-        sharedPreferencesCustom.showSampleRoutine(isShow)
+        sharedPreferencesCustom.run {
+            if (isShowSampleRoutine())
+                showSampleRoutine(isShow)
+        }
     }
+
     override fun isShowSampleNote(isShow: Boolean) {
-        sharedPreferencesCustom.showSampleNote(isShow)
+        sharedPreferencesCustom.run {
+            if (isSampleNote())
+                showSampleNote(isShow)
+        }
     }
 }

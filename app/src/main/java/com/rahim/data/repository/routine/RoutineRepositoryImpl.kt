@@ -1,6 +1,7 @@
 package com.rahim.data.repository.routine
 
 import com.rahim.data.db.dao.RoutineDao
+import com.rahim.data.db.database.AppDatabase
 import com.rahim.data.di.IODispatcher
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.sharedPreferences.SharedPreferencesCustom
@@ -103,7 +104,7 @@ class RoutineRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addRoutine(routine: Routine): Flow<Resource<Routine?>> =
+    override fun addRoutine(routine: Routine): Flow<Resource<Routine?>> =
         flow<Resource<Routine?>> {
             emit(Resource.Loading())
             routine.apply {
@@ -226,7 +227,7 @@ class RoutineRepositoryImpl @Inject constructor(
     ): Flow<List<Routine>> =
         routineDao.searchRoutine(name, monthNumber, dayNumber).distinctUntilChanged()
 
-    override suspend fun getCurrentRoutines(): Flow<List<Routine>> {
+    override fun getCurrentRoutines(): Flow<List<Routine>> {
         return routineDao.getRoutines(currentTimeMonth, currentTimeDay, currentTimeYer)
     }
 }

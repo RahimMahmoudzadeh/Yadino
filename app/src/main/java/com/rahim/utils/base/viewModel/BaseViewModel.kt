@@ -24,9 +24,9 @@ open class BaseViewModel @Inject constructor(
     val successUpdateRoutine = "روتین شما با موفقیت ویرایش شد!"
     val successRemove = "حذف روتین با موفقیت انجام شد!"
 
-    val currentYer = getCurrentTime()[0]
-    val currentMonth = getCurrentTime()[1]
-    val currentDay = getCurrentTime()[2]
+    val currentYer get() = getCurrentTime()[0]
+    val currentMonth get() = getCurrentTime()[1]
+    val currentDay get() = getCurrentTime()[2]
 
     private val _flowNameDay =
         MutableStateFlow("")

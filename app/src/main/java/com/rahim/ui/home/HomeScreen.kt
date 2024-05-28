@@ -60,9 +60,9 @@ fun HomeScreen(
     ShowStatusBar(true)
     val context = LocalContext.current
     val alarmManagement = AlarmManagement()
-    val currentYer = viewModel.getCurrentTime()[0]
-    val currentMonth = viewModel.getCurrentTime()[1]
-    val currentDay = viewModel.getCurrentTime()[2]
+    val currentYer = viewModel.currentYer
+    val currentMonth = viewModel.currentMonth
+    val currentDay = viewModel.currentDay
     val searchItems = ArrayList<Routine>()
 
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
@@ -76,10 +76,8 @@ fun HomeScreen(
     val notificationPermissionState = rememberPermissionState(
         Manifest.permission.POST_NOTIFICATIONS
     )
-    viewModel.getCurrentRoutines()
-    val routines by viewModel.flowRoutines
-        .collectAsStateWithLifecycle(initialValue = Resource.Success(emptyList()))
 
+    val routines by viewModel.flowRoutines.collectAsStateWithLifecycle()
     val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
     val updateRoutine by viewModel.updateRoutine.collectAsStateWithLifecycle()
 
@@ -134,10 +132,12 @@ fun HomeScreen(
                                     { checkedRoutine ->
                                         viewModel.checkedRoutine(checkedRoutine)
                                         coroutineScope.launch {
-                                        alarmManagement.cancelAlarm(
-                                            context,
-                                            checkedRoutine.idAlarm ?: checkedRoutine.id?.toLong()
-                                        )}
+                                            alarmManagement.cancelAlarm(
+                                                context,
+                                                checkedRoutine.idAlarm
+                                                    ?: checkedRoutine.id?.toLong()
+                                            )
+                                        }
                                     },
                                     { routineUpdate ->
                                         if (routineUpdate.isChecked) {
@@ -155,14 +155,6 @@ fun HomeScreen(
                                         openDialog = true
                                     },
                                     { deleteRoutine ->
-                                        if (deleteRoutine.isChecked) {
-                                            Toast.makeText(
-                                                context,
-                                                R.string.not_removed_checked_routine,
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                            return@ItemsHome
-                                        }
                                         if (deleteRoutine.isSample)
                                             viewModel.showSampleRoutine(true)
 
@@ -194,34 +186,32 @@ fun HomeScreen(
                 }, permissionState = {
                     it.launchPermissionRequest()
                 }, notificationPermission = notificationPermissionState)
-
             },
         ) {
             Icon(Icons.Filled.Add, "add item")
         }
     }
-    routineDeleteDialog.value?.let { routineFromDialog ->
-        ErrorDialog(
-            isOpen = routineDeleteDialog.value != null,
-            isClickOk = {
-                if (it) {
-                    routineDeleteDialog.value?.let {
-                        viewModel.deleteRoutine(it)
-                        coroutineScope.launch {
+    ErrorDialog(
+        isOpen = routineDeleteDialog.value != null,
+        isClickOk = {
+            if (it) {
+                routineDeleteDialog.value?.let {
+                    viewModel.deleteRoutine(it)
+                    coroutineScope.launch {
                         alarmManagement.cancelAlarm(
                             context,
                             if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
-                        )}
+                        )
                     }
                 }
-                routineDeleteDialog.value = null
-            },
-            message = stringResource(id = R.string.can_you_delete),
-            okMessage = stringResource(
-                id = R.string.ok
-            )
+            }
+            routineDeleteDialog.value = null
+        },
+        message = stringResource(id = R.string.can_you_delete),
+        okMessage = stringResource(
+            id = R.string.ok
         )
-    }
+    )
     DialogAddRoutine(
         isShowDay = false,
         isOpen = openDialog,
@@ -231,19 +221,17 @@ fun HomeScreen(
         },
         routineUpdate = routineUpdateDialog.value,
         routine = { routine ->
+            viewModel.showSampleRoutine(true)
             if (routineUpdateDialog.value != null) {
                 viewModel.updateRoutine(routine)
             } else {
-                coroutineScope.launch {
-                    viewModel.addRoutine(routine)
-                }
+                viewModel.addRoutine(routine)
             }
         },
         currentNumberDay = currentDay,
         currentNumberMonth = currentMonth,
         currentNumberYer = currentYer,
         times = null,
-        dayCheckedNumber = { day, yer, month -> }
     )
     ProcessRoutineAdded(addRoutine, context) {
         it?.let {
@@ -262,20 +250,17 @@ fun HomeScreen(
             routineUpdateDialog.value = null
         }
     }
-
-    if (errorClick) {
-        ErrorDialog(
-            isOpen = true,
-            message = stringResource(id = R.string.better_performance_access),
-            okMessage = stringResource(id = R.string.setting),
-            isClickOk = {
-                if (it) {
-                    goSettingPermission(context)
-                }
-                errorClick = false
+    ErrorDialog(
+        isOpen = errorClick,
+        message = stringResource(id = R.string.better_performance_access),
+        okMessage = stringResource(id = R.string.setting),
+        isClickOk = {
+            if (it) {
+                goSettingPermission(context)
             }
-        )
-    }
+            errorClick = false
+        }
+    )
 }
 
 @Composable
@@ -343,11 +328,11 @@ fun ItemsHome(
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFFFFFF, device = Devices.PIXEL_4)
+@Preview
 @Composable
-fun HomeScreenPreview() {
+fun HomeScreenWrapper() {
     YadinoTheme {
         val viewModel = hiltViewModel<HomeViewModel>()
-//        HomeScreen(viewModel = viewModel)
+        HomeScreen(viewModel = viewModel)
     }
 }

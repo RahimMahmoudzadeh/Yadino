@@ -1,11 +1,14 @@
 package com.rahim.utils.base.view
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,6 +37,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
@@ -257,16 +264,6 @@ fun DialogButtonBackgroundWrapper() {
     )
 }
 
-fun calculateMinute(timeHours: String): Int {
-    val index = timeHours.indexOf(':')
-    return timeHours.subSequence(index.plus(1), timeHours.length).toString().toInt()
-}
-
-fun calculateHours(timeHours: String): Int {
-    val index = timeHours.indexOf(':')
-    return timeHours.subSequence(0, index).toString().toInt()
-}
-
 @OptIn(ExperimentalPermissionsApi::class)
 fun requestPermissionNotification(
     notificationPermission: PermissionState,
@@ -299,11 +296,10 @@ fun goSettingPermission(context: Context) {
 
 @Composable
 fun ShowStatusBar(isShow: Boolean) {
-    rememberSystemUiController().apply {
-        isStatusBarVisible = isShow
-        isNavigationBarVisible = isShow
-        isSystemBarsVisible = isShow
-    }
+    val window = (LocalContext.current as Activity).window
+    val insetsController = WindowCompat.getInsetsController(window,window.decorView)
+    if (isShow) insetsController.show(WindowInsetsCompat.Type.statusBars()) else insetsController.hide(WindowInsetsCompat.Type.statusBars())
+    WindowCompat.setDecorFitsSystemWindows(window, false)
 }
 
 @Composable

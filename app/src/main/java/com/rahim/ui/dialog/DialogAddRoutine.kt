@@ -57,7 +57,7 @@ fun DialogAddRoutine(
     times: List<TimeDate>? = null,
     openDialog: () -> Unit,
     routine: (Routine) -> Unit,
-    dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit,
+    dayCheckedNumber: ((day: Int, yer: Int, month: Int) -> Unit)?=null,
     monthChange: ((year: Int, month: Int) -> Unit)? = null,
 ) {
     if (!isOpen) return
@@ -361,7 +361,7 @@ fun DialogAddRoutine(
                                     isShowDateDialog = false
                                 },
                                 dayCheckedNumber = { yer, month, day ->
-                                    dayCheckedNumber(day, yer, month)
+                                    dayCheckedNumber?.let { it(day, yer, month) }
                                 }, monthChange = { yer, month ->
                                     monthChange?.let { it(yer, month) }
                                 })
