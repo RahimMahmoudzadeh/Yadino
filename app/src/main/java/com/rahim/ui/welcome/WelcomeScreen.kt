@@ -26,7 +26,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,7 +33,6 @@ import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.rahim.R
 import com.rahim.data.modle.screen.WelcomeScreenModel
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.GradientButton
@@ -42,7 +40,7 @@ import com.rahim.utils.base.view.ShowStatusBar
 import com.rahim.utils.base.view.gradientColors
 import com.rahim.utils.navigation.Screen
 import kotlinx.coroutines.launch
-
+import com.rahim.R
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable

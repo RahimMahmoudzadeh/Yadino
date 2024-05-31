@@ -45,11 +45,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
-import com.rahim.R
 import com.rahim.data.alarm.AlarmManagement
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.data.TimeDate
-import com.rahim.data.modle.data.TimeDataMonthAndYear
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.theme.CornflowerBlueLight
@@ -68,9 +66,9 @@ import com.rahim.utils.resours.Resource
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import com.rahim.R
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
