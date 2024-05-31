@@ -48,11 +48,11 @@ import com.rahim.utils.base.view.goSettingPermission
 import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
+
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),

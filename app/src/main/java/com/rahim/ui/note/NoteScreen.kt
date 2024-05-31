@@ -1,9 +1,7 @@
 package com.rahim.ui.note
 
-import android.Manifest
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,10 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -29,36 +24,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
-import com.rahim.R
 import com.rahim.data.modle.note.NoteModel
 import com.rahim.ui.dialog.DialogAddNote
 import com.rahim.ui.dialog.ErrorDialog
-import com.rahim.ui.home.EmptyHome
 import com.rahim.ui.theme.CornflowerBlueLight
-import com.rahim.ui.theme.Purple
-import com.rahim.ui.theme.PurpleGrey
 import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.ItemListNote
 import com.rahim.utils.base.view.ShowSearchBar
 import com.rahim.utils.base.view.TopBarCenterAlign
-import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.extention.calculateTimeFormat
 import com.rahim.utils.resours.Resource
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
+import com.rahim.R
 @Composable
 fun NoteScreen(
     modifier: Modifier = Modifier,
