@@ -9,5 +9,6 @@ plugins {
         alias(androidx.room) apply false
         alias(google.services) apply false
         alias(firebase.crashlytics) apply false
+        alias(compose.compiler) apply false
     }
 }

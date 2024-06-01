@@ -11,6 +11,7 @@ plugins {
         alias(google.services)
         alias(firebase.crashlytics)
         alias(androidx.room)
+        alias(compose.compiler)
     }
 }
 room {
@@ -85,8 +86,8 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    composeCompiler {
+        enableStrongSkippingMode = true
     }
     packaging {
         resources {
