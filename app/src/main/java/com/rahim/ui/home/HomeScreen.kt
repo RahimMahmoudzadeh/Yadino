@@ -12,6 +12,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.HorizontalAlignmentLine
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,6 +34,7 @@ import com.rahim.utils.base.view.ProcessRoutineAdded
 import com.rahim.utils.base.view.ShowSearchBar
 import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.launch
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @Composable
 fun HomeRoute(
@@ -105,26 +108,21 @@ fun HomeScreen(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = if (routines.data?.isEmpty() == true) Arrangement.Center else Arrangement.Top,
+        verticalArrangement = Arrangement.Top,
         modifier = modifier
             .fillMaxSize()
     ) {
-        if (routines.data?.isNotEmpty() == true) {
-            ShowSearchBar(clickSearch, searchText = searchText) { search ->
-                searchText = search
-                onSearchText(searchText)
-            }
+        ShowSearchBar(clickSearch, searchText = searchText) { search ->
+            searchText = search
+            onSearchText(searchText)
         }
-        when (if (searchText.isNotEmpty())
-            searchRoutine else
-            routines) {
+        when (routines) {
             is Resource.Loading -> {}
             is Resource.Success -> {
-                (if (searchText.isNotEmpty()) searchRoutine else routines).data?.let {
+                routines.data?.let {
                     if (it.isEmpty()) {
-                        if (searchRoutine.data?.size == 0 && searchText.isNotEmpty()) {
+                        if (searchText.isNotEmpty()) {
                             EmptyHome(
-                                Modifier.padding(top = 70.dp),
                                 messageEmpty = R.string.search_empty_routine
                             )
                         } else {
@@ -238,7 +236,8 @@ fun EmptyHome(
     Image(
         modifier = modifier
             .sizeIn(minHeight = 320.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth().fillMaxHeight(0.8f).padding(10.dp),
+        alignment = Alignment.Center,
         painter = painterResource(id = R.drawable.empty_list_home),
         contentDescription = "empty list home"
     )
@@ -246,7 +245,7 @@ fun EmptyHome(
         text = stringResource(id = messageEmpty),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 32.dp),
+            .padding(top = 22.dp),
         textAlign = TextAlign.Center,
         fontSize = 18.sp,
         color = MaterialTheme.colorScheme.primary

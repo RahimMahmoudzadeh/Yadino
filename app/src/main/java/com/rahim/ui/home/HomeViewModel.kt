@@ -1,6 +1,8 @@
 package com.rahim.ui.home
 
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.copy
 import com.rahim.data.di.IODispatcher
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.repository.base.BaseRepository
@@ -26,6 +28,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -38,11 +41,8 @@ class HomeViewModel @Inject constructor(
 ) :
     BaseViewModel(sharedPreferencesRepository, baseRepository) {
 
-    var flowRoutines: StateFlow<Resource<List<Routine>>> =
-        routineRepository.getCurrentRoutines().stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5_000), Resource.Loading()
-        )
+    private var _flowRoutines = MutableStateFlow<Resource<List<Routine>>>(Resource.Loading())
+    val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
 
     private var _searchRoutineState = MutableStateFlow<Resource<List<Routine>>>(Resource.Loading())
     val searchRoutineState: StateFlow<Resource<List<Routine>>> = _searchRoutineState.asStateFlow()
@@ -55,6 +55,20 @@ class HomeViewModel @Inject constructor(
     private val _updateRoutine =
         MutableStateFlow<Resource<Routine?>?>(null)
     val updateRoutine = _updateRoutine.asStateFlow()
+
+    init {
+        getCurrentRoutines()
+    }
+
+    private fun getCurrentRoutines() {
+        viewModelScope.launch {
+            routineRepository.getCurrentRoutines()
+                .catch { _flowRoutines.value = Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS) }
+                .collect {
+                    _flowRoutines.value = it
+                }
+        }
+    }
 
     fun deleteRoutine(routine: Routine) {
         viewModelScope.launch {
@@ -100,10 +114,13 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             if (searchText.isNotEmpty()) {
                 Timber.tag("searchRoutine").d("searchText:$searchText")
-                routineRepository.searchRoutine(searchText, currentMonth, currentDay).catch {}
-                    .collect {
-                        _searchRoutineState.value = it
-                    }
+                routineRepository.searchRoutine(searchText, currentMonth, currentDay).catch {
+                    _flowRoutines.value = Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
+                }.collect {
+                    _flowRoutines.value = it
+                }
+            } else {
+                getCurrentRoutines()
             }
         }
     }
