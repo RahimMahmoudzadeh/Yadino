@@ -3,7 +3,7 @@ ksp = "2.0.0-1.0.21"
 androidx-core = "1.13.1"
 compose-bom = "2024.05.00"
 activity-compose = "1.9.0"
-androidx-lifecycle = "2.8.1"
+androidx-lifecycle = "2.7.0"
 androidx-room = "2.6.1"
 hilt = "2.51.1"
 hilt_navigation_compose = "1.2.0"
@@ -25,10 +25,10 @@ espresso_core = "3.5.1"
 agp = "8.4.1"
 kotlin = "2.0.0"
 google-services = "4.4.2"
-firebase-crashlytics-plugin="2.9.9"
+firebase-crashlytics-plugin="3.0.1"
 material3Android = "1.2.1"
-compose-compiler="1.5.8"
 compose-vewrsion="1.6.7"
+androidxCoreSplashscreen = "1.0.1"
 
 #target version
 project-target-sdk-version = "34"
@@ -122,6 +122,9 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-ext-junit" }
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso_core" }
 androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose-vewrsion" }
+
+#splash
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidxCoreSplashscreen" }
 
 [bundles]
 compose = ["androidx-compose-activity", "androidx-material3-android", "lifecycle-runtime-compose",

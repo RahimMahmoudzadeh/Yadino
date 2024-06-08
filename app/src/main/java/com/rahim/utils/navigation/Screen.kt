@@ -9,30 +9,25 @@ sealed class Screen(
     @DrawableRes val iconSelected: Int?,
     @DrawableRes val iconDark: Int?
 ) {
-    object Home : Screen(
+    data object Home : Screen(
         ScreenName.HOME.nameScreen,
         R.drawable.home,
         R.drawable.home_selected,
         R.drawable.home_dark
     )
 
-    object Routine : Screen(
+    data object Routine : Screen(
         ScreenName.ROUTINE.nameScreen,
         R.drawable.note,
         R.drawable.mote_selected,
         R.drawable.note_dark
     )
 
-    object Note : Screen(
+    data object Note : Screen(
         ScreenName.NOTE.nameScreen,
         R.drawable.routine,
         R.drawable.routine_selected,
         R.drawable.routine_dark
-    )
-
-    object Splash : Screen(
-        ScreenName.SPLASH.nameScreen,
-        null, null, null
     )
 
 //    object Calender : Screen(
@@ -42,7 +37,7 @@ sealed class Screen(
 //        R.drawable.calendar_dark
 //    )
 
-    object Welcome : Screen(
+    data object Welcome : Screen(
         ScreenName.WELCOME.nameScreen,
         R.drawable.ic_round_notifications_24,
         R.drawable.ic_round_notifications_24,

@@ -49,6 +49,7 @@ import com.rahim.R
 import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
+import com.rahim.utils.extention.errorMessage
 import com.rahim.utils.resours.Resource
 import timber.log.Timber
 
@@ -166,10 +167,10 @@ fun CircularProgressAnimated(isShow: Boolean) {
 }
 
 @Composable
-fun <T>ProcessRoutineAdded(
+fun <T> ProcessRoutineAdded(
     response: Resource<T?>?,
     context: Context,
-    closeDialog: (responseData:T?) -> Unit
+    closeDialog: (responseData: T?) -> Unit
 ) {
     Timber.tag("routineAdd")
         .d("ProcessRoutineAdded ->${if (response is Resource.Success) "success" else if (response is Resource.Error) "fail" else "loading"}")
@@ -186,7 +187,7 @@ fun <T>ProcessRoutineAdded(
 
             is Resource.Error -> {
                 CircularProgressAnimated(false)
-                ShowToastShort(response.message, context)
+                ShowToastShort(response.message?.errorMessage(context), context)
                 closeDialog(response.data)
             }
         }
@@ -291,14 +292,6 @@ fun goSettingPermission(context: Context) {
         Uri.fromParts("package", context.packageName, null)
     )
     ContextCompat.startActivity(context, intent, null)
-}
-
-@Composable
-fun ShowStatusBar(isShow: Boolean) {
-    val window = (LocalContext.current as Activity).window
-    val insetsController = WindowCompat.getInsetsController(window,window.decorView)
-    if (isShow) insetsController.show(WindowInsetsCompat.Type.statusBars()) else insetsController.hide(WindowInsetsCompat.Type.statusBars())
-    WindowCompat.setDecorFitsSystemWindows(window, false)
 }
 
 @Composable

@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="Theme.Yadino" parent="android:Theme.Material.Light.NoActionBar">
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.Yadino" parent="android:Theme.Material.NoActionBar">
         <item name="textColor">@color/withe</item>
     </style>
+
+    <style name="NightAdjusted.Theme.Splash" parent="Theme.SplashScreen">
+        <item name="android:windowLightStatusBar" tools:targetApi="26">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
+    </style>
+
+
 </resources>
