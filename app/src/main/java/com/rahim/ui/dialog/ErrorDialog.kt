@@ -72,7 +72,7 @@ fun ErrorDialog(
                 ) {
                     DialogButtonBorder(text = stringResource(id = R.string.no),
                         gradient = Brush.verticalGradient(gradientColors),
-                        modifier = Modifier,
+                         modifier = Modifier,
                         textSize = 14.sp,
                         width = 0.22f,
                         40.dp,

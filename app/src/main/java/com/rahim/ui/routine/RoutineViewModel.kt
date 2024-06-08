@@ -9,6 +9,7 @@ import com.rahim.data.repository.dataTime.DataTimeRepository
 import com.rahim.data.repository.routine.RepositoryRoutine
 import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
 import com.rahim.utils.base.viewModel.BaseViewModel
+import com.rahim.utils.enums.error.ErrorMessageCode
 import com.rahim.utils.resours.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +59,7 @@ class RoutineViewModel @Inject constructor(
             Timber.tag("routineGetNameDay").d("getRoutines model numberDay->$numberDay")
             Timber.tag("routineGetNameDay").d("getRoutines model yerNumber->$yerNumber")
             routineRepository.getRoutines(monthNumber, numberDay, yerNumber).catch {
-                _flowRoutines.value = Resource.Error(errorGetProses)
+                _flowRoutines.value = Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
             }.collectLatest {
                 Timber.tag("routineGetNameDay").d("getRoutines routines->$it")
                 _flowRoutines.value = Resource.Success(it.sortedBy {

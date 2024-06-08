@@ -6,6 +6,7 @@ import com.rahim.data.repository.base.BaseRepository
 import com.rahim.data.repository.note.NoteRepository
 import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
 import com.rahim.utils.base.viewModel.BaseViewModel
+import com.rahim.utils.enums.error.ErrorMessageCode
 import com.rahim.utils.resours.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -38,7 +39,7 @@ class NoteViewModel @Inject constructor(
     fun getNotes(): Flow<Resource<List<NoteModel>>> = flow {
         emit(Resource.Loading())
         noteRepository.getNotes().catch {
-            emit(Resource.Error(errorGetProses))
+            emit(Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS))
         }.collect {
             emit(Resource.Success(it.sortedBy {
                 it.timeInMileSecond?.let {

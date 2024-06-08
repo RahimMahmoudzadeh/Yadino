@@ -1,6 +1,9 @@
 package com.rahim.utils.extention
 
+import android.content.Context
+import com.rahim.R
 import com.rahim.utils.enums.MonthName
+import com.rahim.utils.enums.error.ErrorMessageCode
 
 fun Int.calculateMonthName(): String {
     return when (this) {
@@ -66,4 +69,20 @@ fun String.calculateTimeFormat(currentYer: Int, currentMonth: Int, currentDay: S
         currentDay
     }
     return "$currentYer-$currentMonth-$currentDay"
+}
+
+fun ErrorMessageCode.errorMessage(context:Context):String{
+    return context.run {
+        when(this@errorMessage){
+            ErrorMessageCode.ERROR_GET_PROCESS->{
+                this.resources.getString(R.string.errorGetProses)
+            }
+            ErrorMessageCode.EQUAL_ROUTINE_MESSAGE->{
+                this.resources.getString(R.string.equalRoutineMessage)
+            }
+            ErrorMessageCode.ERROR_SAVE_PROSES->{
+                this.resources.getString(R.string.errorSaveProses)
+            }
+        }
+    }
 }

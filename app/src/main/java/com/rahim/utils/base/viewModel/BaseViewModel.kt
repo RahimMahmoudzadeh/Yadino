@@ -18,12 +18,6 @@ open class BaseViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    val errorGetProses = "مشکلی در دریافت اطلاعات پیش امده است! لطفا دوباره امتحان کنید"
-    val errorSaveProses = "مشکلی در ثبت اطلاعات پیش امده است! لطفا دوباره امتحان کنید"
-    val successSave = "ثبت اطلاعات با موفقیت ثبت شد!"
-    val successUpdateRoutine = "روتین شما با موفقیت ویرایش شد!"
-    val successRemove = "حذف روتین با موفقیت انجام شد!"
-
     val currentYer get() = getCurrentTime()[0]
     val currentMonth get() = getCurrentTime()[1]
     val currentDay get() = getCurrentTime()[2]
@@ -42,7 +36,7 @@ open class BaseViewModel @Inject constructor(
         }
     }
 
-    fun showSampleRoutine(isShow: Boolean) {
+    fun showSampleRoutine(isShow: Boolean = true) {
         viewModelScope.launch {
             sharedPreferencesRepository.isShowSampleRoutine(isShow)
         }

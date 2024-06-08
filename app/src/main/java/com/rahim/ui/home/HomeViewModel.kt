@@ -1,18 +1,22 @@
 package com.rahim.ui.home
 
 import androidx.lifecycle.viewModelScope
+import com.rahim.data.di.IODispatcher
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.repository.base.BaseRepository
 import com.rahim.data.repository.home.HomeRepository
 import com.rahim.data.repository.routine.RepositoryRoutine
 import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
 import com.rahim.utils.base.viewModel.BaseViewModel
+import com.rahim.utils.enums.error.ErrorMessageCode
 import com.rahim.utils.resours.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -20,6 +24,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -31,9 +37,16 @@ class HomeViewModel @Inject constructor(
     sharedPreferencesRepository: SharedPreferencesRepository
 ) :
     BaseViewModel(sharedPreferencesRepository, baseRepository) {
-    private val _flowRoutines =
-        MutableStateFlow<Resource<List<Routine>>>(Resource.Success(emptyList()))
-    val flowRoutines = _flowRoutines.asStateFlow()
+
+    var flowRoutines: StateFlow<Resource<List<Routine>>> =
+        routineRepository.getCurrentRoutines().stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000), Resource.Loading()
+        )
+
+    private var _searchRoutineState = MutableStateFlow<Resource<List<Routine>>>(Resource.Loading())
+    val searchRoutineState: StateFlow<Resource<List<Routine>>> = _searchRoutineState.asStateFlow()
+
 
     private val _addRoutine =
         MutableStateFlow<Resource<Routine?>?>(null)
@@ -42,21 +55,6 @@ class HomeViewModel @Inject constructor(
     private val _updateRoutine =
         MutableStateFlow<Resource<Routine?>?>(null)
     val updateRoutine = _updateRoutine.asStateFlow()
-    init {
-        getCurrentRoutines()
-    }
-    private fun getCurrentRoutines() {
-        viewModelScope.launch {
-            _flowRoutines.value = Resource.Loading()
-            routineRepository.getCurrentRoutines().catch {
-                _flowRoutines.value = Resource.Error(errorGetProses)
-            }.collect {
-                _flowRoutines.value = Resource.Success(it.sortedBy {
-                    it.timeHours?.replace(":", "")?.toInt()
-                })
-            }
-        }
-    }
 
     fun deleteRoutine(routine: Routine) {
         viewModelScope.launch {
@@ -71,6 +69,7 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
     fun checkedRoutine(routine: Routine) {
         viewModelScope.launch {
             routineRepository.checkedRoutine(routine)
@@ -80,7 +79,7 @@ class HomeViewModel @Inject constructor(
     fun addRoutine(routine: Routine) {
         viewModelScope.launch {
             routineRepository.addRoutine(routine).catch {
-                _addRoutine.value=Resource.Error(errorSaveProses)
+                _addRoutine.value = Resource.Error(ErrorMessageCode.ERROR_SAVE_PROSES)
             }.collect {
                 Timber.tag("routineAdd")
                     .d("view model ->${if (it is Resource.Success) "success" else if (it is Resource.Error) "fail" else "loading"}")
@@ -88,10 +87,24 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-    fun clearAddRoutine(){
-        _addRoutine.value=null
+
+    fun clearAddRoutine() {
+        _addRoutine.value = null
     }
-    fun clearUpdateRoutine(){
-        _updateRoutine.value=null
+
+    fun clearUpdateRoutine() {
+        _updateRoutine.value = null
+    }
+
+    fun searchItems(searchText: String) {
+        viewModelScope.launch {
+            if (searchText.isNotEmpty()) {
+                Timber.tag("searchRoutine").d("searchText:$searchText")
+                routineRepository.searchRoutine(searchText, currentMonth, currentDay).catch {}
+                    .collect {
+                        _searchRoutineState.value = it
+                    }
+            }
+        }
     }
 }
