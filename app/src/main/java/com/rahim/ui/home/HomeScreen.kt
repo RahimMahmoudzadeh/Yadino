@@ -34,7 +34,7 @@ import com.rahim.utils.base.view.ProcessRoutineAdded
 import com.rahim.utils.base.view.ShowSearchBar
 import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.launch
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
+import timber.log.Timber
 
 @Composable
 fun HomeRoute(
@@ -50,14 +50,12 @@ fun HomeRoute(
     val currentDay = viewModel.currentDay
 
     val routines by viewModel.flowRoutines.collectAsStateWithLifecycle()
-    val searchRoutineState by viewModel.searchRoutineState.collectAsStateWithLifecycle()
     val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
     val updateRoutine by viewModel.updateRoutine.collectAsStateWithLifecycle()
-
+    Timber.tag("routineGetNameDay").d("recomposition HomeRoute->${routines.data}")
     HomeScreen(
         modifier = modifier,
         routines = routines,
-        searchRoutine = searchRoutineState,
         addRoutine = addRoutine,
         updateRoutine = updateRoutine,
         currentYer = currentYer,
@@ -81,7 +79,6 @@ fun HomeRoute(
 fun HomeScreen(
     modifier: Modifier = Modifier,
     routines: Resource<List<Routine>>,
-    searchRoutine: Resource<List<Routine>>,
     addRoutine: Resource<Routine?>?,
     updateRoutine: Resource<Routine?>?,
     currentYer: Int,

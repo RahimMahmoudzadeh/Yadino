@@ -69,37 +69,93 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import com.rahim.R
+import com.rahim.ui.home.EmptyHome
+import com.rahim.ui.home.HomeViewModel
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun RoutineScreen(
+fun RoutineRoute(
     modifier: Modifier = Modifier,
-    viewModel: RoutineViewModel = hiltViewModel()
+    openDialog: Boolean,
+    clickSearch: Boolean,
+    viewModel: RoutineViewModel = hiltViewModel(),
+    onOpenDialog: (isOpen: Boolean) -> Unit,
 ) {
-    val context = LocalContext.current
-    val alarmManagement = AlarmManagement()
-    val searchItems = ArrayList<Routine>()
-
     val routines by viewModel.flowRoutines.collectAsStateWithLifecycle()
     val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
     val updateRoutine by viewModel.updateRoutine.collectAsStateWithLifecycle()
+    val indexDay by viewModel.indexDay.collectAsStateWithLifecycle()
     val times by viewModel.getTimes().collectAsStateWithLifecycle(initialValue = emptyList())
+    val timeMonth by viewModel.getTimesMonth(1403, 3)
+        .collectAsStateWithLifecycle(initialValue = emptyList())
+    Timber.tag("routineGetNameDay").d("recomposition RoutineRoute")
+    Timber.tag("routineGetNameDay").d("recomposition RoutineRoute->${routines.data}")
+    RoutineScreen(
+        modifier = modifier,
+        routines = routines,
+        times = times,
+        openDialog = openDialog,
+        clickSearch = clickSearch,
+        onOpenDialog = onOpenDialog,
+        timeMonth = timeMonth,
+        currentMonth = viewModel.currentMonth,
+        currentYer = viewModel.currentYer,
+        currentDay = viewModel.currentDay,
+        dayIndex = indexDay,
+        onUpdateRoutine = viewModel::updateRoutine,
+        onAddRoutine = viewModel::addRoutine,
+        onDeleteRoutine = viewModel::deleteRoutine,
+        onSearchText = viewModel::searchItems,
+        checkedRoutine = viewModel::checkedRoutine,
+        showSampleRoutine = viewModel::showSampleRoutine,
+        addRoutine = addRoutine,
+        updateRoutine = updateRoutine,
+        clearUpdateRoutine = viewModel::clearUpdateRoutine,
+        clearAddRoutine = viewModel::clearAddRoutine,
+        onDayIndex = viewModel::setDayIndex,
+        onCheckedDay = viewModel::getRoutines
+    )
+}
 
+@Composable
+fun RoutineScreen(
+    modifier: Modifier,
+    routines: Resource<List<Routine>>,
+    times: List<TimeDate>,
+    timeMonth: List<TimeDate>,
+    updateRoutine: Resource<Routine?>?,
+    addRoutine: Resource<Routine?>?,
+    currentMonth: Int,
+    currentYer: Int,
+    currentDay: Int,
+    dayIndex: Int,
+    openDialog: Boolean,
+    clickSearch: Boolean,
+    onOpenDialog: (isOpen: Boolean) -> Unit,
+    checkedRoutine: (Routine) -> Unit,
+    onCheckedDay: (year: Int, month: Int, day: Int) -> Unit,
+    onUpdateRoutine: (Routine) -> Unit,
+    onAddRoutine: (Routine) -> Unit,
+    onDeleteRoutine: (Routine) -> Unit,
+    showSampleRoutine: (Boolean) -> Unit,
+    clearUpdateRoutine: () -> Unit,
+    clearAddRoutine: () -> Unit,
+    onSearchText: (String) -> Unit,
+    onDayIndex: (Int) -> Unit,
+) {
+    val context = LocalContext.current
+    val alarmManagement = AlarmManagement()
+    Timber.tag("routineGetNameDay").d("recomposition RoutineScreen")
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
-    val routineChecked = rememberSaveable { mutableStateOf<Routine?>(null) }
-    var openDialog by rememberSaveable { mutableStateOf(false) }
     var errorClick by rememberSaveable { mutableStateOf(false) }
-    var dayChecked by rememberSaveable { mutableIntStateOf(0) }
-    var dayMonthChecked by rememberSaveable { mutableIntStateOf(0) }
-    var dayYerChecked by rememberSaveable { mutableIntStateOf(0) }
-    var monthCheckedDialog by rememberSaveable { mutableIntStateOf(viewModel.currentMonth) }
-    var yerCheckedDialog by rememberSaveable { mutableIntStateOf(viewModel.currentYer) }
-    var dayCheckedDialog by rememberSaveable { mutableIntStateOf(viewModel.currentDay) }
-    var timesSize by rememberSaveable { mutableIntStateOf(0) }
-    var indexDay by rememberSaveable { mutableIntStateOf(-1) }
-    val timeMonth by viewModel.getTimesMonth(yerCheckedDialog, monthCheckedDialog)
-        .collectAsStateWithLifecycle(initialValue = emptyList())
+    var dayChecked by rememberSaveable { mutableIntStateOf(currentDay) }
+    var dayMonthChecked by rememberSaveable { mutableIntStateOf(currentMonth) }
+    var dayYerChecked by rememberSaveable { mutableIntStateOf(currentYer) }
+    var monthCheckedDialog by rememberSaveable { mutableIntStateOf(currentMonth) }
+    var yerCheckedDialog by rememberSaveable { mutableIntStateOf(currentYer) }
+    var dayCheckedDialog by rememberSaveable { mutableIntStateOf(currentDay) }
+    var searchText by rememberSaveable { mutableStateOf("") }
+
     val listStateDay = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val currentDayIndex by remember {
@@ -107,168 +163,98 @@ fun RoutineScreen(
             listStateDay.firstVisibleItemIndex
         }
     }
-    val notificationPermissionState = rememberPermissionState(
-        Manifest.permission.POST_NOTIFICATIONS
-    )
-    var searchText by rememberSaveable { mutableStateOf("") }
-    var clickSearch by rememberSaveable { mutableStateOf(false) }
+
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
 
-    if (timesSize != times.size) {
-        timesSize = times.size
-        val currentTime = times.find { it.isToday }
-        val indexCurrentDay = times.indexOf(currentTime)
-        val currentDay = currentTime?.dayNumber ?: 0
-        val currentYerNumber = currentTime?.yerNumber ?: 0
-        val monthNumber = currentTime?.monthNumber ?: 0
-        coroutineScope.launch(Dispatchers.IO) {
-            val calculateDayIndex = calculateIndexDay(indexCurrentDay)
-            coroutineScope.launch(Dispatchers.Main) {
-                if (calculateDayIndex >= 0) {
-                    dayChecked = currentDay
-                    dayYerChecked = currentYerNumber
-                    dayMonthChecked = monthNumber
-                    if (calculateDayIndex > 0) {
-                        indexDay = calculateDayIndex
-                        listStateDay.scrollToItem(calculateDayIndex)
-                    }
-                }
-            }
+    coroutineScope.launch {
+        if (dayIndex >= 0) {
+            listStateDay.scrollToItem(dayIndex)
         }
     }
-    Scaffold(
-        topBar = {
-            TopBarCenterAlign(
-                modifier, stringResource(id = R.string.list_routine)
-            ) {
-                clickSearch = !clickSearch
-            }
-        }, containerColor = MaterialTheme.colorScheme.background
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-
-            ) {
-
-            if (!routines.data.isNullOrEmpty()) {
-                ShowSearchBar(clickSearch = clickSearch, searchText = searchText) { search ->
-                    searchText = search
-                    coroutineScope.launch(Dispatchers.IO) {
-                        if (search.isNotEmpty()) {
-                            routines.data?.filter {
-                                it.name.contains(search)
-                            }?.let {
-                                searchItems.clear()
-                                searchItems.addAll(it)
-                            }
-                        } else {
-                            searchItems.clear()
-                        }
-                    }
-                }
-            }
-
-            ItemTimeDate(
-                times,
-                dayChecked.toString(),
-                dayYerChecked,
-                dayMonthChecked,
-                listStateDay = listStateDay,
-                indexDay = indexDay,
-                dayCheckedNumber = { day, yer, month ->
-                    dayChecked = day.toInt()
-                    dayMonthChecked = month
-                    dayYerChecked = yer
-                    monthCheckedDialog = dayMonthChecked
-                    yerCheckedDialog = dayYerChecked
-                    dayCheckedDialog = dayChecked
-                    viewModel.getCurrentNameDay(
-                        String().calculateTimeFormat(yer, month, day),
-                        YYYY_MM_DD
-                    )
-                    viewModel.getRoutines(month, day.toInt(), yer)
-                },
-                currentIndexDay = currentDayIndex,
-                indexScrollDay = {
-                    if (it != times.size) {
-                        indexDay = it
-                        coroutineScope.launch {
-                            listStateDay.animateScrollToItem(indexDay)
-                        }
-                    }
-                },
-                screenWidth = screenWidth
-            )
-            GetRoutines(
-                routines,
-                searchItems,
-                searchText,
-                routineUpdateDialog = {
-                    if (it.isChecked) {
-                        Toast.makeText(
-                            context,
-                            R.string.not_update_checked_routine,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return@GetRoutines
-                    }
-                    if (it.isSample)
-                        viewModel.showSampleRoutine(true)
-
-                    routineUpdateDialog.value = it
-                },
-                routineChecked = {
-                    routineChecked.value = it
-                    Timber.tag("routineGetNameDay").d("GetRoutines routineChecked->$it")
-                },
-                routineDeleteDialog = {
-                    if (it.isChecked) {
-                        Toast.makeText(
-                            context,
-                            R.string.not_removed_checked_routine,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return@GetRoutines
-                    }
-                    if (it.isSample)
-                        viewModel.showSampleRoutine(true)
-
-                    routineDeleteDialog.value = it
-                })
+    Column(
+        modifier = modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        ShowSearchBar(clickSearch, searchText = searchText) { search ->
+            searchText = search
+            onSearchText(searchText)
         }
-        FloatingActionButton(
-            containerColor = CornflowerBlueLight,
-            contentColor = Color.White,
-            modifier = modifier
-                .padding(padding)
-                .offset(
-                    x = (configuration.screenWidthDp.dp) - 70.dp,
-                    y = (configuration.screenHeightDp.dp) - 190.dp
-                ),
-            onClick = {
-                requestPermissionNotification(isGranted = {
-                    if (it)
-                        openDialog = true
-                    else
-                        errorClick = true
-                }, permissionState = {
-                    it.launchPermissionRequest()
-                }, notificationPermission = notificationPermissionState)
-
+        ItemTimeDate(
+            times,
+            dayChecked,
+            dayYerChecked,
+            dayMonthChecked,
+            listStateDay = listStateDay,
+            indexDay = dayIndex,
+            dayCheckedNumber = { day, year, month ->
+                dayYerChecked = year
+                dayChecked = day
+                dayMonthChecked = month
+                onCheckedDay(year, month, day)
             },
-        ) {
-            Icon(Icons.Filled.Add, "add item")
-        }
+            currentIndexDay = currentDayIndex,
+            indexScrollDay = {
+                if (it != times.size) {
+                    onDayIndex(it)
+                    coroutineScope.launch {
+                        listStateDay.animateScrollToItem(dayIndex)
+                    }
+                }
+            },
+            screenWidth = screenWidth
+        )
+        GetRoutines(
+            routines,
+            searchText,
+            routineUpdateDialog = {
+                if (it.isChecked) {
+                    Toast.makeText(
+                        context,
+                        R.string.not_update_checked_routine,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@GetRoutines
+                }
+                onOpenDialog(true)
+                if (it.isSample)
+                    showSampleRoutine(true)
+                routineUpdateDialog.value = it
+            },
+            routineChecked = {
+                checkedRoutine(it)
+                coroutineScope.launch {
+                    alarmManagement.cancelAlarm(
+                        context,
+                        it.idAlarm ?: it.id?.toLong()
+                    )
+                }
+                Timber.tag("routineGetNameDay").d("GetRoutines routineChecked->$it")
+            },
+            routineDeleteDialog = {
+                if (it.isChecked) {
+                    Toast.makeText(
+                        context,
+                        R.string.not_removed_checked_routine,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@GetRoutines
+                }
+                if (it.isSample)
+                    showSampleRoutine(true)
+
+                routineDeleteDialog.value = it
+            })
     }
+
     ErrorDialog(
-        isOpen = routineDeleteDialog.value != null, isClickOk = {
+        isOpen = routineDeleteDialog.value != null,
+        isClickOk = {
             if (it) {
                 routineDeleteDialog.value?.let {
-                    viewModel.deleteRoutine(it)
+                    onDeleteRoutine(it)
                     coroutineScope.launch {
                         alarmManagement.cancelAlarm(
                             context,
@@ -284,37 +270,26 @@ fun RoutineScreen(
             id = R.string.ok
         )
     )
-    routineChecked.value?.let {
-        viewModel.checkedRoutine(it)
-        coroutineScope.launch {
-            alarmManagement.cancelAlarm(
-                context,
-                it.idAlarm ?: it.id?.toLong()
-            )
-        }
-        routineChecked.value = null
-    }
     DialogAddRoutine(
         isShowDay = false,
-        isOpen = openDialog || routineUpdateDialog.value != null,
+        isOpen = openDialog,
         openDialog = {
-            routineUpdateDialog.value = null
             monthCheckedDialog = dayMonthChecked
             yerCheckedDialog = dayYerChecked
             dayCheckedDialog = dayChecked
-            openDialog = false
+            onOpenDialog(false)
         },
         routineUpdate = routineUpdateDialog.value,
         routine = { routine ->
             monthCheckedDialog = dayMonthChecked
             yerCheckedDialog = dayYerChecked
             dayCheckedDialog = dayChecked
-            viewModel.showSampleRoutine(true)
+            showSampleRoutine(true)
             if (routineUpdateDialog.value != null) {
-                viewModel.updateRoutine(routine)
+                onUpdateRoutine(routine)
             } else {
                 coroutineScope.launch {
-                    viewModel.addRoutine(routine)
+                    onAddRoutine(routine)
                 }
             }
         },
@@ -340,17 +315,17 @@ fun RoutineScreen(
     )
     ProcessRoutineAdded(addRoutine, context) {
         it?.let {
-            openDialog = false
+            onOpenDialog(false)
             alarmManagement.setAlarm(context, it)
-            viewModel.clearAddRoutine()
+            clearAddRoutine()
         }
     }
     ProcessRoutineAdded(updateRoutine, context) {
         it?.let {
-            openDialog = false
+            onOpenDialog(false)
             coroutineScope.launch {
                 alarmManagement.updateAlarm(context, it)
-                viewModel.clearUpdateRoutine()
+                clearUpdateRoutine()
             }
             routineUpdateDialog.value = null
         }
@@ -396,7 +371,6 @@ private fun calculateIndexDay(index: Int): Int {
 @Composable
 private fun GetRoutines(
     routines: Resource<List<Routine>>,
-    searchItems: List<Routine>,
     searchText: String,
     routineUpdateDialog: (Routine) -> Unit,
     routineChecked: (Routine) -> Unit,
@@ -407,26 +381,28 @@ private fun GetRoutines(
         is Resource.Success -> {
             routines.data?.let {
                 if (it.isEmpty()) {
-                    EmptyRoutine()
-                } else {
-                    if (searchItems.isEmpty() && searchText.isNotEmpty()) {
-                        EmptyRoutine(messageEmpty = R.string.search_empty_routine)
-                    } else {
-                        ItemsRoutine(
-                            searchItems.ifEmpty { it },
-                            checkedRoutine = {
-                                Timber.tag("routineGetNameDay")
-                                    .d("ItemsRoutine checkedRoutine->$it")
-                                routineChecked(it)
-                            },
-                            updateRoutine = {
-                                routineUpdateDialog(it)
-                            },
-                            deleteRoutine = {
-                                routineDeleteDialog(it)
-                            }
+                    if (searchText.isNotEmpty()) {
+                        EmptyHome(
+                            messageEmpty = R.string.search_empty_routine
                         )
+                    } else {
+                        EmptyHome()
                     }
+                } else {
+                    ItemsRoutine(
+                        it,
+                        checkedRoutine = {
+                            Timber.tag("routineGetNameDay")
+                                .d("ItemsRoutine checkedRoutine->$it")
+                            routineChecked(it)
+                        },
+                        updateRoutine = {
+                            routineUpdateDialog(it)
+                        },
+                        deleteRoutine = {
+                            routineDeleteDialog(it)
+                        }
+                    )
                 }
             }
         }
@@ -463,14 +439,14 @@ private fun EmptyRoutine(
 @Composable
 private fun ItemTimeDate(
     times: List<TimeDate>,
-    dayChecked: String,
+    dayChecked: Int,
     dayYerChecked: Int,
     dayMonthChecked: Int,
     listStateDay: LazyListState,
     indexDay: Int,
     currentIndexDay: Int,
-    screenWidth:Int,
-    dayCheckedNumber: (day: String, yer: Int, month: Int) -> Unit,
+    screenWidth: Int,
+    dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit,
     indexScrollDay: (Int) -> Unit,
 ) {
     Row(
@@ -486,7 +462,7 @@ private fun ItemTimeDate(
             val time =
                 times.find { it.monthNumber == month && it.yerNumber == year && it.dayNumber == 1 }
             if (time != null) {
-                dayCheckedNumber("1", year, month)
+                dayCheckedNumber(1, year, month)
                 val index = times.indexOf(time)
                 indexScrollDay(
                     calculateIndexDay(index)
@@ -517,7 +493,7 @@ private fun ItemTimeDate(
             val time =
                 times.find { it.monthNumber == month && it.yerNumber == year && it.dayNumber == 1 }
             if (time != null) {
-                dayCheckedNumber("1", year, month)
+                dayCheckedNumber(1, year, month)
                 val index = times.indexOf(time)
                 indexScrollDay(
                     calculateIndexDay(index)
@@ -670,11 +646,11 @@ private fun ItemsRoutine(
 @Composable
 private fun DayItems(
     timeDate: TimeDate,
-    dayChecked: String,
+    dayChecked: Int,
     dayYerChecked: Int,
     dayMonthChecked: Int,
-    screenWidth:Int,
-    dayCheckedNumber: (day: String, yer: Int, month: Int) -> Unit,
+    screenWidth: Int,
+    dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit,
 ) {
 
     Timber.tag("timeClicked").d("dayChecked->$dayChecked")
@@ -685,12 +661,12 @@ private fun DayItems(
         modifier = Modifier
             .padding(
                 top = 4.dp,
-                start = if (dayChecked.length == 1) if (screenWidth <= 420) 5.dp else 7.dp else 6.dp
+                start = if (dayChecked == 1) if (screenWidth <= 420) 5.dp else 7.dp else 6.dp
             )
             .size(if (screenWidth <= 400) 36.dp else if (screenWidth in 400..420) 39.dp else 43.dp)
             .clip(CircleShape)
             .background(
-                brush = if (dayChecked == timeDate.dayNumber.toString() && dayMonthChecked == timeDate.monthNumber && dayYerChecked == timeDate.yerNumber) {
+                brush = if (dayChecked == timeDate.dayNumber && dayMonthChecked == timeDate.monthNumber && dayYerChecked == timeDate.yerNumber) {
                     Brush.verticalGradient(
                         gradientColors
                     )
@@ -706,7 +682,7 @@ private fun DayItems(
         onClick = {
             if (timeDate.dayNumber > 0)
                 dayCheckedNumber(
-                    timeDate.dayNumber.toString(),
+                    timeDate.dayNumber,
                     timeDate.yerNumber,
                     timeDate.monthNumber
                 )
@@ -716,7 +692,7 @@ private fun DayItems(
             fontSize = if (screenWidth <= 420) 16.sp else 18.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            color = if (dayChecked == timeDate.dayNumber.toString() && dayMonthChecked == timeDate.monthNumber && dayYerChecked == timeDate.yerNumber) (Color.White) else MaterialTheme.colorScheme.primary
+            color = if (dayChecked == timeDate.dayNumber && dayMonthChecked == timeDate.monthNumber && dayYerChecked == timeDate.yerNumber) (Color.White) else MaterialTheme.colorScheme.primary
         )
     )
 }

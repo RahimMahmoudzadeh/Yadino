@@ -15,6 +15,7 @@ import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.ui.home.HomeRoute
 import com.rahim.ui.note.NoteScreen
 import com.rahim.ui.note.NoteViewModel
+import com.rahim.ui.routine.RoutineRoute
 import com.rahim.ui.routine.RoutineScreen
 import com.rahim.ui.routine.RoutineViewModel
 import com.rahim.ui.welcome.WelcomeScreens
@@ -27,7 +28,7 @@ fun NavGraph(
     startDestination: String,
     innerPadding: PaddingValues,
     openDialog: Boolean,
-    clickSearch:Boolean,
+    clickSearch: Boolean,
     onOpenDialog: (isOpen: Boolean) -> Unit,
 ) {
     NavHost(navController, startDestination = startDestination, Modifier.padding(innerPadding)) {
@@ -35,12 +36,17 @@ fun NavGraph(
             WelcomeScreens(navController)
         }
         composable(Screen.Home.route) {
-            HomeRoute(openDialog = openDialog, clickSearch = clickSearch, onOpenDialog = {isOpen ->
+            HomeRoute(openDialog = openDialog, clickSearch = clickSearch, onOpenDialog = { isOpen ->
                 onOpenDialog(isOpen)
             })
         }
         composable(Screen.Routine.route) {
-            RoutineScreen()
+            RoutineRoute(
+                openDialog = openDialog,
+                clickSearch = clickSearch,
+                onOpenDialog = { isOpen ->
+                    onOpenDialog(isOpen)
+                })
         }
         composable(Screen.Note.route) {
             NoteScreen()

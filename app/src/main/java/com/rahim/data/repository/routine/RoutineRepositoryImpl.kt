@@ -220,7 +220,7 @@ class RoutineRepositoryImpl @Inject constructor(
     override fun getRoutines(
         monthNumber: Int, numberDay: Int, yerNumber: Int
     ): Flow<List<Routine>> =
-        routineDao.getRoutines(monthNumber, numberDay, yerNumber).distinctUntilChanged()
+        routineDao.getRoutines(monthNumber, numberDay, yerNumber)
 
     override fun searchRoutine(
         name: String, monthNumber: Int?, dayNumber: Int?
@@ -237,18 +237,4 @@ class RoutineRepositoryImpl @Inject constructor(
             emit(Resource.Success(it))
         }
     }
-
-
-    override fun getCurrentRoutines(): Flow<Resource<List<Routine>>> =
-        flow<Resource<List<Routine>>> {
-            emit(Resource.Loading())
-            routineDao.getRoutines(currentTimeMonth, currentTimeDay, currentTimeYer).catch {
-                emit(Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS))
-            }.collect {
-                val routines = it.sortedBy {
-                    it.timeHours?.replace(":", "")?.toInt()
-                }
-                emit(Resource.Success(routines))
-            }
-        }.flowOn(ioDispatcher)
 }

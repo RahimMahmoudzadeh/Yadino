@@ -44,10 +44,6 @@ class HomeViewModel @Inject constructor(
     private var _flowRoutines = MutableStateFlow<Resource<List<Routine>>>(Resource.Loading())
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
 
-    private var _searchRoutineState = MutableStateFlow<Resource<List<Routine>>>(Resource.Loading())
-    val searchRoutineState: StateFlow<Resource<List<Routine>>> = _searchRoutineState.asStateFlow()
-
-
     private val _addRoutine =
         MutableStateFlow<Resource<Routine?>?>(null)
     val addRoutine = _addRoutine.asStateFlow()
@@ -62,10 +58,12 @@ class HomeViewModel @Inject constructor(
 
     private fun getCurrentRoutines() {
         viewModelScope.launch {
-            routineRepository.getCurrentRoutines()
+            routineRepository.getRoutines(currentMonth, currentDay, currentYer)
                 .catch { _flowRoutines.value = Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS) }
                 .collect {
-                    _flowRoutines.value = it
+                    _flowRoutines.value = Resource.Success(it.sortedBy {
+                        it.timeHours?.replace(":", "")?.toInt()
+                    })
                 }
         }
     }

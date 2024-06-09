@@ -21,8 +21,6 @@ interface RepositoryRoutine {
 
     fun searchRoutine(name: String,monthNumber: Int?, dayNumber: Int?): Flow<Resource<List<Routine>>>
 
-    fun getCurrentRoutines(): Flow<Resource<List<Routine>>>
-
     suspend fun changeRoutineId()
     suspend fun checkEdAllRoutinePastTime()
 }
