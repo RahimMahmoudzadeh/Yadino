@@ -1,7 +1,6 @@
 package com.rahim.ui.routine
 
 
-import android.Manifest
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -14,14 +13,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -43,34 +38,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
 import com.rahim.data.alarm.AlarmManagement
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.data.TimeDate
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
-import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.utils.base.view.ItemRoutine
-import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.ProcessRoutineAdded
 import com.rahim.utils.base.view.ShowSearchBar
-import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.base.view.goSettingPermission
 import com.rahim.utils.base.view.gradientColors
-import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.extention.calculateMonthName
-import com.rahim.utils.extention.calculateTimeFormat
 import com.rahim.utils.resours.Resource
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import com.rahim.R
 import com.rahim.ui.home.EmptyHome
-import com.rahim.ui.home.HomeViewModel
 
 @Composable
 fun RoutineRoute(
@@ -85,10 +71,8 @@ fun RoutineRoute(
     val updateRoutine by viewModel.updateRoutine.collectAsStateWithLifecycle()
     val indexDay by viewModel.indexDay.collectAsStateWithLifecycle()
     val times by viewModel.getTimes().collectAsStateWithLifecycle(initialValue = emptyList())
-    val timeMonth by viewModel.getTimesMonth(1403, 3)
-        .collectAsStateWithLifecycle(initialValue = emptyList())
-    Timber.tag("routineGetNameDay").d("recomposition RoutineRoute")
-    Timber.tag("routineGetNameDay").d("recomposition RoutineRoute->${routines.data}")
+    val timeMonth by viewModel.times.collectAsStateWithLifecycle()
+
     RoutineScreen(
         modifier = modifier,
         routines = routines,
@@ -98,7 +82,7 @@ fun RoutineRoute(
         onOpenDialog = onOpenDialog,
         timeMonth = timeMonth,
         currentMonth = viewModel.currentMonth,
-        currentYer = viewModel.currentYer,
+        currentYer = viewModel.currentYear,
         currentDay = viewModel.currentDay,
         dayIndex = indexDay,
         onUpdateRoutine = viewModel::updateRoutine,
@@ -112,7 +96,8 @@ fun RoutineRoute(
         clearUpdateRoutine = viewModel::clearUpdateRoutine,
         clearAddRoutine = viewModel::clearAddRoutine,
         onDayIndex = viewModel::setDayIndex,
-        onCheckedDay = viewModel::getRoutines
+        onCheckedDay = viewModel::getRoutines,
+        onMonthChecked = viewModel::getTimesMonth
     )
 }
 
@@ -141,6 +126,7 @@ fun RoutineScreen(
     clearAddRoutine: () -> Unit,
     onSearchText: (String) -> Unit,
     onDayIndex: (Int) -> Unit,
+    onMonthChecked: (Int, Int) -> Unit,
 ) {
     val context = LocalContext.current
     val alarmManagement = AlarmManagement()
@@ -149,11 +135,9 @@ fun RoutineScreen(
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     var errorClick by rememberSaveable { mutableStateOf(false) }
     var dayChecked by rememberSaveable { mutableIntStateOf(currentDay) }
-    var dayMonthChecked by rememberSaveable { mutableIntStateOf(currentMonth) }
-    var dayYerChecked by rememberSaveable { mutableIntStateOf(currentYer) }
-    var monthCheckedDialog by rememberSaveable { mutableIntStateOf(currentMonth) }
-    var yerCheckedDialog by rememberSaveable { mutableIntStateOf(currentYer) }
-    var dayCheckedDialog by rememberSaveable { mutableIntStateOf(currentDay) }
+    var monthChecked by rememberSaveable { mutableIntStateOf(currentMonth) }
+    var yerChecked by rememberSaveable { mutableIntStateOf(currentYer) }
+
     var searchText by rememberSaveable { mutableStateOf("") }
 
     val listStateDay = rememberLazyListState()
@@ -185,14 +169,14 @@ fun RoutineScreen(
         ItemTimeDate(
             times,
             dayChecked,
-            dayYerChecked,
-            dayMonthChecked,
+            yerChecked,
+            monthChecked,
             listStateDay = listStateDay,
             indexDay = dayIndex,
             dayCheckedNumber = { day, year, month ->
-                dayYerChecked = year
+                yerChecked = year
                 dayChecked = day
-                dayMonthChecked = month
+                monthChecked = month
                 onCheckedDay(year, month, day)
             },
             currentIndexDay = currentDayIndex,
@@ -274,16 +258,10 @@ fun RoutineScreen(
         isShowDay = false,
         isOpen = openDialog,
         openDialog = {
-            monthCheckedDialog = dayMonthChecked
-            yerCheckedDialog = dayYerChecked
-            dayCheckedDialog = dayChecked
             onOpenDialog(false)
         },
         routineUpdate = routineUpdateDialog.value,
         routine = { routine ->
-            monthCheckedDialog = dayMonthChecked
-            yerCheckedDialog = dayYerChecked
-            dayCheckedDialog = dayChecked
             showSampleRoutine(true)
             if (routineUpdateDialog.value != null) {
                 onUpdateRoutine(routine)
@@ -293,25 +271,11 @@ fun RoutineScreen(
                 }
             }
         },
-        currentNumberDay = dayCheckedDialog,
-        currentNumberMonth = monthCheckedDialog,
-        currentNumberYer = yerCheckedDialog,
+        currentNumberDay = dayChecked,
+        currentNumberMonth = monthChecked,
+        currentNumberYear = yerChecked,
         times = timeMonth,
-        dayCheckedNumber = { day, yer, month ->
-            if (day == 0 && yer == 0 && month == 0) {
-                monthCheckedDialog = dayMonthChecked
-                yerCheckedDialog = dayYerChecked
-                dayCheckedDialog = dayChecked
-            } else {
-                monthCheckedDialog = month
-                yerCheckedDialog = yer
-                dayCheckedDialog = day
-            }
-        }, monthChange = { year, month ->
-            monthCheckedDialog = month
-            yerCheckedDialog = year
-            dayCheckedDialog = 1
-        }
+        monthChange = onMonthChecked
     )
     ProcessRoutineAdded(addRoutine, context) {
         it?.let {

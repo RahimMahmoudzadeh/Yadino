@@ -58,7 +58,7 @@ fun NoteScreen(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val currentYer = viewModel.currentYer
+    val currentYer = viewModel.currentYear
     val currentMonth = viewModel.currentMonth
     val currentDay = viewModel.currentDay
     val currentNameDay by viewModel.flowNameDay.collectAsStateWithLifecycle()

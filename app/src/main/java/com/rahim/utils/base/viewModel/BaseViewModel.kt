@@ -8,7 +8,6 @@ import com.rahim.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,7 +18,7 @@ open class BaseViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    val currentYer get() = getCurrentTime()[0]
+    val currentYear get() = getCurrentTime()[0]
     val currentMonth get() = getCurrentTime()[1]
     val currentDay get() = getCurrentTime()[2]
 

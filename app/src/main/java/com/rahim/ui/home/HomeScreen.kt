@@ -12,8 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.HorizontalAlignmentLine
-import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,7 +43,7 @@ fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
 
-    val currentYer = viewModel.currentYer
+    val currentYer = viewModel.currentYear
     val currentMonth = viewModel.currentMonth
     val currentDay = viewModel.currentDay
 
@@ -203,8 +201,8 @@ fun HomeScreen(
         },
         currentNumberDay = currentDay,
         currentNumberMonth = currentMonth,
-        currentNumberYer = currentYer,
-        times = null,
+        currentNumberYear = currentYer,
+        times = null, monthChange = { year: Int, month: Int ->  }
     )
     ProcessRoutineAdded(addRoutine, context) {
         it?.let {
@@ -233,7 +231,9 @@ fun EmptyHome(
     Image(
         modifier = modifier
             .sizeIn(minHeight = 320.dp)
-            .fillMaxWidth().fillMaxHeight(0.8f).padding(10.dp),
+            .fillMaxWidth()
+            .fillMaxHeight(0.8f)
+            .padding(10.dp),
         alignment = Alignment.Center,
         painter = painterResource(id = R.drawable.empty_list_home),
         contentDescription = "empty list home"
