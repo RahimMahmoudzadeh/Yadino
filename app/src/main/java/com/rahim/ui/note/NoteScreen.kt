@@ -44,6 +44,7 @@ import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.rahim.R
+
 @Composable
 fun NoteScreen(
     modifier: Modifier = Modifier,
@@ -63,7 +64,6 @@ fun NoteScreen(
     val currentDay = viewModel.currentDay
     val currentNameDay by viewModel.flowNameDay.collectAsStateWithLifecycle()
     val searchItems = ArrayList<NoteModel>()
-    val configuration = LocalConfiguration.current
 
     val notes by viewModel.getNotes().collectAsStateWithLifecycle(
         initialValue = Resource.Success(
@@ -75,109 +75,85 @@ fun NoteScreen(
         String().calculateTimeFormat(currentYer, currentMonth, currentDay.toString()), YYYY_MM_DD
     )
 
-    Scaffold(
-        topBar = {
-            TopBarCenterAlign(modifier, stringResource(id = R.string.notes)) {
-                clickSearch = !clickSearch && !notes.data.isNullOrEmpty()
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = if (notes.data.isNullOrEmpty()) Arrangement.Center else Arrangement.Top,
+        modifier = modifier
+            .fillMaxSize()
+            .padding(
+                top = if (notes.data.isNullOrEmpty()) 25.dp else 0.dp
+            )
+    ) {
+//        ShowSearchBar(clickSearch = clickSearch, searchText = searchText) { search ->
+//            searchText = search
+//            coroutineScope.launch(Dispatchers.IO) {
+//                if (search.isNotEmpty()) {
+//                    searchItems.clear()
+//                    notes.data?.filter {
+//                        it.name.contains(search)
+//                    }?.let {
+//                        searchItems.addAll(it)
+//                    }
+//                } else {
+//                    searchItems.clear()
+//                }
+//            }
+//        }
+
+        when (notes) {
+            is Resource.Loading -> {
+
             }
-        }, containerColor = MaterialTheme.colorScheme.background
-    ) { padding ->
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = if (notes.data.isNullOrEmpty()) Arrangement.Center else Arrangement.Top,
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .padding(
-                    top = if (notes.data.isNullOrEmpty()) 25.dp else 0.dp
-                )
-        ) {
-            ShowSearchBar(clickSearch = clickSearch, searchText = searchText) { search ->
-                searchText = search
-                coroutineScope.launch(Dispatchers.IO) {
-                    if (search.isNotEmpty()) {
-                        searchItems.clear()
-                        notes.data?.filter {
-                            it.name.contains(search)
-                        }?.let {
-                            searchItems.addAll(it)
-                        }
+
+            is Resource.Success -> {
+
+                if (notes.data?.isEmpty() == true) {
+                    EmptyNote()
+                } else {
+                    if (searchItems.isEmpty() && searchText.isNotEmpty()) {
+                        EmptyNote(
+                            Modifier.padding(top = 70.dp),
+                            messageEmpty = R.string.search_empty_note
+                        )
                     } else {
-                        searchItems.clear()
+                        ItemsNote(
+                            searchItems.ifEmpty { notes.data as List<NoteModel> },
+                            checkedNote = {
+                                viewModel.updateNote(it)
+                            },
+                            updateNote = {
+                                if (it.isChecked) {
+                                    Toast.makeText(
+                                        context,
+                                        R.string.not_update_checked_note,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    return@ItemsNote
+                                }
+                                if (it.isSample) viewModel.showSampleNote(true)
+
+                                noteUpdateDialog.value = it
+                            },
+                            deleteNote = {
+                                if (it.isChecked) {
+                                    Toast.makeText(
+                                        context,
+                                        R.string.not_removed_checked_note,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    return@ItemsNote
+                                }
+                                if (it.isSample) viewModel.showSampleNote(true)
+
+                                noteDeleteDialog.value = it
+                            })
                     }
                 }
             }
 
-            when (notes) {
-                is Resource.Loading -> {
+            is Resource.Error -> {
 
-                }
-
-                is Resource.Success -> {
-
-                    if (notes.data?.isEmpty() == true) {
-                        EmptyNote()
-                    } else {
-                        if (searchItems.isEmpty() && searchText.isNotEmpty()) {
-                            EmptyNote(
-                                Modifier.padding(top = 70.dp),
-                                messageEmpty = R.string.search_empty_note
-                            )
-                        } else {
-                            ItemsNote(
-                                searchItems.ifEmpty { notes.data as List<NoteModel> },
-                                checkedNote = {
-                                    viewModel.updateNote(it)
-                                },
-                                updateNote = {
-                                    if (it.isChecked) {
-                                        Toast.makeText(
-                                            context,
-                                            R.string.not_update_checked_note,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        return@ItemsNote
-                                    }
-                                    if (it.isSample) viewModel.showSampleNote(true)
-
-                                    noteUpdateDialog.value = it
-                                },
-                                deleteNote = {
-                                    if (it.isChecked) {
-                                        Toast.makeText(
-                                            context,
-                                            R.string.not_removed_checked_note,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                        return@ItemsNote
-                                    }
-                                    if (it.isSample) viewModel.showSampleNote(true)
-
-                                    noteDeleteDialog.value = it
-                                })
-                        }
-                    }
-                }
-
-                is Resource.Error -> {
-
-                }
             }
-        }
-        FloatingActionButton(
-            containerColor = CornflowerBlueLight,
-            contentColor = Color.White,
-            modifier = modifier
-                .padding(padding)
-                .offset(
-                    x = (configuration.screenWidthDp.dp) - 70.dp,
-                    y = (configuration.screenHeightDp.dp) - 190.dp
-                ),
-            onClick = {
-                openDialog = true
-            },
-        ) {
-            Icon(Icons.Filled.Add, "add item")
         }
     }
     DialogAddNote(noteUpdate = if (noteUpdateDialog.value != null) noteUpdateDialog.value else null,

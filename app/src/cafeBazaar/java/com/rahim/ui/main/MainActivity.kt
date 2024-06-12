@@ -103,11 +103,27 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                     .background(MaterialTheme.colorScheme.background),
             ) {
                 Scaffold(topBar = {
-                    TopBarCenterAlign(
-                        title = stringResource(id = R.string.hello_friend), onClickSearch = {
-                            clickSearch = !clickSearch
-                        }
-                    )
+                    if (destinationNavBackStackEntry != Screen.Welcome.route) {
+                        TopBarCenterAlign(
+                            title = when (destinationNavBackStackEntry) {
+                                Screen.Home.route ->
+                                    stringResource(
+                                        id = R.string.my_firend
+                                    )
+
+                                Screen.Routine.route ->
+                                    stringResource(
+                                        id = R.string.list_routine
+                                    )
+
+                                else ->
+                                    stringResource(id = R.string.notes)
+                            },
+                            onClickSearch = {
+                                clickSearch = !clickSearch
+                            }
+                        )
+                    }
                 }, floatingActionButton = {
                     if (destinationNavBackStackEntry != Screen.Welcome.route) {
                         FloatingActionButton(containerColor = CornflowerBlueLight,
@@ -136,10 +152,11 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                         innerPadding = innerPadding,
                         startDestination = if (isShowWelcomeScreen) Screen.Home.route else Screen.Welcome.route,
                         openDialog = openDialog,
-                        clickSearch = clickSearch
-                    ) { isOpen ->
-                        openDialog = isOpen
-                    }
+                        clickSearch = clickSearch,
+                        onOpenDialog = { isOpen ->
+                            openDialog = isOpen
+                        }
+                    )
                     if (destination == Screen.Home.route) requestPermissionNotification(
                         notificationPermission = notificationPermissionState,
                         isGranted = {},

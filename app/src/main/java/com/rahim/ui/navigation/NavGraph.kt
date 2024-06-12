@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.ui.home.HomeRoute
