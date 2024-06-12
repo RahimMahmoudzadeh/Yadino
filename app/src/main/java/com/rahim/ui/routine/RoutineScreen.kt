@@ -61,9 +61,9 @@ import com.rahim.ui.home.EmptyHome
 @Composable
 fun RoutineRoute(
     modifier: Modifier = Modifier,
+    viewModel: RoutineViewModel = hiltViewModel(),
     openDialog: Boolean,
     clickSearch: Boolean,
-    viewModel: RoutineViewModel = hiltViewModel(),
     onOpenDialog: (isOpen: Boolean) -> Unit,
 ) {
     val routines by viewModel.flowRoutines.collectAsStateWithLifecycle()
@@ -114,8 +114,8 @@ fun RoutineScreen(
     currentDay: Int,
     dayIndex: Int,
     openDialog: Boolean,
-    clickSearch: Boolean,
     onOpenDialog: (isOpen: Boolean) -> Unit,
+    clickSearch: Boolean,
     checkedRoutine: (Routine) -> Unit,
     onCheckedDay: (year: Int, month: Int, day: Int) -> Unit,
     onUpdateRoutine: (Routine) -> Unit,

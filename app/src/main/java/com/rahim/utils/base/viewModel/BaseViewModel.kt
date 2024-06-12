@@ -22,19 +22,9 @@ open class BaseViewModel @Inject constructor(
     val currentMonth get() = getCurrentTime()[1]
     val currentDay get() = getCurrentTime()[2]
 
-    private val _flowNameDay =
-        MutableStateFlow("")
-    val flowNameDay: StateFlow<String> = _flowNameDay
     fun isShowWelcomeScreen() = sharedPreferencesRepository.isShowWelcomeScreen()
 
     private fun getCurrentTime(): List<Int> = baseRepository.getCurrentTime()
-
-    fun getCurrentNameDay(date: String, format: String = Constants.YYYY_MM_DD) {
-        viewModelScope.launch {
-            val time = baseRepository.getCurrentNameDay(date, format)
-            _flowNameDay.value = time
-        }
-    }
 
     fun showSampleRoutine(isShow: Boolean = true) {
         viewModelScope.launch {

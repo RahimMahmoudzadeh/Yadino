@@ -6,11 +6,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -21,8 +16,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,46 +27,65 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.data.modle.note.NoteModel
 import com.rahim.ui.dialog.DialogAddNote
 import com.rahim.ui.dialog.ErrorDialog
-import com.rahim.ui.theme.CornflowerBlueLight
-import com.rahim.utils.Constants.YYYY_MM_DD
 import com.rahim.utils.base.view.ItemListNote
-import com.rahim.utils.base.view.ShowSearchBar
-import com.rahim.utils.base.view.TopBarCenterAlign
-import com.rahim.utils.extention.calculateTimeFormat
 import com.rahim.utils.resours.Resource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import com.rahim.R
+import com.rahim.utils.base.view.ShowSearchBar
+
+@Composable
+fun NoteRoute(
+    modifier: Modifier = Modifier,
+    viewModel: NoteViewModel = hiltViewModel(),
+    openDialog: Boolean,
+    clickSearch: Boolean,
+    onOpenDialog: (isOpen: Boolean) -> Unit,
+) {
+    val notes by viewModel.notes.collectAsStateWithLifecycle()
+    NoteScreen(
+        modifier = modifier,
+        currentYear = viewModel.currentYear,
+        currentMonth = viewModel.currentMonth,
+        currentDay = viewModel.currentDay,
+        currentNameDay = viewModel.nameDay ?: "",
+        notes = notes,
+        onUpdateNote = viewModel::updateNote,
+        showSampleNote =viewModel::showSampleNote,
+        onAddNote =viewModel::addNote,
+        onDelete = viewModel::delete,
+        onOpenDialog = onOpenDialog,
+        onSearchText = viewModel::searchItems,
+        openDialog = openDialog,
+        clickSearch = clickSearch,
+    )
+}
 
 @Composable
 fun NoteScreen(
     modifier: Modifier = Modifier,
-    viewModel: NoteViewModel = hiltViewModel(),
+    currentYear: Int,
+    currentMonth: Int,
+    currentDay: Int,
+    currentNameDay: String,
+    notes: Resource<List<NoteModel>>,
+    openDialog: Boolean,
+    clickSearch: Boolean,
+    onOpenDialog: (isOpen: Boolean) -> Unit,
+    onUpdateNote: (NoteModel) -> Unit,
+    showSampleNote: (Boolean) -> Unit,
+    onAddNote: (NoteModel) -> Unit,
+    onDelete: (NoteModel) -> Unit,
+    onSearchText: (String) -> Unit,
 ) {
 
     val noteDeleteDialog = rememberSaveable { mutableStateOf<NoteModel?>(null) }
     val noteUpdateDialog = rememberSaveable { mutableStateOf<NoteModel?>(null) }
     var searchText by rememberSaveable { mutableStateOf("") }
-    var clickSearch by rememberSaveable { mutableStateOf(false) }
-    var openDialog by rememberSaveable { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val currentYer = viewModel.currentYear
-    val currentMonth = viewModel.currentMonth
-    val currentDay = viewModel.currentDay
-    val currentNameDay by viewModel.flowNameDay.collectAsStateWithLifecycle()
     val searchItems = ArrayList<NoteModel>()
 
-    val notes by viewModel.getNotes().collectAsStateWithLifecycle(
-        initialValue = Resource.Success(
-            emptyList()
-        )
-    )
 
-    viewModel.getCurrentNameDay(
-        String().calculateTimeFormat(currentYer, currentMonth, currentDay.toString()), YYYY_MM_DD
-    )
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,21 +96,10 @@ fun NoteScreen(
                 top = if (notes.data.isNullOrEmpty()) 25.dp else 0.dp
             )
     ) {
-//        ShowSearchBar(clickSearch = clickSearch, searchText = searchText) { search ->
-//            searchText = search
-//            coroutineScope.launch(Dispatchers.IO) {
-//                if (search.isNotEmpty()) {
-//                    searchItems.clear()
-//                    notes.data?.filter {
-//                        it.name.contains(search)
-//                    }?.let {
-//                        searchItems.addAll(it)
-//                    }
-//                } else {
-//                    searchItems.clear()
-//                }
-//            }
-//        }
+        ShowSearchBar(clickSearch, searchText = searchText) { search ->
+            searchText = search
+            onSearchText(searchText)
+        }
 
         when (notes) {
             is Resource.Loading -> {
@@ -119,7 +120,7 @@ fun NoteScreen(
                         ItemsNote(
                             searchItems.ifEmpty { notes.data as List<NoteModel> },
                             checkedNote = {
-                                viewModel.updateNote(it)
+                                onUpdateNote(it)
                             },
                             updateNote = {
                                 if (it.isChecked) {
@@ -130,7 +131,7 @@ fun NoteScreen(
                                     ).show()
                                     return@ItemsNote
                                 }
-                                if (it.isSample) viewModel.showSampleNote(true)
+                                if (it.isSample) showSampleNote(true)
 
                                 noteUpdateDialog.value = it
                             },
@@ -143,7 +144,7 @@ fun NoteScreen(
                                     ).show()
                                     return@ItemsNote
                                 }
-                                if (it.isSample) viewModel.showSampleNote(true)
+                                if (it.isSample) showSampleNote(true)
 
                                 noteDeleteDialog.value = it
                             })
@@ -160,25 +161,25 @@ fun NoteScreen(
         isOpen = openDialog || noteUpdateDialog.value != null,
         note = {
             if (noteUpdateDialog.value != null) {
-                viewModel.updateNote(it)
+                onUpdateNote(it)
             } else {
-                viewModel.addNote(it)
+                onAddNote(it)
             }
         },
-        currentYer = currentYer,
+        currentYer = currentYear,
         currentMonth = currentMonth,
         currentDay = currentDay,
         currentDayName = currentNameDay,
         openDialog = {
             noteUpdateDialog.value = null
-            openDialog = it
+            onOpenDialog(it)
         })
 
     noteDeleteDialog.value?.let { noteDelete ->
         ShowDialogDelete(click = {
             noteDeleteDialog.value = null
             if (it) {
-                viewModel.delete(noteDelete)
+                onDelete(noteDelete)
             }
         }, isOpenDialog = noteDeleteDialog.value != null)
     }

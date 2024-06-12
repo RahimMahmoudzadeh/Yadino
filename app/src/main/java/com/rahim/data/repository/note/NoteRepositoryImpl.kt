@@ -5,11 +5,18 @@ import com.rahim.data.db.database.AppDatabase
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.note.NoteModel
 import com.rahim.data.sharedPreferences.SharedPreferencesCustom
+import com.rahim.utils.enums.error.ErrorMessageCode
+import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import saman.zamani.persiandate.PersianDate
+import timber.log.Timber
 import javax.inject.Inject
-private const val SAMPLE_NOTE_RIGHT="من یک یادداشت تستی هستم لطفا من را به راست بکشید"
-private const val SAMPLE_NOTE_LEFT="من یک یادداشت تستی هستم لطفا من را به چپ بکشید"
+
+private const val SAMPLE_NOTE_RIGHT = "من یک یادداشت تستی هستم لطفا من را به راست بکشید"
+private const val SAMPLE_NOTE_LEFT = "من یک یادداشت تستی هستم لطفا من را به چپ بکشید"
+
 class NoteRepositoryImpl @Inject constructor(
     private val noteDao: NoteDao,
     private val sharedPreferencesCustom: SharedPreferencesCustom
@@ -27,7 +34,7 @@ class NoteRepositoryImpl @Inject constructor(
             val note =
                 NoteModel(
                     name = "تست${index.plus(1)}",
-                    description = if (index==1) SAMPLE_NOTE_RIGHT else SAMPLE_NOTE_LEFT,
+                    description = if (index == 1) SAMPLE_NOTE_RIGHT else SAMPLE_NOTE_LEFT,
                     state = 2,
                     dayName = currentTimeDay.toString(),
                     dayNumber = currentTimeDay,
@@ -53,4 +60,8 @@ class NoteRepositoryImpl @Inject constructor(
     }
 
     override fun getNotes(): Flow<List<NoteModel>> = noteDao.getNotes()
+    override fun searchNote(
+        name: String
+    ): Flow<List<NoteModel>> = noteDao.searchRoutine(name)
+
 }

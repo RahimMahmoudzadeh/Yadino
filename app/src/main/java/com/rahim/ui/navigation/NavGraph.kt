@@ -15,6 +15,7 @@ import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.ui.home.HomeRoute
+import com.rahim.ui.note.NoteRoute
 import com.rahim.ui.note.NoteScreen
 import com.rahim.ui.note.NoteViewModel
 import com.rahim.ui.routine.RoutineRoute
@@ -51,7 +52,11 @@ fun NavGraph(
                 })
         }
         composable(Screen.Note.route) {
-            NoteScreen()
+            NoteRoute(openDialog = openDialog,
+                clickSearch = clickSearch,
+                onOpenDialog = { isOpen ->
+                    onOpenDialog(isOpen)
+                })
         }
 //        composable(Screen.Calender.route) {
 //
