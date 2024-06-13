@@ -9,7 +9,10 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -318,6 +321,32 @@ fun ShowSearchBar(
             )
         }
     }
+}
+@Composable
+fun EmptyMessage(
+    modifier: Modifier = Modifier,
+    @StringRes messageEmpty: Int = R.string.not_work_for_day,
+    @DrawableRes painter: Int = R.drawable.empty_list_home
+) {
+    Image(
+        modifier = modifier
+            .sizeIn(minHeight = 320.dp)
+            .fillMaxWidth()
+            .fillMaxHeight(0.8f)
+            .padding(10.dp),
+        alignment = Alignment.Center,
+        painter = painterResource(id = painter),
+        contentDescription = "empty list home"
+    )
+    Text(
+        text = stringResource(id = messageEmpty),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 22.dp),
+        textAlign = TextAlign.Center,
+        fontSize = 18.sp,
+        color = MaterialTheme.colorScheme.primary
+    )
 }
 
 

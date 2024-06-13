@@ -1,6 +1,7 @@
 package com.rahim.ui.home
 
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -27,6 +28,7 @@ import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.theme.YadinoTheme
+import com.rahim.utils.base.view.EmptyMessage
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.base.view.ProcessRoutineAdded
 import com.rahim.utils.base.view.ShowSearchBar
@@ -117,11 +119,11 @@ fun HomeScreen(
                 routines.data?.let {
                     if (it.isEmpty()) {
                         if (searchText.isNotEmpty()) {
-                            EmptyHome(
+                            EmptyMessage(
                                 messageEmpty = R.string.search_empty_routine
                             )
                         } else {
-                            EmptyHome()
+                            EmptyMessage()
                         }
                     } else {
                         ItemsHome(currentYer, currentMonth, currentDay,
@@ -222,33 +224,6 @@ fun HomeScreen(
         }
     }
 }
-
-@Composable
-fun EmptyHome(
-    modifier: Modifier = Modifier,
-    @StringRes messageEmpty: Int = R.string.not_work_for_day
-) {
-    Image(
-        modifier = modifier
-            .sizeIn(minHeight = 320.dp)
-            .fillMaxWidth()
-            .fillMaxHeight(0.8f)
-            .padding(10.dp),
-        alignment = Alignment.Center,
-        painter = painterResource(id = R.drawable.empty_list_home),
-        contentDescription = "empty list home"
-    )
-    Text(
-        text = stringResource(id = messageEmpty),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 22.dp),
-        textAlign = TextAlign.Center,
-        fontSize = 18.sp,
-        color = MaterialTheme.colorScheme.primary
-    )
-}
-
 
 @Composable
 fun ItemsHome(

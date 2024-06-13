@@ -56,7 +56,7 @@ import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import com.rahim.R
-import com.rahim.ui.home.EmptyHome
+import com.rahim.utils.base.view.EmptyMessage
 
 @Composable
 fun RoutineRoute(
@@ -346,11 +346,15 @@ private fun GetRoutines(
             routines.data?.let {
                 if (it.isEmpty()) {
                     if (searchText.isNotEmpty()) {
-                        EmptyHome(
-                            messageEmpty = R.string.search_empty_routine
+                        EmptyMessage(
+                            messageEmpty = R.string.search_empty_routine,
+                            painter = R.drawable.routine_empty
                         )
                     } else {
-                        EmptyHome()
+                        EmptyMessage(
+                            messageEmpty = R.string.not_routine,
+                            painter = R.drawable.routine_empty
+                        )
                     }
                 } else {
                     ItemsRoutine(
@@ -373,30 +377,6 @@ private fun GetRoutines(
 
         is Resource.Error -> {}
     }
-}
-
-@Composable
-private fun EmptyRoutine(
-    modifier: Modifier = Modifier,
-    @StringRes messageEmpty: Int = R.string.not_routine
-) {
-    Image(
-        modifier = modifier
-            .padding(top = 40.dp)
-            .sizeIn(minHeight = 320.dp)
-            .fillMaxWidth(),
-        painter = painterResource(id = R.drawable.routine_empty),
-        contentDescription = "empty list home"
-    )
-    Text(
-        text = stringResource(id = messageEmpty),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 26.dp),
-        textAlign = TextAlign.Center,
-        fontSize = 18.sp,
-        color = MaterialTheme.colorScheme.primary
-    )
 }
 
 @OptIn(ExperimentalSnapperApi::class)

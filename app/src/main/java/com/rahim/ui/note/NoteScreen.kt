@@ -30,6 +30,7 @@ import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.utils.base.view.ItemListNote
 import com.rahim.utils.resours.Resource
 import com.rahim.R
+import com.rahim.utils.base.view.EmptyMessage
 import com.rahim.utils.base.view.ShowSearchBar
 
 @Composable
@@ -49,8 +50,8 @@ fun NoteRoute(
         currentNameDay = viewModel.nameDay ?: "",
         notes = notes,
         onUpdateNote = viewModel::updateNote,
-        showSampleNote =viewModel::showSampleNote,
-        onAddNote =viewModel::addNote,
+        showSampleNote = viewModel::showSampleNote,
+        onAddNote = viewModel::addNote,
         onDelete = viewModel::delete,
         onOpenDialog = onOpenDialog,
         onSearchText = viewModel::searchItems,
@@ -80,7 +81,6 @@ fun NoteScreen(
     val noteDeleteDialog = rememberSaveable { mutableStateOf<NoteModel?>(null) }
     val noteUpdateDialog = rememberSaveable { mutableStateOf<NoteModel?>(null) }
     var searchText by rememberSaveable { mutableStateOf("") }
-    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
     val searchItems = ArrayList<NoteModel>()
@@ -89,12 +89,10 @@ fun NoteScreen(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = if (notes.data.isNullOrEmpty()) Arrangement.Center else Arrangement.Top,
+        verticalArrangement = Arrangement.Top,
         modifier = modifier
             .fillMaxSize()
-            .padding(
-                top = if (notes.data.isNullOrEmpty()) 25.dp else 0.dp
-            )
+
     ) {
         ShowSearchBar(clickSearch, searchText = searchText) { search ->
             searchText = search
@@ -109,12 +107,12 @@ fun NoteScreen(
             is Resource.Success -> {
 
                 if (notes.data?.isEmpty() == true) {
-                    EmptyNote()
+                    EmptyMessage(messageEmpty = R.string.not_note, painter = R.drawable.empty_note)
                 } else {
                     if (searchItems.isEmpty() && searchText.isNotEmpty()) {
-                        EmptyNote(
-                            Modifier.padding(top = 70.dp),
-                            messageEmpty = R.string.search_empty_note
+                        EmptyMessage(
+                            messageEmpty = R.string.search_empty_note,
+                            painter = R.drawable.empty_note
                         )
                     } else {
                         ItemsNote(
@@ -183,26 +181,6 @@ fun NoteScreen(
             }
         }, isOpenDialog = noteDeleteDialog.value != null)
     }
-}
-
-@Composable
-fun EmptyNote(modifier: Modifier = Modifier, @StringRes messageEmpty: Int = R.string.not_note) {
-    Image(
-        modifier = modifier
-            .sizeIn(minHeight = 320.dp)
-            .fillMaxWidth(),
-        painter = painterResource(id = R.drawable.empty_note),
-        contentDescription = "empty list home"
-    )
-    Text(
-        text = stringResource(id = messageEmpty),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 32.dp),
-        textAlign = TextAlign.Center,
-        fontSize = 18.sp,
-        color = MaterialTheme.colorScheme.primary
-    )
 }
 
 @Composable
