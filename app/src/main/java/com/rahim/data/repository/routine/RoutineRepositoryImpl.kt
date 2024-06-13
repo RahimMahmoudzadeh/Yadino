@@ -4,18 +4,21 @@ import com.rahim.data.db.dao.RoutineDao
 import com.rahim.data.di.IODispatcher
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.sharedPreferences.SharedPreferencesCustom
-import com.rahim.ui.dialog.calculateCurrentTime
+import com.rahim.utils.enums.error.ErrorMessageCode
 import com.rahim.utils.resours.Resource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -32,7 +35,6 @@ class RoutineRepositoryImpl @Inject constructor(
     private val currentTimeMonth = persianData.shMonth
     private val currentTimeYer = persianData.shYear
 
-    private val equalRoutineMessage = "روتین یکسان نمی توان ساخت!!"
     override suspend fun addSampleRoutine() {
         delay(500)
         if (sharedPreferencesCustom.isShowSampleRoutine()) {
@@ -103,7 +105,7 @@ class RoutineRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addRoutine(routine: Routine): Flow<Resource<Routine?>> =
+    override fun addRoutine(routine: Routine): Flow<Resource<Routine?>> =
         flow<Resource<Routine?>> {
             emit(Resource.Loading())
             routine.apply {
@@ -132,10 +134,10 @@ class RoutineRepositoryImpl @Inject constructor(
                 }.onSuccess {
                     emit(Resource.Success(routine))
                 }.onFailure {
-                    emit(Resource.Error(equalRoutineMessage))
+                    emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
                 }
             } else {
-                emit(Resource.Error(equalRoutineMessage))
+                emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
             }
         }.flowOn(ioDispatcher)
 
@@ -197,16 +199,16 @@ class RoutineRepositoryImpl @Inject constructor(
             routineYearNumber = routine.yerNumber ?: 0,
             routineMonthNumber = routine.monthNumber ?: 0,
             routineTimeMilSecond = routine.timeInMillisecond ?: 0,
-            )
+        )
         if (equalRoutine != null) {
-            emit(Resource.Error(equalRoutineMessage))
+            emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
         } else {
             runCatching {
                 routineDao.updateRoutine(routine)
             }.onSuccess {
                 emit(Resource.Success(routine))
             }.onFailure {
-                emit(Resource.Error(equalRoutineMessage))
+                emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
             }
         }
     }
@@ -219,14 +221,10 @@ class RoutineRepositoryImpl @Inject constructor(
     override fun getRoutines(
         monthNumber: Int, numberDay: Int, yerNumber: Int
     ): Flow<List<Routine>> =
-        routineDao.getRoutines(monthNumber, numberDay, yerNumber).distinctUntilChanged()
+        routineDao.getRoutines(monthNumber, numberDay, yerNumber)
+            .distinctUntilChangedBy { it.map { it.isChecked } }
 
     override fun searchRoutine(
         name: String, monthNumber: Int?, dayNumber: Int?
-    ): Flow<List<Routine>> =
-        routineDao.searchRoutine(name, monthNumber, dayNumber).distinctUntilChanged()
-
-    override suspend fun getCurrentRoutines(): Flow<List<Routine>> {
-        return routineDao.getRoutines(currentTimeMonth, currentTimeDay, currentTimeYer)
-    }
+    ): Flow<List<Routine>> = routineDao.searchRoutine(name, monthNumber, dayNumber)
 }

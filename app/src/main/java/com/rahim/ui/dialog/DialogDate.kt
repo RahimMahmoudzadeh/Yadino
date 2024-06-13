@@ -67,13 +67,13 @@ fun DialogChoseDate(
     dayNumber: Int,
     closeDialog: () -> Unit,
     dayCheckedNumber: (yer: Int, month: Int, day: Int) -> Unit,
-    monthChange: (yer: Int, month: Int) -> Unit,
+    monthChange: (year: Int, month: Int) -> Unit,
 ) {
-    var dayClicked by rememberSaveable { mutableIntStateOf(dayNumber) }
-    var currentDay by rememberSaveable { mutableIntStateOf(dayNumber) }
     var currentMonth by rememberSaveable { mutableIntStateOf(monthNumber) }
+    var dayClicked by rememberSaveable { mutableIntStateOf(dayNumber) }
     var yearClicked by rememberSaveable { mutableIntStateOf(yearNumber) }
     var monthClicked by rememberSaveable { mutableIntStateOf(monthNumber) }
+
     BasicAlertDialog(properties = DialogProperties(
         usePlatformDefaultWidth = false, dismissOnClickOutside = true
     ), modifier = modifier
@@ -92,16 +92,13 @@ fun DialogChoseDate(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     IconButton(onClick = {
-                        var month = monthNumber.plus(1)
-                        var year = yearNumber
-                        if (month > 12) {
-                            month = 1
-                            year = yearNumber.plus(1)
+                        monthClicked+=1
+                        if (monthClicked > 12) {
+                            monthClicked = 1
+                            yearClicked+=1
                         }
-                        dayClicked = if (month == currentMonth) currentDay else 1
-                        monthClicked = month
-                        yearClicked = year
-                        monthChange(year, month)
+                        dayClicked = if (monthClicked == currentMonth) dayClicked else 1
+                        monthChange(yearClicked, monthClicked)
                     }) {
                         Icon(
                             tint = Color.White,
@@ -118,16 +115,13 @@ fun DialogChoseDate(
                         textAlign = TextAlign.Center
                     )
                     IconButton(onClick = {
-                        var month = monthNumber.minus(1)
-                        var year = yearNumber
-                        if (month < 1) {
-                            month = 12
-                            year = yearNumber.minus(1)
+                        monthClicked-=1
+                        if (monthClicked < 1) {
+                            monthClicked = 12
+                            yearClicked-=1
                         }
-                        dayClicked = if (month == currentMonth) currentDay else 1
-                        monthClicked = month
-                        yearClicked = year
-                        monthChange(year, month)
+                        dayClicked = if (monthClicked == currentMonth) dayClicked else 1
+                        monthChange(yearClicked, monthClicked)
                     }) {
                         Icon(
                             painterResource(id = R.drawable.greater_then),
@@ -370,7 +364,7 @@ fun DialogChoseDateWrapperLight() {
             dayNumber = 21,
             closeDialog = {},
             dayCheckedNumber = { yer, month, day -> },
-            monthChange = { yer, month -> }
+            monthChange = { year, month -> }
         )
     }
 }

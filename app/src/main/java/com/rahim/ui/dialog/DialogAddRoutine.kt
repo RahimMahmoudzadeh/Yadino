@@ -42,6 +42,9 @@ import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.time.LocalTime
 
+const val MAX_NAME_LENGTH = 22
+const val MAX_EXPLANATION_LENGTH = 40
+
 @OptIn(
     ExperimentalMaterial3Api::class,
 )
@@ -52,31 +55,33 @@ fun DialogAddRoutine(
     isShowDay: Boolean,
     currentNumberDay: Int,
     currentNumberMonth: Int,
-    currentNumberYer: Int,
+    currentNumberYear: Int,
     routineUpdate: Routine? = null,
     times: List<TimeDate>? = null,
     openDialog: () -> Unit,
     routine: (Routine) -> Unit,
-    dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit,
-    monthChange: ((year: Int, month: Int) -> Unit)? = null,
+    monthChange: (year: Int, month: Int) -> Unit,
 ) {
     if (!isOpen) return
-    val maxName = 22
-    val maxExplanation = 40
+
+    var monthChecked by rememberSaveable { mutableIntStateOf(currentNumberMonth) }
+    var yearChecked by rememberSaveable { mutableIntStateOf(currentNumberYear) }
+    var dayChecked by rememberSaveable { mutableIntStateOf(currentNumberDay) }
+
     var routineName by rememberSaveable { mutableStateOf(routineUpdate?.name ?: "") }
     var routineExplanation by rememberSaveable { mutableStateOf(routineUpdate?.explanation ?: "") }
     var checkedStateAllDay by remember { mutableStateOf(false) }
     var isErrorName by remember { mutableStateOf(false) }
     var isShowDateDialog by remember { mutableStateOf(false) }
     var isErrorExplanation by remember { mutableStateOf(false) }
-    val t = routineUpdate?.timeHours ?: "12:00"
-    var time by rememberSaveable { mutableStateOf(t) }
+    var time by rememberSaveable { mutableStateOf(routineUpdate?.timeHours ?: "12:00") }
     val alarmDialogState = rememberMaterialDialogState()
+
     val persianData = PersianDate()
     val date = persianData.initJalaliDate(
-        routineUpdate?.yerNumber ?: currentNumberYer,
-        routineUpdate?.monthNumber ?: currentNumberMonth,
-        routineUpdate?.dayNumber ?: currentNumberDay
+        routineUpdate?.yerNumber ?: yearChecked,
+        routineUpdate?.monthNumber ?: monthChecked,
+        routineUpdate?.dayNumber ?: dayChecked
     )
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
 
@@ -120,8 +125,8 @@ fun DialogAddRoutine(
                             brush = Brush.verticalGradient(gradientColors),
                             shape = RoundedCornerShape(4.dp)
                         ), value = routineName, onValueChange = {
-                        isErrorName = it.length >= maxName
-                        routineName = if (it.length <= maxName) it else routineName
+                        isErrorName = it.length >= MAX_NAME_LENGTH
+                        routineName = if (it.length <= MAX_NAME_LENGTH) it else routineName
                     }, placeholder = {
                         Text(
                             text = stringResource(id = R.string.name_hint_text_filed_routine),
@@ -158,9 +163,9 @@ fun DialogAddRoutine(
                             ),
                         value = if (routineExplanation.isNullOrEmpty()) "" else routineExplanation,
                         onValueChange = {
-                            isErrorExplanation = it.length >= maxExplanation
+                            isErrorExplanation = it.length >= MAX_EXPLANATION_LENGTH
                             routineExplanation =
-                                if (it.length <= maxExplanation) it else routineExplanation
+                                if (it.length <= MAX_EXPLANATION_LENGTH) it else routineExplanation
                         },
                         placeholder = {
                             Text(
@@ -328,9 +333,9 @@ fun DialogAddRoutine(
                                         routineName,
                                         null,
                                         persianData.dayName(date),
-                                        currentNumberDay,
-                                        currentNumberMonth,
-                                        currentNumberYer,
+                                        dayChecked,
+                                        monthChecked,
+                                        yearChecked,
                                         time,
                                         explanation = routineExplanation,
                                     ))
@@ -353,18 +358,28 @@ fun DialogAddRoutine(
                     }
                     if (isShowDateDialog) {
                         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                            DialogChoseDate(yearNumber = currentNumberYer,
+                            DialogChoseDate(
                                 times = times ?: emptyList(),
-                                monthNumber = currentNumberMonth,
-                                dayNumber = currentNumberDay,
+                                yearNumber = yearChecked,
+                                monthNumber = monthChecked,
+                                dayNumber = dayChecked,
                                 closeDialog = {
                                     isShowDateDialog = false
                                 },
-                                dayCheckedNumber = { yer, month, day ->
-                                    dayCheckedNumber(day, yer, month)
-                                }, monthChange = { yer, month ->
-                                    monthChange?.let { it(yer, month) }
-                                })
+                                dayCheckedNumber = { year, month, day ->
+                                    if (day == 0) {
+                                        dayChecked = currentNumberDay
+                                        monthChecked = currentNumberMonth
+                                        yearChecked = currentNumberYear
+                                        monthChange(currentNumberYear,currentNumberMonth)
+                                    } else {
+                                        dayChecked = day
+                                        monthChecked = month
+                                        yearChecked = year
+                                    }
+                                },
+                                monthChange = monthChange
+                            )
                         }
                     }
                 }

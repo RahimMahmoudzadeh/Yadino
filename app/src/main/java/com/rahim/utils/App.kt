@@ -9,7 +9,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.rahim.BuildConfig
 import com.rahim.R
 import com.rahim.utils.Constants.CHANNEL_ID
-import com.rahim.utils.Constants.CHANNEL_Name
+import com.rahim.utils.Constants.CHANNEL_NAME
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -31,7 +31,7 @@ class App : Application() {
     private fun createNotificationChannel() {
         val descriptionText = getString(R.string.channel_description)
         val importance = NotificationManager.IMPORTANCE_HIGH
-        val channel = NotificationChannel(CHANNEL_ID, CHANNEL_Name, importance).apply {
+        val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance).apply {
             description = descriptionText
         }
         val notificationManager: NotificationManager =

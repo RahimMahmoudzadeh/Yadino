@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -11,6 +12,7 @@ plugins {
         alias(google.services)
         alias(firebase.crashlytics)
         alias(androidx.room)
+        alias(compose.compiler)
     }
 }
 room {
@@ -79,14 +81,19 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+             jvmTarget.set(JvmTarget.JVM_17)
+        }
+        sourceSets.all {
+            languageSettings.enableLanguageFeature("ExplicitBackingFields")
+        }
     }
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    composeCompiler {
+        enableStrongSkippingMode = true
     }
     packaging {
         resources {
@@ -135,5 +142,7 @@ dependencies {
         implementation(bundles.accompanist)
         //preview
         implementation(ui.tooling.preview)
+        //splash
+        implementation(androidx.core.splashscreen)
     }
 }

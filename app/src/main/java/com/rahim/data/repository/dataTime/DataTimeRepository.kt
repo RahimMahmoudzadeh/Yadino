@@ -9,4 +9,5 @@ interface DataTimeRepository {
     suspend fun calculateToday()
     fun getTimes(): Flow<List<TimeDate>>
     fun getTimesMonth(yerNumber: Int, monthNumber: Int): Flow<List<TimeDate>>
+    fun getCurrentNameDay(date:String,format:String):String
 }

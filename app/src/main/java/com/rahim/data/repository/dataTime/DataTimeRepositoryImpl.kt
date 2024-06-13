@@ -375,4 +375,9 @@ class DataTimeRepositoryImpl @Inject constructor(
 
         return true
     }
+    override fun getCurrentNameDay(date:String,format:String):String{
+        val persianDateFormat= PersianDateFormat()
+        val da=persianDateFormat.parse(date,format)
+        return persianData.dayName(da)
+    }
 }

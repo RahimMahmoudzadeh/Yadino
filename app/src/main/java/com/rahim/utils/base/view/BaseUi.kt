@@ -1,12 +1,18 @@
 package com.rahim.utils.base.view
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -19,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,6 +40,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
@@ -42,6 +52,7 @@ import com.rahim.R
 import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
+import com.rahim.utils.extention.errorMessage
 import com.rahim.utils.resours.Resource
 import timber.log.Timber
 
@@ -159,10 +170,10 @@ fun CircularProgressAnimated(isShow: Boolean) {
 }
 
 @Composable
-fun <T>ProcessRoutineAdded(
+fun <T> ProcessRoutineAdded(
     response: Resource<T?>?,
     context: Context,
-    closeDialog: (responseData:T?) -> Unit
+    closeDialog: (responseData: T?) -> Unit
 ) {
     Timber.tag("routineAdd")
         .d("ProcessRoutineAdded ->${if (response is Resource.Success) "success" else if (response is Resource.Error) "fail" else "loading"}")
@@ -179,7 +190,7 @@ fun <T>ProcessRoutineAdded(
 
             is Resource.Error -> {
                 CircularProgressAnimated(false)
-                ShowToastShort(response.message, context)
+                ShowToastShort(response.message?.errorMessage(context), context)
                 closeDialog(response.data)
             }
         }
@@ -256,16 +267,6 @@ fun DialogButtonBackgroundWrapper() {
     )
 }
 
-fun calculateMinute(timeHours: String): Int {
-    val index = timeHours.indexOf(':')
-    return timeHours.subSequence(index.plus(1), timeHours.length).toString().toInt()
-}
-
-fun calculateHours(timeHours: String): Int {
-    val index = timeHours.indexOf(':')
-    return timeHours.subSequence(0, index).toString().toInt()
-}
-
 @OptIn(ExperimentalPermissionsApi::class)
 fun requestPermissionNotification(
     notificationPermission: PermissionState,
@@ -297,15 +298,6 @@ fun goSettingPermission(context: Context) {
 }
 
 @Composable
-fun ShowStatusBar(isShow: Boolean) {
-    rememberSystemUiController().apply {
-        isStatusBarVisible = isShow
-        isNavigationBarVisible = isShow
-        isSystemBarsVisible = isShow
-    }
-}
-
-@Composable
 fun ShowSearchBar(
     clickSearch: Boolean,
     searchText: String,
@@ -329,6 +321,32 @@ fun ShowSearchBar(
             )
         }
     }
+}
+@Composable
+fun EmptyMessage(
+    modifier: Modifier = Modifier,
+    @StringRes messageEmpty: Int = R.string.not_work_for_day,
+    @DrawableRes painter: Int = R.drawable.empty_list_home
+) {
+    Image(
+        modifier = modifier
+            .sizeIn(minHeight = 320.dp)
+            .fillMaxWidth()
+            .fillMaxHeight(0.8f)
+            .padding(10.dp),
+        alignment = Alignment.Center,
+        painter = painterResource(id = painter),
+        contentDescription = "empty list home"
+    )
+    Text(
+        text = stringResource(id = messageEmpty),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 22.dp),
+        textAlign = TextAlign.Center,
+        fontSize = 18.sp,
+        color = MaterialTheme.colorScheme.primary
+    )
 }
 
 

@@ -36,7 +36,6 @@ import com.google.accompanist.pager.rememberPagerState
 import com.rahim.data.modle.screen.WelcomeScreenModel
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.GradientButton
-import com.rahim.utils.base.view.ShowStatusBar
 import com.rahim.utils.base.view.gradientColors
 import com.rahim.utils.navigation.Screen
 import kotlinx.coroutines.launch
@@ -49,7 +48,6 @@ fun WelcomeScreens(
     viewModel: WelcomeViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
-    ShowStatusBar(true)
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
     val clickNext = remember { mutableStateOf(viewModel.isShowWelcomeScreen()) }
@@ -104,7 +102,7 @@ fun WelcomeScreens(
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                 GradientButton(
                     text = listItemWelcome[pagerState.currentPage].textButton,
-                    gradient = Brush.horizontalGradient(com.rahim.utils.base.view.gradientColors),
+                    gradient = Brush.horizontalGradient(gradientColors),
                     modifier = Modifier
                         .padding(top = 28.dp, end = 32.dp, start = 32.dp, bottom = 8.dp),
                     textSize = 18.sp,

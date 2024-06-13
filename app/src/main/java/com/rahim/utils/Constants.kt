@@ -4,7 +4,7 @@ object Constants {
     //Static
     const val DATABASE_NAME = "main database"
     const val CHANNEL_ID = "Yadinoo"
-    const val CHANNEL_Name = "Main Channel"
+    const val CHANNEL_NAME = "Main Channel"
     const val NAME_SHARED_PREFERENCE = "YadinooShared"
     const val WELCOME_SHARED = "WelcomeShared"
     const val SAMPLE_ROUTINE = "sampleRoutine"

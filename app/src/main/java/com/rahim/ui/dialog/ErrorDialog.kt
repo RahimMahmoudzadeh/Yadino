@@ -24,71 +24,74 @@ import com.rahim.utils.base.view.gradientColors
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ErrorDialog(
-    modifier: Modifier = Modifier, isOpen: Boolean,
+    modifier: Modifier = Modifier,
+    isOpen: Boolean,
     message: String,
     okMessage: String,
     isClickOk: (Boolean) -> Unit
 ) {
-    if (isOpen) {
-        BasicAlertDialog(
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false,
-                dismissOnClickOutside = false
+    if (!isOpen) return
+    BasicAlertDialog(
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnClickOutside = false
+        ),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 22.dp)
+            .border(
+                1.dp,
+                brush = Brush.verticalGradient(gradientColors),
+                shape = RoundedCornerShape(8.dp)
             ),
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(horizontal = 22.dp)
-                .border(
-                    1.dp,
-                    brush = Brush.verticalGradient(gradientColors),
-                    shape = RoundedCornerShape(8.dp)
-                ),
-            onDismissRequest = { isClickOk(false) }) {
-            Surface(
-                shape = RoundedCornerShape(8.dp),
-                color = MaterialTheme.colorScheme.background
+        onDismissRequest = { isClickOk(false) }) {
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Center
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        fontSize = 18.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 30.dp, end = 50.dp, start = 50.dp),
-                        text = message,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                top = 30.dp, bottom = 30.dp
-                            )
-                    ) {
-                        DialogButtonBorder(text = stringResource(id = R.string.no),
-                            gradient = Brush.verticalGradient(gradientColors),
-                            modifier = Modifier,
-                            textSize = 14.sp,
-                            width = 0.22f,
-                            40.dp,
-                            onClick = {
-                                isClickOk(false)
-                            })
-
-                        DialogButtonBackground(
-                            text = okMessage,
-                            gradient = Brush.verticalGradient(gradientColors),
-                            modifier = Modifier.fillMaxWidth(0.3f).height(40.dp).padding(start = 16.dp),
-                            textSize = 14.sp,
-                            onClick = {
-                                isClickOk(true)
-                            }
+                Text(
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 30.dp, end = 50.dp, start = 50.dp),
+                    text = message,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            top = 30.dp, bottom = 30.dp
                         )
-                    }
+                ) {
+                    DialogButtonBorder(text = stringResource(id = R.string.no),
+                        gradient = Brush.verticalGradient(gradientColors),
+                         modifier = Modifier,
+                        textSize = 14.sp,
+                        width = 0.22f,
+                        40.dp,
+                        onClick = {
+                            isClickOk(false)
+                        })
+
+                    DialogButtonBackground(
+                        text = okMessage,
+                        gradient = Brush.verticalGradient(gradientColors),
+                        modifier = Modifier
+                            .fillMaxWidth(0.3f)
+                            .height(40.dp)
+                            .padding(start = 16.dp),
+                        textSize = 14.sp,
+                        onClick = {
+                            isClickOk(true)
+                        }
+                    )
                 }
             }
         }

@@ -15,9 +15,4 @@ class BaseRepositoryImpl @Inject constructor(val appDatabase: AppDatabase) : Bas
 
     override fun getCurrentTime(): List<Int> = listOf(currentTimeYer,currentTimeMonth,currentTimeDay)
 
-    override suspend fun getCurrentNameDay(date:String,format:String):String{
-        val persianDateFormat= PersianDateFormat()
-        val da=persianDateFormat.parse(date,format)
-        return persianData.dayName(da)
-    }
 }

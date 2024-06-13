@@ -1,15 +1,15 @@
 [versions]
-ksp = "1.9.22-1.0.17"
+ksp = "2.0.0-1.0.21"
 androidx-core = "1.13.1"
-compose-bom = "2024.05.00"
+compose-bom = "2024.06.00"
 activity-compose = "1.9.0"
-androidx-lifecycle = "2.7.0"
+androidx-lifecycle = "2.8.2"
 androidx-room = "2.6.1"
-hilt = "2.49"
+hilt = "2.51.1"
 hilt_navigation_compose = "1.2.0"
 androidx-navigation = "2.7.7"
 timber = "5.0.1"
-firebaseBom = "33.0.0"
+firebaseBom = "33.1.0"
 samanzamani = "1.5.4"
 nav-version = '2.7.7'
 datetime = "0.9.0"
@@ -22,21 +22,21 @@ junit = "4.13.2"
 junit-test = "3.5.1"
 androidx-ext-junit = "1.1.5"
 espresso_core = "3.5.1"
-agp = "8.4.0"
-kotlin = "1.9.22"
-google-services = "4.4.1"
-firebase-crashlytics-plugin="2.9.9"
+agp = "8.4.2"
+kotlin = "2.0.0"
+google-services = "4.4.2"
+firebase-crashlytics-plugin="3.0.1"
 material3Android = "1.2.1"
-compose-compiler="1.5.8"
-compose-vewrsion="1.6.7"
+compose-vewrsion="1.6.8"
+androidxCoreSplashscreen = "1.0.1"
 
 #target version
 project-target-sdk-version = "34"
 project-min-sdk-version = "26"
 
 #project version
-version-code = "121"
-version-name = "1.3.6"
+version-code = "122"
+version-name = "1.3.7"
 
 #gradle static
 project-application-id = "com.rahim"
@@ -123,6 +123,9 @@ androidx-test-ext = { group = "androidx.test.ext", name = "junit", version.ref =
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso_core" }
 androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose-vewrsion" }
 
+#splash
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidxCoreSplashscreen" }
+
 [bundles]
 compose = ["androidx-compose-activity", "androidx-material3-android", "lifecycle-runtime-compose",
      "lifecycle-viewmodel-compose","androidx-navigation","lottie-compose"]
@@ -138,6 +141,7 @@ test = ["androidx-test-ext","androidx-test-espresso","androidx-compose-ui-test"]
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 hilt-plugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
