@@ -81,8 +81,6 @@ class RoutineViewModel @Inject constructor(
             }.collectLatest {
                 Timber.tag("routineGetNameDay").d("getRoutines routines->$it")
                 if (it.isNotEmpty()) {
-                    val firstRoutine = it.first()
-                    if (firstRoutine.dayNumber == lastDayNumber && firstRoutine.yerNumber == lastYearNumber && firstRoutine.monthNumber == lastMonthNumber)
                         _flowRoutines.value =
                             Resource.Success(
                                 it.sortedBy {
@@ -127,7 +125,7 @@ class RoutineViewModel @Inject constructor(
         emitAll(dateTimeRepository.getTimes())
     }
 
-    fun getTimesMonth(yearNumber: Int=currentYear, monthNumber: Int=currentMonth) {
+    fun getTimesMonth(yearNumber: Int = currentYear, monthNumber: Int = currentMonth) {
         viewModelScope.launch {
             dateTimeRepository.getTimesMonth(yearNumber, monthNumber).catch {}.collectLatest {
                 _times.value = it
@@ -176,11 +174,22 @@ class RoutineViewModel @Inject constructor(
     fun searchItems(searchText: String) {
         viewModelScope.launch {
             if (searchText.isNotEmpty()) {
+                _flowRoutines.value = Resource.Loading()
                 Timber.tag("searchRoutine").d("searchText:$searchText")
                 routineRepository.searchRoutine(searchText, currentMonth, currentDay).catch {
                     _flowRoutines.value = Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
-                }.collect {
-                    _flowRoutines.value = it
+                }.collectLatest {
+                    if (it.isNotEmpty()) {
+                        val firstRoutine = it.first()
+                        if (firstRoutine.dayNumber == lastDayNumber && firstRoutine.yerNumber == lastYearNumber && firstRoutine.monthNumber == lastMonthNumber)
+                            _flowRoutines.value =
+                                Resource.Success(
+                                    it.sortedBy {
+                                        it.timeHours?.replace(":", "")?.toInt()
+                                    })
+                    } else {
+                        _flowRoutines.value = Resource.Success(emptyList())
+                    }
                 }
             } else {
                 getRoutines()

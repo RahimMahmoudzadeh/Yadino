@@ -96,11 +96,22 @@ class HomeViewModel @Inject constructor(
     fun searchItems(searchText: String) {
         viewModelScope.launch {
             if (searchText.isNotEmpty()) {
+                _flowRoutines.value = Resource.Loading()
                 Timber.tag("searchRoutine").d("searchText:$searchText")
                 routineRepository.searchRoutine(searchText, currentMonth, currentDay).catch {
                     _flowRoutines.value = Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
                 }.collect {
-                    _flowRoutines.value = it
+                    if (it.isNotEmpty()) {
+                        val firstRoutine = it.first()
+                        if (firstRoutine.dayNumber == currentDay && firstRoutine.yerNumber == currentYear && firstRoutine.monthNumber == currentMonth)
+                            _flowRoutines.value =
+                                Resource.Success(
+                                    it.sortedBy {
+                                        it.timeHours?.replace(":", "")?.toInt()
+                                    })
+                    } else {
+                        _flowRoutines.value = Resource.Success(emptyList())
+                    }
                 }
             } else {
                 getCurrentRoutines()

@@ -12,6 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
@@ -221,20 +222,9 @@ class RoutineRepositoryImpl @Inject constructor(
         monthNumber: Int, numberDay: Int, yerNumber: Int
     ): Flow<List<Routine>> =
         routineDao.getRoutines(monthNumber, numberDay, yerNumber)
+            .distinctUntilChangedBy { it.map { it.isChecked } }
 
     override fun searchRoutine(
         name: String, monthNumber: Int?, dayNumber: Int?
-    ): Flow<Resource<List<Routine>>> = flow {
-        emit(Resource.Loading())
-        Timber.tag("searchRoutine").d("loading")
-        Timber.tag("searchRoutine")
-            .d("argument -> name:$name,monthNumber:$monthNumber,dayNumber:$dayNumber")
-        routineDao.searchRoutine(name, monthNumber, dayNumber).catch {
-            Timber.tag("searchRoutine").d("catch")
-            emit(Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS))
-        }.collect {
-            Timber.tag("searchRoutine").d("routines:${it.map { it.name }}")
-            emit(Resource.Success(it))
-        }
-    }
+    ): Flow<List<Routine>> = routineDao.searchRoutine(name, monthNumber, dayNumber)
 }
