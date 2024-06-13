@@ -43,7 +43,7 @@ class MainViewModel @Inject constructor(
             }
         }
     }
-    fun checkEdAllRoutinePastTime(){
+    fun checkedAllRoutinePastTime() {
         viewModelScope.launch {
             repositoryRoutine.checkEdAllRoutinePastTime()
         }
