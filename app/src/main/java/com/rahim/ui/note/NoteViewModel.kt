@@ -23,10 +23,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NoteViewModel @Inject constructor(
-    sharedPreferencesRepository: SharedPreferencesRepository,
     baseRepository: BaseRepository,
     private val noteRepository: NoteRepository,
     private val timeRepository: DataTimeRepository,
+    private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) :
     BaseViewModel(sharedPreferencesRepository, baseRepository) {
 
@@ -96,6 +96,12 @@ class NoteViewModel @Inject constructor(
                 .collectLatest {
                     _notes.value = Resource.Success(it)
                 }
+        }
+    }
+
+    fun showSampleNote(isShow: Boolean) {
+        viewModelScope.launch {
+            sharedPreferencesRepository.isShowSampleNote(isShow)
         }
     }
 }

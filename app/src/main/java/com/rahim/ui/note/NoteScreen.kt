@@ -127,7 +127,7 @@ fun NoteScreen(
                                     ).show()
                                     return@ItemsNote
                                 }
-                                if (it.isSample) showSampleNote(true)
+                                showSampleNote(true)
 
                                 noteUpdateDialog.value = it
                                 onOpenDialog(true)
@@ -141,8 +141,7 @@ fun NoteScreen(
                                     ).show()
                                     return@ItemsNote
                                 }
-                                if (it.isSample) showSampleNote(true)
-
+                                showSampleNote(true)
                                 noteDeleteDialog.value = it
                             })
                     }
