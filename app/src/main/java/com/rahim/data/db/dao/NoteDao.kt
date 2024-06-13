@@ -22,7 +22,7 @@ interface NoteDao {
     suspend fun update(noteModel: NoteModel)
     @Delete
     suspend fun delete(noteModel: NoteModel)
-    @Query("SELECT * FROM tbl_note WHERE name LIKE '%'||:searchName|| '%' ORDER BY timeInMileSecond ASC")
+    @Query("SELECT * FROM tbl_note WHERE name LIKE '%'||:searchName||'%' ORDER BY timeInMileSecond ASC")
     fun searchRoutine(
         searchName:String
     ): Flow<List<NoteModel>>

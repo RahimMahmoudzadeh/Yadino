@@ -83,9 +83,6 @@ fun NoteScreen(
     var searchText by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
 
-    val searchItems = ArrayList<NoteModel>()
-
-
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -105,18 +102,19 @@ fun NoteScreen(
             }
 
             is Resource.Success -> {
-
-                if (notes.data?.isEmpty() == true) {
-                    EmptyMessage(messageEmpty = R.string.not_note, painter = R.drawable.empty_note)
-                } else {
-                    if (searchItems.isEmpty() && searchText.isNotEmpty()) {
-                        EmptyMessage(
-                            messageEmpty = R.string.search_empty_note,
-                            painter = R.drawable.empty_note
-                        )
+                notes.data?.let {
+                    if (it.isEmpty()) {
+                        if (searchText.isNotEmpty()) {
+                            EmptyMessage(
+                                messageEmpty = R.string.search_empty_note,
+                                painter = R.drawable.empty_note
+                            )
+                        } else {
+                            EmptyMessage(messageEmpty = R.string.not_note, painter = R.drawable.empty_note)
+                        }
                     } else {
                         ItemsNote(
-                            searchItems.ifEmpty { notes.data as List<NoteModel> },
+                            notes.data,
                             checkedNote = {
                                 onUpdateNote(it)
                             },
@@ -132,6 +130,7 @@ fun NoteScreen(
                                 if (it.isSample) showSampleNote(true)
 
                                 noteUpdateDialog.value = it
+                                onOpenDialog(true)
                             },
                             deleteNote = {
                                 if (it.isChecked) {
@@ -155,8 +154,8 @@ fun NoteScreen(
             }
         }
     }
-    DialogAddNote(noteUpdate = if (noteUpdateDialog.value != null) noteUpdateDialog.value else null,
-        isOpen = openDialog || noteUpdateDialog.value != null,
+    DialogAddNote(noteUpdate = noteUpdateDialog.value,
+        isOpen = openDialog,
         note = {
             if (noteUpdateDialog.value != null) {
                 onUpdateNote(it)

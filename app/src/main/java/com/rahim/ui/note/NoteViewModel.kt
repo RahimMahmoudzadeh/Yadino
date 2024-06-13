@@ -12,14 +12,11 @@ import com.rahim.utils.enums.error.ErrorMessageCode
 import com.rahim.utils.extention.calculateTimeFormat
 import com.rahim.utils.resours.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -40,7 +37,7 @@ class NoteViewModel @Inject constructor(
 
     init {
         getCurrentNameDay()
-        getRoutines()
+        getNotes()
     }
 
     fun addNote(noteModel: NoteModel) {
@@ -79,23 +76,24 @@ class NoteViewModel @Inject constructor(
                 _notes.value = Resource.Loading()
                 noteRepository.searchNote(searchText).catch {
                     _notes.value = Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
-                }.collect {
+                }.collectLatest {
                     _notes.value = Resource.Success(it)
                 }
             } else {
-                getRoutines()
+                getNotes()
             }
         }
     }
 
-    private fun getRoutines() {
+    private fun getNotes() {
         viewModelScope.launch {
+            _notes.value = Resource.Loading()
             noteRepository.getNotes()
                 .catch {
                     _notes.value =
                         Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
                 }
-                .collect {
+                .collectLatest {
                     _notes.value = Resource.Success(it)
                 }
         }
