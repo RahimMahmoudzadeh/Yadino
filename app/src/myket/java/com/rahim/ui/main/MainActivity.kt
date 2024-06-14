@@ -61,7 +61,6 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         getTokenFirebase()
-        enableEdgeToEdge()
         setContent {
             val context = LocalContext.current
             (context as? Activity)?.requestedOrientation =

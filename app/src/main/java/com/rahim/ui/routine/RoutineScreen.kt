@@ -2,8 +2,6 @@ package com.rahim.ui.routine
 
 
 import android.widget.Toast
-import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -178,6 +176,7 @@ fun RoutineScreen(
                 dayChecked = day
                 monthChecked = month
                 onCheckedDay(year, month, day)
+                onMonthChecked(year,month)
             },
             currentIndexDay = currentDayIndex,
             indexScrollDay = {
@@ -384,8 +383,8 @@ private fun GetRoutines(
 private fun ItemTimeDate(
     times: List<TimeDate>,
     dayChecked: Int,
-    dayYerChecked: Int,
-    dayMonthChecked: Int,
+    yerChecked: Int,
+    monthChecked: Int,
     listStateDay: LazyListState,
     indexDay: Int,
     currentIndexDay: Int,
@@ -397,11 +396,11 @@ private fun ItemTimeDate(
         modifier = Modifier.padding(top = 28.dp),
     ) {
         IconButton(onClick = {
-            var month = dayMonthChecked.plus(1)
-            var year = dayYerChecked
+            var month = monthChecked.plus(1)
+            var year = yerChecked
             if (month > 12) {
                 month = 1
-                year = dayYerChecked.plus(1)
+                year = yerChecked.plus(1)
             }
             val time =
                 times.find { it.monthNumber == month && it.yerNumber == year && it.dayNumber == 1 }
@@ -423,16 +422,16 @@ private fun ItemTimeDate(
             modifier = Modifier
                 .padding(top = 12.dp)
                 .fillMaxWidth(0.3f),
-            text = "$dayYerChecked ${dayMonthChecked.calculateMonthName()}",
+            text = "$yerChecked ${monthChecked.calculateMonthName()}",
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center
         )
         IconButton(onClick = {
-            var month = dayMonthChecked.minus(1)
-            var year = dayYerChecked
+            var month = monthChecked.minus(1)
+            var year = yerChecked
             if (month < 1) {
                 month = 12
-                year = dayYerChecked.minus(1)
+                year = yerChecked.minus(1)
             }
             val time =
                 times.find { it.monthNumber == month && it.yerNumber == year && it.dayNumber == 1 }
@@ -534,8 +533,8 @@ private fun ItemTimeDate(
                     DayItems(
                         it,
                         dayChecked,
-                        dayYerChecked,
-                        dayMonthChecked,
+                        yerChecked,
+                        monthChecked,
                         screenWidth = screenWidth,
                         dayCheckedNumber = { day, yer, month ->
                             dayCheckedNumber(day, yer, month)
