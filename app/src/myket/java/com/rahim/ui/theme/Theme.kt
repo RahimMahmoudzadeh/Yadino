@@ -59,15 +59,6 @@ fun YadinoTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
-    val view = LocalView.current
-    val color= if(darkTheme) BalticSea.toArgb() else Zircon.toArgb()
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = color
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme // Optional: Set status bar icons to light or dark
-        }
-    }
 
     MaterialTheme(
         colorScheme = colorScheme,

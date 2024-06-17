@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -42,6 +43,7 @@ import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.ui.theme.Zircon
 import com.rahim.utils.base.view.ShowSearchBar
+import com.rahim.utils.base.view.ShowStatusBar
 import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.base.view.goSettingPermission
 import com.rahim.utils.base.view.requestPermissionNotification
@@ -94,6 +96,9 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
     val destination = navController.currentBackStackEntry?.destination?.route
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val destinationNavBackStackEntry = navBackStackEntry?.destination?.route
+    if (destination != Screen.Welcome.route) {
+        ShowStatusBar()
+    }
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
         YadinoTheme {
             Surface(
@@ -175,4 +180,5 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                 errorClick = false
             })
     }
+
 }
