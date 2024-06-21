@@ -76,7 +76,7 @@ fun HomeRoute(
 }
 
 @Composable
-fun HomeScreen(
+private fun HomeScreen(
     modifier: Modifier = Modifier,
     routines: Resource<List<Routine>>,
     addRoutine: Resource<Routine?>?,

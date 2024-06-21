@@ -25,8 +25,9 @@ fun BottomNavigationBar(
     val screenItems = listOf(
         Screen.Home,
         Screen.Routine,
+        Screen.Empty,
         Screen.Note,
-//        Screen.Calender
+        Screen.Calender
     )
     val currentDestination = navBackStackEntry?.destination
     BottomNavigation(
@@ -35,17 +36,20 @@ fun BottomNavigationBar(
         screenItems.forEach { screen ->
             BottomNavigationItem(
                 onClick = {
-                    navController.navigateSingleTopTo(screen.route)
+                    if (screen.route != Screen.Empty.route)
+                        navController.navigateSingleTopTo(screen.route)
                 },
                 icon = {
-                    Icon(
-                        tint = MaterialTheme.colorScheme.secondary,
-                        painter = painterResource(
-                            id = if (destination == screen.route) screen.iconSelected
-                                ?: 0 else screen.iconNormal ?: 0
-                        ),
-                        contentDescription = screen.route
-                    )
+                    if (screen.route != Screen.Empty.route) {
+                        Icon(
+                            tint = MaterialTheme.colorScheme.secondary,
+                            painter = painterResource(
+                                id = if (destination == screen.route) screen.iconSelected
+                                    ?: 0 else screen.iconNormal ?: 0
+                            ),
+                            contentDescription = screen.route
+                        )
+                    }
                 },
                 selected = currentDestination?.hierarchy?.any {
                     it.route == screen.route

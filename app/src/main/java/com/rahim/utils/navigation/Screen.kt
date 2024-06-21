@@ -30,12 +30,17 @@ sealed class Screen(
         R.drawable.routine_dark
     )
 
-//    object Calender : Screen(
-//        ScreenName.CALENDER.nameScreen,
-//        R.drawable.calendar,
-//        R.drawable.calendar_selected,
-//        R.drawable.calendar_dark
-//    )
+    data object Calender : Screen(
+        ScreenName.CALENDER.nameScreen,
+        R.drawable.calendar,
+        R.drawable.calendar_selected,
+        R.drawable.calendar_dark
+    )
+
+    data object Empty : Screen(
+        ScreenName.EMPTY.nameScreen,
+        null, null, null
+    )
 
     data object Welcome : Screen(
         ScreenName.WELCOME.nameScreen,

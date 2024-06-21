@@ -25,10 +25,11 @@ espresso_core = "3.5.1"
 agp = "8.5.0"
 kotlin = "2.0.0"
 google-services = "4.4.2"
-firebase-crashlytics-plugin="3.0.1"
+firebase-crashlytics-plugin = "3.0.1"
 material3Android = "1.2.1"
-compose-vewrsion="1.6.8"
+compose-vewrsion = "1.6.8"
 androidxCoreSplashscreen = "1.0.1"
+vico = "2.0.0-alpha.21"
 
 #target version
 project-target-sdk-version = "34"
@@ -126,16 +127,21 @@ androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-juni
 #splash
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "androidxCoreSplashscreen" }
 
+#vico
+vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
+vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+
 [bundles]
 compose = ["androidx-compose-activity", "androidx-material3-android", "lifecycle-runtime-compose",
-     "lifecycle-viewmodel-compose","androidx-navigation","lottie-compose"]
+    "lifecycle-viewmodel-compose", "androidx-navigation", "lottie-compose"]
 room = ["androidx-room-runtime", "androidx-room-ktx"]
 hilt = ["hilt-android", "hilt-navigation-compose"]
 navigation = ["androidx-navigation-fragment", "androidx-navigation-ui"]
 lifecycle = ["androidx-lifecycle-livedata", "androidx-lifecycle-runtime", "androidx-lifecycle-viewmodel"]
 firebase = ["firebaseMessaging", "firebaseAnalytics", "firebaseCrashlytics"]
-accompanist = ["accompanist-pager", "accompanist-pager-indicators", "accompanist-permissions","accompanist-systemuicontroller"]
-test = ["androidx-test-ext","androidx-test-espresso","androidx-compose-ui-test"]
+accompanist = ["accompanist-pager", "accompanist-pager-indicators", "accompanist-permissions", "accompanist-systemuicontroller"]
+test = ["androidx-test-ext", "androidx-test-espresso", "androidx-compose-ui-test"]
+vico = ["vico-compose", "vico-compose-m3"]
 
 
 [plugins]
@@ -146,6 +152,6 @@ hilt-plugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 com-android-library = { id = "com.android.library", version.ref = "agp" }
-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize",  version.ref = "kotlin"  }
-firebase-crashlytics = { id = "com.google.firebase.crashlytics",  version.ref = "firebase-crashlytics-plugin"  }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin" }
 androidx-room = { id = "androidx.room", version.ref = "androidx-room" }
