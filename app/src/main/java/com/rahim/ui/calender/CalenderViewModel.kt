@@ -30,7 +30,7 @@ class CalenderViewModel @Inject constructor(
 ) : BaseViewModel(sharedPreferencesRepository, baseRepository) {
     private val _times =
         MutableStateFlow<List<TimeDate>>(emptyList())
-    val times: StateFlow<List<TimeDate>> = _times.asStateFlow()
+    val times: StateFlow<List<TimeDate>> = _times
 
     init {
         getTimesMonth()
