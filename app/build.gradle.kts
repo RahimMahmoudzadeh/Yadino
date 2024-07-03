@@ -20,22 +20,22 @@ room {
 }
 
 android {
-    val localProperties = Properties()
-    localProperties.load(FileInputStream(File(rootProject.rootDir, "local.properties")))
-    localProperties.run {
-        val storeFileAddress = getProperty(libs.versions.store.file.address.get())
-        val storePasswordProperties = getProperty(libs.versions.store.password.get())
-        val keyAliasProperties = getProperty(libs.versions.key.alias.get())
-        val keyPasswordProperties = getProperty(libs.versions.key.password.get())
-        signingConfigs {
-            create(libs.versions.release.get()) {
-                storeFile = file(storeFileAddress)
-                storePassword = storePasswordProperties
-                keyAlias = keyAliasProperties
-                keyPassword = keyPasswordProperties
-            }
-        }
-    }
+//    val localProperties = Properties()
+//    localProperties.load(FileInputStream(File(rootProject.rootDir, "local.properties")))
+//    localProperties.run {
+//        val storeFileAddress = getProperty(libs.versions.store.file.address.get())
+//        val storePasswordProperties = getProperty(libs.versions.store.password.get())
+//        val keyAliasProperties = getProperty(libs.versions.key.alias.get())
+//        val keyPasswordProperties = getProperty(libs.versions.key.password.get())
+//        signingConfigs {
+//            create(libs.versions.release.get()) {
+//                storeFile = file(storeFileAddress)
+//                storePassword = storePasswordProperties
+//                keyAlias = keyAliasProperties
+//                keyPassword = keyPasswordProperties
+//            }
+//        }
+//    }
 
     namespace = libs.versions.project.application.id.get()
     compileSdk = libs.versions.project.target.sdk.version.get().toInt()
@@ -61,7 +61,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs[libs.versions.release.get()]
+//            signingConfig = signingConfigs[libs.versions.release.get()]
         }
     }
     flavorDimensions += libs.versions.diimension.get()
