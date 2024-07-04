@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.dialog.StateOpenDialog
+import com.rahim.ui.alarmHistory.HistoryScreen
 import com.rahim.ui.home.HomeRoute
 import com.rahim.ui.note.NoteRoute
 import com.rahim.ui.note.NoteScreen
@@ -24,6 +25,7 @@ import com.rahim.ui.routine.RoutineViewModel
 import com.rahim.ui.welcome.WelcomeScreens
 import com.rahim.ui.welcome.WelcomeViewModel
 import com.rahim.utils.navigation.Screen
+import com.rahim.utils.navigation.ScreenName
 
 @Composable
 fun NavGraph(
@@ -39,9 +41,10 @@ fun NavGraph(
             WelcomeScreens(navController)
         }
         composable(Screen.Home.route) {
-            HomeRoute(openDialog = openDialog, clickSearch = clickSearch, onOpenDialog = { isOpen ->
-                onOpenDialog(isOpen)
-            })
+            HomeRoute(
+                openDialog = openDialog, clickSearch = clickSearch, onOpenDialog = { isOpen ->
+                    onOpenDialog(isOpen)
+                })
         }
         composable(Screen.Routine.route) {
             RoutineRoute(
@@ -57,6 +60,9 @@ fun NavGraph(
                 onOpenDialog = { isOpen ->
                     onOpenDialog(isOpen)
                 })
+        }
+        composable(ScreenName.HISTORY.nameScreen) {
+            HistoryScreen(navHostController = navController)
         }
 //        composable(Screen.Calender.route) {
 //

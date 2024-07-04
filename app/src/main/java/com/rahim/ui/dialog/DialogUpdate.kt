@@ -80,7 +80,8 @@ fun DialogUpdateVersion(
                             modifier = Modifier
                                 .fillMaxWidth(0.3f)
                                 .height(35.dp),
-                            onClick = onUpdate
+                            onClick = onUpdate,
+                           textStyle =  MaterialTheme.typography.bodyMedium
                         )
                         if (!isForce) {
                             TextButton(
@@ -90,7 +91,7 @@ fun DialogUpdateVersion(
                                 Text(
                                     fontSize = 12.sp,
                                     text = stringResource(id = R.string.cancel),
-                                    style = TextStyle(brush = Brush.verticalGradient(gradientColors))
+                                    style =MaterialTheme.typography.bodyMedium.copy(brush = Brush.verticalGradient(gradientColors))
                                 )
                             }
                         }

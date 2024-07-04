@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.view.SubMenu
 import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -19,6 +20,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -103,7 +106,7 @@ fun DialogButtonBackground(
     gradient: Brush,
     modifier: Modifier = Modifier,
     textSize: TextUnit,
-    textStyle: TextStyle = TextStyle(),
+    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     onClick: () -> Unit = { },
 ) {
 
@@ -218,7 +221,11 @@ fun ShowToastShort(message: String?, context: Context) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String, onClickSearch: () -> Unit) {
+fun TopBarCenterAlign(
+    modifier: Modifier = Modifier, title: String,
+    openHistory: () -> Unit,
+    onClickSearch: () -> Unit
+) {
 
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.onBackground),
@@ -229,13 +236,24 @@ fun TopBarCenterAlign(modifier: Modifier = Modifier, title: String, onClickSearc
                     .fillMaxWidth()
                     .padding(start = 38.dp),
                 textAlign = TextAlign.Center,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
                 text = title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.secondary
             )
+        },
+        navigationIcon = {
+            IconButton(onClick = { openHistory() }) {
+                Icon(
+                    imageVector = Icons.Rounded.Notifications,
+                    contentDescription = "",
+                    tint = CornflowerBlueLight,
+                    modifier = Modifier.size(27.dp)
+                )
+            }
+
         },
         actions = {
             IconButton(onClick = {
@@ -334,6 +352,7 @@ fun ShowSearchBar(
         }
     }
 }
+
 @Composable
 fun EmptyMessage(
     modifier: Modifier = Modifier,
@@ -360,17 +379,19 @@ fun EmptyMessage(
         color = MaterialTheme.colorScheme.primary
     )
 }
+
 @Composable
-fun ShowStatusBar(){
+fun ShowStatusBar() {
     val view = LocalView.current
     val darkTheme = isSystemInDarkTheme()
-    val color= if(darkTheme) BalticSea.toArgb() else Zircon.toArgb()
+    val color = if (darkTheme) BalticSea.toArgb() else Zircon.toArgb()
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = color
             window.navigationBarColor = color
-            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = color.luminance > 0.5
+            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars =
+                color.luminance > 0.5
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }

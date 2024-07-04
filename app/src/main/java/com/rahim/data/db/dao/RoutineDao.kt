@@ -60,4 +60,8 @@ interface RoutineDao {
 
     @Query("SELECT idAlarm FROM tbl_routine WHERE isChecked=0")
     suspend fun getIdAlarms(): List<Long>
+
+    @Query("SELECT * FROM tbl_routine")
+     fun getAllRoutines(): Flow<List<Routine>>
+
 }
