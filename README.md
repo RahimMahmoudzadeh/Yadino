@@ -13,7 +13,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/RahimMahmoudzadeh/Yadino)
 ![GitHub forks](https://img.shields.io/github/forks/RahimMahmoudzadeh/Yadino)
 
-Hi! Yadino is a ToDo app the use of MVVM Architecture with Jetpack Compose by following Material-3 guidelines along with other MAD libraries such as Dagger-Hilt, Room Database, Coroutines, Navigation, WorkManager etc. for building Android Apps
+Hi! Yadino is a ToDo app the use of MVVM Architecture Pattern with Jetpack Compose by following Material-3 guidelines along with other MAD libraries such as Dagger-Hilt, Room Database, Coroutines, Navigation etc. for building Android Apps
 
 **You can download the app from Cafe Bazaar or Myket 🚀**
 
