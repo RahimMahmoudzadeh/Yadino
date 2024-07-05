@@ -7,5 +7,6 @@ enum class ScreenName(val nameScreen:String) {
     SPLASH("splash"),
     CALENDER("calendar"),
     WELCOME("welcome"),
+    HISTORY("History")
     EMPTY("empty"),
 }

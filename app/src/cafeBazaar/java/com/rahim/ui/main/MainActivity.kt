@@ -10,6 +10,12 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,6 +56,7 @@ import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.base.view.goSettingPermission
 import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.navigation.Screen
+import com.rahim.utils.navigation.ScreenName
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -109,6 +116,19 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
             ) {
+
+                Scaffold(topBar = {
+                    AnimatedVisibility(
+                        visible = destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
+                        enter = fadeIn() + expandVertically(animationSpec = tween(800)),
+                        exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
+                    ) {
+                        TopBarCenterAlign(
+                            title = when (destinationNavBackStackEntry) {
+                                Screen.Home.route ->
+                                    stringResource(
+                                        id = R.string.my_firend
+                                    )
                 Scaffold(
                     topBar = {
                         if (destinationNavBackStackEntry != Screen.Welcome.route) {
@@ -123,6 +143,44 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                                         stringResource(
                                             id = R.string.list_routine
                                         )
+
+                                else ->
+                                    stringResource(id = R.string.notes)
+                            },
+                            openHistory = {
+                                navController.navigate(ScreenName.HISTORY.nameScreen)
+                            },
+                            onClickSearch = {
+                                clickSearch = !clickSearch
+                            }
+                        )
+                    }
+                }, floatingActionButton = {
+                    if (destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen) {
+                        FloatingActionButton(containerColor = CornflowerBlueLight,
+                            contentColor = Color.White,
+                            onClick = {
+                                requestPermissionNotification(isGranted = {
+                                    if (it) openDialog = true
+                                    else errorClick = true
+                                }, permissionState = {
+                                    it.launchPermissionRequest()
+                                }, notificationPermission = notificationPermissionState)
+                            }) {
+                            Icon(Icons.Filled.Add, "add item")
+                        }
+                    }
+                }, bottomBar = {
+                    AnimatedVisibility(
+                        visible = destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
+                        enter = fadeIn() + expandVertically(animationSpec = tween(800)),
+                        exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
+                    ) {
+                        BottomNavigationBar(
+                            navController, navBackStackEntry, destinationNavBackStackEntry
+                        )
+                    }
+                }, containerColor = MaterialTheme.colorScheme.background
 
                                     Screen.Calender.route ->
                                         stringResource(
@@ -166,6 +224,7 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                         }
                     },
                     containerColor = MaterialTheme.colorScheme.background,
+
                 ) { innerPadding ->
                     NavGraph(
                         navController,

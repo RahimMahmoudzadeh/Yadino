@@ -41,6 +41,7 @@ fun NoteRoute(
     clickSearch: Boolean,
     onOpenDialog: (isOpen: Boolean) -> Unit,
 ) {
+
     val notes by viewModel.notes.collectAsStateWithLifecycle()
     NoteScreen(
         modifier = modifier,

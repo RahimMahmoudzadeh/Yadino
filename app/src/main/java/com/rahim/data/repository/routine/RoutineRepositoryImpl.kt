@@ -105,6 +105,8 @@ class RoutineRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getAllRoutine(): Flow<List<Routine>> =routineDao.getAllRoutines()
+
     override fun addRoutine(routine: Routine): Flow<Resource<Routine?>> =
         flow<Resource<Routine?>> {
             emit(Resource.Loading())

@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rahim.R
@@ -29,6 +30,8 @@ fun ItemRoutine(
     openDialogEdit: (Routine) -> Unit,
     openDialogDelete: (Routine) -> Unit,
 ) {
+    val textUnderLine = if (routine.isChecked) TextDecoration.LineThrough else TextDecoration.None
+
     val delete = SwipeAction(
         icon = painterResource(id = R.drawable.delete),
         background = MaterialTheme.colorScheme.background,
@@ -90,17 +93,17 @@ fun ItemRoutine(
                     Row(modifier = Modifier.padding(top = 22.dp, start = 12.dp)) {
                         Text(
                             text = routine.timeHours.toString() + " ",
-                            style = TextStyle(
-                                fontSize = 13.sp,
-                                color = MaterialTheme.colorScheme.primary
-                            )
+                            style = MaterialTheme.typography.bodySmall,
+                            textDecoration = textUnderLine,
+                            color = MaterialTheme.colorScheme.primary
+
                         )
                         Text(
                             text = stringResource(id = R.string.remmeber),
-                            style = TextStyle(
-                                fontSize = 13.sp,
-                                color = MaterialTheme.colorScheme.primary
-                            )
+                            style = MaterialTheme.typography.bodySmall,
+                            textDecoration = textUnderLine,
+                            color = MaterialTheme.colorScheme.primary
+
                         )
                     }
                 }
@@ -112,28 +115,23 @@ fun ItemRoutine(
                 ) {
                     Text(
                         text = routine.name,
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        textDecoration = textUnderLine,
+                        fontWeight = FontWeight.SemiBold
                     )
-                    Row(modifier = Modifier.padding(top = 12.dp)) {
-                        if (!routine.explanation.isNullOrEmpty()){
+                        if (!routine.explanation.isNullOrEmpty()) {
                             Text(
+                                modifier = Modifier.padding(top = 12.dp),
+                                text ="${stringResource(id = R.string.explanation)}: ${routine.explanation}" ,
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                textDecoration = textUnderLine,
                                 textAlign = TextAlign.End,
-                                modifier = Modifier
-                                    .weight(0.7f)
-                                    .padding(bottom = 14.dp, end = 4.dp),
-                                text = routine.explanation.toString() + " ",
-                                color = MaterialTheme.colorScheme.secondaryContainer
-                            )
-                            Text(
-                                modifier = Modifier.weight(0.3f),
-                                text = stringResource(id = R.string.explanation),
-                                color = MaterialTheme.colorScheme.secondaryContainer
+                                style = MaterialTheme.typography.bodyMedium,
+
                             )
                         }
-                    }
+
                 }
             }
         }

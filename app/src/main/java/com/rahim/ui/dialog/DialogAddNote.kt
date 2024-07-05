@@ -88,7 +88,7 @@ fun DialogAddNote(
                             text = stringResource(id = R.string.creat_new_note),
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
-                            style = TextStyle(brush = Brush.verticalGradient(gradientColors))
+                            style =MaterialTheme.typography.bodyLarge.copy(brush = Brush.verticalGradient(gradientColors))
                         )
                         TextField(
                             modifier = Modifier
@@ -112,6 +112,7 @@ fun DialogAddNote(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             },
+                            textStyle = MaterialTheme.typography.bodyLarge,
                             colors = TextFieldDefaults.textFieldColors(
                                 containerColor = MaterialTheme.colorScheme.background,
                                 focusedIndicatorColor = Color.Transparent,
@@ -144,6 +145,7 @@ fun DialogAddNote(
                                 description =
                                     if (it.length <= maxExplanation) it else description
                             },
+                            textStyle = MaterialTheme.typography.bodyMedium,
                             placeholder = {
                                 Text(
                                     text = stringResource(id = R.string.issue_explanation),
@@ -170,13 +172,13 @@ fun DialogAddNote(
                         ) {
                             Text(
                                 modifier = Modifier.weight(0.22f),
-                                fontSize = 18.sp,
+                                style = MaterialTheme.typography.bodyLarge,
                                 text = stringResource(id = R.string.priority_level),
                                 color = MaterialTheme.colorScheme.tertiary,
                             )
                             Row(modifier = Modifier.weight(0.1f)) {
                                 Text(
-                                    fontSize = 16.sp,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     text = stringResource(id = R.string.up),
                                     color = Punch
                                 )
@@ -195,11 +197,12 @@ fun DialogAddNote(
                             }
                             Row(modifier = Modifier.weight(0.2f)) {
                                 Text(
-                                    fontSize = 16.sp,
                                     modifier = Modifier.padding(start = 24.dp),
                                     text = stringResource(id = R.string.medium),
-                                    color = CornflowerBlueDark
-                                )
+                                    color = CornflowerBlueDark,
+                                    style = MaterialTheme.typography.bodyMedium,
+
+                                    )
                                 RadioButton(
                                     colors = RadioButtonDefaults.colors(
                                         selectedColor = CornflowerBlueDark,
@@ -217,8 +220,10 @@ fun DialogAddNote(
                                 Text(
                                     fontSize = 16.sp,
                                     modifier = Modifier.padding(start = 24.dp),
-                                    text = stringResource(id = R.string.low), color = Mantis
-                                )
+                                    text = stringResource(id = R.string.low), color = Mantis,
+                                    style = MaterialTheme.typography.bodyMedium,
+
+                                    )
                                 RadioButton(
                                     colors = RadioButtonDefaults.colors(
                                         selectedColor = Mantis,
@@ -247,6 +252,7 @@ fun DialogAddNote(
                                     .fillMaxWidth(0.3f)
                                     .height(40.dp),
                                 textSize = 14.sp,
+                                textStyle = MaterialTheme.typography.bodyMedium,
                                 onClick = {
                                     if (nameNote.isEmpty()) {
                                         isErrorName.value = true
@@ -298,7 +304,7 @@ fun DialogAddNote(
                                 Text(
                                     fontSize = 16.sp,
                                     text = stringResource(id = R.string.cancel),
-                                    style = TextStyle(brush = Brush.verticalGradient(gradientColors))
+                                    style =  MaterialTheme.typography.bodyMedium.copy(brush = Brush.verticalGradient(gradientColors)),
                                 )
                             }
                         }

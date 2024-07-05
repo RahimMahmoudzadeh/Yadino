@@ -113,7 +113,7 @@ fun DialogAddRoutine(
                         text = stringResource(id = R.string.creat_new_work),
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
-                        style = TextStyle(brush = Brush.verticalGradient(gradientColors))
+                        style = MaterialTheme.typography.bodyMedium.copy(brush = Brush.verticalGradient(gradientColors))
                     )
                     TextField(modifier = Modifier
                         .background(MaterialTheme.colorScheme.background)
@@ -138,7 +138,8 @@ fun DialogAddRoutine(
                         unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
                         disabledIndicatorColor = MaterialTheme.colorScheme.background,
                         unfocusedContainerColor = MaterialTheme.colorScheme.background
-                    )
+                    ),
+                        textStyle = MaterialTheme.typography.bodyLarge
                     )
 
                     if (isErrorName) {
@@ -167,7 +168,8 @@ fun DialogAddRoutine(
                             routineExplanation =
                                 if (it.length <= MAX_EXPLANATION_LENGTH) it else routineExplanation
                         },
-                        placeholder = {
+                        textStyle = MaterialTheme.typography.bodyMedium,
+                                placeholder = {
                             Text(
                                 text = stringResource(id = R.string.routine_explanation),
                                 color = MaterialTheme.colorScheme.primary
@@ -258,12 +260,14 @@ fun DialogAddRoutine(
                             Text(
                                 modifier = Modifier.padding(top = 14.dp),
                                 text = stringResource(id = R.string.set_alarms),
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.bodyMedium
                             )
                             Text(
                                 modifier = Modifier.padding(top = 14.dp, start = 4.dp),
                                 text = time,
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
                         OutlinedButton(border = BorderStroke(
@@ -272,7 +276,7 @@ fun DialogAddRoutine(
                             alarmDialogState.show()
                         }) {
                             Text(
-                                text = stringResource(id = R.string.time_change), style = TextStyle(
+                                text = stringResource(id = R.string.time_change), style = MaterialTheme.typography.bodyMedium.copy(
                                     brush = Brush.verticalGradient(
                                         gradientColors
                                     )
@@ -318,6 +322,7 @@ fun DialogAddRoutine(
                                 .fillMaxWidth(0.3f)
                                 .height(40.dp),
                             textSize = 14.sp,
+                            textStyle = MaterialTheme.typography.bodyMedium,
                             onClick = {
                                 Timber.tag("tagNameRoutine").d(routineName.length.toString())
 
@@ -348,7 +353,7 @@ fun DialogAddRoutine(
                             Text(
                                 fontSize = 16.sp,
                                 text = stringResource(id = R.string.cancel),
-                                style = TextStyle(
+                                style = MaterialTheme.typography.bodyMedium.copy(
                                     brush = Brush.verticalGradient(
                                         gradientColors
                                     )
@@ -371,7 +376,7 @@ fun DialogAddRoutine(
                                         dayChecked = currentNumberDay
                                         monthChecked = currentNumberMonth
                                         yearChecked = currentNumberYear
-                                        monthChange(currentNumberYear,currentNumberMonth)
+                                        monthChange(currentNumberYear, currentNumberMonth)
                                     } else {
                                         dayChecked = day
                                         monthChecked = month

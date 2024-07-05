@@ -9,6 +9,8 @@ import com.rahim.utils.base.viewModel.BaseViewModel
 import com.rahim.utils.enums.error.ErrorMessageCode
 import com.rahim.utils.resours.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,6 +38,7 @@ class HomeViewModel @Inject constructor(
     private val _updateRoutine =
         MutableStateFlow<Resource<Routine?>?>(null)
     val updateRoutine = _updateRoutine
+
 
     init {
         getCurrentRoutines()
@@ -118,4 +121,7 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+    suspend fun getAllRoutine(): Flow<List<Routine>> = routineRepository.getAllRoutine()
+
 }

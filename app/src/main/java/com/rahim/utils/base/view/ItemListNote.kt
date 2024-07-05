@@ -11,6 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rahim.R
@@ -28,6 +29,7 @@ fun ItemListNote(
     openDialogEdit: (NoteModel) -> Unit,
     openDialogDelete: (NoteModel) -> Unit,
 ) {
+    val textUnderLine = if (noteModel.isChecked) TextDecoration.LineThrough else TextDecoration.None
 
     val delete = SwipeAction(
         icon = painterResource(id = R.drawable.delete),
@@ -88,10 +90,9 @@ fun ItemListNote(
                         modifier = Modifier.align(Alignment.End),
                         color = if (noteModel.state == 0) Mantis else if (noteModel.state == 1) CornflowerBlueDark else Punch,
                         text = noteModel.name,
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onTertiary
-                        )
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        textDecoration = textUnderLine
                     )
                     Text(
                         textAlign = TextAlign.End,
@@ -99,7 +100,10 @@ fun ItemListNote(
                             .align(Alignment.End)
                             .padding(top = 10.dp),
                         text = noteModel.description,
-                        color = MaterialTheme.colorScheme.secondaryContainer
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        textDecoration = textUnderLine
                     )
                 }
             }
@@ -108,8 +112,9 @@ fun ItemListNote(
                     .align(Alignment.Start)
                     .padding(start = 12.dp, top = 12.dp, bottom = 12.dp),
                 text = "${noteModel.yerNumber}/${noteModel.monthNumber}/${noteModel.dayNumber}",
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.primary
+               style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary,
+                textDecoration = textUnderLine
             )
         }
     }
