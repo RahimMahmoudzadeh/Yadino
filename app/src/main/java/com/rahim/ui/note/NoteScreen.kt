@@ -62,7 +62,7 @@ fun NoteRoute(
 }
 
 @Composable
-fun NoteScreen(
+private fun NoteScreen(
     modifier: Modifier = Modifier,
     currentYear: Int,
     currentMonth: Int,

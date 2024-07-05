@@ -19,6 +19,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -27,10 +28,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -98,6 +101,7 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
     var errorClick by rememberSaveable { mutableStateOf(false) }
     val navController = rememberNavController()
     var clickSearch by rememberSaveable { mutableStateOf(false) }
+    val configuration = LocalConfiguration.current
 
     val destination = navController.currentBackStackEntry?.destination?.route
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -112,6 +116,7 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
             ) {
+
                 Scaffold(topBar = {
                     AnimatedVisibility(
                         visible = destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
@@ -124,11 +129,20 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                                     stringResource(
                                         id = R.string.my_firend
                                     )
+                Scaffold(
+                    topBar = {
+                        if (destinationNavBackStackEntry != Screen.Welcome.route) {
+                            TopBarCenterAlign(
+                                title = when (destinationNavBackStackEntry) {
+                                    Screen.Home.route ->
+                                        stringResource(
+                                            id = R.string.my_firend
+                                        )
 
-                                Screen.Routine.route ->
-                                    stringResource(
-                                        id = R.string.list_routine
-                                    )
+                                    Screen.Routine.route ->
+                                        stringResource(
+                                            id = R.string.list_routine
+                                        )
 
                                 else ->
                                     stringResource(id = R.string.notes)
@@ -167,6 +181,50 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                         )
                     }
                 }, containerColor = MaterialTheme.colorScheme.background
+
+                                    Screen.Calender.route ->
+                                        stringResource(
+                                            id = R.string.calender
+                                        )
+
+                                    else ->
+                                        stringResource(id = R.string.notes)
+                                },
+                                isShowSearchIcon = destinationNavBackStackEntry != Screen.Calender.route,
+                                onClickSearch = {
+                                    clickSearch = !clickSearch
+                                }
+                            )
+                        }
+                    },
+                    floatingActionButtonPosition = FabPosition.Center,
+                    floatingActionButton = {
+                        if (destinationNavBackStackEntry != Screen.Welcome.route) {
+                            FloatingActionButton(modifier = Modifier.offset(
+                                y = 42.dp
+                            ), containerColor = CornflowerBlueLight,
+                                contentColor = Color.White,
+                                onClick = {
+                                    requestPermissionNotification(isGranted = {
+                                        if (it) openDialog = true
+                                        else errorClick = true
+                                    }, permissionState = {
+                                        it.launchPermissionRequest()
+                                    }, notificationPermission = notificationPermissionState)
+                                }) {
+                                Icon(Icons.Filled.Add, "add item")
+                            }
+                        }
+                    },
+                    bottomBar = {
+                        if (destinationNavBackStackEntry != Screen.Welcome.route) {
+                            BottomNavigationBar(
+                                navController, navBackStackEntry, destinationNavBackStackEntry
+                            )
+                        }
+                    },
+                    containerColor = MaterialTheme.colorScheme.background,
+
                 ) { innerPadding ->
                     NavGraph(
                         navController,

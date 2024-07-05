@@ -144,5 +144,7 @@ dependencies {
         implementation(ui.tooling.preview)
         //splash
         implementation(androidx.core.splashscreen)
+        //vico
+        implementation(bundles.vico)
     }
 }

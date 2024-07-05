@@ -17,6 +17,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -62,11 +63,14 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.shouldShowRationale
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.rahim.R
+import com.rahim.data.modle.data.TimeDate
 import com.rahim.ui.theme.BalticSea
 import com.rahim.ui.theme.CornflowerBlueLight
+import com.rahim.ui.theme.Periwinkle
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
 import com.rahim.ui.theme.Zircon
+import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.extention.errorMessage
 import com.rahim.utils.resours.Resource
 import timber.log.Timber
@@ -171,6 +175,10 @@ fun DialogButtonBorder(
     }
 }
 
+fun b():Int{
+    return 10
+}
+
 @Composable
 fun CircularProgressAnimated(isShow: Boolean) {
     if (isShow) {
@@ -222,8 +230,14 @@ fun ShowToastShort(message: String?, context: Context) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarCenterAlign(
+
     modifier: Modifier = Modifier, title: String,
     openHistory: () -> Unit,
+
+    modifier: Modifier = Modifier,
+    title: String,
+    isShowSearchIcon: Boolean,
+
     onClickSearch: () -> Unit
 ) {
 
@@ -234,7 +248,7 @@ fun TopBarCenterAlign(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 38.dp),
+                    .padding(start = if (isShowSearchIcon) 38.dp else 0.dp),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
@@ -256,14 +270,15 @@ fun TopBarCenterAlign(
 
         },
         actions = {
-            IconButton(onClick = {
-                onClickSearch()
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.round_search),
-                    contentDescription = "search"
-                )
-            }
+            if (isShowSearchIcon)
+                IconButton(onClick = {
+                    onClickSearch()
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.round_search),
+                        contentDescription = "search"
+                    )
+                }
         }
     )
 }
@@ -393,6 +408,111 @@ fun ShowStatusBar() {
             WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars =
                 color.luminance > 0.5
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+        }
+    }
+}
+@Composable
+fun TimeItems(
+    timeDate: TimeDate,
+    dayNumberChecked: Int,
+    monthNumberChecked: Int,
+    yerNumberChecked: Int,
+    dayCheckedNumber: (yer: Int, month: Int, day: Int) -> Unit,
+) {
+    if (timeDate.dayNumber <= 0 || timeDate.nameDay.isNullOrEmpty()) return
+    if (timeDate.isToday && timeDate.dayNumber != dayNumberChecked) {
+        Box(
+            modifier = Modifier
+                .size(46.dp)
+                .padding(2.dp)
+                .border(
+                    1.dp,
+                    brush = Brush.verticalGradient(gradientColors),
+                    shape = RoundedCornerShape(4.dp)
+                ), contentAlignment = Alignment.Center
+        ) {
+            Text(
+                modifier = Modifier.clickable {
+                    dayCheckedNumber(
+                        timeDate.yerNumber,
+                        timeDate.monthNumber,
+                        timeDate.dayNumber
+                    )
+                },
+                text = timeDate.dayNumber.toString(),
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+                style = TextStyle(
+                    brush = Brush.verticalGradient(
+                        gradientColors
+                    )
+                )
+            )
+        }
+    } else if (timeDate.nameDay == HalfWeekName.FRIDAY.nameDay && timeDate.dayNumber != dayNumberChecked) {
+        Box(
+            modifier = Modifier
+                .size(46.dp)
+                .padding(2.dp)
+                .background(
+                    color = Periwinkle,
+                    shape = RoundedCornerShape(4.dp),
+                ), contentAlignment = Alignment.Center
+        ) {
+            Text(
+                modifier = Modifier.clickable {
+                    dayCheckedNumber(
+                        timeDate.yerNumber,
+                        timeDate.monthNumber,
+                        timeDate.dayNumber
+                    )
+                },
+                text = timeDate.dayNumber.toString(),
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.surface,
+            )
+        }
+    } else if (timeDate.dayNumber == dayNumberChecked && timeDate.yerNumber == yerNumberChecked && timeDate.monthNumber == monthNumberChecked) {
+        Box(
+            modifier = Modifier
+                .size(46.dp)
+                .padding(2.dp)
+                .background(
+                    brush = Brush.verticalGradient(gradientColors),
+                    shape = RoundedCornerShape(4.dp),
+                ), contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = timeDate.dayNumber.toString(),
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+                color = Color.White
+            )
+        }
+    } else {
+        Box(
+            modifier = Modifier
+                .size(46.dp)
+                .padding(2.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                    shape = RoundedCornerShape(4.dp),
+                ), contentAlignment = Alignment.Center
+        ) {
+            Text(
+                modifier = Modifier.clickable {
+                    dayCheckedNumber(
+                        timeDate.yerNumber,
+                        timeDate.monthNumber,
+                        timeDate.dayNumber
+                    )
+                },
+                text = timeDate.dayNumber.toString(),
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.surface
+            )
         }
     }
 }

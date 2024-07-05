@@ -100,7 +100,7 @@ fun RoutineRoute(
 }
 
 @Composable
-fun RoutineScreen(
+private fun RoutineScreen(
     modifier: Modifier,
     routines: Resource<List<Routine>>,
     times: List<TimeDate>,

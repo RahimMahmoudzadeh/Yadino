@@ -101,5 +101,5 @@
     <string name="errorSaveProses">مشکلی در ثبت اطلاعات پیش امده است! لطفا دوباره امتحان کنید</string>
     <string name="errorGetProses">مشکلی در دریافت اطلاعات پیش امده است! لطفا دوباره امتحان کنید</string>
     <string name="historyAlarm">تاریخچه آلارم</string>
-
+    <string name="calender">تقویم</string>
 </resources>

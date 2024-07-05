@@ -8,4 +8,5 @@ enum class ScreenName(val nameScreen:String) {
     CALENDER("calendar"),
     WELCOME("welcome"),
     HISTORY("History")
+    EMPTY("empty"),
 }
