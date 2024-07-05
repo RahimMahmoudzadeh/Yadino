@@ -31,11 +31,11 @@ class HomeViewModel @Inject constructor(
 
     private val _addRoutine =
         MutableStateFlow<Resource<Routine?>?>(null)
-    val addRoutine = _addRoutine.asStateFlow()
+    val addRoutine = _addRoutine
 
     private val _updateRoutine =
         MutableStateFlow<Resource<Routine?>?>(null)
-    val updateRoutine = _updateRoutine.asStateFlow()
+    val updateRoutine = _updateRoutine
 
     init {
         getCurrentRoutines()

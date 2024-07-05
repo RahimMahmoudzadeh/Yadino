@@ -53,6 +53,7 @@ import com.rahim.data.modle.data.TimeDate
 import com.rahim.ui.theme.Periwinkle
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.base.view.DialogButtonBackground
+import com.rahim.utils.base.view.TimeItems
 import com.rahim.utils.base.view.gradientColors
 import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.extention.calculateMonthName
@@ -65,7 +66,7 @@ fun DialogChoseDate(
     yearNumber: Int,
     monthNumber: Int,
     dayNumber: Int,
-    closeDialog: () -> Unit,
+    closeDialog: () -> Unit ={},
     dayCheckedNumber: (yer: Int, month: Int, day: Int) -> Unit,
     monthChange: (year: Int, month: Int) -> Unit,
 ) {
@@ -228,112 +229,6 @@ fun DialogChoseDate(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun TimeItems(
-    timeDate: TimeDate,
-    dayNumberChecked: Int,
-    monthNumberChecked: Int,
-    yerNumberChecked: Int,
-    dayCheckedNumber: (yer: Int, month: Int, day: Int) -> Unit,
-) {
-    if (timeDate.dayNumber <= 0 || timeDate.nameDay.isNullOrEmpty()) return
-    if (timeDate.isToday && timeDate.dayNumber != dayNumberChecked) {
-        Box(
-            modifier = Modifier
-                .size(46.dp)
-                .padding(2.dp)
-                .border(
-                    1.dp,
-                    brush = Brush.verticalGradient(gradientColors),
-                    shape = RoundedCornerShape(4.dp)
-                ), contentAlignment = Alignment.Center
-        ) {
-            Text(
-                modifier = Modifier.clickable {
-                    dayCheckedNumber(
-                        timeDate.yerNumber,
-                        timeDate.monthNumber,
-                        timeDate.dayNumber
-                    )
-                },
-                text = timeDate.dayNumber.toString(),
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                style = TextStyle(
-                    brush = Brush.verticalGradient(
-                        gradientColors
-                    )
-                )
-            )
-        }
-    } else if (timeDate.nameDay == HalfWeekName.FRIDAY.nameDay && timeDate.dayNumber != dayNumberChecked) {
-        Box(
-            modifier = Modifier
-                .size(46.dp)
-                .padding(2.dp)
-                .background(
-                    color = Periwinkle,
-                    shape = RoundedCornerShape(4.dp),
-                ), contentAlignment = Alignment.Center
-        ) {
-            Text(
-                modifier = Modifier.clickable {
-                    dayCheckedNumber(
-                        timeDate.yerNumber,
-                        timeDate.monthNumber,
-                        timeDate.dayNumber
-                    )
-                },
-                text = timeDate.dayNumber.toString(),
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.surface,
-            )
-        }
-    } else if (timeDate.dayNumber == dayNumberChecked && timeDate.yerNumber == yerNumberChecked && timeDate.monthNumber == monthNumberChecked) {
-        Box(
-            modifier = Modifier
-                .size(46.dp)
-                .padding(2.dp)
-                .background(
-                    brush = Brush.verticalGradient(gradientColors),
-                    shape = RoundedCornerShape(4.dp),
-                ), contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = timeDate.dayNumber.toString(),
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                color = Color.White
-            )
-        }
-    } else {
-        Box(
-            modifier = Modifier
-                .size(46.dp)
-                .padding(2.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.onTertiaryContainer,
-                    shape = RoundedCornerShape(4.dp),
-                ), contentAlignment = Alignment.Center
-        ) {
-            Text(
-                modifier = Modifier.clickable {
-                    dayCheckedNumber(
-                        timeDate.yerNumber,
-                        timeDate.monthNumber,
-                        timeDate.dayNumber
-                    )
-                },
-                text = timeDate.dayNumber.toString(),
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.surface
-            )
         }
     }
 }

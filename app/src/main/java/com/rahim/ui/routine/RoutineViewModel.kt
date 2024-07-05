@@ -40,11 +40,11 @@ class RoutineViewModel @Inject constructor(
 
     private val _flowRoutines =
         MutableStateFlow<Resource<List<Routine>>>(Resource.Loading())
-    val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines.asStateFlow()
+    val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
 
     private val _times =
         MutableStateFlow<List<TimeDate>>(emptyList())
-    val times: StateFlow<List<TimeDate>> = _times.asStateFlow()
+    val times: StateFlow<List<TimeDate>> = _times
 
     private val _addRoutine =
         MutableStateFlow<Resource<Routine?>?>(null)

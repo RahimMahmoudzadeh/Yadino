@@ -31,7 +31,7 @@ class NoteViewModel @Inject constructor(
     BaseViewModel(sharedPreferencesRepository, baseRepository) {
 
     private var _notes = MutableStateFlow<Resource<List<NoteModel>>>(Resource.Loading())
-    var notes: StateFlow<Resource<List<NoteModel>>> = _notes.asStateFlow()
+    var notes: StateFlow<Resource<List<NoteModel>>> = _notes
 
     var nameDay: String? = null
 
