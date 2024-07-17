@@ -53,6 +53,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
@@ -61,22 +62,23 @@ import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Purple
 import kotlinx.coroutines.flow.collectLatest
 
+@Composable
+fun HistoryRoute(
+    backStack: () -> Unit,
+    historyViewModel: HistoryViewModel = hiltViewModel()
+) {
+    val routineItems by historyViewModel.flowRoutines
+        .collectAsStateWithLifecycle()
+
+    HistoryScreen(routineItems.data ?: emptyList(), backStack)
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HistoryScreen(
-    navHostController: NavHostController,
-    homeViewModel: HomeViewModel = hiltViewModel()
+private fun HistoryScreen(
+    routineItems: List<Routine>,
+    backStack: () -> Unit
 ) {
-    var routineItems by remember {
-        mutableStateOf<List<Routine>>(mutableListOf())
-    }
-
-    LaunchedEffect(key1 = true) {
-        homeViewModel.getAllRoutine().collectLatest { allRoutineResult ->
-            routineItems = allRoutineResult
-        }
-    }
-
     val (completedTasks, incompleteTasks) = routineItems.partition { sort -> sort.isChecked }
 
     var expanded by rememberSaveable {
@@ -91,7 +93,7 @@ fun HistoryScreen(
         Scaffold(
             topBar = {
                 TopHistoryScreen {
-                    navHostController.popBackStack()
+                    backStack()
                 }
             }
         ) { innerPadding ->
@@ -101,7 +103,8 @@ fun HistoryScreen(
                     .padding(innerPadding)
             ) {
                 item {
-                    val text = if(incompleteTasks.isEmpty())"آلارم فعالی ندارید !" else "شما ${incompleteTasks.size} آلارم فعال دارید!"
+                    val text =
+                        if (incompleteTasks.isEmpty()) "آلارم فعالی ندارید !" else "شما ${incompleteTasks.size} آلارم فعال دارید!"
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -172,46 +175,46 @@ private fun RoutineCompleted(
     onClick: () -> Unit
 ) {
 
+    Row(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 9.dp),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
         Row(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 9.dp),
-            horizontalArrangement = Arrangement.Start,
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Text(
+                text = " تکمیل شده",
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "( $size ${"روتین )"}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = CornflowerBlueLight,
+                fontWeight = FontWeight.SemiBold,
+            )
 
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = " تکمیل شده",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "( $size ${"روتین )"}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color =CornflowerBlueLight,
-                    fontWeight = FontWeight.SemiBold,
-                )
-
-            }
-
-
-            IconButton(onClick = {
-                onClick()
-            }) {
-                Icon(
-                    imageVector = Icons.Rounded.KeyboardArrowDown, contentDescription = "",
-                    modifier = Modifier
-                        .rotate(rotateState),
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-            }
         }
+
+
+        IconButton(onClick = {
+            onClick()
+        }) {
+            Icon(
+                imageVector = Icons.Rounded.KeyboardArrowDown, contentDescription = "",
+                modifier = Modifier
+                    .rotate(rotateState),
+                tint = MaterialTheme.colorScheme.primary,
+            )
+        }
+    }
 
 
 }

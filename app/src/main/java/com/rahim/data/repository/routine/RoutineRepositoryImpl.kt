@@ -10,15 +10,12 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -105,7 +102,7 @@ class RoutineRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAllRoutine(): Flow<List<Routine>> =routineDao.getAllRoutines()
+    override suspend fun getAllRoutine(): List<Routine> = routineDao.getRoutines()
 
     override fun addRoutine(routine: Routine): Flow<Resource<Routine?>> =
         flow<Resource<Routine?>> {

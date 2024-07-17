@@ -33,6 +33,7 @@ interface RoutineDao {
         routineMonthNumber: Int,
         routineTimeMilSecond: Long
     ): Routine?
+
     @Query("DELETE FROM tbl_routine WHERE dayNumber=:dayNumber AND monthNumber=:monthNumber AND yerNumber=:yerNumber")
     suspend fun removeAllRoutine(monthNumber: Int?, dayNumber: Int?, yerNumber: Int?)
 
@@ -60,8 +61,4 @@ interface RoutineDao {
 
     @Query("SELECT idAlarm FROM tbl_routine WHERE isChecked=0")
     suspend fun getIdAlarms(): List<Long>
-
-    @Query("SELECT * FROM tbl_routine")
-     fun getAllRoutines(): Flow<List<Routine>>
-
 }

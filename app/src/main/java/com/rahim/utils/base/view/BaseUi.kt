@@ -230,14 +230,10 @@ fun ShowToastShort(message: String?, context: Context) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarCenterAlign(
-
-    modifier: Modifier = Modifier, title: String,
-    openHistory: () -> Unit,
-
     modifier: Modifier = Modifier,
     title: String,
+    openHistory: () -> Unit,
     isShowSearchIcon: Boolean,
-
     onClickSearch: () -> Unit
 ) {
 

@@ -24,6 +24,6 @@ interface RepositoryRoutine {
     suspend fun changeRoutineId()
     suspend fun checkEdAllRoutinePastTime()
 
-    suspend fun getAllRoutine():Flow<List<Routine>>
+    suspend fun getAllRoutine(): List<Routine>
 
 }

@@ -13,7 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.dialog.StateOpenDialog
-import com.rahim.ui.alarmHistory.HistoryScreen
+import com.rahim.ui.alarmHistory.HistoryRoute
 import com.rahim.ui.calender.CalenderRoute
 import com.rahim.ui.home.HomeRoute
 import com.rahim.ui.note.NoteRoute
@@ -57,7 +57,9 @@ fun NavGraph(
                 })
         }
         composable(ScreenName.HISTORY.nameScreen) {
-            HistoryScreen(navHostController = navController)
+            HistoryRoute(backStack = {
+                navController.popBackStack()
+            })
         }
 //        composable(Screen.Calender.route) {
 //

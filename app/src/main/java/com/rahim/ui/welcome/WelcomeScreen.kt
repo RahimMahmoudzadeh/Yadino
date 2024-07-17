@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -45,7 +46,7 @@ import com.rahim.R
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun WelcomeScreens(
-    navController: NavController,
+    navController: NavHostController,
     viewModel: WelcomeViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {

@@ -122,6 +122,5 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun getAllRoutine(): Flow<List<Routine>> = routineRepository.getAllRoutine()
 
 }
