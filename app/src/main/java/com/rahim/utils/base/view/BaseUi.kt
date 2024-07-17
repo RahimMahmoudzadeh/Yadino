@@ -175,10 +175,6 @@ fun DialogButtonBorder(
     }
 }
 
-fun b():Int{
-    return 10
-}
-
 @Composable
 fun CircularProgressAnimated(isShow: Boolean) {
     if (isShow) {
@@ -234,7 +230,9 @@ fun TopBarCenterAlign(
     title: String,
     openHistory: () -> Unit,
     isShowSearchIcon: Boolean,
-    onClickSearch: () -> Unit
+    isShowBackIcon: Boolean,
+    onClickSearch: () -> Unit,
+    onClickBack: () -> Unit
 ) {
 
     CenterAlignedTopAppBar(
@@ -244,7 +242,7 @@ fun TopBarCenterAlign(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = if (isShowSearchIcon) 38.dp else 0.dp),
+                    .padding(start = if (isShowBackIcon) 40.dp else 0.dp),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
@@ -255,18 +253,19 @@ fun TopBarCenterAlign(
             )
         },
         navigationIcon = {
-            IconButton(onClick = { openHistory() }) {
-                Icon(
-                    imageVector = Icons.Rounded.Notifications,
-                    contentDescription = "",
-                    tint = CornflowerBlueLight,
-                    modifier = Modifier.size(27.dp)
-                )
+            if (!isShowBackIcon) {
+                IconButton(onClick = { openHistory() }) {
+                    Icon(
+                        imageVector = Icons.Rounded.Notifications,
+                        contentDescription = "",
+                        tint = CornflowerBlueLight,
+                        modifier = Modifier.size(27.dp)
+                    )
+                }
             }
-
         },
         actions = {
-            if (isShowSearchIcon)
+            if (isShowSearchIcon) {
                 IconButton(onClick = {
                     onClickSearch()
                 }) {
@@ -275,6 +274,17 @@ fun TopBarCenterAlign(
                         contentDescription = "search"
                     )
                 }
+            } else if (isShowBackIcon) {
+                IconButton(onClick = {
+                    onClickBack()
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.greater_then),
+                        contentDescription = "search"
+                    )
+                }
+            }
+
         }
     )
 }
@@ -407,6 +417,7 @@ fun ShowStatusBar() {
         }
     }
 }
+
 @Composable
 fun TimeItems(
     timeDate: TimeDate,

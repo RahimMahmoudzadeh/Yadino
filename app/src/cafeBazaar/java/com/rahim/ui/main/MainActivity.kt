@@ -116,7 +116,7 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
             ) {
                 Scaffold(topBar = {
                     AnimatedVisibility(
-                        visible = destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
+                        visible = destinationNavBackStackEntry != Screen.Welcome.route,
                         enter = fadeIn() + expandVertically(animationSpec = tween(800)),
                         exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
                     ) {
@@ -132,13 +132,20 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                                         id = R.string.list_routine
                                     )
 
+                                ScreenName.HISTORY.nameScreen ->
+                                    stringResource(id = R.string.historyAlarm)
+
                                 else ->
                                     stringResource(id = R.string.notes)
                             },
                             openHistory = {
                                 navController.navigate(ScreenName.HISTORY.nameScreen)
                             },
-                            isShowSearchIcon = destinationNavBackStackEntry != Screen.Calender.route,
+                            isShowSearchIcon = destinationNavBackStackEntry != Screen.Calender.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
+                            isShowBackIcon = destinationNavBackStackEntry == ScreenName.HISTORY.nameScreen,
+                            onClickBack = {
+                                navController.popBackStack()
+                            },
                             onClickSearch = {
                                 clickSearch = !clickSearch
                             }

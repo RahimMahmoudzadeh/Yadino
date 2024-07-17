@@ -64,20 +64,18 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun HistoryRoute(
-    backStack: () -> Unit,
     historyViewModel: HistoryViewModel = hiltViewModel()
 ) {
     val routineItems by historyViewModel.flowRoutines
         .collectAsStateWithLifecycle()
 
-    HistoryScreen(routineItems.data ?: emptyList(), backStack)
+    HistoryScreen(routineItems.data ?: emptyList())
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HistoryScreen(
     routineItems: List<Routine>,
-    backStack: () -> Unit
 ) {
     val (completedTasks, incompleteTasks) = routineItems.partition { sort -> sort.isChecked }
 
@@ -88,86 +86,48 @@ private fun HistoryScreen(
         targetValue = if (expanded) 180f else 0f,
         label = ""
     )
-
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        Scaffold(
-            topBar = {
-                TopHistoryScreen {
-                    backStack()
-                }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            item {
+                val text =
+                    if (incompleteTasks.isEmpty()) "آلارم فعالی ندارید !" else "شما ${incompleteTasks.size} آلارم فعال دارید!"
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(15.dp),
+                    text = text,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = if (incompleteTasks.isEmpty()) MaterialTheme.colorScheme.secondaryContainer else CornflowerBlueLight,
+                    fontWeight = FontWeight.Bold
+                )
             }
-        ) { innerPadding ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                item {
-                    val text =
-                        if (incompleteTasks.isEmpty()) "آلارم فعالی ندارید !" else "شما ${incompleteTasks.size} آلارم فعال دارید!"
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(15.dp),
-                        text = text,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = if (incompleteTasks.isEmpty()) MaterialTheme.colorScheme.secondaryContainer else CornflowerBlueLight,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                items(incompleteTasks) { routine ->
+            items(incompleteTasks) { routine ->
+                AlarmHistoryCardItem(routine)
+            }
+            stickyHeader {
+                RoutineCompleted(
+                    size = completedTasks.size,
+                    rotateState = rotateState,
+                    onClick = { expanded = !expanded }
+                )
+            }
+            items(completedTasks) { routine ->
+                AnimatedVisibility(
+                    visible = expanded,
+                    enter = fadeIn() + expandVertically(animationSpec = tween(1000)),
+                    exit = fadeOut() + shrinkVertically(animationSpec = tween(1000))
+                ) {
                     AlarmHistoryCardItem(routine)
                 }
-                stickyHeader {
-                    RoutineCompleted(
-                        size = completedTasks.size,
-                        rotateState = rotateState,
-                        onClick = { expanded = !expanded }
-                    )
-                }
-                items(completedTasks) { routine ->
-                    AnimatedVisibility(
-                        visible = expanded,
-                        enter = fadeIn() + expandVertically(animationSpec = tween(1000)),
-                        exit = fadeOut() + shrinkVertically(animationSpec = tween(1000))
-                    ) {
-                        AlarmHistoryCardItem(routine)
-                    }
-                }
-
             }
+
         }
     }
 }
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun TopHistoryScreen(onBack: () -> Unit) {
-    TopAppBar(
-        navigationIcon = {
-            IconButton(onClick = { onBack() }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.greater_then),
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        },
-        modifier = Modifier.shadow(elevation = 8.dp),
-        colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.onBackground),
-        title = {
-            Text(
-                text = stringResource(id = R.string.historyAlarm),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary
-            )
-        })
-
-}
-
 @Composable
 private fun RoutineCompleted(
     size: Int,

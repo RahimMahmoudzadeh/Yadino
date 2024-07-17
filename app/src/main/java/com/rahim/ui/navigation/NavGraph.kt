@@ -57,9 +57,7 @@ fun NavGraph(
                 })
         }
         composable(ScreenName.HISTORY.nameScreen) {
-            HistoryRoute(backStack = {
-                navController.popBackStack()
-            })
+            HistoryRoute()
         }
 //        composable(Screen.Calender.route) {
 //

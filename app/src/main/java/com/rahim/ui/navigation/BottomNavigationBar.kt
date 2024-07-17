@@ -29,9 +29,7 @@ fun BottomNavigationBar(
     val screenItems = listOf(
         Screen.Home,
         Screen.Routine,
-        Screen.Empty,
         Screen.Note,
-        Screen.Calender
     )
     val currentDestination = navBackStackEntry?.destination
 
