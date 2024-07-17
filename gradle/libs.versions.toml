@@ -36,8 +36,8 @@ project-target-sdk-version = "34"
 project-min-sdk-version = "26"
 
 #project version
-version-code = "123"
-version-name = "1.3.8"
+version-code = "125"
+version-name = "1.4.0"
 
 #gradle static
 project-application-id = "com.rahim"
@@ -51,7 +51,7 @@ metrix-app-id = "metrixAppId"
 application-id-cafeBazaar-suffix = "-c"
 application-id-myket-suffix = "-m"
 schemas = "schemas"
-store-file-address = "storeFileAddress"
+storeFileAddress = "storeFileAddress"
 store-password = "storePassword"
 key-alias = "keyAlias"
 key-password = "keyPassword"
