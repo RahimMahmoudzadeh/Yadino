@@ -1,16 +1,11 @@
 package com.rahim.utils.base.view
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.view.SubMenu
-import android.view.View
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
@@ -18,28 +13,44 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Notifications
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -53,23 +64,16 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.luminance
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.shouldShowRationale
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.rahim.R
 import com.rahim.data.modle.data.TimeDate
-import com.rahim.ui.theme.BalticSea
 import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Periwinkle
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
-import com.rahim.ui.theme.Zircon
 import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.extention.errorMessage
 import com.rahim.utils.resours.Resource
@@ -232,7 +236,8 @@ fun TopBarCenterAlign(
     isShowSearchIcon: Boolean,
     isShowBackIcon: Boolean,
     onClickSearch: () -> Unit,
-    onClickBack: () -> Unit
+    onClickBack: () -> Unit,
+    onDrawerClick: () -> Unit
 ) {
 
     CenterAlignedTopAppBar(
@@ -240,9 +245,6 @@ fun TopBarCenterAlign(
         modifier = modifier.shadow(elevation = 8.dp),
         title = {
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = if (isShowBackIcon) 40.dp else 0.dp),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
@@ -253,16 +255,26 @@ fun TopBarCenterAlign(
             )
         },
         navigationIcon = {
-            if (!isShowBackIcon) {
-                IconButton(onClick = { openHistory() }) {
+            Row {
+                IconButton(onClick = onDrawerClick) {
                     Icon(
-                        imageVector = Icons.Rounded.Notifications,
-                        contentDescription = "",
-                        tint = CornflowerBlueLight,
-                        modifier = Modifier.size(27.dp)
+                        imageVector = Icons.Rounded.MoreVert,
+                        contentDescription = null,
                     )
                 }
+                if (!isShowBackIcon) {
+                    IconButton(onClick = { openHistory() }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Notifications,
+                            contentDescription = "",
+                            tint = CornflowerBlueLight,
+                        )
+                    }
+                }
+
+
             }
+
         },
         actions = {
             if (isShowSearchIcon) {
@@ -401,22 +413,6 @@ fun EmptyMessage(
     )
 }
 
-@Composable
-fun ShowStatusBar() {
-    val view = LocalView.current
-    val darkTheme = isSystemInDarkTheme()
-    val color = if (darkTheme) BalticSea.toArgb() else Zircon.toArgb()
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = color
-            window.navigationBarColor = color
-            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars =
-                color.luminance > 0.5
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
-        }
-    }
-}
 
 @Composable
 fun TimeItems(
