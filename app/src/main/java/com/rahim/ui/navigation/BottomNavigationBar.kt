@@ -43,7 +43,7 @@ fun BottomNavigationBar(
         screenItems.forEach { screen ->
             NavigationBarItem(
                 colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = CornflowerBlueLight.copy(0.2f)
+                    indicatorColor = Color.Transparent
                 ),
                 onClick = {
                     if (screen.route != Screen.Empty.route)
