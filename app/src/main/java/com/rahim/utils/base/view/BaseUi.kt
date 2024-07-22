@@ -244,12 +244,10 @@ fun TopBarCenterAlign(
     onClickSearch: () -> Unit,
     onClickBack: () -> Unit,
     onDrawerClick: () -> Unit,
-    isHistoryScreen: Boolean,
     historyViewModel: HistoryViewModel = hiltViewModel()
 ) {
 
     val haveAlarm by historyViewModel.haveAlarm.collectAsStateWithLifecycle(initialValue = false)
-    val iconTint = if (isHistoryScreen) CornflowerBlueLight else MaterialTheme.colorScheme.secondary
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.onBackground),
         modifier = modifier.shadow(elevation = 8.dp),
@@ -285,7 +283,7 @@ fun TopBarCenterAlign(
                         Icon(
                             imageVector = Icons.Rounded.Notifications,
                             contentDescription = "",
-                            tint =iconTint,
+                            tint =CornflowerBlueLight,
                         )
                     }
 

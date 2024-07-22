@@ -136,19 +136,20 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                             enter = fadeIn() + expandVertically(animationSpec = tween(800)),
                             exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
                         ) {
-                            TopBarCenterAlign(title = when (destinationNavBackStackEntry) {
-                                Screen.Home.route -> stringResource(
+                            TopBarCenterAlign(
+                                title = when (destinationNavBackStackEntry) {
+                                    Screen.Home.route -> stringResource(
                                         id = R.string.my_firend
                                     )
 
-                                Screen.Routine.route -> stringResource(
+                                    Screen.Routine.route -> stringResource(
                                         id = R.string.list_routine
                                     )
 
-                                ScreenName.HISTORY.nameScreen -> stringResource(id = R.string.historyAlarm)
+                                    ScreenName.HISTORY.nameScreen -> stringResource(id = R.string.historyAlarm)
 
-                                else -> stringResource(id = R.string.notes)
-                            },
+                                    else -> stringResource(id = R.string.notes)
+                                },
                                 openHistory = {
                                     navController.navigate(ScreenName.HISTORY.nameScreen)
                                 },
@@ -163,8 +164,7 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                                 onDrawerClick = {
                                     coroutineScope.launch { drawerState.open() }
                                 },
-                                isHistoryScreen = destinationNavBackStackEntry==ScreenName.HISTORY.nameScreen
-                                )
+                            )
                         }
                     }, floatingActionButton = {
                         if (destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen) {
