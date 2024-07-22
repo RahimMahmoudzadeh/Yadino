@@ -111,4 +111,6 @@
     <string name="have_alarm">آلارم فعال دارید</string>
     <string name="not_alarm">آلارم فعالی ندارید</string>
     <string name="completed">تکمیل شده</string>
+    <string name="you">شما</string>
+
 </resources>
