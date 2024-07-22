@@ -15,3 +15,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Yadino"
 include(listOf(":app"))
+include(":core:base")
+include(":library:designsystem")
+include(":build-logic:convention")
