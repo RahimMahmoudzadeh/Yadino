@@ -103,6 +103,8 @@ class RoutineRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAllRoutine(): List<Routine> = routineDao.getRoutines()
+    override  fun haveAlarm(): Flow<Boolean> = routineDao.haveAlarm()
+
 
     override fun addRoutine(routine: Routine): Flow<Resource<Routine?>> =
         flow<Resource<Routine?>> {

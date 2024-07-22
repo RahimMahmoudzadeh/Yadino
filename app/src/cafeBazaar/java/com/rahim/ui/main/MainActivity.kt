@@ -162,7 +162,9 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                                 },
                                 onDrawerClick = {
                                     coroutineScope.launch { drawerState.open() }
-                                })
+                                },
+                                isHistoryScreen = destinationNavBackStackEntry==ScreenName.HISTORY.nameScreen
+                                )
                         }
                     }, floatingActionButton = {
                         if (destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen) {

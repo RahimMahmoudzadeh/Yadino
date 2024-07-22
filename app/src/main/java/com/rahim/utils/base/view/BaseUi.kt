@@ -31,6 +31,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -45,6 +47,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -64,12 +67,15 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.shouldShowRationale
 import com.rahim.R
 import com.rahim.data.modle.data.TimeDate
+import com.rahim.ui.alarmHistory.HistoryViewModel
 import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Periwinkle
 import com.rahim.ui.theme.Purple
@@ -237,9 +243,13 @@ fun TopBarCenterAlign(
     isShowBackIcon: Boolean,
     onClickSearch: () -> Unit,
     onClickBack: () -> Unit,
-    onDrawerClick: () -> Unit
+    onDrawerClick: () -> Unit,
+    isHistoryScreen: Boolean,
+    historyViewModel: HistoryViewModel = hiltViewModel()
 ) {
 
+    val haveAlarm by historyViewModel.haveAlarm.collectAsStateWithLifecycle(initialValue = false)
+    val iconTint = if (isHistoryScreen) CornflowerBlueLight else MaterialTheme.colorScheme.secondary
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.onBackground),
         modifier = modifier.shadow(elevation = 8.dp),
@@ -255,7 +265,9 @@ fun TopBarCenterAlign(
             )
         },
         navigationIcon = {
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 IconButton(onClick = onDrawerClick) {
                     Icon(
                         imageVector = Icons.Rounded.MoreVert,
@@ -263,18 +275,22 @@ fun TopBarCenterAlign(
                     )
                 }
                 if (!isShowBackIcon) {
-                    IconButton(onClick = { openHistory() }) {
+                    BadgedBox(
+                        modifier = Modifier.clickable { openHistory() },
+                        badge = {
+                            if (haveAlarm) {
+                                Badge()
+                            }
+                        }) {
                         Icon(
                             imageVector = Icons.Rounded.Notifications,
                             contentDescription = "",
-                            tint = CornflowerBlueLight,
+                            tint =iconTint,
                         )
                     }
+
                 }
-
-
             }
-
         },
         actions = {
             if (isShowSearchIcon) {

@@ -67,6 +67,9 @@ import kotlinx.coroutines.flow.collectLatest
 fun HistoryRoute(
     historyViewModel: HistoryViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(true) {
+        historyViewModel.getAllRoutine()
+    }
     val routineItems by historyViewModel.flowRoutines
         .collectAsStateWithLifecycle()
 
