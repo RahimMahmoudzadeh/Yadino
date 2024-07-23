@@ -1,4 +1,4 @@
-package com.rahim.yadino.build_logic
+package com.rahim.yadino.navigation
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.rahim.yadino.build_logic.test", appContext.packageName)
+        assertEquals("com.rahim.yadino.navigation.test", appContext.packageName)
     }
 }

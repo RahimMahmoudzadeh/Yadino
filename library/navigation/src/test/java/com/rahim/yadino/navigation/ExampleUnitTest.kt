@@ -1,4 +1,4 @@
-package com.rahim.yadino.build_logic
+package com.rahim.yadino.navigation
 
 import org.junit.Test
 

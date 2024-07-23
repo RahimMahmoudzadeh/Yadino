@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google()
         mavenCentral()
@@ -14,8 +15,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Yadino"
-include(listOf(":app"))
-include(":core:base")
-include(":library:designsystem")
-include(":build-logic:convention")
-include(":feature:home")
+include(":app",":core:base",":library:designsystem",":library:navigation",":feature:home")

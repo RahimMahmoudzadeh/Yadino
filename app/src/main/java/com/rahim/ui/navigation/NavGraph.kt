@@ -1,6 +1,5 @@
 package com.rahim.ui.navigation
 
-import android.os.Build
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
@@ -9,13 +8,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
-import androidx.navigation.compose.rememberNavController
-import com.rahim.R
-import com.rahim.data.modle.Rotin.Routine
-import com.rahim.data.modle.dialog.StateOpenDialog
 import com.rahim.ui.alarmHistory.HistoryRoute
 import com.rahim.ui.calender.CalenderRoute
-import com.rahim.ui.home.HomeRoute
+import com.rahim.yadino.home.HomeRoute
 import com.rahim.ui.note.NoteRoute
 import com.rahim.ui.routine.RoutineRoute
 import com.rahim.ui.welcome.WelcomeScreens

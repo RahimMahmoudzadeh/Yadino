@@ -6,5 +6,5 @@ plugins {
 }
 
 android {
-    namespace = "com.rahim.yadino.library.designsystem"
+    namespace = "com.rahim.yadino.library.navigation"
 }
