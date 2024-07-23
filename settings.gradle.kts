@@ -19,3 +19,4 @@ include(":app",":core:base",":library:designsystem",":library:navigation",":feat
 include(":feature:routine")
 include(":feature:note")
 include(":feature:welcome")
+include(":feature:wekeup")
