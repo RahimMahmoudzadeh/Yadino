@@ -49,8 +49,8 @@ import com.rahim.ui.navigation.DrawerItemType.Guide
 import com.rahim.ui.navigation.DrawerItemType.RateToApp
 import com.rahim.ui.navigation.DrawerItemType.ShareWithFriends
 import com.rahim.ui.navigation.DrawerItemType.Theme
-import com.rahim.ui.theme.CornflowerBlueLight
-import com.rahim.ui.theme.YadinoTheme
+import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
+import com.rahim.yadino.designsystem.theme.YadinoTheme
 import kotlinx.coroutines.launch
 
 sealed interface DrawerItemType {

@@ -8,3 +8,6 @@ plugins {
 android {
     namespace = "com.rahim.yadino.library.navigation"
 }
+dependencies{
+    api(project(":library:designsystem"))
+}

@@ -70,10 +70,10 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.shouldShowRationale
 import com.rahim.R
 import com.rahim.data.modle.data.TimeDate
-import com.rahim.ui.theme.CornflowerBlueLight
-import com.rahim.ui.theme.Periwinkle
-import com.rahim.ui.theme.Purple
-import com.rahim.ui.theme.PurpleGrey
+import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
+import com.rahim.yadino.designsystem.theme.Periwinkle
+import com.rahim.yadino.designsystem.theme.Purple
+import com.rahim.yadino.designsystem.theme.PurpleGrey
 import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.extention.errorMessage
 import com.rahim.utils.resours.Resource

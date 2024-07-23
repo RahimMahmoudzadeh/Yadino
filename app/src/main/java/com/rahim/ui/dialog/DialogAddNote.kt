@@ -28,6 +28,9 @@ import com.rahim.data.modle.note.NoteModel
 import com.rahim.ui.theme.*
 import com.rahim.utils.base.view.DialogButtonBackground
 import com.rahim.utils.base.view.gradientColors
+import com.rahim.yadino.designsystem.theme.CornflowerBlueDark
+import com.rahim.yadino.designsystem.theme.Mantis
+import com.rahim.yadino.designsystem.theme.Punch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

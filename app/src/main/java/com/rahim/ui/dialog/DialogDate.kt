@@ -50,8 +50,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.R
 import com.rahim.data.modle.data.TimeDate
-import com.rahim.ui.theme.Periwinkle
-import com.rahim.ui.theme.YadinoTheme
+import com.rahim.yadino.designsystem.theme.Periwinkle
+import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.utils.base.view.DialogButtonBackground
 import com.rahim.utils.base.view.TimeItems
 import com.rahim.utils.base.view.gradientColors

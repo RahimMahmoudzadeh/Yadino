@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.data.modle.Rotin.Routine
-import com.rahim.ui.theme.CornflowerBlueLight
+import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 
 @Composable
 fun HistoryRoute(

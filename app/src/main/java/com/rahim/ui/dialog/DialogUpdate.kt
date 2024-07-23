@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.rahim.R
-import com.rahim.ui.theme.YadinoTheme
+import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.utils.base.view.DialogButtonBackground
 import com.rahim.utils.base.view.gradientColors
 

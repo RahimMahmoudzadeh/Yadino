@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
-import com.rahim.ui.theme.CornflowerBlueLight
-import com.rahim.ui.theme.Porcelain
+import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
+import com.rahim.yadino.designsystem.theme.Porcelain
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 

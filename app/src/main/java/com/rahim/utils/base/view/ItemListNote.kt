@@ -17,6 +17,11 @@ import androidx.compose.ui.unit.sp
 import com.rahim.R
 import com.rahim.data.modle.note.NoteModel
 import com.rahim.ui.theme.*
+import com.rahim.yadino.designsystem.theme.CornflowerBlueDark
+import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
+import com.rahim.yadino.designsystem.theme.Mantis
+import com.rahim.yadino.designsystem.theme.Porcelain
+import com.rahim.yadino.designsystem.theme.Punch
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 

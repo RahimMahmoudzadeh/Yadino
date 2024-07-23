@@ -9,7 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 import com.rahim.ui.alarmHistory.HistoryRoute
-import com.rahim.ui.calender.CalenderRoute
+import com.rahim.yadino.calender.CalenderRoute
 import com.rahim.yadino.home.HomeRoute
 import com.rahim.yadino.note.NoteRoute
 import com.rahim.yadino.routine.RoutineRoute
@@ -58,7 +58,7 @@ fun NavGraph(
 //        }
 
         composable(Screen.Calender.route) {
-            CalenderRoute()
+            com.rahim.yadino.calender.CalenderRoute()
         }
     }
 }
