@@ -12,7 +12,7 @@ import com.rahim.ui.alarmHistory.HistoryRoute
 import com.rahim.ui.calender.CalenderRoute
 import com.rahim.yadino.home.HomeRoute
 import com.rahim.ui.note.NoteRoute
-import com.rahim.ui.routine.RoutineRoute
+import com.rahim.yadino.routine.RoutineRoute
 import com.rahim.ui.welcome.WelcomeScreens
 import com.rahim.utils.navigation.Screen
 import com.rahim.utils.navigation.ScreenName
@@ -37,7 +37,7 @@ fun NavGraph(
                 })
         }
         composable(Screen.Routine.route) {
-            RoutineRoute(
+            com.rahim.yadino.routine.RoutineRoute(
                 openDialog = openDialog,
                 clickSearch = clickSearch,
                 onOpenDialog = { isOpen ->
