@@ -14,8 +14,7 @@ import com.rahim.yadino.home.HomeRoute
 import com.rahim.yadino.note.NoteRoute
 import com.rahim.yadino.routine.RoutineRoute
 import com.rahim.yadino.welcome.WelcomeScreens
-import com.rahim.utils.navigation.Screen
-import com.rahim.utils.navigation.ScreenName
+import com.rahim.yadino.navigation.ScreenName
 
 @Composable
 fun NavGraph(

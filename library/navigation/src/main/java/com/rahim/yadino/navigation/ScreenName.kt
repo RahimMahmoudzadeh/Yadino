@@ -1,4 +1,4 @@
-package com.rahim.utils.navigation
+package com.rahim.yadino.navigation
 
 enum class ScreenName(val nameScreen:String) {
     HOME("home"),
