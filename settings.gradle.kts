@@ -18,3 +18,4 @@ rootProject.name = "Yadino"
 include(":app",":core:base",":library:designsystem",":library:navigation",":feature:home")
 include(":feature:routine")
 include(":feature:note")
+include(":feature:welcome")

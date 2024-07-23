@@ -1,6 +1,5 @@
-package com.rahim.ui.welcome
+package com.rahim.yadino.welcome
 
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +29,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -41,7 +39,6 @@ import com.rahim.utils.base.view.GradientButton
 import com.rahim.utils.base.view.gradientColors
 import com.rahim.utils.navigation.Screen
 import kotlinx.coroutines.launch
-import com.rahim.R
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable

@@ -6,5 +6,5 @@ plugins {
 }
 
 android {
-    namespace = "com.rahim.yadino.feature.note"
+    namespace = "com.rahim.yadino.feature.welcome"
 }

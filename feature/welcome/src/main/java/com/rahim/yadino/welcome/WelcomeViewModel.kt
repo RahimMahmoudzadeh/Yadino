@@ -1,4 +1,4 @@
-package com.rahim.ui.welcome
+package com.rahim.yadino.welcome
 
 import com.rahim.data.repository.base.BaseRepository
 import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository

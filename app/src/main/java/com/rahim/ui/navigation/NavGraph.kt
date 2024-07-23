@@ -11,9 +11,9 @@ import androidx.navigation.compose.composable
 import com.rahim.ui.alarmHistory.HistoryRoute
 import com.rahim.ui.calender.CalenderRoute
 import com.rahim.yadino.home.HomeRoute
-import com.rahim.ui.note.NoteRoute
+import com.rahim.yadino.note.NoteRoute
 import com.rahim.yadino.routine.RoutineRoute
-import com.rahim.ui.welcome.WelcomeScreens
+import com.rahim.yadino.welcome.WelcomeScreens
 import com.rahim.utils.navigation.Screen
 import com.rahim.utils.navigation.ScreenName
 
@@ -28,7 +28,7 @@ fun NavGraph(
 ) {
     NavHost(navController, startDestination = startDestination, Modifier.padding(innerPadding)) {
         composable(Screen.Welcome.route) {
-            WelcomeScreens(navController)
+            com.rahim.yadino.welcome.WelcomeScreens(navController)
         }
         composable(Screen.Home.route) {
             HomeRoute(
@@ -45,7 +45,7 @@ fun NavGraph(
                 })
         }
         composable(Screen.Note.route) {
-            NoteRoute(openDialog = openDialog,
+            com.rahim.yadino.note.NoteRoute(openDialog = openDialog,
                 clickSearch = clickSearch,
                 onOpenDialog = { isOpen ->
                     onOpenDialog(isOpen)
