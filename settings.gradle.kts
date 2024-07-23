@@ -15,8 +15,15 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Yadino"
-include(":app",":core:base",":library:designsystem",":library:navigation",":feature:home")
-include(":feature:routine")
-include(":feature:note")
-include(":feature:welcome")
-include(":feature:wekeup")
+include(
+    ":app",
+    ":core:base",
+    ":library:designsystem",
+    ":library:navigation",
+    ":feature:home",
+    ":feature:routine",
+    ":feature:note",
+    ":feature:welcome",
+    ":feature:wekeup",
+    ":feature:calender",
+)
