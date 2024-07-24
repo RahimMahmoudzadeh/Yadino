@@ -18,11 +18,11 @@ import com.rahim.R
 import com.rahim.data.alarm.Alarm
 import com.rahim.data.alarm.AlarmSong
 import com.rahim.data.broadcast.YadinoBroadCastReceiver
-import com.rahim.data.modle.Rotin.Routine
+import com.rahim.yadino.routine.modle.Rotin.Routine
 import com.rahim.ui.main.MainActivity
 import com.rahim.ui.wakeup.WakeupActivity
-import com.rahim.utils.Constants.CHANNEL_ID
-import com.rahim.utils.Constants.ROUTINE
+import com.rahim.yadino.base.Constants.CHANNEL_ID
+import com.rahim.yadino.base.Constants.ROUTINE
 import java.util.Random
 import javax.inject.Inject
 
@@ -59,7 +59,7 @@ class NotificationManager @Inject constructor() : AlarmSong, Alarm {
 
     fun createFullNotification(
         context: Context,
-        routine: Routine?
+        routine: com.rahim.yadino.routine.modle.Rotin.Routine?
     ) {
         routine?.let { routine ->
             val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {

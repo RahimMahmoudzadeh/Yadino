@@ -2,9 +2,8 @@ package com.rahim.data.di
 
 import android.app.Application
 import androidx.room.Room
-import com.rahim.data.db.dao.RoutineDao
 import com.rahim.data.db.database.AppDatabase
-import com.rahim.utils.Constants
+import com.rahim.yadino.base.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +19,7 @@ object DataBaseModule {
         return Room.databaseBuilder(
             application,
             AppDatabase::class.java,
-            Constants.DATABASE_NAME
+            com.rahim.yadino.base.Constants.DATABASE_NAME
         ).build()
     }
 

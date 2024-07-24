@@ -26,4 +26,8 @@ include(
     ":feature:welcome",
     ":feature:wekeup",
     ":feature:calender",
+    ":feature:alarmHistory",
+    ":data:routine-repository",
+    ":data:routine-local",
+    ":domain:routine",
 )

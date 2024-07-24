@@ -1,34 +1,22 @@
 package com.rahim.data.repository.dataTime
 
-import com.rahim.data.db.dao.TimeDao
-import com.rahim.data.di.DefaultDispatcher
-import com.rahim.data.di.IODispatcher
-import com.rahim.data.modle.data.TimeDate
-import com.rahim.data.modle.data.TimeDataMonthAndYear
-import com.rahim.utils.Constants.END_YEAR
-import com.rahim.utils.Constants.FIRST_KABISE_DATA
-import com.rahim.utils.Constants.FIRST_YEAR
-import com.rahim.utils.Constants.VERSION_TIME_DB
 import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.enums.WeekName
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 
 class DataTimeRepositoryImpl @Inject constructor(
-    @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
-    @IODispatcher val ioDispatcher: CoroutineDispatcher,
+    @com.rahim.yadino.base.di.DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
+    @com.rahim.yadino.base.di.IODispatcher val ioDispatcher: CoroutineDispatcher,
     private val timeDao: TimeDao
 ) :
     DataTimeRepository {
@@ -62,13 +50,13 @@ class DataTimeRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getTimes(): Flow<List<TimeDate>> = timeDao.getAllTimeFlow().distinctUntilChanged()
-    override fun getTimesMonth(yerNumber: Int, monthNumber: Int): Flow<List<TimeDate>> = flow {
+    override fun getTimes(): Flow<List<com.rahim.yadino.routine.modle.data.TimeDate>> = timeDao.getAllTimeFlow().distinctUntilChanged()
+    override fun getTimesMonth(yerNumber: Int, monthNumber: Int): Flow<List<com.rahim.yadino.routine.modle.data.TimeDate>> = flow {
         if (yerNumber != FIRST_YEAR || yerNumber != END_YEAR) {
             timeDao.getSpecificMonthFromYer(monthNumber, yerNumber).distinctUntilChanged().catch {}
                 .collect {
                     if (it.isNotEmpty()){
-                        val times=ArrayList<TimeDate>()
+                        val times=ArrayList<com.rahim.yadino.routine.modle.data.TimeDate>()
                         val spaceStart = calculateDaySpaceStartMonth(it.first())
                         val spaceEnd = calculateDaySpaceEndMonth(it.last())
                         times.addAll(spaceStart)
@@ -83,8 +71,8 @@ class DataTimeRepositoryImpl @Inject constructor(
     }
 
 
-    private fun calculateDaySpaceStartMonth(timeDate: TimeDate): List<TimeDate> {
-        val emptyTimes = ArrayList<TimeDate>()
+    private fun calculateDaySpaceStartMonth(timeDate: com.rahim.yadino.routine.modle.data.TimeDate): List<com.rahim.yadino.routine.modle.data.TimeDate> {
+        val emptyTimes = ArrayList<com.rahim.yadino.routine.modle.data.TimeDate>()
         val downTime = when (timeDate.nameDay) {
             HalfWeekName.FRIDAY.nameDay -> {
                 -6
@@ -120,7 +108,7 @@ class DataTimeRepositoryImpl @Inject constructor(
         }
         for (i in -1 downTo downTime) {
             emptyTimes.add(
-                TimeDate(
+                com.rahim.yadino.routine.modle.data.TimeDate(
                     i,
                     false,
                     false,
@@ -135,8 +123,8 @@ class DataTimeRepositoryImpl @Inject constructor(
         return emptyTimes
     }
 
-    private fun calculateDaySpaceEndMonth(timeDate: TimeDate): List<TimeDate> {
-        val emptyTimes = ArrayList<TimeDate>()
+    private fun calculateDaySpaceEndMonth(timeDate: com.rahim.yadino.routine.modle.data.TimeDate): List<com.rahim.yadino.routine.modle.data.TimeDate> {
+        val emptyTimes = ArrayList<com.rahim.yadino.routine.modle.data.TimeDate>()
         val downTime = when (timeDate.nameDay) {
             HalfWeekName.SATURDAY.nameDay -> {
                 timeDate.dayNumber.plus(6)
@@ -172,7 +160,7 @@ class DataTimeRepositoryImpl @Inject constructor(
         }
         for (i in timeDate.dayNumber.plus(1)..downTime) {
             emptyTimes.add(
-                TimeDate(
+                com.rahim.yadino.routine.modle.data.TimeDate(
                     i,
                     false,
                     false,
@@ -190,7 +178,7 @@ class DataTimeRepositoryImpl @Inject constructor(
 
     private suspend fun calculateDate() {
         withContext(defaultDispatcher) {
-            val currentDate = TimeDate(
+            val currentDate = com.rahim.yadino.routine.modle.data.TimeDate(
                 persianData.shDay,
                 false,
                 true,
@@ -205,7 +193,7 @@ class DataTimeRepositoryImpl @Inject constructor(
             calculateEmptyTime(yearKabesi)
             launch {
                 val persianData = PersianDate()
-                val dates = ArrayList<TimeDate>()
+                val dates = ArrayList<com.rahim.yadino.routine.modle.data.TimeDate>()
                 for (year in currentDate.yerNumber.minus(2)..END_YEAR) {
                     val isYearKabisy = yearKabesi.find { it == year } != null
                     for (month in 1..12) {
@@ -217,7 +205,7 @@ class DataTimeRepositoryImpl @Inject constructor(
                         } else if (month in 7..11) 30 else 31
                         for (day in 1..dayNumber) {
                             persianData.initJalaliDate(year, month, day)
-                            val date = TimeDate(
+                            val date = com.rahim.yadino.routine.modle.data.TimeDate(
                                 day,
                                 false,
                                 checkDayIsToday(year, month, day),
@@ -236,7 +224,7 @@ class DataTimeRepositoryImpl @Inject constructor(
             }
             launch {
                 val persianData = PersianDate()
-                val dates = ArrayList<TimeDate>()
+                val dates = ArrayList<com.rahim.yadino.routine.modle.data.TimeDate>()
                 for (year in currentDate.yerNumber.minus(3) downTo FIRST_YEAR) {
                     val isYearKabisy = yearKabesi.find { it == year } != null
                     for (month in 1..12) {
@@ -248,7 +236,7 @@ class DataTimeRepositoryImpl @Inject constructor(
                         } else if (month in 7..11) 30 else 31
                         for (day in 1..dayNumber) {
                             persianData.initJalaliDate(year, month, day)
-                            val date = TimeDate(
+                            val date = com.rahim.yadino.routine.modle.data.TimeDate(
                                 day,
                                 false,
                                 checkDayIsToday(year, month, day),
@@ -296,7 +284,7 @@ class DataTimeRepositoryImpl @Inject constructor(
             launch {
                 val persianData = PersianDate()
                 persianData.initJalaliDate(FIRST_YEAR, 1, 1)
-                val dateStart = TimeDate(
+                val dateStart = com.rahim.yadino.routine.modle.data.TimeDate(
                     1,
                     false,
                     checkDayIsToday(FIRST_YEAR, 1, 1),
@@ -313,7 +301,7 @@ class DataTimeRepositoryImpl @Inject constructor(
                 val persianData = PersianDate()
                 val day = if (yearKabesi.find { it == END_YEAR } == null) 29 else 30
                 persianData.initJalaliDate(END_YEAR, 12, day)
-                val dateEnd = TimeDate(
+                val dateEnd = com.rahim.yadino.routine.modle.data.TimeDate(
                     day,
                     false,
                     checkDayIsToday(END_YEAR, 12, day),

@@ -5,7 +5,7 @@ import com.rahim.data.modle.data.TimeDate
 import com.rahim.data.repository.base.BaseRepository
 import com.rahim.data.repository.dataTime.DataTimeRepository
 import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
-import com.rahim.utils.base.viewModel.BaseViewModel
+import com.rahim.yadino.base.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

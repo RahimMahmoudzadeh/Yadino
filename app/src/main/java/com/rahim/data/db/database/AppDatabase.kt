@@ -7,14 +7,14 @@ import androidx.room.RenameTable
 import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
 import com.rahim.data.db.dao.NoteDao
-import com.rahim.data.db.dao.RoutineDao
+import com.rahim.yadino.routine_local.dao.RoutineDao
 import com.rahim.data.db.dao.TimeDao
-import com.rahim.data.modle.Rotin.Routine
-import com.rahim.data.modle.data.TimeDate
-import com.rahim.data.modle.note.NoteModel
+import com.rahim.yadino.routine.modle.Rotin.Routine
+import com.rahim.yadino.routine.modle.data.TimeDate
+import com.rahim.yadino.routine.modle.note.NoteModel
 
 @Database(
-    entities = [Routine::class, TimeDate::class, NoteModel::class],
+    entities = [com.rahim.yadino.routine.modle.Rotin.Routine::class, com.rahim.yadino.routine.modle.data.TimeDate::class, com.rahim.yadino.routine.modle.note.NoteModel::class],
     //2024/08/05
     version = 5,
     exportSchema = true,
@@ -26,7 +26,7 @@ import com.rahim.data.modle.note.NoteModel
     ]
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun routineDao(): RoutineDao
+    abstract fun routineDao(): com.rahim.yadino.routine_local.dao.RoutineDao
     abstract fun timeDataDao(): TimeDao
     abstract fun noteDao(): NoteDao
 

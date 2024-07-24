@@ -1,17 +1,10 @@
 package com.rahim.data.repository.note
 
 import com.rahim.data.db.dao.NoteDao
-import com.rahim.data.db.database.AppDatabase
-import com.rahim.data.modle.Rotin.Routine
-import com.rahim.data.modle.note.NoteModel
-import com.rahim.data.sharedPreferences.SharedPreferencesCustom
-import com.rahim.utils.enums.error.ErrorMessageCode
-import com.rahim.utils.resours.Resource
+import com.rahim.yadino.routine.modle.note.NoteModel
+import com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
 import saman.zamani.persiandate.PersianDate
-import timber.log.Timber
 import javax.inject.Inject
 
 private const val SAMPLE_NOTE_RIGHT = "من یک یادداشت تستی هستم لطفا من را به راست بکشید"
@@ -19,7 +12,7 @@ private const val SAMPLE_NOTE_LEFT = "من یک یادداشت تستی هستم
 
 class NoteRepositoryImpl @Inject constructor(
     private val noteDao: NoteDao,
-    private val sharedPreferencesCustom: SharedPreferencesCustom
+    private val sharedPreferencesCustom: com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
 ) : NoteRepository {
     private val persianData = PersianDate()
     private val currentTimeDay = persianData.shDay
@@ -32,7 +25,7 @@ class NoteRepositoryImpl @Inject constructor(
         }
         (0..1).forEachIndexed { index, it ->
             val note =
-                NoteModel(
+                com.rahim.yadino.routine.modle.note.NoteModel(
                     name = "تست${index.plus(1)}",
                     description = if (index == 1) SAMPLE_NOTE_RIGHT else SAMPLE_NOTE_LEFT,
                     state = 2,
@@ -47,21 +40,21 @@ class NoteRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addNote(noteModel: NoteModel) {
+    override suspend fun addNote(noteModel: com.rahim.yadino.routine.modle.note.NoteModel) {
         noteDao.insertNote(noteModel)
     }
 
-    override suspend fun updateNote(noteModel: NoteModel) {
+    override suspend fun updateNote(noteModel: com.rahim.yadino.routine.modle.note.NoteModel) {
         noteDao.update(noteModel)
     }
 
-    override suspend fun deleteNote(noteModel: NoteModel) {
+    override suspend fun deleteNote(noteModel: com.rahim.yadino.routine.modle.note.NoteModel) {
         noteDao.delete(noteModel)
     }
 
-    override fun getNotes(): Flow<List<NoteModel>> = noteDao.getNotes()
+    override fun getNotes(): Flow<List<com.rahim.yadino.routine.modle.note.NoteModel>> = noteDao.getNotes()
     override fun searchNote(
         name: String
-    ): Flow<List<NoteModel>> = noteDao.searchRoutine(name)
+    ): Flow<List<com.rahim.yadino.routine.modle.note.NoteModel>> = noteDao.searchRoutine(name)
 
 }

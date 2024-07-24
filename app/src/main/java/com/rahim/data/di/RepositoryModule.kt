@@ -2,8 +2,8 @@ package com.rahim.data.di
 
 import com.rahim.data.repository.base.BaseRepository
 import com.rahim.data.repository.base.BaseRepositoryImpl
-import com.rahim.data.repository.routine.RepositoryRoutine
-import com.rahim.data.repository.routine.RoutineRepositoryImpl
+import com.rahim.yadino.routine.RepositoryRoutine
+import com.rahim.yadino.routine_repository.RoutineRepositoryImpl
 import com.rahim.data.repository.dataTime.DataTimeRepository
 import com.rahim.data.repository.dataTime.DataTimeRepositoryImpl
 import com.rahim.data.repository.home.HomeRepository
@@ -22,7 +22,7 @@ import dagger.hilt.components.SingletonComponent
 abstract class RepositoryModule {
 
     @Binds
-    abstract fun provideRepositoryTask(repositoryAddTaskImpl: RoutineRepositoryImpl): RepositoryRoutine
+    abstract fun provideRepositoryTask(repositoryAddTaskImpl: com.rahim.yadino.routine_repository.RoutineRepositoryImpl): com.rahim.yadino.routine.RepositoryRoutine
 
     @Binds
     abstract fun provideRepositoryDataTime(dataTimeRepositoryImpl: DataTimeRepositoryImpl): DataTimeRepository

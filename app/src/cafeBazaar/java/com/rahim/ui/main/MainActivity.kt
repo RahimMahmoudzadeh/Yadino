@@ -47,14 +47,14 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.messaging.FirebaseMessaging
-import com.rahim.ui.dialog.ErrorDialog
+import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.ui.navigation.NavGraph
-import com.rahim.ui.navigation.YadinoNavigationDrawer
+import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.theme.YadinoTheme
-import com.rahim.utils.base.view.TopBarCenterAlign
-import com.rahim.utils.base.view.goSettingPermission
-import com.rahim.utils.base.view.requestPermissionNotification
+import com.rahim.yadino.base.component.TopBarCenterAlign
+import com.rahim.yadino.base.component.goSettingPermission
+import com.rahim.yadino.base.component.requestPermissionNotification
 import com.rahim.yadino.R
 import com.rahim.yadino.navigation.BottomNavItem
 import com.rahim.yadino.navigation.ScreenName
@@ -135,14 +135,14 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                             enter = fadeIn() + expandVertically(animationSpec = tween(800)),
                             exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
                         ) {
-                            TopBarCenterAlign(title = when (destinationNavBackStackEntry) {
+                            com.rahim.yadino.base.component.TopBarCenterAlign(title = when (destinationNavBackStackEntry) {
                                 BottomNavItem.Home.route -> stringResource(
-                                        id = R.string.my_firend
-                                    )
+                                    id = R.string.my_firend
+                                )
 
                                 BottomNavItem.Routine.route -> stringResource(
-                                        id = R.string.list_routine
-                                    )
+                                    id = R.string.list_routine
+                                )
 
                                 ScreenName.HISTORY.nameScreen -> stringResource(id = R.string.historyAlarm)
 
@@ -168,12 +168,16 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                             FloatingActionButton(containerColor = CornflowerBlueLight,
                                 contentColor = Color.White,
                                 onClick = {
-                                    requestPermissionNotification(isGranted = {
-                                        if (it) openDialog = true
-                                        else errorClick = true
-                                    }, permissionState = {
-                                        it.launchPermissionRequest()
-                                    }, notificationPermission = notificationPermissionState)
+                                    com.rahim.yadino.base.component.requestPermissionNotification(
+                                        isGranted = {
+                                            if (it) openDialog = true
+                                            else errorClick = true
+                                        },
+                                        permissionState = {
+                                            it.launchPermissionRequest()
+                                        },
+                                        notificationPermission = notificationPermissionState
+                                    )
                                 }) {
                                 Icon(Icons.Filled.Add, "add item")
                             }
@@ -199,7 +203,7 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                             onOpenDialog = { isOpen ->
                                 openDialog = isOpen
                             })
-                        if (destination == BottomNavItem.Home.route) requestPermissionNotification(
+                        if (destination == BottomNavItem.Home.route) com.rahim.yadino.base.component.requestPermissionNotification(
                             notificationPermission = notificationPermissionState,
                             isGranted = {},
                             permissionState = {
@@ -214,7 +218,7 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
             okMessage = stringResource(id = R.string.setting),
             isClickOk = {
                 if (it) {
-                    goSettingPermission(context)
+                    com.rahim.yadino.base.component.goSettingPermission(context)
                 }
                 errorClick = false
             })

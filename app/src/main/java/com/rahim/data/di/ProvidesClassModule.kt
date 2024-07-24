@@ -2,7 +2,7 @@ package com.rahim.data.di
 
 import android.app.Application
 import com.rahim.data.notification.NotificationManager
-import com.rahim.data.sharedPreferences.SharedPreferencesCustom
+import com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +16,7 @@ class ProvidesClassModule {
         return NotificationManager()
     }
     @Provides
-    fun provideSharedPreferencesCustom(application: Application): SharedPreferencesCustom {
-        return SharedPreferencesCustom(application)
+    fun provideSharedPreferencesCustom(application: Application): com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom {
+        return com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom(application)
     }
 }

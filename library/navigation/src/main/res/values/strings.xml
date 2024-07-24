@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="drawer_item_share_with_ferinds">اشتراک با دوستان</string>
+    <string name="drawer_item_rate_to_app">امتیاز به برنامه</string>
+    <string name="drawer_item_about_us">درباره ما</string>
+    <string name="drawer_item_theme">تم</string>
+    <string name="drawer_item_guide">راهنما</string>
+    <string name="hello_friend">سلام دوست خوبم</string>
+    <string name="welcome">خوشامدگویی</string>
+</resources>

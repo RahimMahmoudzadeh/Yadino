@@ -9,6 +9,4 @@ plugins {
 android {
     namespace = "com.rahim.yadino.core.base"
 }
-dependencies{
-//    implementation(projects.library.designsystem)
-}
+

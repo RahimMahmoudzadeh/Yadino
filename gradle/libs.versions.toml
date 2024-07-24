@@ -97,9 +97,9 @@ androidx-navigation = { group = "androidx.navigation", name = "navigation-compos
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie_compose" }
 
 #room
-androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidx-room" }
-androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
-androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidx-room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
 
 #hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
@@ -167,7 +167,7 @@ room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", vers
 [bundles]
 compose = ["androidx-compose-activity", "androidx-material3-android", "lifecycle-runtime-compose",
     "lifecycle-viewmodel-compose", "androidx-navigation", "lottie-compose"]
-room = ["androidx-room-runtime", "androidx-room-ktx"]
+room = ["room-runtime", "room-ktx"]
 hilt = ["hilt-android", "hilt-navigation-compose"]
 navigation = ["androidx-navigation-fragment", "androidx-navigation-ui"]
 lifecycle = ["androidx-lifecycle-livedata", "androidx-lifecycle-runtime", "androidx-lifecycle-viewmodel"]

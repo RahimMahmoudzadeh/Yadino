@@ -5,17 +5,14 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.rahim.data.broadcast.YadinoBroadCastReceiver
-import com.rahim.data.modle.Rotin.Routine
-import com.rahim.utils.Constants.ALARM_ID
-import com.rahim.utils.Constants.ALARM_MESSAGE
-import com.rahim.utils.Constants.ALARM_NAME
-import com.rahim.utils.Constants.ROUTINE
+import com.rahim.yadino.routine.modle.Rotin.Routine
+import com.rahim.yadino.base.Constants.ROUTINE
 import kotlinx.coroutines.delay
 
 class AlarmManagement {
     suspend fun updateAlarm(
         context: Context,
-        routine: Routine,
+        routine: com.rahim.yadino.routine.modle.Rotin.Routine,
     ) {
         if ((routine.timeInMillisecond ?: 0) < System.currentTimeMillis()) return
 
@@ -42,7 +39,7 @@ class AlarmManagement {
 
     fun setAlarm(
         context: Context,
-        routine: Routine,
+        routine: com.rahim.yadino.routine.modle.Rotin.Routine,
     ) {
         if ((routine.timeInMillisecond ?: 0) < System.currentTimeMillis()) return
         val alarmManager =

@@ -102,9 +102,5 @@
     <string name="errorGetProses">مشکلی در دریافت اطلاعات پیش امده است! لطفا دوباره امتحان کنید</string>
     <string name="historyAlarm">تاریخچه آلارم</string>
     <string name="calender">تقویم</string>
-    <string name="drawer_item_share_with_ferinds">اشتراک با دوستان</string>
-    <string name="drawer_item_rate_to_app">امتیاز به برنامه</string>
-    <string name="drawer_item_about_us">درباره ما</string>
-    <string name="drawer_item_theme">تم</string>
-    <string name="drawer_item_guide">راهنما</string>
+
 </resources>
