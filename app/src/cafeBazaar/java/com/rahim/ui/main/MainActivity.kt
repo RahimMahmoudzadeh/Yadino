@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -28,19 +27,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -74,9 +69,9 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
         getTokenFirebase()
         Timber.tag("packageName").d("packageName: $packageName")
-
         setContent {
             val context = LocalContext.current
             (context as? Activity)?.requestedOrientation =
@@ -110,32 +105,27 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
     val destination = navController.currentBackStackEntry?.destination?.route
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val destinationNavBackStackEntry = navBackStackEntry?.destination?.route
-    var isDarkAppTheme by remember {
-        mutableStateOf(true)
-    }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-        YadinoTheme(darkTheme = isDarkAppTheme) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-            ) {
-
-                YadinoNavigationDrawer(modifier = Modifier.width(240.dp),
-                    drawerState = drawerState,
-                    onDarkThemeCheckedChange = { isDark ->
-                        isDarkAppTheme = isDark
-                    },
-                    isDarkTheme = isDarkAppTheme,
-                    onItemClick = {}) {
-                    Scaffold(topBar = {
+    YadinoTheme {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            YadinoNavigationDrawer(modifier = Modifier.width(240.dp),
+                drawerState = drawerState,
+                onDarkThemeCheckedChange = { isDark ->
+                },
+                onItemClick = {}) {
+                Scaffold(
+                    topBar = {
                         AnimatedVisibility(
                             visible = destinationNavBackStackEntry != Screen.Welcome.route,
                             enter = fadeIn() + expandVertically(animationSpec = tween(800)),
                             exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
                         ) {
+
                             TopBarCenterAlign(
                                 title = when (destinationNavBackStackEntry) {
                                     Screen.Home.route -> stringResource(
@@ -145,6 +135,16 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                                     Screen.Routine.route -> stringResource(
                                         id = R.string.list_routine
                                     )
+
+                            TopBarCenterAlign(title = when (destinationNavBackStackEntry) {
+                                Screen.Home.route -> stringResource(
+                                    id = R.string.my_firend
+                                )
+
+                                Screen.Routine.route -> stringResource(
+                                    id = R.string.list_routine
+                                )
+
 
                                     ScreenName.HISTORY.nameScreen -> stringResource(id = R.string.historyAlarm)
 
@@ -188,38 +188,39 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                             exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
                         ) {
                             BottomNavigationBar(
-                                navController, navBackStackEntry, destinationNavBackStackEntry
+                                navController,
+                                navBackStackEntry,
+                                destinationNavBackStackEntry,
                             )
                         }
                     }, containerColor = MaterialTheme.colorScheme.background
-                    ) { innerPadding ->
-
-                        NavGraph(navController,
-                            innerPadding = innerPadding,
-                            startDestination = if (isShowWelcomeScreen) Screen.Home.route else Screen.Welcome.route,
-                            openDialog = openDialog,
-                            clickSearch = clickSearch,
-                            onOpenDialog = { isOpen ->
-                                openDialog = isOpen
-                            })
-                        if (destination == Screen.Home.route) requestPermissionNotification(
-                            notificationPermission = notificationPermissionState,
-                            isGranted = {},
-                            permissionState = {
-                                it.launchPermissionRequest()
-                            })
-                    }
+                ) { innerPadding ->
+                    NavGraph(navController,
+                        innerPadding = innerPadding,
+                        startDestination = if (isShowWelcomeScreen) Screen.Home.route else Screen.Welcome.route,
+                        openDialog = openDialog,
+                        clickSearch = clickSearch,
+                        onOpenDialog = { isOpen ->
+                            openDialog = isOpen
+                        })
+                    if (destination == Screen.Home.route) requestPermissionNotification(
+                        notificationPermission = notificationPermissionState,
+                        isGranted = {},
+                        permissionState = {
+                            it.launchPermissionRequest()
+                        })
                 }
             }
         }
-        ErrorDialog(isOpen = errorClick,
-            message = stringResource(id = R.string.better_performance_access),
-            okMessage = stringResource(id = R.string.setting),
-            isClickOk = {
-                if (it) {
-                    goSettingPermission(context)
-                }
-                errorClick = false
-            })
     }
+    ErrorDialog(isOpen = errorClick,
+        message = stringResource(id = R.string.better_performance_access),
+        okMessage = stringResource(id = R.string.setting),
+        isClickOk = {
+            if (it) {
+                goSettingPermission(context)
+            }
+            errorClick = false
+        })
+
 }
