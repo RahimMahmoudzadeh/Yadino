@@ -25,5 +25,5 @@ interface RepositoryRoutine {
     suspend fun checkEdAllRoutinePastTime()
 
     suspend fun getAllRoutine(): List<Routine>
-
+      fun haveAlarm():Flow<Boolean>
 }

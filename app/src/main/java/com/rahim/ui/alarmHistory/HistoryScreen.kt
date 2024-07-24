@@ -50,6 +50,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -66,6 +67,9 @@ import kotlinx.coroutines.flow.collectLatest
 fun HistoryRoute(
     historyViewModel: HistoryViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(true) {
+        historyViewModel.getAllRoutine()
+    }
     val routineItems by historyViewModel.flowRoutines
         .collectAsStateWithLifecycle()
 
@@ -93,7 +97,8 @@ private fun HistoryScreen(
         ) {
             item {
                 val text =
-                    if (incompleteTasks.isEmpty()) "آلارم فعالی ندارید !" else "شما ${incompleteTasks.size} آلارم فعال دارید!"
+                    if (incompleteTasks.isEmpty()) stringResource(id = R.string.not_alarm) else
+                        "${stringResource(id = R.string.you)} ${incompleteTasks.size} ${stringResource(id = R.string.have_alarm)}"
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -149,13 +154,13 @@ private fun RoutineCompleted(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = " تکمیل شده",
+                text = stringResource(id = R.string.completed),
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyLarge,
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "( $size ${"روتین )"}",
+                text = "( $size ${stringResource(id = R.string.routine)} )",
                 style = MaterialTheme.typography.bodyMedium,
                 color = CornflowerBlueLight,
                 fontWeight = FontWeight.SemiBold,
