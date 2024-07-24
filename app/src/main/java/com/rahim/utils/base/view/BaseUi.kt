@@ -80,6 +80,8 @@ import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Periwinkle
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
+import com.rahim.ui.theme.font_medium
+import com.rahim.utils.Helper
 import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.extention.errorMessage
 import com.rahim.utils.resours.Resource
@@ -283,7 +285,7 @@ fun TopBarCenterAlign(
                         Icon(
                             imageVector = Icons.Rounded.Notifications,
                             contentDescription = "",
-                            tint =CornflowerBlueLight,
+                            tint = CornflowerBlueLight,
                         )
                     }
 
@@ -423,6 +425,7 @@ fun EmptyMessage(
             .padding(top = 22.dp),
         textAlign = TextAlign.Center,
         fontSize = 18.sp,
+        style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.primary
     )
 }
@@ -456,13 +459,17 @@ fun TimeItems(
                         timeDate.dayNumber
                     )
                 },
-                text = timeDate.dayNumber.toString(),
+                text = Helper.persianLocate(timeDate.dayNumber.toString()),
                 textAlign = TextAlign.Center,
-                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
                 style = TextStyle(
                     brush = Brush.verticalGradient(
                         gradientColors
-                    )
+                    ),
+                    fontFamily = font_medium,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp,
+                    lineHeight = 25.sp
                 )
             )
         }
@@ -484,9 +491,10 @@ fun TimeItems(
                         timeDate.dayNumber
                     )
                 },
-                text = timeDate.dayNumber.toString(),
+                text = Helper.persianLocate(timeDate.dayNumber.toString()),
                 textAlign = TextAlign.Center,
-                fontSize = 16.sp,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.surface,
             )
         }
@@ -501,10 +509,11 @@ fun TimeItems(
                 ), contentAlignment = Alignment.Center
         ) {
             Text(
-                text = timeDate.dayNumber.toString(),
+                text = Helper.persianLocate(timeDate.dayNumber.toString()),
                 textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                color = Color.White
+                color = Color.White,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
             )
         }
     } else {
@@ -525,9 +534,10 @@ fun TimeItems(
                         timeDate.dayNumber
                     )
                 },
-                text = timeDate.dayNumber.toString(),
+                text = Helper.persianLocate(timeDate.dayNumber.toString()),
                 textAlign = TextAlign.Center,
-                fontSize = 16.sp,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.surface
             )
         }
