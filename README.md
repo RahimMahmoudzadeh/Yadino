@@ -17,7 +17,7 @@ Hi! Yadino is a ToDo app the use of Multi-Module Clean MVI Architecture with Jet
 
 **You can download the app from Cafe Bazaar or Myket 🚀**
 
-<a href='https://cafebazaar.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Bazaar' src='https://github.com/RahimMahmoudzadeh/Yadino/blob/master/asset/cafebazzar.png'/></a>
+<a href='https://cafebazaar.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Bazaar' src='https://github.com/RahimMahmoudzadeh/Yadino/blob/multy_module/asset/cafebazzar.png'/></a>
 <a href='https://myket.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Myket' src='https://github.com/RahimMahmoudzadeh/Yadino/blob/master/asset/myket.png'/></a>
 
 ## 🛠 Built With  
