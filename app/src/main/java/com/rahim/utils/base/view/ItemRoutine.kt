@@ -19,6 +19,7 @@ import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Porcelain
+import com.rahim.utils.Helper
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -90,18 +91,23 @@ fun ItemRoutine(
                             checkedColor = MaterialTheme.colorScheme.background,
                         )
                     )
-                    Row(modifier = Modifier.padding(top = 22.dp, start = 12.dp)) {
+                    Row(modifier = Modifier.padding(top = 22.dp, start = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                        ) {
                         Text(
-                            text = routine.timeHours.toString() + " ",
+                            text =Helper.persianLocate(routine.timeHours.toString()),
                             style = MaterialTheme.typography.bodySmall,
                             textDecoration = textUnderLine,
+                            fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.primary
 
                         )
+                        Spacer(modifier = Modifier.width(3.dp))
                         Text(
                             text = stringResource(id = R.string.remmeber),
                             style = MaterialTheme.typography.bodySmall,
                             textDecoration = textUnderLine,
+                            fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.primary
 
                         )
