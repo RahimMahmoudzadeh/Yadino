@@ -80,6 +80,7 @@ import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Periwinkle
 import com.rahim.ui.theme.Purple
 import com.rahim.ui.theme.PurpleGrey
+import com.rahim.utils.Helper
 import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.extention.errorMessage
 import com.rahim.utils.resours.Resource
@@ -456,7 +457,7 @@ fun TimeItems(
                         timeDate.dayNumber
                     )
                 },
-                text = timeDate.dayNumber.toString(),
+                text =Helper.persianLocate(timeDate.dayNumber.toString()) ,
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
                 style = TextStyle(
@@ -484,7 +485,7 @@ fun TimeItems(
                         timeDate.dayNumber
                     )
                 },
-                text = timeDate.dayNumber.toString(),
+                text =Helper.persianLocate(timeDate.dayNumber.toString()) ,
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.surface,
@@ -501,7 +502,7 @@ fun TimeItems(
                 ), contentAlignment = Alignment.Center
         ) {
             Text(
-                text = timeDate.dayNumber.toString(),
+                text =Helper.persianLocate(timeDate.dayNumber.toString()) ,
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
                 color = Color.White
@@ -525,7 +526,7 @@ fun TimeItems(
                         timeDate.dayNumber
                     )
                 },
-                text = timeDate.dayNumber.toString(),
+                text =Helper.persianLocate(timeDate.dayNumber.toString()) ,
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.surface

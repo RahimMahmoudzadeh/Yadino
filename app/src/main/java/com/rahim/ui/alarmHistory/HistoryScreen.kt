@@ -61,6 +61,7 @@ import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.home.HomeViewModel
 import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.Purple
+import com.rahim.utils.Helper
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -98,7 +99,7 @@ private fun HistoryScreen(
             item {
                 val text =
                     if (incompleteTasks.isEmpty()) stringResource(id = R.string.not_alarm) else
-                        "${stringResource(id = R.string.you)} ${incompleteTasks.size} ${stringResource(id = R.string.have_alarm)}"
+                        "${stringResource(id = R.string.you)} ${Helper.persianLocate(incompleteTasks.size.toString())} ${stringResource(id = R.string.have_alarm)}"
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -160,7 +161,7 @@ private fun RoutineCompleted(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "( $size ${stringResource(id = R.string.routine)} )",
+                text = "( ${Helper.persianLocate(size.toString())} ${stringResource(id = R.string.routine)} )",
                 style = MaterialTheme.typography.bodyMedium,
                 color = CornflowerBlueLight,
                 fontWeight = FontWeight.SemiBold,

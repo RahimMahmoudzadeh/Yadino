@@ -112,5 +112,6 @@
     <string name="not_alarm">آلارم فعالی ندارید</string>
     <string name="completed">تکمیل شده</string>
     <string name="you">شما</string>
+    <string name="date">تاریخ</string>
 
 </resources>

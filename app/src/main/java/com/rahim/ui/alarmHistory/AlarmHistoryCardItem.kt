@@ -16,12 +16,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.theme.Porcelain
+import com.rahim.utils.Helper
 import com.rahim.utils.base.view.gradientColors
 
 @Composable
@@ -31,6 +34,7 @@ fun AlarmHistoryCardItem(
 
     val textUnderLine = if (routine.isChecked) TextDecoration.LineThrough else TextDecoration.None
     val textAlpha =if(routine.isChecked) 0.6f else 1f
+    val date =Helper.persianLocate("${routine.yerNumber}/${routine.monthNumber}/${routine.dayNumber}")
     Card(
         elevation = CardDefaults.elevatedCardElevation(4.dp),
         modifier = Modifier
@@ -62,7 +66,7 @@ fun AlarmHistoryCardItem(
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                text = "زمان: ${routine.timeHours}  تاریخ: ${"${routine.yerNumber}/${routine.monthNumber}/${routine.dayNumber}"}",
+                text = "${stringResource(id = R.string.time)}: ${Helper.persianLocate(routine.timeHours.toString())}  ${stringResource(id = R.string.date)}: $date",
                 color = MaterialTheme.colorScheme.secondaryContainer.copy(textAlpha),
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.SemiBold,
