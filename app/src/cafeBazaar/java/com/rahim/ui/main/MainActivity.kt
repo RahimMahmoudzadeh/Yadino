@@ -135,20 +135,12 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                                     Screen.Routine.route -> stringResource(
                                         id = R.string.list_routine
                                     )
-
-                            TopBarCenterAlign(title = when (destinationNavBackStackEntry) {
-                                Screen.Home.route -> stringResource(
-                                    id = R.string.my_firend
-                                )
-
-                                Screen.Routine.route -> stringResource(
-                                    id = R.string.list_routine
-                                )
-
-
-                                    ScreenName.HISTORY.nameScreen -> stringResource(id = R.string.historyAlarm)
-
-                                    else -> stringResource(id = R.string.notes)
+                                    Screen.Note.route -> stringResource(
+                                        id = R.string.notes
+                                    )
+                                    else -> stringResource(
+                                        id = R.string.historyAlarm
+                                    )
                                 },
                                 openHistory = {
                                     navController.navigate(ScreenName.HISTORY.nameScreen)

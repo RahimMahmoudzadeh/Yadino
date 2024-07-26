@@ -107,25 +107,27 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
     val destinationNavBackStackEntry = navBackStackEntry?.destination?.route
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
-        YadinoTheme {
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-            ) {
-                YadinoNavigationDrawer(modifier = Modifier.width(240.dp),
-                    drawerState = drawerState,
-                    onDarkThemeCheckedChange = { isDark ->
-                    },
-                    onItemClick = {}) {
-                    Scaffold(
-                        topBar = {
-                            AnimatedVisibility(
-                                visible = destinationNavBackStackEntry != Screen.Welcome.route,
-                                enter = fadeIn() + expandVertically(animationSpec = tween(800)),
-                                exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
-                            ) {
-                                TopBarCenterAlign(title = when (destinationNavBackStackEntry) {
+    YadinoTheme {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            YadinoNavigationDrawer(modifier = Modifier.width(240.dp),
+                drawerState = drawerState,
+                onDarkThemeCheckedChange = { isDark ->
+                },
+                onItemClick = {}) {
+                Scaffold(
+                    topBar = {
+                        AnimatedVisibility(
+                            visible = destinationNavBackStackEntry != Screen.Welcome.route,
+                            enter = fadeIn() + expandVertically(animationSpec = tween(800)),
+                            exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
+                        ) {
+
+                            TopBarCenterAlign(
+                                title = when (destinationNavBackStackEntry) {
                                     Screen.Home.route -> stringResource(
                                         id = R.string.my_firend
                                     )
@@ -133,81 +135,84 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                                     Screen.Routine.route -> stringResource(
                                         id = R.string.list_routine
                                     )
-
-                                    ScreenName.HISTORY.nameScreen -> stringResource(id = R.string.historyAlarm)
-
-                                    else -> stringResource(id = R.string.notes)
-                            },
-                                    openHistory = {
-                                        navController.navigate(ScreenName.HISTORY.nameScreen)
-                                    },
-                                    isShowSearchIcon = destinationNavBackStackEntry != Screen.Calender.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
-                                    isShowBackIcon = destinationNavBackStackEntry == ScreenName.HISTORY.nameScreen,
-                                    onClickBack = {
-                                        navController.popBackStack()
-                                    },
-                                    onClickSearch = {
-                                        clickSearch = !clickSearch
-                                    },
-                                    onDrawerClick = {
-                                        coroutineScope.launch { drawerState.open() }
-                                    })
+                                    Screen.Note.route -> stringResource(
+                                        id = R.string.notes
+                                    )
+                                    else -> stringResource(
+                                        id = R.string.historyAlarm
+                                    )
+                                },
+                                openHistory = {
+                                    navController.navigate(ScreenName.HISTORY.nameScreen)
+                                },
+                                isShowSearchIcon = destinationNavBackStackEntry != Screen.Calender.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
+                                isShowBackIcon = destinationNavBackStackEntry == ScreenName.HISTORY.nameScreen,
+                                onClickBack = {
+                                    navController.popBackStack()
+                                },
+                                onClickSearch = {
+                                    clickSearch = !clickSearch
+                                },
+                                onDrawerClick = {
+                                    coroutineScope.launch { drawerState.open() }
+                                },
+                            )
+                        }
+                    }, floatingActionButton = {
+                        if (destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen) {
+                            FloatingActionButton(containerColor = CornflowerBlueLight,
+                                contentColor = Color.White,
+                                onClick = {
+                                    requestPermissionNotification(isGranted = {
+                                        if (it) openDialog = true
+                                        else errorClick = true
+                                    }, permissionState = {
+                                        it.launchPermissionRequest()
+                                    }, notificationPermission = notificationPermissionState)
+                                }) {
+                                Icon(Icons.Filled.Add, "add item")
                             }
-                        }, floatingActionButton = {
-                            if (destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen) {
-                                FloatingActionButton(containerColor = CornflowerBlueLight,
-                                    contentColor = Color.White,
-                                    onClick = {
-                                        requestPermissionNotification(isGranted = {
-                                            if (it) openDialog = true
-                                            else errorClick = true
-                                        }, permissionState = {
-                                            it.launchPermissionRequest()
-                                        }, notificationPermission = notificationPermissionState)
-                                    }) {
-                                    Icon(Icons.Filled.Add, "add item")
-                                }
-                            }
-                        }, bottomBar = {
-                            AnimatedVisibility(
-                                visible = destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
-                                enter = fadeIn() + expandVertically(animationSpec = tween(800)),
-                                exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
-                            ) {
-                                BottomNavigationBar(
-                                    navController,
-                                    navBackStackEntry,
-                                    destinationNavBackStackEntry,
-                                )
-                            }
-                        }, containerColor = MaterialTheme.colorScheme.background
-                    ) { innerPadding ->
-                        NavGraph(navController,
-                            innerPadding = innerPadding,
-                            startDestination = if (isShowWelcomeScreen) Screen.Home.route else Screen.Welcome.route,
-                            openDialog = openDialog,
-                            clickSearch = clickSearch,
-                            onOpenDialog = { isOpen ->
-                                openDialog = isOpen
-                            })
-                        if (destination == Screen.Home.route) requestPermissionNotification(
-                            notificationPermission = notificationPermissionState,
-                            isGranted = {},
-                            permissionState = {
-                                it.launchPermissionRequest()
-                            })
-                    }
+                        }
+                    }, bottomBar = {
+                        AnimatedVisibility(
+                            visible = destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
+                            enter = fadeIn() + expandVertically(animationSpec = tween(800)),
+                            exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
+                        ) {
+                            BottomNavigationBar(
+                                navController,
+                                navBackStackEntry,
+                                destinationNavBackStackEntry,
+                            )
+                        }
+                    }, containerColor = MaterialTheme.colorScheme.background
+                ) { innerPadding ->
+                    NavGraph(navController,
+                        innerPadding = innerPadding,
+                        startDestination = if (isShowWelcomeScreen) Screen.Home.route else Screen.Welcome.route,
+                        openDialog = openDialog,
+                        clickSearch = clickSearch,
+                        onOpenDialog = { isOpen ->
+                            openDialog = isOpen
+                        })
+                    if (destination == Screen.Home.route) requestPermissionNotification(
+                        notificationPermission = notificationPermissionState,
+                        isGranted = {},
+                        permissionState = {
+                            it.launchPermissionRequest()
+                        })
                 }
             }
         }
-        ErrorDialog(isOpen = errorClick,
-            message = stringResource(id = R.string.better_performance_access),
-            okMessage = stringResource(id = R.string.setting),
-            isClickOk = {
-                if (it) {
-                    goSettingPermission(context)
-                }
-                errorClick = false
-            })
+    }
+    ErrorDialog(isOpen = errorClick,
+        message = stringResource(id = R.string.better_performance_access),
+        okMessage = stringResource(id = R.string.setting),
+        isClickOk = {
+            if (it) {
+                goSettingPermission(context)
+            }
+            errorClick = false
+        })
 
 }
