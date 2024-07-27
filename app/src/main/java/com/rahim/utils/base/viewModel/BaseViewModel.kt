@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 open class BaseViewModel @Inject constructor(
-    private val sharedPreferencesRepository: SharedPreferencesRepository,
+    val sharedPreferencesRepository: SharedPreferencesRepository,
     private val baseRepository: BaseRepository
 ) :
     ViewModel() {

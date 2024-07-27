@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -55,7 +56,6 @@ import kotlinx.coroutines.launch
 
 sealed interface DrawerItemType {
     val title: Int
-
     val iconRes: Int
 
     data class AboutUs(
@@ -82,9 +82,9 @@ sealed interface DrawerItemType {
 val yadinoDrawerItems = listOf(
     ShareWithFriends(R.string.drawer_item_share_with_ferinds, R.drawable.share),
     RateToApp(R.string.drawer_item_rate_to_app, R.drawable.star),
-    AboutUs(R.string.drawer_item_about_us, R.drawable.info_square),
+//    AboutUs(R.string.drawer_item_about_us, R.drawable.info_square),
     Theme(R.string.drawer_item_theme, R.drawable.color_lens),
-    Guide(R.string.drawer_item_guide, R.drawable.guide)
+//    Guide(R.string.drawer_item_guide, R.drawable.guide)
 )
 
 @Composable
@@ -96,7 +96,6 @@ fun YadinoNavigationDrawer(
     headerHeight: Dp = 150.dp,
     onItemClick: (DrawerItemType) -> Unit = {},
     isDarkTheme: Boolean = false,
-    onDarkThemeCheckedChange: (isDark: Boolean) -> Unit,
     content: @Composable () -> Unit
 ) {
     val headerGradientColors = remember(isDarkTheme) {
@@ -134,7 +133,6 @@ fun YadinoNavigationDrawer(
                     }
                     .statusBarsPadding(),
                     greetingTitle = R.string.hello_friend,
-                    greetingSubtitle = R.string.welcome,
                     iconRes = R.mipmap.ic_launcher_foreground)
                 Spacer(Modifier.height(12.dp))
                 LazyColumn {
@@ -148,7 +146,9 @@ fun YadinoNavigationDrawer(
                             rightSlot = if (drawerItem is Theme) {
                                 {
                                     ThemeSwitch(
-                                        isDark = isDarkTheme, onChange = onDarkThemeCheckedChange
+                                        isDark = isDarkTheme, onChange = {
+                                            onItemClick(drawerItem)
+                                        }
                                     )
                                 }
                             } else null)
@@ -187,7 +187,6 @@ private fun ThemeSwitch(
 private fun YadinoDrawerHeader(
     modifier: Modifier = Modifier,
     @StringRes greetingTitle: Int,
-    @StringRes greetingSubtitle: Int,
     @DrawableRes iconRes: Int,
 ) {
     Box(modifier = modifier) {
@@ -200,23 +199,17 @@ private fun YadinoDrawerHeader(
                     72.dp
                 )
         )
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier.align(Alignment.Center).padding(top = 16.dp),
         ) {
             Text(
                 text = stringResource(id = greetingTitle),
                 style = MaterialTheme.typography.labelSmall,
                 color = Color.White
             )
-            Text(
-                text = stringResource(id = greetingSubtitle),
-                modifier = Modifier.padding(vertical = 8.dp),
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.White
-            )
         }
-
     }
 }
 
@@ -253,9 +246,8 @@ private fun YadinoDrawerItem(
 @Composable
 private fun YadinoNavDrawerPreview() {
     YadinoTheme {
-        YadinoNavigationDrawer(drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
-            onDarkThemeCheckedChange = {
-
-            }) {}
+        YadinoNavigationDrawer(
+            drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
+        ) {}
     }
 }

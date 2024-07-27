@@ -2,8 +2,13 @@ package com.rahim.ui.main
 
 import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -15,6 +20,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -29,6 +35,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -37,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -46,10 +54,16 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.R
 import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.navigation.BottomNavigationBar
+import com.rahim.ui.navigation.DrawerItemType
 import com.rahim.ui.navigation.NavGraph
 import com.rahim.ui.navigation.YadinoNavigationDrawer
 import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.YadinoTheme
+import com.rahim.utils.Constants.CAFE_BAZAAR_PACKAGE_NAME
+import com.rahim.utils.Constants.DARK
+import com.rahim.utils.Constants.LIGHT
+import com.rahim.utils.Constants.MY_KET_LINK
+import com.rahim.utils.Constants.MY_KET_PACKAGE_NAME
 import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.base.view.goSettingPermission
 import com.rahim.utils.base.view.requestPermissionNotification
@@ -57,7 +71,6 @@ import com.rahim.utils.navigation.Screen
 import com.rahim.utils.navigation.ScreenName
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -70,13 +83,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+
         getTokenFirebase()
-        Timber.tag("packageName").d("packageName: $packageName")
         setContent {
             val context = LocalContext.current
             (context as? Activity)?.requestedOrientation =
                 ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-            YadinoApp(mainViewModel.isShowWelcomeScreen())
+            YadinoApp(
+                isShowWelcomeScreen = mainViewModel.isShowWelcomeScreen(),
+                isDarkTheme = if (mainViewModel.isDarkTheme() == DARK) true else if (mainViewModel.isDarkTheme() == LIGHT) false else isSystemInDarkTheme(),
+                changeTheme = {
+                    if (it) {
+                        mainViewModel.setDarkTheme(DARK)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            this@MainActivity.splashScreen.setSplashScreenTheme(R.style.Theme_dark)
+                        }
+                    } else {
+                        mainViewModel.setDarkTheme(LIGHT)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            this@MainActivity.splashScreen.setSplashScreenTheme(R.style.Theme_Light)
+                        }
+                    }
+                })
         }
     }
 
@@ -93,7 +121,11 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun YadinoApp(isShowWelcomeScreen: Boolean) {
+fun YadinoApp(
+    isShowWelcomeScreen: Boolean,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    changeTheme: (Boolean) -> Unit
+) {
     val context = LocalContext.current
     val notificationPermissionState =
         rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
@@ -107,7 +139,10 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
     val destinationNavBackStackEntry = navBackStackEntry?.destination?.route
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
-    YadinoTheme {
+    var darkThemeState by remember {
+        mutableStateOf(isDarkTheme)
+    }
+    YadinoTheme(darkTheme = darkThemeState) {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
@@ -115,9 +150,50 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
         ) {
             YadinoNavigationDrawer(modifier = Modifier.width(240.dp),
                 drawerState = drawerState,
-                onDarkThemeCheckedChange = { isDark ->
-                },
-                onItemClick = {}) {
+                isDarkTheme = darkThemeState,
+                onItemClick = { drawerItemType ->
+                    when (drawerItemType) {
+                        is DrawerItemType.ShareWithFriends -> {
+                            val shareLink = MY_KET_LINK
+                            val sendIntent: Intent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, shareLink)
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            startActivity(context, shareIntent, null)
+                        }
+
+                        is DrawerItemType.RateToApp -> {
+                            if (!isPackageInstalled(
+                                    MY_KET_PACKAGE_NAME,
+                                    context.packageManager
+                                )
+                            ) {
+                                Toast.makeText(
+                                    context,
+                                    context.resources.getString(R.string.install_myket),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return@YadinoNavigationDrawer
+                            }
+                            val url = "myket://comment?id=${context.packageName}"
+                            val intent = Intent()
+                            intent.setAction(Intent.ACTION_VIEW)
+                            intent.setData(Uri.parse(url))
+                            startActivity(context, intent, null)
+
+                        }
+
+                        is DrawerItemType.Theme -> {
+                            darkThemeState = !darkThemeState
+                            changeTheme(darkThemeState)
+                        }
+
+                        else -> {}
+                    }
+
+                }) {
                 Scaffold(
                     topBar = {
                         AnimatedVisibility(
@@ -135,9 +211,11 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                                     Screen.Routine.route -> stringResource(
                                         id = R.string.list_routine
                                     )
+
                                     Screen.Note.route -> stringResource(
                                         id = R.string.notes
                                     )
+
                                     else -> stringResource(
                                         id = R.string.historyAlarm
                                     )
@@ -215,4 +293,13 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
             errorClick = false
         })
 
+}
+
+private fun isPackageInstalled(packageName: String, packageManager: PackageManager): Boolean {
+    try {
+        packageManager.getPackageInfo(packageName, 0)
+        return true
+    } catch (e: PackageManager.NameNotFoundException) {
+        return false
+    }
 }

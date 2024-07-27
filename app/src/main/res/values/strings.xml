@@ -112,4 +112,6 @@
     <string name="completed">تکمیل شده</string>
     <string name="you">شما</string>
     <string name="date">تاریخ</string>
+    <string name="install_cafeBazaar">لطفا اپلیکیشن کافه بازار را نصب کنید!!!</string>
+    <string name="install_myket">لطفا اپلیکیشن مایکت رو نصب کنید!!!</string>
 </resources>

@@ -2,6 +2,8 @@ package com.rahim.data.sharedPreferences
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import androidx.compose.foundation.isSystemInDarkTheme
+import com.rahim.utils.Constants.IS_DARK_THEME
 import com.rahim.utils.Constants.IS_FORCE
 import com.rahim.utils.Constants.NAME_SHARED_PREFERENCE
 import com.rahim.utils.Constants.SAMPLE_NOTE
@@ -36,5 +38,11 @@ class SharedPreferencesCustom @Inject constructor(private val context: Context) 
     }
 
     fun isSampleNote() = sharedPreferences.getBoolean(SAMPLE_NOTE, false)
+
+    fun setDarkTheme(isDarkTheme: String) {
+        edit.putString(IS_DARK_THEME, isDarkTheme)
+        edit.apply()
+    }
+    fun isDarkTheme() = sharedPreferences.getString(IS_DARK_THEME,null)
 
 }

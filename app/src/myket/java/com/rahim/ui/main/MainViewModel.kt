@@ -48,4 +48,10 @@ class MainViewModel @Inject constructor(
             repositoryRoutine.checkEdAllRoutinePastTime()
         }
     }
+
+    fun setDarkTheme(isDarkTheme: String) {
+        sharedPreferencesRepository.changeTheme(isDarkTheme)
+    }
+
+    fun isDarkTheme() = sharedPreferencesRepository.isDarkTheme()
 }
