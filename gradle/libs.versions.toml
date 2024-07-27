@@ -36,8 +36,8 @@ project-target-sdk-version = "34"
 project-min-sdk-version = "26"
 
 #project version
-version-code = "125"
-version-name = "1.4.0"
+version-code = "126"
+version-name = "1.5.0"
 
 #gradle static
 project-application-id = "com.rahim"
