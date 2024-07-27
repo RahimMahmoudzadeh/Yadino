@@ -41,7 +41,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.rahim.yadino.navigation.component.DrawerItemType.AboutUs
@@ -133,7 +132,7 @@ fun YadinoNavigationDrawer(
                     }
                     .statusBarsPadding(),
                     greetingTitle = R.string.hello_friend,
-                    iconRes = R.mipmap.ic_launcher_foreground)
+                    iconRes = R.drawable.share)
                 Spacer(Modifier.height(12.dp))
                 LazyColumn {
                     items(yadinoDrawerItems) { drawerItem ->
@@ -242,7 +241,6 @@ private fun YadinoDrawerItem(
 }
 
 
-@Preview
 @Composable
 private fun YadinoNavDrawerPreview() {
     YadinoTheme {

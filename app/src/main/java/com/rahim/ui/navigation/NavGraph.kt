@@ -26,7 +26,7 @@ fun NavGraph(
     onOpenDialog: (isOpen: Boolean) -> Unit,
 ) {
     NavHost(navController, startDestination = startDestination, Modifier.padding(innerPadding)) {
-        composable(Screen.Welcome.route) {
+        composable(Na.Welcome.route) {
             com.rahim.yadino.welcome.WelcomeScreens(navController)
         }
         composable(Screen.Home.route) {
