@@ -7,5 +7,5 @@ plugins {
 }
 
 android {
-    namespace = "com.rahim.yadino.routine_local"
+    namespace = "com.rahim.yadino.dateTime_local"
 }

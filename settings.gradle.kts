@@ -32,4 +32,7 @@ include(
     ":domain:routine",
     ":domain:sharedPreferences",
     ":data:sharedPreferences",
+    ":domain:dateTime",
+    ":data:dateTime-local",
+    ":data:dateTime-repository",
 )
