@@ -13,6 +13,7 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/RahimMahmoudzadeh/Yadino)
 ![GitHub forks](https://img.shields.io/github/forks/RahimMahmoudzadeh/Yadino)
 
+## 📜 Description
 Hi! Yadino is a ToDo app the use of MVVM Architecture Pattern with Jetpack Compose by following Material-3 guidelines along with other MAD libraries such as Dagger-Hilt, Room Database, Coroutines, Navigation etc. for building Android Apps
 
 **You can download the app from Cafe Bazaar or Myket 🚀**
@@ -31,6 +32,12 @@ Hi! Yadino is a ToDo app the use of MVVM Architecture Pattern with Jetpack Compo
 | :thread: Asynchronous Work     | [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html)|  
 <br>
 
+## 🚀 Features
+- **➕ Add, View, Update & Delete Routine and Note**
+- **🔔 Notifications:** Receive notifications at the time you set for the routine
+- **🌗 Dark/Light Mode:** Toggle between dark and light themes
+- **🎨 Dynamic Color:** Enable or disable dynamic color settings
+- 
 ## :iphone: Screenshots (Dark and Light Theme)
 <table style="width:100%">
   <tr>
@@ -55,6 +62,9 @@ Hi! Yadino is a ToDo app the use of MVVM Architecture Pattern with Jetpack Compo
   </tr>
 </table>
 <br>
+
+## 🤝 Contribution
+Feel free to fork the repository and submit pull requests. If you encounter any issues or have suggestions, you can open an issue.
 
 ## License
 
