@@ -25,7 +25,7 @@ class NoteViewModel @Inject constructor(
     baseRepository: BaseRepository,
     private val noteRepository: NoteRepository,
     private val timeRepository: DataTimeRepository,
-    private val sharedPreferencesRepository: SharedPreferencesRepository,
+    sharedPreferencesRepository: SharedPreferencesRepository,
 ) :
     BaseViewModel(sharedPreferencesRepository, baseRepository) {
 

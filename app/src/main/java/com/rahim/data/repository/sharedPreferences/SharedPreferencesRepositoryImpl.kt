@@ -17,4 +17,10 @@ class SharedPreferencesRepositoryImpl @Inject constructor(private val sharedPref
     override fun isShowSampleNote(isShow: Boolean) {
         sharedPreferencesCustom.showSampleNote(isShow)
     }
+
+    override fun changeTheme(isDarkTheme: String) {
+        sharedPreferencesCustom.setDarkTheme(isDarkTheme)
+    }
+
+    override fun isDarkTheme(): String? = sharedPreferencesCustom.isDarkTheme()
 }

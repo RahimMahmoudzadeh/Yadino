@@ -23,6 +23,7 @@ import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.dialog.DialogAddRoutine
 import com.rahim.ui.dialog.ErrorDialog
 import com.rahim.ui.theme.YadinoTheme
+import com.rahim.utils.Helper
 import com.rahim.utils.base.view.EmptyMessage
 import com.rahim.utils.base.view.ItemRoutine
 import com.rahim.utils.base.view.ProcessRoutineAdded
@@ -199,7 +200,7 @@ private fun HomeScreen(
         currentNumberDay = currentDay,
         currentNumberMonth = currentMonth,
         currentNumberYear = currentYer,
-        times = null, monthChange = { year: Int, month: Int ->  }
+        times = null, monthChange = { year: Int, month: Int -> }
     )
     ProcessRoutineAdded(addRoutine, context) {
         it?.let {
@@ -230,6 +231,7 @@ fun ItemsHome(
     updateRoutine: (Routine) -> Unit,
     deleteRoutine: (Routine) -> Unit
 ) {
+    val data ="$currentDay/$currentMonth/$currentYer"
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -237,7 +239,8 @@ fun ItemsHome(
             .fillMaxWidth()
     ) {
         Text(
-            text = "$currentDay/$currentMonth/$currentYer", fontSize = 18.sp,
+            text = Helper.persianLocate(data),
+            style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.primary
         )
         Text(

@@ -11,13 +11,13 @@ import com.rahim.R
 // Set of Material typography styles to start with
 
 val font_medium = FontFamily(
-    Font(R.font.iranyekanmedium)
+    Font(R.font.vazirmatnmedium)
 )
 val font_bold = FontFamily(
-    Font(R.font.iranyekanbold)
+    Font(R.font.vazirmatnbold)
 )
 val font_standard = FontFamily(
-    Font(R.font.iranyekan)
+    Font(R.font.vazirmatnlight)
 )
 
 
@@ -30,7 +30,7 @@ val Typography = Typography(
         lineHeight = 25.sp
     ),
     bodyMedium =TextStyle(
-        fontFamily = font_standard,
+        fontFamily = font_medium,
         fontWeight = FontWeight.Light,
         fontSize = 14.sp,
         lineHeight = 25.sp

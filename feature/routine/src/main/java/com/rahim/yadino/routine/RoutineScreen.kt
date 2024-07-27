@@ -54,6 +54,9 @@ import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import com.rahim.R
+import com.rahim.ui.theme.font_bold
+import com.rahim.ui.theme.font_medium
+import com.rahim.utils.Helper
 import com.rahim.utils.base.view.EmptyMessage
 
 @Composable
@@ -422,7 +425,7 @@ private fun ItemTimeDate(
             modifier = Modifier
                 .padding(top = 12.dp)
                 .fillMaxWidth(0.3f),
-            text = "$yerChecked ${monthChecked.calculateMonthName()}",
+            text = "${Helper.persianLocate(yerChecked.toString())} ${monthChecked.calculateMonthName()}",
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center
         )
@@ -630,11 +633,12 @@ private fun DayItems(
                     timeDate.monthNumber
                 )
         },
-        text = AnnotatedString(if (timeDate.dayNumber > 0) timeDate.dayNumber.toString() else ""),
+        text = AnnotatedString(if (timeDate.dayNumber > 0)Helper.persianLocate(timeDate.dayNumber.toString()) else ""),
         style = TextStyle(
             fontSize = if (screenWidth <= 420) 16.sp else 18.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
+            fontFamily = font_medium,
             color = if (dayChecked == timeDate.dayNumber && dayMonthChecked == timeDate.monthNumber && dayYerChecked == timeDate.yerNumber) (Color.White) else MaterialTheme.colorScheme.primary
         )
     )

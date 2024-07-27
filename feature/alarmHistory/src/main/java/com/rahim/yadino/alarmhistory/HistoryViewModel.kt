@@ -18,12 +18,10 @@ class HistoryViewModel @Inject constructor(
 ) : ViewModel() {
     private var _flowRoutines = MutableStateFlow<Resource<List<Routine>>>(Resource.Loading())
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
+    val haveAlarm :Flow<Boolean> = routineRepository.haveAlarm()
 
-    init {
-        getAllRoutine()
-    }
 
-    private fun getAllRoutine() {
+    fun getAllRoutine() {
         viewModelScope.launch {
             runCatching {
                 routineRepository.getAllRoutine()
@@ -34,5 +32,6 @@ class HistoryViewModel @Inject constructor(
             }
         }
     }
+
 
 }

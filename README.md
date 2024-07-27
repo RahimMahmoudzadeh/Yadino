@@ -13,15 +13,15 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/RahimMahmoudzadeh/Yadino)
 ![GitHub forks](https://img.shields.io/github/forks/RahimMahmoudzadeh/Yadino)
 
-Hi! Yadino is a ToDo app the use of MVVM Architecture Pattern with Jetpack Compose by following Material-3 guidelines along with other MAD libraries such as Dagger-Hilt, Room Database, Coroutines, Navigation etc. for building Android Apps
+Hi! Yadino is a ToDo app the use of Multi-Module Clean MVI Architecture with Jetpack Compose by following Material-3 guidelines along with other MAD libraries such as Dagger-Hilt, Room Database, Coroutines, Navigation etc. for building Android Apps
 
 **You can download the app from Cafe Bazaar or Myket 🚀**
 
-<a href='https://cafebazaar.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Bazaar' src='https://github.com/RahimMahmoudzadeh/Yadino/blob/master/asset/cafebazzar.png'/></a>
-<a href='https://myket.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Myket' src='https://github.com/RahimMahmoudzadeh/Yadino/blob/master/asset/myket.png'/></a>
+<a href='https://cafebazaar.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Bazaar' src='https://github.com/RahimMahmoudzadeh/Yadino/blob/multi_module/asset/cafebazzar.png'/></a>
+<a href='https://myket.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Myket' src='https://github.com/RahimMahmoudzadeh/Yadino/blob/mvvm/asset/myket.png'/></a>
 
 ## 🛠 Built With  
-|  Architecture   |MVVM Architecture Pattern |  
+|  Architecture   |Multi-Module Clean MVI Architecture|  
 |----------------   |------------------------------    |  
 | <img height="20" src="https://3.bp.blogspot.com/-VVp3WvJvl84/X0Vu6EjYqDI/AAAAAAAAPjU/ZOMKiUlgfg8ok8DY8Hc-ocOvGdB0z86AgCLcBGAsYHQ/s1600/jetpack%2Bcompose%2Bicon_RGB.png">    UI Framework  | [Jetpack Compose](https://www.jetbrains.com/lp/compose-multiplatform/)         |                        |  
 | 💉 DI                | [Dagger-Hilt](https://developer.android.com/training/dependency-injection/hilt-android)                        |             |  

@@ -34,4 +34,10 @@ class SharedPreferencesCustom @Inject constructor(private val context: Context) 
 
     fun isSampleNote() = sharedPreferences.getBoolean(SAMPLE_NOTE, false)
 
+    fun setDarkTheme(isDarkTheme: String) {
+        edit.putString(IS_DARK_THEME, isDarkTheme)
+        edit.apply()
+    }
+    fun isDarkTheme() = sharedPreferences.getString(IS_DARK_THEME,null)
+
 }

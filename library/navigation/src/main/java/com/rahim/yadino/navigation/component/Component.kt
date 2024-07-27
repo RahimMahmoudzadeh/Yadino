@@ -33,15 +33,12 @@ fun BottomNavigationBar(
 
     //change to material3
     NavigationBar(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(70.dp),
         containerColor = MaterialTheme.colorScheme.onBackground,
     ) {
         screenItems.forEach { screen ->
             NavigationBarItem(
                 colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = CornflowerBlueLight.copy(0.2f)
+                    indicatorColor = Color.Transparent
                 ),
                 onClick = {
                     if (screen.route != BottomNavItem.Empty.route)

@@ -2,12 +2,19 @@ package com.rahim.ui.main
 
 import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract.Directory.PACKAGE_NAME
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -15,6 +22,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -27,7 +35,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,10 +44,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -73,14 +79,29 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        getTokenFirebase()
-        Timber.tag("packageName").d("packageName: $packageName")
 
+
+        getTokenFirebase()
         setContent {
             val context = LocalContext.current
             (context as? Activity)?.requestedOrientation =
                 ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-            YadinoApp(mainViewModel.isShowWelcomeScreen())
+            YadinoApp(
+                isShowWelcomeScreen = mainViewModel.isShowWelcomeScreen(),
+                isDarkTheme = if (mainViewModel.isDarkTheme() == DARK) true else if (mainViewModel.isDarkTheme() == LIGHT) false else isSystemInDarkTheme(),
+                changeTheme = {
+                    if (it) {
+                        mainViewModel.setDarkTheme(DARK)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            this@MainActivity.splashScreen.setSplashScreenTheme(R.style.Theme_dark)
+                        }
+                    } else {
+                        mainViewModel.setDarkTheme(LIGHT)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            this@MainActivity.splashScreen.setSplashScreenTheme(R.style.Theme_Light)
+                        }
+                    }
+                })
         }
     }
 
@@ -97,7 +118,11 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun YadinoApp(isShowWelcomeScreen: Boolean) {
+fun YadinoApp(
+    isShowWelcomeScreen: Boolean,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    changeTheme: (Boolean) -> Unit
+) {
     val context = LocalContext.current
     val notificationPermissionState =
         rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
@@ -109,27 +134,65 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
     val destination = navController.currentBackStackEntry?.destination?.route
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val destinationNavBackStackEntry = navBackStackEntry?.destination?.route
-    var isDarkAppTheme by remember {
-        mutableStateOf(true)
-    }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-        YadinoTheme(darkTheme = isDarkAppTheme) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-            ) {
+    var darkThemeState by remember {
+        mutableStateOf(isDarkTheme)
+    }
+    YadinoTheme(darkTheme = darkThemeState) {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            YadinoNavigationDrawer(modifier = Modifier.width(240.dp),
+                drawerState = drawerState,
+                isDarkTheme = darkThemeState,
+                onItemClick = { drawerItemType ->
+                    when (drawerItemType) {
+                        is DrawerItemType.ShareWithFriends -> {
+                            val shareLink = CAFE_BAZZAR_LINK
+                            val sendIntent: Intent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, shareLink)
+                                type = "text/plain"
+                            }
 
-                YadinoNavigationDrawer(modifier = Modifier.width(240.dp),
-                    drawerState = drawerState,
-                    onDarkThemeCheckedChange = { isDark ->
-                        isDarkAppTheme = isDark
-                    },
-                    isDarkTheme = isDarkAppTheme,
-                    onItemClick = {}) {
-                    Scaffold(topBar = {
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            startActivity(context, shareIntent, null)
+                        }
+
+                        is DrawerItemType.RateToApp -> {
+                            if (!isPackageInstalled(
+                                    CAFE_BAZAAR_PACKAGE_NAME,
+                                    context.packageManager
+                                )
+                            ) {
+                                Toast.makeText(
+                                    context,
+                                    context.resources.getString(R.string.install_cafeBazaar),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return@YadinoNavigationDrawer
+                            }
+                            val intent = Intent(Intent.ACTION_EDIT)
+                            intent.setData(Uri.parse("bazaar://details?id=${context.packageName}"))
+                            intent.setPackage(CAFE_BAZAAR_PACKAGE_NAME)
+                            startActivity(context, intent, null)
+
+                        }
+
+                        is DrawerItemType.Theme -> {
+                            darkThemeState = !darkThemeState
+                            changeTheme(darkThemeState)
+                        }
+
+                        else -> {}
+                    }
+
+                }) {
+                Scaffold(
+                    topBar = {
                         AnimatedVisibility(
                             visible = destinationNavBackStackEntry != BottomNavItem.Welcome.route,
                             enter = fadeIn() + expandVertically(animationSpec = tween(800)),
@@ -161,7 +224,8 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                                 },
                                 onDrawerClick = {
                                     coroutineScope.launch { drawerState.open() }
-                                })
+                                },
+                            )
                         }
                     }, floatingActionButton = {
                         if (destinationNavBackStackEntry != BottomNavItem.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen) {
@@ -189,38 +253,48 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                             exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
                         ) {
                             BottomNavigationBar(
-                                navController, navBackStackEntry, destinationNavBackStackEntry
+                                navController,
+                                navBackStackEntry,
+                                destinationNavBackStackEntry,
                             )
                         }
                     }, containerColor = MaterialTheme.colorScheme.background
-                    ) { innerPadding ->
-
-                        NavGraph(navController,
-                            innerPadding = innerPadding,
-                            startDestination = if (isShowWelcomeScreen) BottomNavItem.Home.route else BottomNavItem.Welcome.route,
-                            openDialog = openDialog,
-                            clickSearch = clickSearch,
-                            onOpenDialog = { isOpen ->
-                                openDialog = isOpen
-                            })
-                        if (destination == BottomNavItem.Home.route) com.rahim.yadino.base.component.requestPermissionNotification(
-                            notificationPermission = notificationPermissionState,
-                            isGranted = {},
-                            permissionState = {
-                                it.launchPermissionRequest()
-                            })
-                    }
+                ) { innerPadding ->
+                    NavGraph(navController,
+                        innerPadding = innerPadding,
+                        startDestination = if (isShowWelcomeScreen) Screen.Home.route else Screen.Welcome.route,
+                        openDialog = openDialog,
+                        clickSearch = clickSearch,
+                        onOpenDialog = { isOpen ->
+                            openDialog = isOpen
+                        })
+                    if (destination == Screen.Home.route) requestPermissionNotification(
+                        notificationPermission = notificationPermissionState,
+                        isGranted = {},
+                        permissionState = {
+                            it.launchPermissionRequest()
+                        })
                 }
             }
         }
-        ErrorDialog(isOpen = errorClick,
-            message = stringResource(id = R.string.better_performance_access),
-            okMessage = stringResource(id = R.string.setting),
-            isClickOk = {
-                if (it) {
-                    com.rahim.yadino.base.component.goSettingPermission(context)
-                }
-                errorClick = false
-            })
+    }
+    ErrorDialog(isOpen = errorClick,
+        message = stringResource(id = R.string.better_performance_access),
+        okMessage = stringResource(id = R.string.setting),
+        isClickOk = {
+            if (it) {
+                goSettingPermission(context)
+            }
+            errorClick = false
+        })
+
+}
+
+private fun isPackageInstalled(packageName: String, packageManager: PackageManager): Boolean {
+    try {
+        packageManager.getPackageInfo(packageName, 0)
+        return true
+    } catch (e: PackageManager.NameNotFoundException) {
+        return false
     }
 }

@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CalenderViewModel @Inject constructor(
     private val dateTimeRepository: DataTimeRepository,
-    private val sharedPreferencesRepository: SharedPreferencesRepository,
+    sharedPreferencesRepository: SharedPreferencesRepository,
     private val baseRepository: BaseRepository
 ) : BaseViewModel(sharedPreferencesRepository, baseRepository) {
     private val _times =

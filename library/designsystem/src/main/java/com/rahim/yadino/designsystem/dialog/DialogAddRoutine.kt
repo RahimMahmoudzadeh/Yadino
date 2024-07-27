@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -31,6 +32,7 @@ import com.rahim.R
 import com.rahim.data.modle.Rotin.Routine
 import com.rahim.data.modle.data.TimeDate
 import com.rahim.ui.theme.*
+import com.rahim.utils.Helper
 import com.rahim.utils.base.view.DialogButtonBackground
 import com.rahim.utils.base.view.gradientColors
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
@@ -259,7 +261,9 @@ fun DialogAddRoutine(
                                 end = if (isShowDay) 15.dp else 0.dp
                             )
                     ) {
-                        Row {
+                        Row (
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
                             Text(
                                 modifier = Modifier.padding(top = 14.dp),
                                 text = stringResource(id = R.string.set_alarms),
@@ -268,8 +272,9 @@ fun DialogAddRoutine(
                             )
                             Text(
                                 modifier = Modifier.padding(top = 14.dp, start = 4.dp),
-                                text = time,
+                                text = Helper.persianLocate(time),
                                 color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.SemiBold,
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }

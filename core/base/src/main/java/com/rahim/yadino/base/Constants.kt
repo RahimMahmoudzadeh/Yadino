@@ -19,11 +19,13 @@ object Constants {
     const val VERSION_TIME_DB = 1L
     const val UPDATE = "update"
     const val CAFE_BAZAAR = "cafeBazaar"
-    const val CAFE_BAZAAR_INSTALL_LINK="https://cafebazaar.ir/install"
-    const val YADINO_MYKET_INSTALL="myket://download/"
-    const val MYKET_Download="https://myket.ir"
+    const val CAFE_BAZZAR_LINK="https://cafebazaar.ir/app/com.rahim.yadino"
+    const val MY_KET_LINK="https://myket.ir/app/com.rahim.yadino"
     const val CAFE_BAZAAR_PACKAGE_NAME="com.farsitel.bazaar"
-    const val YADINO_PACKAGE_NAME="com.rahim.yadino"
+    const val MY_KET_PACKAGE_NAME="ir.mservices.mybook"
+    const val IS_DARK_THEME="is dark theme"
+    const val DARK="dark theme"
+    const val LIGHT="light theme"
 
     //Key
     const val ALARM_MESSAGE = "alarm Message"

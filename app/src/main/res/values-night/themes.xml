@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.Yadino" parent="android:Theme.Material.NoActionBar">
+    <style name="Theme.Yadino.Dark" parent="android:Theme.Material.NoActionBar">
         <item name="textColor">@color/withe</item>
     </style>
+
 </resources>

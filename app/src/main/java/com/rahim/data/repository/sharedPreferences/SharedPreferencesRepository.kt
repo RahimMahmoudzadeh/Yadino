@@ -7,4 +7,6 @@ interface SharedPreferencesRepository {
 
     fun isShowSampleRoutine(isShow: Boolean)
     fun isShowSampleNote(isShow: Boolean)
+    fun changeTheme(isDarkTheme: String)
+    fun isDarkTheme(): String?
 }

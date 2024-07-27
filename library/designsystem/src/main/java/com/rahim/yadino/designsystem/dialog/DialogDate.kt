@@ -59,7 +59,7 @@ fun DialogChoseDate(
     yearNumber: Int,
     monthNumber: Int,
     dayNumber: Int,
-    closeDialog: () -> Unit ={},
+    closeDialog: () -> Unit = {},
     dayCheckedNumber: (yer: Int, month: Int, day: Int) -> Unit,
     monthChange: (year: Int, month: Int) -> Unit,
 ) {
@@ -67,7 +67,7 @@ fun DialogChoseDate(
     var dayClicked by rememberSaveable { mutableIntStateOf(dayNumber) }
     var yearClicked by rememberSaveable { mutableIntStateOf(yearNumber) }
     var monthClicked by rememberSaveable { mutableIntStateOf(monthNumber) }
-
+    val date = Helper.persianLocate("$yearClicked ${monthClicked.calculateMonthName()}")
     BasicAlertDialog(properties = DialogProperties(
         usePlatformDefaultWidth = false, dismissOnClickOutside = true
     ), modifier = modifier
@@ -86,10 +86,10 @@ fun DialogChoseDate(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     IconButton(onClick = {
-                        monthClicked+=1
+                        monthClicked += 1
                         if (monthClicked > 12) {
                             monthClicked = 1
-                            yearClicked+=1
+                            yearClicked += 1
                         }
                         dayClicked = if (monthClicked == currentMonth) dayClicked else 1
                         monthChange(yearClicked, monthClicked)
@@ -104,15 +104,15 @@ fun DialogChoseDate(
                         modifier = Modifier
                             .padding(top = 12.dp)
                             .fillMaxWidth(0.5f),
-                        text = "$yearClicked ${monthClicked.calculateMonthName()}",
+                        text = date,
                         color = Color.White,
                         textAlign = TextAlign.Center
                     )
                     IconButton(onClick = {
-                        monthClicked-=1
+                        monthClicked -= 1
                         if (monthClicked < 1) {
                             monthClicked = 12
-                            yearClicked-=1
+                            yearClicked -= 1
                         }
                         dayClicked = if (monthClicked == currentMonth) dayClicked else 1
                         monthChange(yearClicked, monthClicked)

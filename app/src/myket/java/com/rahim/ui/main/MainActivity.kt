@@ -2,11 +2,14 @@ package com.rahim.ui.main
 
 import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -19,45 +22,55 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.R
-import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.dialog.ErrorDialog
-import com.rahim.ui.navigation.NavGraph
 import com.rahim.ui.navigation.BottomNavigationBar
-import com.rahim.ui.theme.BalticSea
+import com.rahim.ui.navigation.DrawerItemType
+import com.rahim.ui.navigation.NavGraph
+import com.rahim.ui.navigation.YadinoNavigationDrawer
 import com.rahim.ui.theme.CornflowerBlueLight
 import com.rahim.ui.theme.YadinoTheme
-import com.rahim.ui.theme.Zircon
-import com.rahim.utils.base.view.ShowSearchBar
-import com.rahim.utils.base.view.ShowStatusBar
+import com.rahim.utils.Constants.CAFE_BAZAAR_PACKAGE_NAME
+import com.rahim.utils.Constants.DARK
+import com.rahim.utils.Constants.LIGHT
+import com.rahim.utils.Constants.MY_KET_LINK
+import com.rahim.utils.Constants.MY_KET_PACKAGE_NAME
 import com.rahim.utils.base.view.TopBarCenterAlign
 import com.rahim.utils.base.view.goSettingPermission
 import com.rahim.utils.base.view.requestPermissionNotification
 import com.rahim.utils.navigation.Screen
 import com.rahim.utils.navigation.ScreenName
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -67,15 +80,31 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        getTokenFirebase()
-        Timber.tag("packageName").d("packageName: $packageName")
 
+
+        getTokenFirebase()
         setContent {
             val context = LocalContext.current
             (context as? Activity)?.requestedOrientation =
                 ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-            YadinoApp(mainViewModel.isShowWelcomeScreen())
+            YadinoApp(
+                isShowWelcomeScreen = mainViewModel.isShowWelcomeScreen(),
+                isDarkTheme = if (mainViewModel.isDarkTheme() == DARK) true else if (mainViewModel.isDarkTheme() == LIGHT) false else isSystemInDarkTheme(),
+                changeTheme = {
+                    if (it) {
+                        mainViewModel.setDarkTheme(DARK)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            this@MainActivity.splashScreen.setSplashScreenTheme(R.style.Theme_dark)
+                        }
+                    } else {
+                        mainViewModel.setDarkTheme(LIGHT)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            this@MainActivity.splashScreen.setSplashScreenTheme(R.style.Theme_Light)
+                        }
+                    }
+                })
         }
     }
 
@@ -92,7 +121,11 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun YadinoApp(isShowWelcomeScreen: Boolean) {
+fun YadinoApp(
+    isShowWelcomeScreen: Boolean,
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    changeTheme: (Boolean) -> Unit
+) {
     val context = LocalContext.current
     val notificationPermissionState =
         rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
@@ -104,90 +137,142 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
     val destination = navController.currentBackStackEntry?.destination?.route
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val destinationNavBackStackEntry = navBackStackEntry?.destination?.route
-    if (destination != Screen.Welcome.route) {
-        ShowStatusBar()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val coroutineScope = rememberCoroutineScope()
+    var darkThemeState by remember {
+        mutableStateOf(isDarkTheme)
     }
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-        YadinoTheme {
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-            ) {
-                Scaffold(topBar = {
-                    AnimatedVisibility(
-                        visible = destinationNavBackStackEntry != Screen.Welcome.route,
-                        enter = fadeIn() + expandVertically(animationSpec = tween(800)),
-                        exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
-                    ) {
-                        TopBarCenterAlign(
-                            title = when (destinationNavBackStackEntry) {
-                                Screen.Home.route ->
-                                    stringResource(
+    YadinoTheme(darkTheme = darkThemeState) {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            YadinoNavigationDrawer(modifier = Modifier.width(240.dp),
+                drawerState = drawerState,
+                isDarkTheme = darkThemeState,
+                onItemClick = { drawerItemType ->
+                    when (drawerItemType) {
+                        is DrawerItemType.ShareWithFriends -> {
+                            val shareLink = MY_KET_LINK
+                            val sendIntent: Intent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, shareLink)
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            startActivity(context, shareIntent, null)
+                        }
+
+                        is DrawerItemType.RateToApp -> {
+                            if (!isPackageInstalled(
+                                    MY_KET_PACKAGE_NAME,
+                                    context.packageManager
+                                )
+                            ) {
+                                Toast.makeText(
+                                    context,
+                                    context.resources.getString(R.string.install_myket),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                return@YadinoNavigationDrawer
+                            }
+                            val url = "myket://comment?id=${context.packageName}"
+                            val intent = Intent()
+                            intent.setAction(Intent.ACTION_VIEW)
+                            intent.setData(Uri.parse(url))
+                            startActivity(context, intent, null)
+
+                        }
+
+                        is DrawerItemType.Theme -> {
+                            darkThemeState = !darkThemeState
+                            changeTheme(darkThemeState)
+                        }
+
+                        else -> {}
+                    }
+
+                }) {
+                Scaffold(
+                    topBar = {
+                        AnimatedVisibility(
+                            visible = destinationNavBackStackEntry != Screen.Welcome.route,
+                            enter = fadeIn() + expandVertically(animationSpec = tween(800)),
+                            exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
+                        ) {
+
+                            TopBarCenterAlign(
+                                title = when (destinationNavBackStackEntry) {
+                                    Screen.Home.route -> stringResource(
                                         id = R.string.my_firend
                                     )
 
-                                Screen.Routine.route ->
-                                    stringResource(
+                                    Screen.Routine.route -> stringResource(
                                         id = R.string.list_routine
                                     )
 
-                                ScreenName.HISTORY.nameScreen ->
-                                    stringResource(id = R.string.historyAlarm)
+                                    Screen.Note.route -> stringResource(
+                                        id = R.string.notes
+                                    )
 
-                                else ->
-                                    stringResource(id = R.string.notes)
-                            },
-                            openHistory = {
-                                navController.navigate(ScreenName.HISTORY.nameScreen)
-                            },
-                            isShowSearchIcon = destinationNavBackStackEntry != Screen.Calender.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
-                            isShowBackIcon = destinationNavBackStackEntry == ScreenName.HISTORY.nameScreen,
-                            onClickBack = {
-                                navController.popBackStack()
-                            },
-                            onClickSearch = {
-                                clickSearch = !clickSearch
-                            }
-                        )
-                    }
-                }, floatingActionButton = {
-                    if (destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen) {
-                        FloatingActionButton(containerColor = CornflowerBlueLight,
-                            contentColor = Color.White,
-                            onClick = {
-                                requestPermissionNotification(isGranted = {
-                                    if (it) openDialog = true
-                                    else errorClick = true
-                                }, permissionState = {
-                                    it.launchPermissionRequest()
-                                }, notificationPermission = notificationPermissionState)
-                            }) {
-                            Icon(Icons.Filled.Add, "add item")
+                                    else -> stringResource(
+                                        id = R.string.historyAlarm
+                                    )
+                                },
+                                openHistory = {
+                                    navController.navigate(ScreenName.HISTORY.nameScreen)
+                                },
+                                isShowSearchIcon = destinationNavBackStackEntry != Screen.Calender.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
+                                isShowBackIcon = destinationNavBackStackEntry == ScreenName.HISTORY.nameScreen,
+                                onClickBack = {
+                                    navController.popBackStack()
+                                },
+                                onClickSearch = {
+                                    clickSearch = !clickSearch
+                                },
+                                onDrawerClick = {
+                                    coroutineScope.launch { drawerState.open() }
+                                },
+                            )
                         }
-                    }
-                }, bottomBar = {
-                    AnimatedVisibility(
-                        visible = destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
-                        enter = fadeIn() + expandVertically(animationSpec = tween(800)),
-                        exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
-                    ) {
-                        BottomNavigationBar(
-                            navController, navBackStackEntry, destinationNavBackStackEntry
-                        )
-                    }
-                }, containerColor = MaterialTheme.colorScheme.background
+                    }, floatingActionButton = {
+                        if (destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen) {
+                            FloatingActionButton(containerColor = CornflowerBlueLight,
+                                contentColor = Color.White,
+                                onClick = {
+                                    requestPermissionNotification(isGranted = {
+                                        if (it) openDialog = true
+                                        else errorClick = true
+                                    }, permissionState = {
+                                        it.launchPermissionRequest()
+                                    }, notificationPermission = notificationPermissionState)
+                                }) {
+                                Icon(Icons.Filled.Add, "add item")
+                            }
+                        }
+                    }, bottomBar = {
+                        AnimatedVisibility(
+                            visible = destinationNavBackStackEntry != Screen.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
+                            enter = fadeIn() + expandVertically(animationSpec = tween(800)),
+                            exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
+                        ) {
+                            BottomNavigationBar(
+                                navController,
+                                navBackStackEntry,
+                                destinationNavBackStackEntry,
+                            )
+                        }
+                    }, containerColor = MaterialTheme.colorScheme.background
                 ) { innerPadding ->
-                    NavGraph(
-                        navController,
+                    NavGraph(navController,
                         innerPadding = innerPadding,
                         startDestination = if (isShowWelcomeScreen) Screen.Home.route else Screen.Welcome.route,
                         openDialog = openDialog,
                         clickSearch = clickSearch,
                         onOpenDialog = { isOpen ->
                             openDialog = isOpen
-                        }
-                    )
+                        })
                     if (destination == Screen.Home.route) requestPermissionNotification(
                         notificationPermission = notificationPermissionState,
                         isGranted = {},
@@ -197,14 +282,24 @@ fun YadinoApp(isShowWelcomeScreen: Boolean) {
                 }
             }
         }
-        ErrorDialog(isOpen = errorClick,
-            message = stringResource(id = R.string.better_performance_access),
-            okMessage = stringResource(id = R.string.setting),
-            isClickOk = {
-                if (it) {
-                    goSettingPermission(context)
-                }
-                errorClick = false
-            })
+    }
+    ErrorDialog(isOpen = errorClick,
+        message = stringResource(id = R.string.better_performance_access),
+        okMessage = stringResource(id = R.string.setting),
+        isClickOk = {
+            if (it) {
+                goSettingPermission(context)
+            }
+            errorClick = false
+        })
+
+}
+
+private fun isPackageInstalled(packageName: String, packageManager: PackageManager): Boolean {
+    try {
+        packageManager.getPackageInfo(packageName, 0)
+        return true
+    } catch (e: PackageManager.NameNotFoundException) {
+        return false
     }
 }
