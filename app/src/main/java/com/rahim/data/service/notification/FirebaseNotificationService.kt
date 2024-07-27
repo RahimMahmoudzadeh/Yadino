@@ -9,9 +9,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.rahim.R
 import com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
 import com.rahim.ui.main.MainActivity
+import com.rahim.yadino.R
 import com.rahim.yadino.base.Constants.CHANNEL_ID
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Random
@@ -21,7 +21,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class FirebaseNotificationService : FirebaseMessagingService() {
     @Inject
-    lateinit var sharedPreferencesCustom: com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
+    lateinit var sharedPreferencesCustom: SharedPreferencesCustom
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         remoteMessage.data?.let {

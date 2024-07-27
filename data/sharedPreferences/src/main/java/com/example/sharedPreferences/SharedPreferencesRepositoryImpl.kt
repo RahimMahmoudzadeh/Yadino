@@ -1,9 +1,10 @@
-package com.rahim.data.repository.sharedPreferences
+package com.example.sharedPreferences
 
 import com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
+import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import javax.inject.Inject
 
-class SharedPreferencesRepositoryImpl @Inject constructor(private val sharedPreferencesCustom: com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom) :
+class SharedPreferencesRepositoryImpl @Inject constructor(private val sharedPreferencesCustom: SharedPreferencesCustom) :
     SharedPreferencesRepository {
     override fun saveShowWelcome(isShow: Boolean) {
         sharedPreferencesCustom.saveWelcomePage(isShow)

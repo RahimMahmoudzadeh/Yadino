@@ -30,4 +30,6 @@ include(
     ":data:routine-repository",
     ":data:routine-local",
     ":domain:routine",
+    ":domain:sharedPreferences",
+    ":data:sharedPreferences",
 )

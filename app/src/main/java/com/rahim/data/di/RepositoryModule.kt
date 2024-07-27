@@ -10,8 +10,8 @@ import com.rahim.data.repository.home.HomeRepository
 import com.rahim.data.repository.home.HomeRepositoryImpl
 import com.rahim.data.repository.note.NoteRepository
 import com.rahim.data.repository.note.NoteRepositoryImpl
-import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
-import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepositoryImpl
+import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
+import com.example.sharedPreferences.SharedPreferencesRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -28,7 +28,7 @@ abstract class RepositoryModule {
     abstract fun provideRepositoryDataTime(dataTimeRepositoryImpl: DataTimeRepositoryImpl): DataTimeRepository
 
     @Binds
-    abstract fun provideSharedPreferencesRepository(sharedPreferencesRepositoryImpl: SharedPreferencesRepositoryImpl): SharedPreferencesRepository
+    abstract fun provideSharedPreferencesRepository(sharedPreferencesRepositoryImpl: com.example.sharedPreferences.SharedPreferencesRepositoryImpl): com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 
     @Binds
     abstract fun provideHomeRepository(homeRepositoryImpl: HomeRepositoryImpl): HomeRepository

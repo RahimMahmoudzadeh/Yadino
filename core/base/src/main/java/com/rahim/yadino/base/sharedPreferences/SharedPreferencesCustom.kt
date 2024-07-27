@@ -2,6 +2,7 @@ package com.rahim.yadino.base.sharedPreferences
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import com.rahim.yadino.base.Constants.IS_DARK_THEME
 import com.rahim.yadino.base.Constants.NAME_SHARED_PREFERENCE
 import com.rahim.yadino.base.Constants.SAMPLE_NOTE
 import com.rahim.yadino.base.Constants.SAMPLE_ROUTINE

@@ -1,4 +1,4 @@
-package com.rahim.data.repository.sharedPreferences
+package com.rahim.yadino.sharedPreferences
 
 interface SharedPreferencesRepository {
     fun saveShowWelcome(isShow: Boolean)
