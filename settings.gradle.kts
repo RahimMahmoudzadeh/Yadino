@@ -35,4 +35,8 @@ include(
     ":domain:dateTime",
     ":data:dateTime-local",
     ":data:dateTime-repository",
+    ":domain:note",
+    ":data:note-repository",
+    ":data:note-local",
+    ":core:database",
 )
