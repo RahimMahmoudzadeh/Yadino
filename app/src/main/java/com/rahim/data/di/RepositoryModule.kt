@@ -37,5 +37,5 @@ abstract class RepositoryModule {
     abstract fun provideNoteRepository(noteRepositoryImpl: NoteRepositoryImpl): NoteRepository
 
     @Binds
-    abstract fun provideBaseRepository(baseRepositoryImpl: BaseRepositoryImpl): BaseRepository
+//    abstract fun provideBaseRepository(baseRepositoryImpl: BaseRepositoryImpl): BaseRepository
 }
