@@ -2,8 +2,8 @@ package com.rahim.utils.extention
 
 import android.content.Context
 import com.rahim.R
-import com.rahim.utils.enums.MonthName
-import com.rahim.yadino.base.enume.error.ErrorMessageCode
+import com.rahim.yadino.base.enums.MonthName
+import com.rahim.yadino.base.enums.error.ErrorMessageCode
 
 fun Int.calculateMonthName(): String {
     return when (this) {
@@ -71,16 +71,16 @@ fun String.calculateTimeFormat(currentYer: Int, currentMonth: Int, currentDay: S
     return "$currentYer-$currentMonth-$currentDay"
 }
 
-fun com.rahim.yadino.base.enume.error.ErrorMessageCode.errorMessage(context:Context):String{
+fun ErrorMessageCode.errorMessage(context:Context):String{
     return context.run {
         when(this@errorMessage){
-            com.rahim.yadino.base.enume.error.ErrorMessageCode.ERROR_GET_PROCESS->{
+            ErrorMessageCode.ERROR_GET_PROCESS->{
                 this.resources.getString(R.string.errorGetProses)
             }
-            com.rahim.yadino.base.enume.error.ErrorMessageCode.EQUAL_ROUTINE_MESSAGE->{
+            ErrorMessageCode.EQUAL_ROUTINE_MESSAGE->{
                 this.resources.getString(R.string.equalRoutineMessage)
             }
-            com.rahim.yadino.base.enume.error.ErrorMessageCode.ERROR_SAVE_PROSES->{
+            ErrorMessageCode.ERROR_SAVE_PROSES->{
                 this.resources.getString(R.string.errorSaveProses)
             }
         }

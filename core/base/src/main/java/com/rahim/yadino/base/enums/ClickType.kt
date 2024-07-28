@@ -1,4 +1,4 @@
-package com.rahim.utils.enums
+package com.rahim.yadino.base.enums
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

@@ -2,7 +2,7 @@ package com.rahim.ui.main
 
 import androidx.lifecycle.viewModelScope
 import com.rahim.data.repository.base.BaseRepository
-import com.rahim.data.repository.dataTime.DataTimeRepository
+import com.rahim.yadino.dateTime.DataTimeRepository
 import com.rahim.data.repository.note.NoteRepository
 import com.rahim.data.repository.routine.RepositoryRoutine
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val dataTimeRepository: DataTimeRepository,
+    private val dataTimeRepository: com.rahim.yadino.dateTime.DataTimeRepository,
     private val repositoryRoutine: RepositoryRoutine,
     private val noteRepository: NoteRepository,
     baseRepository: BaseRepository,

@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.modle.Rotin
+package com.rahim.yadino.routine.modle.Routine
 
 import android.os.Parcelable
 

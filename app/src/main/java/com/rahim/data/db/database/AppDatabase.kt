@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
 import com.rahim.data.db.dao.NoteDao
 import com.rahim.yadino.routine_local.dao.RoutineDao
-import com.rahim.data.db.dao.TimeDao
+import com.rahim.yadino.dateTime_local.dao.TimeDao
 import com.rahim.yadino.routine.modle.Rotin.Routine
 import com.rahim.yadino.routine.modle.data.TimeDate
 import com.rahim.yadino.routine.modle.note.NoteModel
@@ -27,7 +27,7 @@ import com.rahim.yadino.routine.modle.note.NoteModel
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun routineDao(): com.rahim.yadino.routine_local.dao.RoutineDao
-    abstract fun timeDataDao(): TimeDao
+    abstract fun timeDataDao(): com.rahim.yadino.dateTime_local.dao.TimeDao
     abstract fun noteDao(): NoteDao
 
     @DeleteColumn(

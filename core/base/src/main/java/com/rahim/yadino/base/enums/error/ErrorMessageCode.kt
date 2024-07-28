@@ -1,4 +1,4 @@
-package com.rahim.yadino.base.enume.error
+package com.rahim.yadino.base.enums.error
 
 enum class ErrorMessageCode(val code:Int) {
     ERROR_GET_PROCESS(0),

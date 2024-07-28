@@ -1,6 +1,6 @@
 package com.rahim.yadino.routine_repository.mapper
 
-import com.rahim.yadino.routine.modle.Rotin.Routine
+import com.rahim.yadino.routine.modle.Routine.Routine
 import com.rahim.yadino.routine_local.dto.LocalRoutineDto
 
 fun LocalRoutineDto.toRoutine(): Routine = Routine(

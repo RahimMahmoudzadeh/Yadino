@@ -1,4 +1,4 @@
-package com.rahim.utils.enums
+package com.rahim.yadino.base.enums
 
 enum class WeekName(val nameDay: String) {
     SATURDAY("شنبه"),
