@@ -22,59 +22,48 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.rahim.R
-import com.rahim.data.modle.note.NoteModel
-import com.rahim.ui.theme.*
-import com.rahim.utils.base.view.DialogButtonBackground
-import com.rahim.utils.base.view.gradientColors
+import com.rahim.yadino.designsystem.component.DialogButtonBackground
+import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.CornflowerBlueDark
 import com.rahim.yadino.designsystem.theme.Mantis
 import com.rahim.yadino.designsystem.theme.Punch
+import com.rahim.yadino.library.designsystem.R
+
+const val maxName = 22
+const val maxExplanation = 40
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialogAddNote(
     modifier: Modifier = Modifier,
-    noteUpdate: NoteModel?,
     isOpen: Boolean,
-    currentDay: Int,
-    currentMonth: Int,
-    currentYer: Int,
-    currentDayName: String,
+    updateNoteName: String = "",
+    updateNoteDescription: String = "",
+    updateNoteState: String = "",
     openDialog: (Boolean) -> Unit,
-    note: (NoteModel) -> Unit
+    note: (noteName: String, description: String, stateNote: Int, timeInMileSecond: Long) -> Unit
 ) {
-    val maxName = 22
-    val maxExplanation = 40
+
     var state by remember { mutableStateOf(0) }
-    var nameNote by rememberSaveable { mutableStateOf("") }
-    var description by rememberSaveable { mutableStateOf("") }
-    val isErrorName = remember { mutableStateOf(false) }
-    val isErrorExplanation = remember { mutableStateOf(false) }
-
-    if (noteUpdate != null) {
-        state = noteUpdate.state
-        nameNote = noteUpdate.name
-        description = noteUpdate.description
-    }
-
+    var (nameNote, description) = rememberSaveable { mutableStateOf("") }
+    var (isErrorName, isErrorExplanation) = remember { mutableStateOf(false) }
+    nameNote = updateNoteName
+    description = updateNoteDescription
+    state = updateNoteState
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         if (isOpen) {
             BasicAlertDialog(properties = DialogProperties(
-                usePlatformDefaultWidth = false,
-                dismissOnClickOutside = false
-            ),
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 22.dp)
-                    .border(
-                        2.dp,
-                        brush = Brush.verticalGradient(gradientColors),
-                        shape = RoundedCornerShape(8.dp)
-                    ),
-                onDismissRequest = {
-                    openDialog(false)
-                }) {
+                usePlatformDefaultWidth = false, dismissOnClickOutside = false
+            ), modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 22.dp)
+                .border(
+                    2.dp,
+                    brush = Brush.verticalGradient(gradientColors),
+                    shape = RoundedCornerShape(8.dp)
+                ), onDismissRequest = {
+                openDialog(false)
+            }) {
                 Surface(
                     color = MaterialTheme.colorScheme.background,
                     shape = RoundedCornerShape(percent = 4)
@@ -90,7 +79,11 @@ fun DialogAddNote(
                             text = stringResource(id = R.string.creat_new_note),
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
-                            style =MaterialTheme.typography.bodyLarge.copy(brush = Brush.verticalGradient(gradientColors))
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                brush = Brush.verticalGradient(
+                                    gradientColors
+                                )
+                            )
                         )
                         TextField(
                             modifier = Modifier
@@ -104,9 +97,8 @@ fun DialogAddNote(
                                 ),
                             value = nameNote,
                             onValueChange = {
-                                isErrorName.value = it.length >= maxName
-                                nameNote =
-                                    if (it.length <= maxName) it else nameNote
+                                isErrorName = it.length >= maxName
+                                nameNote = if (it.length <= maxName) it else nameNote
                             },
                             placeholder = {
                                 Text(
@@ -122,7 +114,7 @@ fun DialogAddNote(
                                 disabledIndicatorColor = Color.Transparent
                             )
                         )
-                        if (isErrorName.value) {
+                        if (isErrorName) {
                             Text(
                                 modifier = Modifier.padding(start = 16.dp),
                                 text = if (nameNote.isEmpty()) stringResource(id = R.string.emptyField) else stringResource(
@@ -131,37 +123,30 @@ fun DialogAddNote(
                                 color = MaterialTheme.colorScheme.error
                             )
                         }
-                        TextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 18.dp)
-                                .sizeIn(minHeight = 130.dp)
-                                .border(
-                                    width = 1.dp,
-                                    brush = Brush.horizontalGradient(gradientColors),
-                                    shape = RoundedCornerShape(4.dp)
-                                ),
-                            value = description,
-                            onValueChange = {
-                                isErrorExplanation.value = it.length >= maxExplanation
-                                description =
-                                    if (it.length <= maxExplanation) it else description
-                            },
-                            textStyle = MaterialTheme.typography.bodyMedium,
-                            placeholder = {
-                                Text(
-                                    text = stringResource(id = R.string.issue_explanation),
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            },
-                            colors = TextFieldDefaults.textFieldColors(
-                                containerColor = MaterialTheme.colorScheme.background,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent
+                        TextField(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 18.dp)
+                            .sizeIn(minHeight = 130.dp)
+                            .border(
+                                width = 1.dp,
+                                brush = Brush.horizontalGradient(gradientColors),
+                                shape = RoundedCornerShape(4.dp)
+                            ), value = description, onValueChange = {
+                            isErrorExplanation = it.length >= maxExplanation
+                            description = if (it.length <= maxExplanation) it else description
+                        }, textStyle = MaterialTheme.typography.bodyMedium, placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.issue_explanation),
+                                color = MaterialTheme.colorScheme.primary
                             )
+                        }, colors = TextFieldDefaults.textFieldColors(
+                            containerColor = MaterialTheme.colorScheme.background,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent
                         )
-                        if (isErrorExplanation.value) {
+                        )
+                        if (isErrorExplanation) {
                             Text(
                                 modifier = Modifier.padding(start = 16.dp),
                                 text = stringResource(id = R.string.length_textFiled_explanation_routine),
@@ -184,18 +169,17 @@ fun DialogAddNote(
                                     text = stringResource(id = R.string.up),
                                     color = Punch
                                 )
-                                RadioButton(
-                                    colors = RadioButtonDefaults.colors(
-                                        selectedColor = Punch,
-                                        unselectedColor = Punch
-                                    ),
+                                RadioButton(colors = RadioButtonDefaults.colors(
+                                    selectedColor = Punch, unselectedColor = Punch
+                                ),
                                     selected = state == 2,
                                     onClick = { state = 2 },
                                     modifier = Modifier
-                                        .semantics { contentDescription = "Localized Description" }
+                                        .semantics {
+                                            contentDescription = "Localized Description"
+                                        }
                                         .size(20.dp)
-                                        .padding(start = 8.dp)
-                                )
+                                        .padding(start = 8.dp))
                             }
                             Row(modifier = Modifier.weight(0.2f)) {
                                 Text(
@@ -205,18 +189,18 @@ fun DialogAddNote(
                                     style = MaterialTheme.typography.bodyMedium,
 
                                     )
-                                RadioButton(
-                                    colors = RadioButtonDefaults.colors(
-                                        selectedColor = CornflowerBlueDark,
-                                        unselectedColor = CornflowerBlueDark
-                                    ),
+                                RadioButton(colors = RadioButtonDefaults.colors(
+                                    selectedColor = CornflowerBlueDark,
+                                    unselectedColor = CornflowerBlueDark
+                                ),
                                     selected = state == 1,
                                     onClick = { state = 1 },
                                     modifier = Modifier
-                                        .semantics { contentDescription = "Localized Description" }
+                                        .semantics {
+                                            contentDescription = "Localized Description"
+                                        }
                                         .size(20.dp)
-                                        .padding(start = 8.dp)
-                                )
+                                        .padding(start = 8.dp))
                             }
                             Row(modifier = Modifier.weight(0.13f)) {
                                 Text(
@@ -226,18 +210,17 @@ fun DialogAddNote(
                                     style = MaterialTheme.typography.bodyMedium,
 
                                     )
-                                RadioButton(
-                                    colors = RadioButtonDefaults.colors(
-                                        selectedColor = Mantis,
-                                        unselectedColor = Mantis
-                                    ),
+                                RadioButton(colors = RadioButtonDefaults.colors(
+                                    selectedColor = Mantis, unselectedColor = Mantis
+                                ),
                                     selected = state == 0,
                                     onClick = { state = 0 },
                                     modifier = Modifier
-                                        .semantics { contentDescription = "Localized Description" }
+                                        .semantics {
+                                            contentDescription = "Localized Description"
+                                        }
                                         .size(20.dp)
-                                        .padding(start = 8.dp)
-                                )
+                                        .padding(start = 8.dp))
                             }
                         }
 
@@ -247,8 +230,7 @@ fun DialogAddNote(
                                 .fillMaxWidth(1f)
                                 .padding(12.dp)
                         ) {
-                            DialogButtonBackground(
-                                text = stringResource(id = R.string.confirmation),
+                            DialogButtonBackground(text = stringResource(id = R.string.confirmation),
                                 gradient = Brush.verticalGradient(gradientColors),
                                 modifier = Modifier
                                     .fillMaxWidth(0.3f)
@@ -257,56 +239,39 @@ fun DialogAddNote(
                                 textStyle = MaterialTheme.typography.bodyMedium,
                                 onClick = {
                                     if (nameNote.isEmpty()) {
-                                        isErrorName.value = true
+                                        isErrorName = true
                                     } else {
                                         note(
-                                            if (noteUpdate != null) {
-                                                NoteModel(
-                                                    id = noteUpdate.id,
-                                                    name = nameNote,
-                                                    description = description,
-                                                    state = state,
-                                                    dayName = currentDayName,
-                                                    yerNumber = currentYer,
-                                                    monthNumber = currentMonth,
-                                                    dayNumber = currentDay,
-                                                    timeInMileSecond = System.currentTimeMillis()
-                                                )
-                                            } else {
-                                                NoteModel(
-                                                    name = nameNote,
-                                                    description = description,
-                                                    state = state,
-                                                    dayName = currentDayName,
-                                                    yerNumber = currentYer,
-                                                    monthNumber = currentMonth,
-                                                    dayNumber = currentDay,
-                                                    timeInMileSecond = System.currentTimeMillis()
-                                                )
-                                            }
+                                            noteName = nameNote,
+                                            description = description,
+                                            stateNote = state,
+                                            timeInMileSecond = System.currentTimeMillis()
                                         )
                                         openDialog(false)
                                         nameNote = ""
                                         description = ""
-                                        isErrorExplanation.value = false
-                                        isErrorName.value = false
+                                        isErrorExplanation = false
+                                        isErrorName = false
                                         state = 0
                                     }
-                                }
-                            )
+                                })
                             Spacer(modifier = Modifier.width(10.dp))
                             TextButton(onClick = {
                                 nameNote = ""
                                 description = ""
                                 state = 0
-                                isErrorExplanation.value = false
-                                isErrorName.value = false
+                                isErrorExplanation = false
+                                isErrorName = false
                                 openDialog(false)
                             }) {
                                 Text(
                                     fontSize = 16.sp,
                                     text = stringResource(id = R.string.cancel),
-                                    style =  MaterialTheme.typography.bodyMedium.copy(brush = Brush.verticalGradient(gradientColors)),
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                        brush = Brush.verticalGradient(
+                                            gradientColors
+                                        )
+                                    ),
                                 )
                             }
                         }
@@ -321,13 +286,10 @@ fun DialogAddNote(
 @Composable
 fun DialogAddNoteWrapper() {
     DialogAddNote(
-        noteUpdate = null,
         isOpen = true,
-        currentDay = 1,
-        currentMonth = 2,
-        currentYer = 1403,
         openDialog = {},
-        note = {},
-        currentDayName = "a"
+        note = { noteName, description, stateNote, timeInMileSecond ->
+
+        },
     )
 }

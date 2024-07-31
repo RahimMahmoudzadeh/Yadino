@@ -28,22 +28,18 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.rahim.R
-import com.rahim.data.modle.Rotin.Routine
-import com.rahim.data.modle.data.TimeDate
-import com.rahim.ui.theme.*
-import com.rahim.utils.Helper
-import com.rahim.utils.base.view.DialogButtonBackground
-import com.rahim.utils.base.view.gradientColors
+import com.rahim.yadino.base.model.TimeDate
+import com.rahim.yadino.designsystem.component.DialogButtonBackground
+import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.theme.Onahau
 import com.rahim.yadino.designsystem.theme.Purple
 import com.rahim.yadino.designsystem.theme.PurpleGrey
+import com.rahim.yadino.library.designsystem.R
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.time.LocalTime
 
@@ -61,10 +57,12 @@ fun DialogAddRoutine(
     currentNumberDay: Int,
     currentNumberMonth: Int,
     currentNumberYear: Int,
-    routineUpdate: Routine? = null,
-    times: List<TimeDate>? = null,
+    updateRoutineName: String = "",
+    updateRoutineExplanation: String = "",
+    updateRoutineTime: String = "",
+    times: List<TimeDate> = emptyList(),
     openDialog: () -> Unit,
-    routine: (Routine) -> Unit,
+    routine: (routineName: String, routineExplanation: String, routineTime: String) -> Unit,
     monthChange: (year: Int, month: Int) -> Unit,
 ) {
     if (!isOpen) return
@@ -72,22 +70,24 @@ fun DialogAddRoutine(
     var monthChecked by rememberSaveable { mutableIntStateOf(currentNumberMonth) }
     var yearChecked by rememberSaveable { mutableIntStateOf(currentNumberYear) }
     var dayChecked by rememberSaveable { mutableIntStateOf(currentNumberDay) }
-
-    var routineName by rememberSaveable { mutableStateOf(routineUpdate?.name ?: "") }
-    var routineExplanation by rememberSaveable { mutableStateOf(routineUpdate?.explanation ?: "") }
-    var checkedStateAllDay by remember { mutableStateOf(false) }
-    var isErrorName by remember { mutableStateOf(false) }
-    var isShowDateDialog by remember { mutableStateOf(false) }
-    var isErrorExplanation by remember { mutableStateOf(false) }
-    var time by rememberSaveable { mutableStateOf(routineUpdate?.timeHours ?: "12:00") }
+    var (routineName, routineExplanation, time) = rememberSaveable { mutableStateOf("") }
+    var (checkedStateAllDay, isErrorName, isShowDateDialog, isErrorExplanation) = remember {
+        mutableStateOf(
+            false
+        )
+    }
     val alarmDialogState = rememberMaterialDialogState()
 
-    val persianData = PersianDate()
-    val date = persianData.initJalaliDate(
-        routineUpdate?.yerNumber ?: yearChecked,
-        routineUpdate?.monthNumber ?: monthChecked,
-        routineUpdate?.dayNumber ?: dayChecked
-    )
+    routineName = updateRoutineName
+    routineExplanation = updateRoutineExplanation
+    time = updateRoutineTime
+
+//    val persianData = PersianDate()
+//    val date = persianData.initJalaliDate(
+//        routineUpdate?.yerNumber ?: yearChecked,
+//        routineUpdate?.monthNumber ?: monthChecked,
+//        routineUpdate?.dayNumber ?: dayChecked
+//    )
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -118,7 +118,11 @@ fun DialogAddRoutine(
                         text = stringResource(id = R.string.creat_new_work),
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium.copy(brush = Brush.verticalGradient(gradientColors))
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            brush = Brush.verticalGradient(
+                                gradientColors
+                            )
+                        )
                     )
                     TextField(modifier = Modifier
                         .background(MaterialTheme.colorScheme.background)
@@ -174,7 +178,7 @@ fun DialogAddRoutine(
                                 if (it.length <= MAX_EXPLANATION_LENGTH) it else routineExplanation
                         },
                         textStyle = MaterialTheme.typography.bodyMedium,
-                                placeholder = {
+                        placeholder = {
                             Text(
                                 text = stringResource(id = R.string.routine_explanation),
                                 color = MaterialTheme.colorScheme.primary
@@ -261,9 +265,9 @@ fun DialogAddRoutine(
                                 end = if (isShowDay) 15.dp else 0.dp
                             )
                     ) {
-                        Row (
+                        Row(
                             verticalAlignment = Alignment.CenterVertically
-                        ){
+                        ) {
                             Text(
                                 modifier = Modifier.padding(top = 14.dp),
                                 text = stringResource(id = R.string.set_alarms),
@@ -272,7 +276,7 @@ fun DialogAddRoutine(
                             )
                             Text(
                                 modifier = Modifier.padding(top = 14.dp, start = 4.dp),
-                                text = Helper.persianLocate(time),
+                                text = time.persianLocate(),
                                 color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.SemiBold,
                                 style = MaterialTheme.typography.bodyMedium
@@ -284,7 +288,8 @@ fun DialogAddRoutine(
                             alarmDialogState.show()
                         }) {
                             Text(
-                                text = stringResource(id = R.string.time_change), style = MaterialTheme.typography.bodyMedium.copy(
+                                text = stringResource(id = R.string.time_change),
+                                style = MaterialTheme.typography.bodyMedium.copy(
                                     brush = Brush.verticalGradient(
                                         gradientColors
                                     )
@@ -292,7 +297,7 @@ fun DialogAddRoutine(
                             )
                         }
                     }
-                    if (!times.isNullOrEmpty()) {
+                    if (times.isNotEmpty()) {
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier
@@ -337,21 +342,11 @@ fun DialogAddRoutine(
                                 if (routineName.isEmpty()) {
                                     isErrorName = true
                                 } else {
-                                    routine(routineUpdate?.apply {
-                                        name = routineName
-                                        timeHours = time
-                                        explanation = routineExplanation
-                                        dayName = persianData.dayName(date)
-                                    } ?: Routine(
-                                        routineName,
-                                        null,
-                                        persianData.dayName(date),
-                                        dayChecked,
-                                        monthChecked,
-                                        yearChecked,
-                                        time,
-                                        explanation = routineExplanation,
-                                    ))
+                                    routine(
+                                        routineName = routineName,
+                                        routineExplanation = routineExplanation,
+                                        routineTime = time,
+                                    )
                                 }
                             })
                         Spacer(modifier = Modifier.width(10.dp))
@@ -372,7 +367,7 @@ fun DialogAddRoutine(
                     if (isShowDateDialog) {
                         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                             DialogChoseDate(
-                                times = times ?: emptyList(),
+                                times = times,
                                 yearNumber = yearChecked,
                                 monthNumber = monthChecked,
                                 dayNumber = dayChecked,
@@ -406,7 +401,7 @@ fun DialogAddRoutine(
 }
 
 
-@OptIn(ExperimentalTextApi::class)
+@OptIn(ExperimentalTextApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ShowTimePicker(
     currentTime: String, dialogState: MaterialDialogState, time: (LocalTime) -> Unit

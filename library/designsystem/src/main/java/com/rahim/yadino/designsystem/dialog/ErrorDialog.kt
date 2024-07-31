@@ -16,9 +16,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.rahim.utils.base.view.DialogButtonBackground
-import com.rahim.utils.base.view.DialogButtonBorder
-import com.rahim.utils.base.view.gradientColors
+import com.rahim.yadino.designsystem.component.DialogButtonBackground
+import com.rahim.yadino.designsystem.component.DialogButtonBorder
+import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.library.designsystem.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

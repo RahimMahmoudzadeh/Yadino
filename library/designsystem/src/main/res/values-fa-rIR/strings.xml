@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_empty_routine">!!!روتین مورد نظر یافت نشد</string>
+    <string name="not_update_checked_routine">روتین پایان یافته را نمی توان ویرایش کرد!</string>
+    <string name="can_you_delete">آیا می خواهید حذف کنید؟</string>
+    <string name="ok">بله</string>
+    <string name="not_work_for_day">!شماهنوز کاری برای امروز ثبت نکردید</string>
+    <string name="search_hint">دنبال چی می گردی؟</string>
+    <string name="remmeber">: یادآوری</string>
+    <string name="explanation">: توضیحات</string>
+    <string name="length_textFiled_name_routine">نام انتخابی باید حداکثر 22 کاراکتر باشد!</string>
+    <string name="issue">موضوع یادداشت خود را بنویسید</string>
+    <string name="emptyField">فیلد خالی است !!!</string>
+    <string name="issue_explanation">توضیح برای یادداشت خود بنویسید</string>
+    <string name="length_textFiled_explanation_routine">نام انتخابی باید حداکثر 40 کاراکتر باشد!</string>
+    <string name="priority_level">میزان الویت:</string>
+    <string name="up">بالا</string>
+    <string name="medium">متوسط</string>
+    <string name="low">کم</string>
+    <string name="confirmation">تایید</string>
+    <string name="creat_new_note">ایجاد یادداشت جدید</string>
+    <string name="cancel">انصراف</string>
+    <string-array name="day_weeks">
+        <item>@string/saturday</item>
+        <item>@string/sunday</item>
+        <item>@string/monday</item>
+        <item>@string/tuesday</item>
+        <item>@string/wednesday</item>
+        <item>@string/thursday</item>
+        <item>@string/friday</item>
+    </string-array>
+    <string name="saturday">شنبه</string>
+    <string name="sunday">یک</string>
+    <string name="monday">دو</string>
+    <string name="tuesday">سه</string>
+    <string name="wednesday">چهار</string>
+    <string name="thursday">پنج</string>
+    <string name="friday">جمعه</string>
+    <string name="creat_new_work">ایجاد کار جدید</string>
+    <string name="name_hint_text_filed_routine">نام روتین مورد نظر خود را وارد کنید</string>
+    <string name="routine_explanation">توضیح برای روتین خود بنویسید</string>
+    <string name="all">همه</string>
+    <string name="set_alarms">تنظیم آلارم ساعت :</string>
+    <string name="time_change">تغییر زمان</string>
+    <string name="set_reminder">تنظیم یادآور از روی تقویم</string>
+    <string name="data_change">تغییر تاریخ</string>
+    <string name="selection">انتخاب</string>
+    <string name="no">خیر</string>
+</resources>

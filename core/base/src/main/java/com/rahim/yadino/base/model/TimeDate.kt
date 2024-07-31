@@ -1,7 +1,6 @@
-package com.rahim.yadino.dateTime.model
+package com.rahim.yadino.base.model
 
 
-//@Entity(tableName = "tbl_timeDate", primaryKeys = ["dayNumber","yerNumber","monthNumber"])
 data class TimeDate(
     val dayNumber: Int,
     val haveTask: Boolean,

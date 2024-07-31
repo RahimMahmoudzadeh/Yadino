@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,14 +43,15 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.rahim.R
-import com.rahim.data.modle.data.TimeDate
+import com.rahim.yadino.base.calculateMonthName
+import com.rahim.yadino.base.enums.HalfWeekName
 import com.rahim.yadino.designsystem.theme.YadinoTheme
-import com.rahim.utils.base.view.DialogButtonBackground
-import com.rahim.utils.base.view.TimeItems
-import com.rahim.utils.base.view.gradientColors
-import com.rahim.utils.enums.HalfWeekName
-import com.rahim.utils.extention.calculateMonthName
+import com.rahim.yadino.base.model.TimeDate
+import com.rahim.yadino.base.persianLocate
+import com.rahim.yadino.designsystem.component.DialogButtonBackground
+import com.rahim.yadino.designsystem.component.TimeItems
+import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.library.designsystem.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +69,7 @@ fun DialogChoseDate(
     var dayClicked by rememberSaveable { mutableIntStateOf(dayNumber) }
     var yearClicked by rememberSaveable { mutableIntStateOf(yearNumber) }
     var monthClicked by rememberSaveable { mutableIntStateOf(monthNumber) }
-    val date = Helper.persianLocate("$yearClicked ${monthClicked.calculateMonthName()}")
+    val date = "$yearClicked ${monthClicked.calculateMonthName()}".persianLocate()
     BasicAlertDialog(properties = DialogProperties(
         usePlatformDefaultWidth = false, dismissOnClickOutside = true
     ), modifier = modifier

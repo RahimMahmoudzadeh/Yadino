@@ -1,9 +1,10 @@
-package com.rahim.utils.extention
+package com.rahim.yadino.base
 
 import android.content.Context
-import com.rahim.R
+import com.rahim.yadino.R
 import com.rahim.yadino.base.enums.MonthName
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
+import com.rahim.yadino.core.base.R
 
 fun Int.calculateMonthName(): String {
     return when (this) {
@@ -85,4 +86,25 @@ fun ErrorMessageCode.errorMessage(context:Context):String{
             }
         }
     }
+}
+fun String.persianLocate(): String {
+    var result = ""
+    var fa = '۰'
+    for (ch in this) {
+        fa = ch
+        when (ch) {
+            '0' -> fa = '۰'
+            '1' -> fa = '۱'
+            '2' -> fa = '۲'
+            '3' -> fa = '۳'
+            '4' -> fa = '۴'
+            '5' -> fa = '۵'
+            '6' -> fa = '۶'
+            '7' -> fa = '۷'
+            '8' -> fa = '۸'
+            '9' -> fa = '۹'
+        }
+        result = "${result}$fa"
+    }
+    return result
 }
