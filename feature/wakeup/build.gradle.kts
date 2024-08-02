@@ -6,5 +6,5 @@ plugins {
 }
 
 android {
-    namespace = "com.rahim.yadino.feature.wekeup"
+    namespace = "com.rahim.yadino.feature.wakeup"
 }

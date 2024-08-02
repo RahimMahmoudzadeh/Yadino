@@ -36,9 +36,14 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
+@Composable
+internal fun WelcomeRoute(modifier: Modifier = Modifier) {
+
+}
+
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun WelcomeScreens(
+private fun WelcomeScreens(
     navController: NavHostController,
     viewModel: WelcomeViewModel = hiltViewModel(),
     modifier: Modifier = Modifier

@@ -8,13 +8,11 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.ContactsContract.Directory.PACKAGE_NAME
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -54,7 +52,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
-import com.rahim.ui.navigation.NavGraph
+import com.rahim.navigation.NavigationComponent
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.theme.YadinoTheme
@@ -63,11 +61,10 @@ import com.rahim.yadino.base.component.goSettingPermission
 import com.rahim.yadino.base.component.requestPermissionNotification
 import com.rahim.yadino.R
 import com.rahim.yadino.navigation.BottomNavItem
-import com.rahim.yadino.navigation.ScreenName
+import com.rahim.yadino.navigation.Destinations
 import com.rahim.yadino.navigation.component.BottomNavigationBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -207,15 +204,15 @@ fun YadinoApp(
                                     id = R.string.list_routine
                                 )
 
-                                ScreenName.HISTORY.nameScreen -> stringResource(id = R.string.historyAlarm)
+                                Destinations.HISTORY.nameScreen -> stringResource(id = R.string.historyAlarm)
 
                                 else -> stringResource(id = R.string.notes)
                             },
                                 openHistory = {
-                                    navController.navigate(ScreenName.HISTORY.nameScreen)
+                                    navController.navigate(Destinations.HISTORY.nameScreen)
                                 },
-                                isShowSearchIcon = destinationNavBackStackEntry != BottomNavItem.Calender.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
-                                isShowBackIcon = destinationNavBackStackEntry == ScreenName.HISTORY.nameScreen,
+                                isShowSearchIcon = destinationNavBackStackEntry != BottomNavItem.Calender.route && destinationNavBackStackEntry != Destinations.HISTORY.nameScreen,
+                                isShowBackIcon = destinationNavBackStackEntry == Destinations.HISTORY.nameScreen,
                                 onClickBack = {
                                     navController.popBackStack()
                                 },
@@ -228,7 +225,7 @@ fun YadinoApp(
                             )
                         }
                     }, floatingActionButton = {
-                        if (destinationNavBackStackEntry != BottomNavItem.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen) {
+                        if (destinationNavBackStackEntry != BottomNavItem.Welcome.route && destinationNavBackStackEntry != Destinations.HISTORY.nameScreen) {
                             FloatingActionButton(containerColor = CornflowerBlueLight,
                                 contentColor = Color.White,
                                 onClick = {
@@ -248,7 +245,7 @@ fun YadinoApp(
                         }
                     }, bottomBar = {
                         AnimatedVisibility(
-                            visible = destinationNavBackStackEntry != BottomNavItem.Welcome.route && destinationNavBackStackEntry != ScreenName.HISTORY.nameScreen,
+                            visible = destinationNavBackStackEntry != BottomNavItem.Welcome.route && destinationNavBackStackEntry != Destinations.HISTORY.nameScreen,
                             enter = fadeIn() + expandVertically(animationSpec = tween(800)),
                             exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
                         ) {
@@ -260,7 +257,7 @@ fun YadinoApp(
                         }
                     }, containerColor = MaterialTheme.colorScheme.background
                 ) { innerPadding ->
-                    NavGraph(navController,
+                    NavigationComponent(navController,
                         innerPadding = innerPadding,
                         startDestination = if (isShowWelcomeScreen) Screen.Home.route else Screen.Welcome.route,
                         openDialog = openDialog,

@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Composable
-fun HomeRoute(
+internal fun HomeRoute(
     modifier: Modifier = Modifier,
     openDialog: Boolean,
     clickSearch: Boolean,

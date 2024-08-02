@@ -25,7 +25,7 @@ import com.rahim.utils.base.view.EmptyMessage
 import com.rahim.utils.base.view.ShowSearchBar
 
 @Composable
-fun NoteRoute(
+internal fun NoteRoute(
     modifier: Modifier = Modifier,
     viewModel: NoteViewModel = hiltViewModel(),
     openDialog: Boolean,

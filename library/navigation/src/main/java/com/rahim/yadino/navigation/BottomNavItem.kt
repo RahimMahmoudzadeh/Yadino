@@ -10,40 +10,40 @@ sealed class BottomNavItem(
     @DrawableRes val iconDark: Int?
 ) {
     data object Home : BottomNavItem(
-        ScreenName.HOME.nameScreen,
+        Destinations.HOME.nameScreen,
         R.drawable.home,
         R.drawable.home_selected,
         R.drawable.home_dark
     )
 
     data object Routine : BottomNavItem(
-        ScreenName.ROUTINE.nameScreen,
+        Destinations.ROUTINE.nameScreen,
         R.drawable.note,
         R.drawable.mote_selected,
         R.drawable.note_dark
     )
 
     data object Note : BottomNavItem(
-        ScreenName.NOTE.nameScreen,
+        Destinations.NOTE.nameScreen,
         R.drawable.routine,
         R.drawable.routine_selected,
         R.drawable.routine_dark
     )
 
     data object Calender : BottomNavItem(
-        ScreenName.CALENDER.nameScreen,
+        Destinations.CALENDER.nameScreen,
         R.drawable.calendar,
         R.drawable.calendar_selected,
         R.drawable.calendar_dark
     )
 
     data object Empty : BottomNavItem(
-        ScreenName.EMPTY.nameScreen,
+        Destinations.EMPTY.nameScreen,
         null, null, null
     )
 
     data object Welcome : BottomNavItem(
-        ScreenName.WELCOME.nameScreen,
+        Destinations.WELCOME.nameScreen,
         null,
         null,
         null,

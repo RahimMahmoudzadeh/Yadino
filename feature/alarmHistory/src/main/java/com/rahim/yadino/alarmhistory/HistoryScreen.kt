@@ -48,7 +48,7 @@ import com.rahim.yadino.feature.alarmHistory.R
 import com.rahim.yadino.routine.modle.Routine.Routine
 
 @Composable
-fun HistoryRoute(
+internal fun HistoryRoute(
     historyViewModel: HistoryViewModel = hiltViewModel()
 ) {
     val routineItems by historyViewModel.flowRoutines

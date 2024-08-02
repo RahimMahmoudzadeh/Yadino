@@ -52,7 +52,7 @@ import com.rahim.utils.enums.HalfWeekName
 import com.rahim.utils.extention.calculateMonthName
 
 @Composable
-fun CalenderRoute(
+internal fun CalenderRoute(
     modifier: Modifier = Modifier,
     viewModel: CalenderViewModel = hiltViewModel(),
 ) {

@@ -24,7 +24,7 @@ include(
     ":feature:routine",
     ":feature:note",
     ":feature:welcome",
-    ":feature:wekeup",
+    ":feature:wakeup",
     ":feature:calender",
     ":feature:alarmHistory",
     ":data:routine-repository",
