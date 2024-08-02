@@ -1,29 +1,28 @@
 package com.rahim.yadino.home
 
 import androidx.lifecycle.viewModelScope
-import com.rahim.data.modle.Rotin.Routine
-import com.rahim.data.repository.base.BaseRepository
-import com.rahim.data.repository.routine.RepositoryRoutine
-import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
-import com.rahim.utils.base.viewModel.BaseViewModel
-import com.rahim.utils.enums.error.ErrorMessageCode
-import com.rahim.utils.resours.Resource
+import com.rahim.yadino.base.viewmodel.BaseViewModel
+import com.rahim.yadino.routine.RepositoryRoutine
+import com.rahim.yadino.base.Resource
+import com.rahim.yadino.base.enums.error.ErrorMessageCode
+import com.rahim.yadino.routine.modle.Routine.Routine
+import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val routineRepository: RepositoryRoutine,
-    baseRepository: BaseRepository,
-    sharedPreferencesRepository: SharedPreferencesRepository
+    private val sharedPreferencesRepository: SharedPreferencesRepository
 ) :
-    BaseViewModel(sharedPreferencesRepository, baseRepository) {
+    BaseViewModel() {
 
     private var _flowRoutines = MutableStateFlow<Resource<List<Routine>>>(Resource.Loading())
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
@@ -118,6 +117,10 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
+    fun showSampleRoutine(isShow: Boolean = true) {
+        viewModelScope.launch {
+            sharedPreferencesRepository.isShowSampleRoutine(isShow)
+        }
+    }
 
 }

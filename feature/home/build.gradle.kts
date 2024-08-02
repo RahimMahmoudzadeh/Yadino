@@ -9,5 +9,7 @@ android {
     namespace = "com.rahim.yadino.feature.home"
 }
 dependencies {
-    api(project(":library:navigation"))
+    implementation(project(":domain:routine"))
+    implementation(project(":domain:dateTime"))
+    implementation(project(":domain:sharedPreferences"))
 }

@@ -1,11 +1,11 @@
 package com.rahim.ui.main
 
 import androidx.lifecycle.viewModelScope
-import com.rahim.data.repository.base.BaseRepository
-import com.rahim.data.repository.dataTime.DataTimeRepository
+import com.rahim.yadino.base.viewmodel.BaseViewModel
+import com.rahim.yadino.dateTime.DataTimeRepository
 import com.rahim.yadino.note.NoteRepository
 import com.rahim.yadino.routine.RepositoryRoutine
-import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
+import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -15,14 +15,13 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val dataTimeRepository: DataTimeRepository,
-    private val repositoryRoutine: com.rahim.yadino.routine.RepositoryRoutine,
-    private val noteRepository: com.rahim.yadino.note.NoteRepository,
+    private val repositoryRoutine: RepositoryRoutine,
+    private val noteRepository: NoteRepository,
     @com.rahim.yadino.base.di.IODispatcher
     private val ioDispatcher: CoroutineDispatcher,
-    baseRepository: BaseRepository,
-    sharedPreferencesRepository: SharedPreferencesRepository
+    private val sharedPreferencesRepository: SharedPreferencesRepository
 ) :
-    com.rahim.yadino.base.viewmodel.BaseViewModel(sharedPreferencesRepository, baseRepository) {
+    BaseViewModel() {
     init {
         viewModelScope.launch(ioDispatcher) {
             launch {
@@ -55,4 +54,12 @@ class MainViewModel @Inject constructor(
     }
 
     fun isDarkTheme() = sharedPreferencesRepository.isDarkTheme()
+
+    fun isShowWelcomeScreen() = sharedPreferencesRepository.isShowWelcomeScreen()
+
+    fun showSampleRoutine(isShow: Boolean = true) {
+        viewModelScope.launch {
+            sharedPreferencesRepository.isShowSampleRoutine(isShow)
+        }
+    }
 }

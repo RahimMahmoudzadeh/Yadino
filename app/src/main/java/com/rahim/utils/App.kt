@@ -7,7 +7,7 @@ import android.content.Context
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.rahim.BuildConfig
-import com.rahim.R
+import com.rahim.yadino.R
 import com.rahim.yadino.base.Constants.CHANNEL_ID
 import com.rahim.yadino.base.Constants.CHANNEL_NAME
 import dagger.hilt.android.HiltAndroidApp

@@ -1,15 +1,13 @@
 package com.rahim.yadino.welcome
 
-import com.rahim.data.repository.base.BaseRepository
-import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
-import com.rahim.utils.base.viewModel.BaseViewModel
+import com.rahim.yadino.base.viewmodel.BaseViewModel
+import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 @HiltViewModel
 class WelcomeViewModel @Inject constructor(
-    sharedPreferencesRepository: SharedPreferencesRepository,
-    baseRepository: BaseRepository
-) : BaseViewModel(sharedPreferencesRepository, baseRepository) {
+    private val sharedPreferencesRepository: SharedPreferencesRepository,
+) : BaseViewModel() {
     fun saveShowWelcome(isShow: Boolean) {
         sharedPreferencesRepository.saveShowWelcome(isShow)
     }

@@ -9,3 +9,6 @@ android {
     namespace = "com.rahim.yadino.domin.note"
 }
 
+dependencies{
+    implementation(project(":core:base"))
+}

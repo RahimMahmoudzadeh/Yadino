@@ -17,18 +17,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.rahim.R
-import com.rahim.data.alarm.AlarmManagement
-import com.rahim.data.modle.Rotin.Routine
-import com.rahim.ui.dialog.DialogAddRoutine
-import com.rahim.ui.dialog.ErrorDialog
-import com.rahim.ui.theme.YadinoTheme
-import com.rahim.utils.Helper
-import com.rahim.utils.base.view.EmptyMessage
-import com.rahim.utils.base.view.ItemRoutine
-import com.rahim.utils.base.view.ProcessRoutineAdded
-import com.rahim.utils.base.view.ShowSearchBar
-import com.rahim.utils.resours.Resource
+import com.rahim.yadino.base.Resource
+import com.rahim.yadino.base.persianLocate
+import com.rahim.yadino.designsystem.component.EmptyMessage
+import com.rahim.yadino.designsystem.component.ItemRoutine
+import com.rahim.yadino.designsystem.component.ProcessRoutineAdded
+import com.rahim.yadino.designsystem.component.ShowSearchBar
+import com.rahim.yadino.designsystem.dialog.DialogAddRoutine
+import com.rahim.yadino.designsystem.dialog.ErrorDialog
+import com.rahim.yadino.designsystem.theme.YadinoTheme
+import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.routine.modle.Routine.Routine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -188,19 +187,37 @@ private fun HomeScreen(
             onOpenDialog(false)
             routineUpdateDialog.value = null
         },
-        routineUpdate = routineUpdateDialog.value,
-        routine = { routine ->
+        routineItems = { routineName, routineExplanation, routineTime, dayChecked, monthChecked, yearChecked, dayName ->
             onShowSampleRoutine()
-            if (routineUpdateDialog.value != null) {
-                onUpdateRoutine(routine)
+            val routine = if (routineUpdateDialog.value != null) {
+                routineUpdateDialog.value?.apply {
+                    name = routineName
+                    explanation = routineExplanation
+                    timeHours = routineTime
+                }
             } else {
-                onAddRoutine(routine)
+                Routine(
+                    name = routineName,
+                    dayName = dayName,
+                    dayNumber = dayChecked,
+                    monthNumber = monthChecked,
+                    yerNumber = yearChecked,
+                    explanation = routineExplanation,
+                    timeHours = routineTime,
+                    colorTask = null
+                )
+            }
+            routine?.let {
+                if (routineUpdateDialog.value != null) {
+                    onUpdateRoutine(it)
+                } else {
+                    onAddRoutine(routine)
+                }
             }
         },
         currentNumberDay = currentDay,
         currentNumberMonth = currentMonth,
-        currentNumberYear = currentYer,
-        times = null, monthChange = { year: Int, month: Int -> }
+        currentNumberYear = currentYer, monthChange = { year: Int, month: Int -> }
     )
     ProcessRoutineAdded(addRoutine, context) {
         it?.let {
@@ -231,7 +248,7 @@ fun ItemsHome(
     updateRoutine: (Routine) -> Unit,
     deleteRoutine: (Routine) -> Unit
 ) {
-    val data ="$currentDay/$currentMonth/$currentYer"
+    val data = "$currentDay/$currentMonth/$currentYer"
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -239,12 +256,12 @@ fun ItemsHome(
             .fillMaxWidth()
     ) {
         Text(
-            text = Helper.persianLocate(data),
+            text = data.persianLocate(),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.primary
         )
         Text(
-            text = stringResource(id = R.string.list_work_day),
+            text = stringResource(id = com.rahim.yadino.feature.home.R.string.list_work_day),
             fontSize = 18.sp,
             color = MaterialTheme.colorScheme.primary
         )
@@ -254,14 +271,21 @@ fun ItemsHome(
             .fillMaxWidth(),
         contentPadding = PaddingValues(top = 0.dp, start = 16.dp, end = 16.dp)
     ) {
-        items(items = routines) {
-            ItemRoutine(routine = it, onChecked = {
-                checkedRoutine(it)
-            }, openDialogDelete = {
-                deleteRoutine(it)
-            }, openDialogEdit = {
-                updateRoutine(it)
-            })
+        items(items = routines) { routine ->
+            ItemRoutine(
+                nameRoutine = routine.name,
+                isChecked = routine.isChecked,
+                timeHoursRoutine = routine.timeHours ?: "",
+                explanationRoutine = routine.explanation ?: "",
+                onChecked = {
+                    checkedRoutine(routine.apply { isChecked = it })
+                },
+                openDialogDelete = {
+                    deleteRoutine(routine)
+                },
+                openDialogEdit = {
+                    updateRoutine(routine)
+                })
         }
     }
 }
@@ -270,7 +294,6 @@ fun ItemsHome(
 @Composable
 fun HomeScreenWrapper() {
     YadinoTheme {
-        val viewModel = hiltViewModel<HomeViewModel>()
-//        HomeScreen(viewModel = viewModel)
+        HomeRoute(openDialog = false, clickSearch = false, onOpenDialog = {})
     }
 }

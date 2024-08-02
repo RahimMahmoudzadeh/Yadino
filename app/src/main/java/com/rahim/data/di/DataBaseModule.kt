@@ -14,22 +14,22 @@ import javax.inject.Singleton
 object DataBaseModule {
     @Singleton
     @Provides
-    fun providesMainDatabase(application: Application): com.rahim.yadino.database.AppDatabase {
+    fun providesMainDatabase(application: Application): AppDatabase {
         return Room.databaseBuilder(
             application,
-            com.rahim.yadino.database.AppDatabase::class.java,
+            AppDatabase::class.java,
             com.rahim.yadino.base.Constants.DATABASE_NAME
         ).build()
     }
 
-    @Singleton
-    @Provides
-    fun providesRoutineDao(appDatabase: com.rahim.yadino.database.AppDatabase) = appDatabase.routineDao()
-
-    @Singleton
-    @Provides
-    fun providesNoteDao(appDatabase: com.rahim.yadino.database.AppDatabase) = appDatabase.noteDao()
-    @Singleton
-    @Provides
-    fun providesTimeDao(appDatabase: com.rahim.yadino.database.AppDatabase) = appDatabase.timeDataDao()
+//    @Singleton
+//    @Provides
+//    fun providesRoutineDao(appDatabase: com.rahim.yadino.database.AppDatabase) = appDatabase.routineDao()
+//
+//    @Singleton
+//    @Provides
+//    fun providesNoteDao(appDatabase: com.rahim.yadino.database.AppDatabase) = appDatabase.noteDao()
+//    @Singleton
+//    @Provides
+//    fun providesTimeDao(appDatabase: com.rahim.yadino.database.AppDatabase) = appDatabase.timeDataDao()
 }

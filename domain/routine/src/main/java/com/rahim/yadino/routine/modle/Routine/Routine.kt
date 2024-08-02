@@ -1,6 +1,7 @@
 package com.rahim.yadino.routine.modle.Routine
 
 import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 
 @Parcelize

@@ -6,6 +6,7 @@ plugins {
         alias(android.application.compose)
         alias(android.hilt)
         alias(android.application.firebase)
+        alias(android.room)
     }
 }
 android {
@@ -26,13 +27,19 @@ android {
     }
 }
 dependencies {
-    libs.apply {
+    libs.run {
         implementation(androidx.core.splashscreen)
 //        implementation(androidx.tracing.ktx)
         implementation(timber)
 
         implementation(project(":feature:home"))
+        implementation(project(":core:database"))
+        implementation(project(":domain:sharedPreferences"))
+        implementation(project(":domain:routine"))
+        implementation(project(":domain:dateTime"))
+        implementation(project(":domain:note"))
 
         implementation(kotlinx.collections.immutable)
+        implementation(bundles.room)
     }
 }

@@ -1,6 +1,6 @@
-package com.rahim.yadino.routine.modle
+package com.rahim.yadino.base
 
-import com.rahim.utils.enums.error.ErrorMessageCode
+import com.rahim.yadino.base.enums.error.ErrorMessageCode
 
 sealed class Resource<T>(
     val data: T? = null,

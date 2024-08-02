@@ -2,11 +2,12 @@ package com.rahim.yadino.alarmhistory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rahim.data.modle.Rotin.Routine
-import com.rahim.data.repository.routine.RepositoryRoutine
-import com.rahim.utils.enums.error.ErrorMessageCode
-import com.rahim.utils.resours.Resource
+import com.rahim.yadino.base.Resource
+import com.rahim.yadino.base.enums.error.ErrorMessageCode
+import com.rahim.yadino.routine.RepositoryRoutine
+import com.rahim.yadino.routine.modle.Routine.Routine
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -18,7 +19,8 @@ class HistoryViewModel @Inject constructor(
 ) : ViewModel() {
     private var _flowRoutines = MutableStateFlow<Resource<List<Routine>>>(Resource.Loading())
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
-    val haveAlarm :Flow<Boolean> = routineRepository.haveAlarm()
+
+    val haveAlarm: Flow<Boolean> = routineRepository.haveAlarm()
 
 
     fun getAllRoutine() {

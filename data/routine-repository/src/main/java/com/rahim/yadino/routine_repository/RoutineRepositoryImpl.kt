@@ -4,7 +4,7 @@ import com.rahim.yadino.base.di.IODispatcher
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
 import com.rahim.yadino.routine.RepositoryRoutine
-import com.rahim.yadino.routine.modle.Resource
+import com.rahim.yadino.base.Resource
 import com.rahim.yadino.routine.modle.Routine.Routine
 import com.rahim.yadino.routine_local.dao.RoutineDao
 import com.rahim.yadino.routine_repository.mapper.toLocalRoutineDto
@@ -109,9 +109,9 @@ class RoutineRepositoryImpl @Inject constructor(
     override suspend fun getAllRoutine(): List<Routine> =
         routineDao.getRoutines().map { list -> list.toRoutine() }
 
-    override fun addRoutine(routine: Routine): Flow<com.rahim.yadino.routine.modle.Resource<Routine?>> =
-        flow<com.rahim.yadino.routine.modle.Resource<Routine?>> {
-            emit(com.rahim.yadino.routine.modle.Resource.Loading())
+    override fun addRoutine(routine: Routine): Flow<Resource<Routine?>> =
+        flow<Resource<Routine?>> {
+            emit(Resource.Loading())
             routine.apply {
                 idAlarm = getRoutineAlarmId()
                 colorTask = 0
@@ -186,7 +186,7 @@ class RoutineRepositoryImpl @Inject constructor(
         routineDao.removeAllRoutine(nameMonth, dayNumber, yerNumber)
     }
 
-    override suspend fun updateRoutine(routine: Routine): Flow<com.rahim.yadino.routine.modle.Resource<Routine?>> =
+    override suspend fun updateRoutine(routine: Routine): Flow<Resource<Routine?>> =
         flow {
             routine.apply {
                 timeInMillisecond = convertDateToMilSecond(

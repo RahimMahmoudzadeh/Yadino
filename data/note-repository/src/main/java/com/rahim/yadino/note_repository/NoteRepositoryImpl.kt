@@ -1,5 +1,6 @@
 package com.rahim.yadino.note_repository
 
+import com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
 import com.rahim.yadino.note.NoteRepository
 import com.rahim.yadino.note.model.NoteModel
 import com.rahim.yadino.note_repository.mapper.toLocalNoteDto
@@ -14,7 +15,7 @@ private const val SAMPLE_NOTE_LEFT = "من یک یادداشت تستی هستم
 
 class NoteRepositoryImpl @Inject constructor(
     private val noteDao: com.rahim.yadino.note_local.NoteDao,
-    private val sharedPreferencesCustom: com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
+    private val sharedPreferencesCustom: SharedPreferencesCustom
 ) : NoteRepository {
     private val persianData = PersianDate()
     private val currentTimeDay = persianData.shDay

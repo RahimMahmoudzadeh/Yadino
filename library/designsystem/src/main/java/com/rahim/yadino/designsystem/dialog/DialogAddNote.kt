@@ -39,17 +39,16 @@ fun DialogAddNote(
     isOpen: Boolean,
     updateNoteName: String = "",
     updateNoteDescription: String = "",
-    updateNoteState: String = "",
+    updateNoteState: Int = 0,
     openDialog: (Boolean) -> Unit,
     note: (noteName: String, description: String, stateNote: Int, timeInMileSecond: Long) -> Unit
 ) {
 
-    var state by remember { mutableStateOf(0) }
-    var (nameNote, description) = rememberSaveable { mutableStateOf("") }
-    var (isErrorName, isErrorExplanation) = remember { mutableStateOf(false) }
-    nameNote = updateNoteName
-    description = updateNoteDescription
-    state = updateNoteState
+    var state by remember { mutableStateOf(updateNoteState) }
+    var nameNote by rememberSaveable { mutableStateOf(updateNoteName) }
+    var description by rememberSaveable { mutableStateOf(updateNoteDescription) }
+    var isErrorName by remember { mutableStateOf(false) }
+    var isErrorExplanation by remember { mutableStateOf(false) }
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         if (isOpen) {
             BasicAlertDialog(properties = DialogProperties(
@@ -242,10 +241,10 @@ fun DialogAddNote(
                                         isErrorName = true
                                     } else {
                                         note(
-                                            noteName = nameNote,
-                                            description = description,
-                                            stateNote = state,
-                                            timeInMileSecond = System.currentTimeMillis()
+                                            nameNote,
+                                            description,
+                                            state,
+                                            System.currentTimeMillis()
                                         )
                                         openDialog(false)
                                         nameNote = ""
@@ -255,6 +254,7 @@ fun DialogAddNote(
                                         state = 0
                                     }
                                 })
+
                             Spacer(modifier = Modifier.width(10.dp))
                             TextButton(onClick = {
                                 nameNote = ""

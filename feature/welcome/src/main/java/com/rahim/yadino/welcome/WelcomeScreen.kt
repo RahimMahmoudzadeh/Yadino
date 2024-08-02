@@ -2,6 +2,7 @@ package com.rahim.yadino.welcome
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,11 +34,6 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.rahim.data.modle.screen.WelcomeScreenModel
-import com.rahim.ui.theme.YadinoTheme
-import com.rahim.utils.base.view.GradientButton
-import com.rahim.utils.base.view.gradientColors
-import com.rahim.utils.navigation.Screen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)

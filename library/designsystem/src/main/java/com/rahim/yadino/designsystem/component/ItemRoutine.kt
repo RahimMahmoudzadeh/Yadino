@@ -13,28 +13,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import com.rahim.R
-import com.rahim.data.modle.Rotin.Routine
+import com.rahim.yadino.base.persianLocate
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.theme.Porcelain
+import com.rahim.yadino.library.designsystem.R
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
 @Composable
 fun ItemRoutine(
-    routine: Routine,
     modifier: Modifier = Modifier,
-    onChecked: (Routine) -> Unit,
-    openDialogEdit: (Routine) -> Unit,
-    openDialogDelete: (Routine) -> Unit,
+    isChecked:Boolean,
+    timeHoursRoutine:String,
+    nameRoutine:String,
+    explanationRoutine:String,
+    onChecked: (Boolean) -> Unit,
+    openDialogEdit: () -> Unit,
+    openDialogDelete: () -> Unit,
 ) {
-    val textUnderLine = if (routine.isChecked) TextDecoration.LineThrough else TextDecoration.None
+    val textUnderLine = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
 
     val delete = SwipeAction(
         icon = painterResource(id = R.drawable.delete),
         background = MaterialTheme.colorScheme.background,
         onSwipe = {
-            openDialogDelete(routine)
+            openDialogDelete()
         }
     )
 
@@ -42,7 +45,7 @@ fun ItemRoutine(
         icon = painterResource(id = R.drawable.edit),
         background = MaterialTheme.colorScheme.background,
         onSwipe = {
-            openDialogEdit(routine)
+            openDialogEdit()
         },
     )
     SwipeableActionsBox(
@@ -52,14 +55,12 @@ fun ItemRoutine(
     ) {
         Card(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-            border = if (routine.isChecked) BorderStroke(1.dp, color = Porcelain) else BorderStroke(
+            border = if (isChecked) BorderStroke(1.dp, color = Porcelain) else BorderStroke(
                 1.dp,
                 Brush.verticalGradient(gradientColors)
             ),
             onClick = {
-                onChecked(routine.apply {
-                    isChecked = !isChecked
-                })
+                onChecked(!isChecked)
             },
             modifier = modifier
                 .fillMaxWidth()
@@ -77,11 +78,9 @@ fun ItemRoutine(
                     modifier = Modifier.weight(0.3f)
                 ) {
                     Checkbox(
-                        checked = routine.isChecked,
+                        checked = isChecked,
                         onCheckedChange = {
-                            onChecked(routine.apply {
-                                isChecked = it
-                            })
+                            onChecked(!isChecked)
                         },
                         colors = CheckboxDefaults.colors(
                             uncheckedColor = CornflowerBlueLight,
@@ -90,9 +89,9 @@ fun ItemRoutine(
                     )
                     Row(modifier = Modifier.padding(top = 22.dp, start = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
-                        ) {
+                    ) {
                         Text(
-                            text =Helper.persianLocate(routine.timeHours.toString()),
+                            text =timeHoursRoutine.persianLocate(),
                             style = MaterialTheme.typography.bodySmall,
                             textDecoration = textUnderLine,
                             fontWeight = FontWeight.SemiBold,
@@ -117,23 +116,23 @@ fun ItemRoutine(
                     horizontalAlignment = Alignment.End
                 ) {
                     Text(
-                        text = routine.name,
+                        text = nameRoutine,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary,
                         textDecoration = textUnderLine,
                         fontWeight = FontWeight.SemiBold
                     )
-                        if (!routine.explanation.isNullOrEmpty()) {
-                            Text(
-                                modifier = Modifier.padding(top = 12.dp),
-                                text ="${stringResource(id = R.string.explanation)}: ${routine.explanation}" ,
-                                color = MaterialTheme.colorScheme.secondaryContainer,
-                                textDecoration = textUnderLine,
-                                textAlign = TextAlign.End,
-                                style = MaterialTheme.typography.bodyMedium,
+                    if (explanationRoutine.isNotEmpty()) {
+                        Text(
+                            modifier = Modifier.padding(top = 12.dp),
+                            text ="${stringResource(id = R.string.explanation)}: ${explanationRoutine}" ,
+                            color = MaterialTheme.colorScheme.secondaryContainer,
+                            textDecoration = textUnderLine,
+                            textAlign = TextAlign.End,
+                            style = MaterialTheme.typography.bodyMedium,
 
                             )
-                        }
+                    }
 
                 }
             }

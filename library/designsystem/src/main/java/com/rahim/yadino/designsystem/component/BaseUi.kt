@@ -67,21 +67,20 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.shouldShowRationale
-import com.rahim.R
-import com.rahim.data.modle.data.TimeDate
+import com.rahim.yadino.base.Resource
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.theme.Periwinkle
 import com.rahim.yadino.designsystem.theme.Purple
 import com.rahim.yadino.designsystem.theme.PurpleGrey
-import com.rahim.utils.enums.HalfWeekName
-import com.rahim.utils.extention.errorMessage
-import com.rahim.utils.resours.Resource
+import com.rahim.yadino.base.enums.HalfWeekName
+import com.rahim.yadino.base.errorMessage
+import com.rahim.yadino.base.model.TimeDate
+import com.rahim.yadino.base.persianLocate
+import com.rahim.yadino.library.designsystem.R
 import timber.log.Timber
 
 val gradientColors = listOf(Purple, PurpleGrey)
@@ -243,10 +242,9 @@ fun TopBarCenterAlign(
     onClickSearch: () -> Unit,
     onClickBack: () -> Unit,
     onDrawerClick: () -> Unit,
-    historyViewModel: HistoryViewModel = hiltViewModel()
+    haveAlarm: Boolean
 ) {
 
-    val haveAlarm by historyViewModel.haveAlarm.collectAsStateWithLifecycle(initialValue = false)
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.onBackground),
         modifier = modifier.shadow(elevation = 8.dp),
@@ -282,7 +280,7 @@ fun TopBarCenterAlign(
                         Icon(
                             imageVector = Icons.Rounded.Notifications,
                             contentDescription = "",
-                            tint =CornflowerBlueLight,
+                            tint = CornflowerBlueLight,
                         )
                     }
 
@@ -455,7 +453,7 @@ fun TimeItems(
                         timeDate.dayNumber
                     )
                 },
-                text =Helper.persianLocate(timeDate.dayNumber.toString()) ,
+                text =timeDate.dayNumber.toString().persianLocate() ,
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
                 style = TextStyle(
@@ -483,7 +481,7 @@ fun TimeItems(
                         timeDate.dayNumber
                     )
                 },
-                text =Helper.persianLocate(timeDate.dayNumber.toString()) ,
+                text =timeDate.dayNumber.toString().persianLocate() ,
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.surface,
@@ -500,7 +498,7 @@ fun TimeItems(
                 ), contentAlignment = Alignment.Center
         ) {
             Text(
-                text =Helper.persianLocate(timeDate.dayNumber.toString()) ,
+                text = timeDate.dayNumber.toString().persianLocate(),
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
                 color = Color.White
@@ -524,7 +522,7 @@ fun TimeItems(
                         timeDate.dayNumber
                     )
                 },
-                text =Helper.persianLocate(timeDate.dayNumber.toString()) ,
+                text = timeDate.dayNumber.toString().persianLocate(),
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.surface

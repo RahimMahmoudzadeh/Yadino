@@ -8,3 +8,6 @@ plugins {
 android {
     namespace = "com.rahim.yadino.feature.alarmHistory"
 }
+dependencies{
+    implementation(project(":domain:routine"))
+}

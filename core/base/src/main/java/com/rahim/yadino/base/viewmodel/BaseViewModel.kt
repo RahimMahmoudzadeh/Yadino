@@ -4,25 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import saman.zamani.persiandate.PersianDate
 import javax.inject.Inject
 
-@HiltViewModel
-open class BaseViewModel @Inject constructor(
-//    private val baseRepository: BaseRepository
+open class BaseViewModel(
+    private val persianData: PersianDate = PersianDate()
 ) :
     ViewModel() {
-
-//    val currentYear get() = getCurrentTime()[0]
-//    val currentMonth get() = getCurrentTime()[1]
-//    val currentDay get() = getCurrentTime()[2]
-
-//    fun isShowWelcomeScreen() = sharedPreferencesRepository.isShowWelcomeScreen()
-
-//    private fun getCurrentTime(): List<Int> = baseRepository.getCurrentTime()
-
-//    fun showSampleRoutine(isShow: Boolean = true) {
-//        viewModelScope.launch {
-//            sharedPreferencesRepository.isShowSampleRoutine(isShow)
-//        }
-//    }
+    val currentDay = persianData.shDay
+    val currentMonth = persianData.shMonth
+    val currentYear = persianData.shYear
 }

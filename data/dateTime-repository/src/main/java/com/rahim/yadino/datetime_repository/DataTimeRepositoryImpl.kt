@@ -7,7 +7,7 @@ import com.rahim.yadino.base.Constants.VERSION_TIME_DB
 import com.rahim.yadino.base.enums.HalfWeekName
 import com.rahim.yadino.base.enums.WeekName
 import com.rahim.yadino.dateTime.DataTimeRepository
-import com.rahim.yadino.dateTime.model.TimeDate
+import com.rahim.yadino.base.model.TimeDate
 import com.rahim.yadino.dateTime_local.dao.TimeDao
 import com.rahim.yadino.dateTime_local.dto.LocalTimeDateDto
 import com.rahim.yadino.datetime_repository.mapper.toLocalTimeDateDto

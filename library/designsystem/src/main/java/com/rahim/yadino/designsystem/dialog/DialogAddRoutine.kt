@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.yadino.base.model.TimeDate
+import com.rahim.yadino.base.persianLocate
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
@@ -38,8 +39,10 @@ import com.rahim.yadino.designsystem.theme.PurpleGrey
 import com.rahim.yadino.library.designsystem.R
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.time.LocalTime
 
@@ -60,9 +63,12 @@ fun DialogAddRoutine(
     updateRoutineName: String = "",
     updateRoutineExplanation: String = "",
     updateRoutineTime: String = "",
+    updateRoutineDay: Int? = null,
+    updateRoutineMonth: Int? = null,
+    updateRoutineYear: Int? = null,
     times: List<TimeDate> = emptyList(),
     openDialog: () -> Unit,
-    routine: (routineName: String, routineExplanation: String, routineTime: String) -> Unit,
+    routineItems: (routineName: String, routineExplanation: String, routineTime: String, dayChecked: Int?, monthChecked: Int?, yearChecked: Int?, dayName: String) -> Unit,
     monthChange: (year: Int, month: Int) -> Unit,
 ) {
     if (!isOpen) return
@@ -70,24 +76,25 @@ fun DialogAddRoutine(
     var monthChecked by rememberSaveable { mutableIntStateOf(currentNumberMonth) }
     var yearChecked by rememberSaveable { mutableIntStateOf(currentNumberYear) }
     var dayChecked by rememberSaveable { mutableIntStateOf(currentNumberDay) }
-    var (routineName, routineExplanation, time) = rememberSaveable { mutableStateOf("") }
-    var (checkedStateAllDay, isErrorName, isShowDateDialog, isErrorExplanation) = remember {
-        mutableStateOf(
-            false
-        )
-    }
+    var routineName by rememberSaveable { mutableStateOf("") }
+    var routineExplanation by rememberSaveable { mutableStateOf("") }
+    var time by rememberSaveable { mutableStateOf("") }
+    var checkedStateAllDay by remember { mutableStateOf(false) }
+    var isErrorName by remember { mutableStateOf(false) }
+    var isShowDateDialog by remember { mutableStateOf(false) }
+    var isErrorExplanation by remember { mutableStateOf(false) }
     val alarmDialogState = rememberMaterialDialogState()
 
     routineName = updateRoutineName
     routineExplanation = updateRoutineExplanation
     time = updateRoutineTime
 
-//    val persianData = PersianDate()
-//    val date = persianData.initJalaliDate(
-//        routineUpdate?.yerNumber ?: yearChecked,
-//        routineUpdate?.monthNumber ?: monthChecked,
-//        routineUpdate?.dayNumber ?: dayChecked
-//    )
+    val persianData = PersianDate()
+    val date = persianData.initJalaliDate(
+        updateRoutineYear ?: yearChecked,
+        updateRoutineMonth ?: monthChecked,
+        updateRoutineDay ?: dayChecked
+    )
     val dayWeek = stringArrayResource(id = R.array.day_weeks)
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -342,10 +349,14 @@ fun DialogAddRoutine(
                                 if (routineName.isEmpty()) {
                                     isErrorName = true
                                 } else {
-                                    routine(
-                                        routineName = routineName,
-                                        routineExplanation = routineExplanation,
-                                        routineTime = time,
+                                    routineItems(
+                                        routineName,
+                                        routineExplanation,
+                                        time,
+                                        dayChecked,
+                                        monthChecked,
+                                        yearChecked,
+                                        persianData.dayName(date)
                                     )
                                 }
                             })

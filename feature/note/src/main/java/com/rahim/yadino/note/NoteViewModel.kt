@@ -1,16 +1,14 @@
 package com.rahim.yadino.note
 
 import androidx.lifecycle.viewModelScope
-import com.rahim.data.modle.note.NoteModel
-import com.rahim.data.repository.base.BaseRepository
-import com.rahim.data.repository.dataTime.DataTimeRepository
-import com.rahim.data.repository.note.NoteRepository
-import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
-import com.rahim.utils.Constants
-import com.rahim.utils.base.viewModel.BaseViewModel
-import com.rahim.utils.enums.error.ErrorMessageCode
-import com.rahim.utils.extention.calculateTimeFormat
-import com.rahim.utils.resours.Resource
+import com.rahim.yadino.base.Constants
+import com.rahim.yadino.base.Resource
+import com.rahim.yadino.base.calculateTimeFormat
+import com.rahim.yadino.base.enums.error.ErrorMessageCode
+import com.rahim.yadino.base.viewmodel.BaseViewModel
+import com.rahim.yadino.dateTime.DataTimeRepository
+import com.rahim.yadino.note.model.NoteModel
+import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,12 +20,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NoteViewModel @Inject constructor(
-    baseRepository: BaseRepository,
     private val noteRepository: NoteRepository,
     private val timeRepository: DataTimeRepository,
-    sharedPreferencesRepository: SharedPreferencesRepository,
+    private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) :
-    BaseViewModel(sharedPreferencesRepository, baseRepository) {
+    BaseViewModel() {
 
     private var _notes = MutableStateFlow<Resource<List<NoteModel>>>(Resource.Loading())
     var notes: StateFlow<Resource<List<NoteModel>>> = _notes

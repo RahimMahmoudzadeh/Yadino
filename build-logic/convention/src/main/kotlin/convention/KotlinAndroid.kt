@@ -33,6 +33,7 @@ internal fun Project.configureKotlinAndroid(
     dependencies {
         add("implementation", versionCatalog.findLibrary("androidx-core").get())
         add("implementation", versionCatalog.findLibrary("samanzamani").get())
+        add("implementation", versionCatalog.findLibrary("timber").get())
         add("testImplementation", versionCatalog.findLibrary("junit").get())
         add("androidTestImplementation", versionCatalog.findBundle("test").get())
         add("coreLibraryDesugaring", versionCatalog.findLibrary("android.desugarJdkLibs").get())
