@@ -32,12 +32,14 @@
             <option value="$PROJECT_DIR$/data/dateTime-repository" />
             <option value="$PROJECT_DIR$/data/note-local" />
             <option value="$PROJECT_DIR$/data/note-repository" />
+            <option value="$PROJECT_DIR$/data/reminder-repository" />
             <option value="$PROJECT_DIR$/data/routine-local" />
             <option value="$PROJECT_DIR$/data/routine-repository" />
             <option value="$PROJECT_DIR$/data/sharedPreferences" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/domain/dateTime" />
             <option value="$PROJECT_DIR$/domain/note" />
+            <option value="$PROJECT_DIR$/domain/reminder" />
             <option value="$PROJECT_DIR$/domain/routine" />
             <option value="$PROJECT_DIR$/domain/sharedPreferences" />
             <option value="$PROJECT_DIR$/feature" />

@@ -39,4 +39,6 @@ include(
     ":data:note-repository",
     ":data:note-local",
     ":core:database",
+    ":domain:reminder",
 )
+include(":data:reminder-repository")

@@ -1,6 +1,4 @@
-package com.rahim.yadino.routine.modle.screen
-
-import androidx.compose.ui.unit.TextUnit
+package com.rahim.yadino.welcome
 
 data class WelcomeScreenModel(
     val textWelcomeTop :String,

@@ -1,4 +1,4 @@
-package com.rahim.ui.wakeup
+package com.rahim.yadino.wekeup
 
 import android.app.KeyguardManager
 import android.os.Build
@@ -42,6 +42,7 @@ import com.rahim.data.modle.Rotin.Routine
 import com.rahim.ui.theme.YadinoTheme
 import com.rahim.utils.Constants
 import com.rahim.utils.base.view.gradientColors
+import com.rahim.yadino.designsystem.theme.YadinoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -27,11 +27,17 @@ object Constants {
     const val DARK="dark theme"
     const val LIGHT="light theme"
 
+    //Action
+    const val ACTION_SEND_NOTIFICATION="action send notification"
+    const val ACTION_CANCEL_NOTIFICATION="action cancel notification"
+
     //Key
     const val ALARM_MESSAGE = "alarm Message"
     const val ALARM_NAME = "alarm name"
     const val ALARM_ID = "alarmId"
     const val ROUTINE = "routine"
+    const val KEY_LAUNCH_NAME = "key_launch_name"
+    const val KEY_LAUNCH_ID = "key_reminder_name"
 
     //Value
     const val IS_ALARM = "is Alarm"
