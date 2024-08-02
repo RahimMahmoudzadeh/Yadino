@@ -1,4 +1,4 @@
-package com.rahim.yadino.alarmhistory
+package com.rahim.yadino.designsystem.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -15,25 +15,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.rahim.R
-import com.rahim.data.modle.Rotin.Routine
-import com.rahim.ui.theme.Porcelain
-import com.rahim.utils.Helper
-import com.rahim.utils.base.view.gradientColors
+import com.rahim.yadino.base.persianLocate
+import com.rahim.yadino.library.designsystem.R
 
 @Composable
 fun AlarmHistoryCardItem(
-    routine: Routine,
+    routineIsChecked: Boolean,
+    routineName: String,
+    routineTimeHours: String,
+    routineYearNumber: Int,
+    routineMonthNumber: Int,
+    routineDayNumber: Int,
 ) {
 
-    val textUnderLine = if (routine.isChecked) TextDecoration.LineThrough else TextDecoration.None
-    val textAlpha =if(routine.isChecked) 0.6f else 1f
+    val textUnderLine = if (routineIsChecked) TextDecoration.LineThrough else TextDecoration.None
+    val textAlpha = if (routineIsChecked) 0.6f else 1f
+    val date ="${routineYearNumber}/${routineMonthNumber}/${routineDayNumber}".persianLocate()
     Card(
         elevation = CardDefaults.elevatedCardElevation(4.dp),
         modifier = Modifier
@@ -54,7 +56,7 @@ fun AlarmHistoryCardItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = routine.name,
+                text = routineName,
                 color = MaterialTheme.colorScheme.primary.copy(textAlpha),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
@@ -65,7 +67,9 @@ fun AlarmHistoryCardItem(
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                text = "${stringResource(id = R.string.time)}: ${Helper.persianLocate(routine.timeHours.toString())}  ${stringResource(id = R.string.date)}: $date",
+                text = "${stringResource(id = R.string.time)}: ${
+                    routineTimeHours.persianLocate()
+                }  ${stringResource(id = R.string.date)}: $date",
                 color = MaterialTheme.colorScheme.secondaryContainer.copy(textAlpha),
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.SemiBold,

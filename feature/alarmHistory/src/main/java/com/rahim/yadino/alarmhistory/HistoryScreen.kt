@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material3.Icon
@@ -33,15 +34,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.rahim.data.modle.Rotin.Routine
+import com.rahim.yadino.base.persianLocate
+import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
+import com.rahim.yadino.feature.alarmHistory.R
+import com.rahim.yadino.routine.modle.Routine.Routine
 
 @Composable
 fun HistoryRoute(
@@ -75,7 +79,9 @@ private fun HistoryScreen(
             item {
                 val text =
                     if (incompleteTasks.isEmpty()) stringResource(id = R.string.not_alarm) else
-                        "${stringResource(id = R.string.you)} ${Helper.persianLocate(incompleteTasks.size.toString())} ${stringResource(id = R.string.have_alarm)}"
+                        "${stringResource(id = R.string.you)} ${
+                            incompleteTasks.size.toString().persianLocate()
+                        } ${stringResource(id = R.string.have_alarm)}"
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -88,7 +94,14 @@ private fun HistoryScreen(
                 )
             }
             items(incompleteTasks) { routine ->
-                AlarmHistoryCardItem(routine)
+                AlarmHistoryCardItem(
+                    routineIsChecked = routine.isChecked,
+                    routineName = routine.name,
+                    routineDayNumber = routine.dayNumber ?: 0,
+                    routineYearNumber = routine.yerNumber ?: 0,
+                    routineMonthNumber = routine.monthNumber ?: 0,
+                    routineTimeHours = routine.timeHours ?: "",
+                )
             }
             stickyHeader {
                 RoutineCompleted(
@@ -103,13 +116,21 @@ private fun HistoryScreen(
                     enter = fadeIn() + expandVertically(animationSpec = tween(1000)),
                     exit = fadeOut() + shrinkVertically(animationSpec = tween(1000))
                 ) {
-                    AlarmHistoryCardItem(routine)
+                    AlarmHistoryCardItem(
+                        routineIsChecked = routine.isChecked,
+                        routineName = routine.name,
+                        routineDayNumber = routine.dayNumber ?: 0,
+                        routineYearNumber = routine.yerNumber ?: 0,
+                        routineMonthNumber = routine.monthNumber ?: 0,
+                        routineTimeHours = routine.timeHours ?: "",
+                    )
                 }
             }
 
         }
     }
 }
+
 @Composable
 private fun RoutineCompleted(
     size: Int,
@@ -137,7 +158,9 @@ private fun RoutineCompleted(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "( ${Helper.persianLocate(size.toString())} ${stringResource(id = R.string.routine)} )",
+                text = "( ${
+                    size.toString().persianLocate()
+                } ${stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine)} )",
                 style = MaterialTheme.typography.bodyMedium,
                 color = CornflowerBlueLight,
                 fontWeight = FontWeight.SemiBold,

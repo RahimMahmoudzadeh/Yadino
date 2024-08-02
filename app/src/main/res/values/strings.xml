@@ -16,7 +16,6 @@
     <string name="next">بعدی</string>
     <string name="welcome_2">با یادینو دیگه ازکارات عقب نمیفتی!</string>
     <string name="home">خانه</string>
-    <string name="routine">روتین</string>
     <string name="note"> : یادداشت</string>
     <string name="calendar">تقویم</string>
     <string name="welcome">خوشامدگویی</string>
@@ -30,7 +29,6 @@
     <string name="week_day">تعداد روز در هفته</string>
     <string name="seven_day">7 روز</string>
     <string name="for_remmber">برای اینکه بتونیم یادت بندازیم تیک یادآور رو بزن</string>
-    <string name="time">زمان</string>
     <string name="notes">یادداشت ها</string>
     <string name="not_note">!شما هنوز یادداشتی ثبت نکردید</string>
     <string name="not_routine">!شما هنوز روتینی ثبت نکردید</string>
@@ -58,11 +56,6 @@
     <string name="drawer_item_about_us">درباره ما</string>
     <string name="drawer_item_theme">تم</string>
     <string name="drawer_item_guide">راهنما</string>
-    <string name="have_alarm">آلارم فعال دارید</string>
-    <string name="not_alarm">آلارم فعالی ندارید!</string>
-    <string name="completed">تکمیل شده</string>
-    <string name="you">شما</string>
-    <string name="date">تاریخ</string>
     <string name="install_cafeBazaar">لطفا اپلیکیشن کافه بازار را نصب کنید!!!</string>
     <string name="install_myket">لطفا اپلیکیشن مایکت رو نصب کنید!!!</string>
 </resources>

@@ -46,4 +46,7 @@
     <string name="data_change">تغییر تاریخ</string>
     <string name="selection">انتخاب</string>
     <string name="no">خیر</string>
+    <string name="time">زمان</string>
+    <string name="date">تاریخ</string>
+    <string name="routine">روتین</string>
 </resources>
