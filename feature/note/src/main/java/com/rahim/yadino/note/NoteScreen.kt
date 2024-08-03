@@ -16,13 +16,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.rahim.data.modle.note.NoteModel
-import com.rahim.ui.dialog.DialogAddNote
-import com.rahim.ui.dialog.ErrorDialog
-import com.rahim.utils.base.view.ItemListNote
-import com.rahim.utils.resours.Resource
-import com.rahim.utils.base.view.EmptyMessage
-import com.rahim.utils.base.view.ShowSearchBar
+import com.rahim.yadino.base.Resource
+import com.rahim.yadino.designsystem.component.EmptyMessage
+import com.rahim.yadino.designsystem.component.ItemListNote
+import com.rahim.yadino.designsystem.component.ShowSearchBar
+import com.rahim.yadino.designsystem.dialog.DialogAddNote
+import com.rahim.yadino.designsystem.dialog.ErrorDialog
+import com.rahim.yadino.note.model.NoteModel
 
 @Composable
 internal fun NoteRoute(
@@ -98,15 +98,18 @@ private fun NoteScreen(
                     if (it.isEmpty()) {
                         if (searchText.isNotEmpty()) {
                             EmptyMessage(
-                                messageEmpty = R.string.search_empty_note,
-                                painter = R.drawable.empty_note
+                                messageEmpty = com.rahim.yadino.feature.note.R.string.search_empty_note,
+                                painter = com.rahim.yadino.feature.note.R.drawable.empty_note
                             )
                         } else {
-                            EmptyMessage(messageEmpty = R.string.not_note, painter = R.drawable.empty_note)
+                            EmptyMessage(
+                                messageEmpty = com.rahim.yadino.feature.note.R.string.not_note,
+                                painter = com.rahim.yadino.feature.note.R.drawable.empty_note
+                            )
                         }
                     } else {
                         ItemsNote(
-                            notes.data,
+                            notes.data ?: emptyList(),
                             checkedNote = {
                                 onUpdateNote(it)
                             },
@@ -114,7 +117,7 @@ private fun NoteScreen(
                                 if (it.isChecked) {
                                     Toast.makeText(
                                         context,
-                                        R.string.not_update_checked_note,
+                                        com.rahim.yadino.feature.note.R.string.not_update_checked_note,
                                         Toast.LENGTH_SHORT
                                     ).show()
                                     return@ItemsNote
@@ -128,7 +131,7 @@ private fun NoteScreen(
                                 if (it.isChecked) {
                                     Toast.makeText(
                                         context,
-                                        R.string.not_removed_checked_note,
+                                        com.rahim.yadino.feature.note.R.string.not_removed_checked_note,
                                         Toast.LENGTH_SHORT
                                     ).show()
                                     return@ItemsNote
@@ -145,19 +148,34 @@ private fun NoteScreen(
             }
         }
     }
-    DialogAddNote(noteUpdate = noteUpdateDialog.value,
+    DialogAddNote(
+        updateNoteState = noteUpdateDialog.value?.state ?: 0,
+        updateNoteName = noteUpdateDialog.value?.name ?: "",
+        updateNoteDescription = noteUpdateDialog.value?.description ?: "",
         isOpen = openDialog,
-        note = {
+        note = { noteName, description, stateNote, timeInMileSecond ->
             if (noteUpdateDialog.value != null) {
-                onUpdateNote(it)
+                onUpdateNote(noteUpdateDialog.value!!.apply {
+                    name = noteName
+                    this.description = description
+                    state = stateNote
+                    this.timeInMileSecond = timeInMileSecond
+                })
             } else {
-                onAddNote(it)
+                val noteModel = NoteModel(
+                    name = noteName,
+                    description = description,
+                    state = stateNote,
+                    timeInMileSecond = timeInMileSecond,
+                    dayNumber = currentDay,
+                    yerNumber = currentYear,
+                    monthNumber = currentMonth,
+                    dayName = currentNameDay,
+                )
+                onAddNote(noteModel)
             }
         },
-        currentYer = currentYear,
-        currentMonth = currentMonth,
-        currentDay = currentDay,
-        currentDayName = currentNameDay,
+
         openDialog = {
             noteUpdateDialog.value = null
             onOpenDialog(it)
@@ -189,13 +207,23 @@ fun ItemsNote(
             ), contentPadding = PaddingValues(top = 25.dp)
     ) {
         items(items = notes, itemContent = {
-            ItemListNote(noteModel = it, onChecked = {
-                checkedNote(it)
-            }, openDialogDelete = {
-                deleteNote(it)
-            }, openDialogEdit = {
-                updateNote(it)
-            })
+            ItemListNote(
+                isChecked = it.isChecked,
+                stateNote = it.state,
+                descriptionNote = it.description,
+                nameNote = it.name,
+                monthNumber = it.monthNumber ?: 0,
+                yerNumber = it.yerNumber ?: 0,
+                dayNumber = it.dayNumber ?: 0,
+                onChecked = { checked ->
+                    checkedNote(it.apply { isChecked = checked })
+                },
+                openDialogDelete = {
+                    deleteNote(it)
+                },
+                openDialogEdit = {
+                    updateNote(it)
+                })
         })
     }
 }
@@ -207,10 +235,14 @@ fun ShowDialogDelete(
     click: (Boolean) -> Unit,
 ) {
     ErrorDialog(
-        modifier, isOpenDialog, isClickOk = {
+        modifier,
+        isOpenDialog,
+        isClickOk = {
             click(it)
-        }, message = stringResource(id = R.string.can_you_delete), okMessage = stringResource(
-            id = R.string.ok
+        },
+        message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.can_you_delete),
+        okMessage = stringResource(
+            id = com.rahim.yadino.library.designsystem.R.string.ok
         )
     )
 }

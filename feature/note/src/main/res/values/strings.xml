@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_empty_note">!!!یادداشت مورد نظر یافت نشد</string>
+    <string name="not_note">!شما هنوز یادداشتی ثبت نکردید</string>
+    <string name="not_update_checked_note">یادداشت پایان یافته را نمی توان ویرایش کرد!</string>
+    <string name="not_removed_checked_note">یادداشت پایان یافته را نمی توان حذف کرد!</string>
+</resources>

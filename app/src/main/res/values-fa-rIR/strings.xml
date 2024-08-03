@@ -29,7 +29,6 @@
     <string name="energetic_yadino">با یادینو بانشاط تر منظم تر و هوشمندتر باشید!</string>
     <string name="lets_go">بزن بریم</string>
     <string name="not_work">شماهنوز کاری ثبت نکردید!</string>
-    <string name="not_note">!شما هنوز یادداشتی ثبت نکردید</string>
     <string name="name">نام</string>
     <string name="week_day">تعداد روز در هفته</string>
     <string name="seven_day">7 روز</string>
@@ -43,14 +42,11 @@
     <string name="forget_work"> !! یادت نره %1$s</string>
     <string name="update_version">لطفابرای ادامه نسخه اپ خود را به$% اپدیت کنید</string>
     <string name="update">آپدیت</string>
-    <string name="search_empty_note">!!!یادداشت مورد نظر یافت نشد</string>
     <string name="isntall_cafeBazzar">.لطفا برای اپدیت نرم افزار کافه بازار را نصب کنید</string>
     <string name="install">نصب</string>
     <string name="update_app_version">لطفا برای ادامه نسخه اپ خود را بروزرسانی کنید. </string>
     <string name="download">دانلود</string>
     <string name="not_removed_checked_routine">روتین پایان یافته را نمی توان حذف کرد!</string>
-    <string name="not_removed_checked_note">یادداشت پایان یافته را نمی توان حذف کرد!</string>
-    <string name="not_update_checked_note">یادداشت پایان یافته را نمی توان ویرایش کرد!</string>
     <string name="historyAlarm">تاریخچه آلارم</string>
     <string name="calender">تقویم</string>
     <string name="drawer_item_share_with_ferinds">اشتراک با دوستان</string>
