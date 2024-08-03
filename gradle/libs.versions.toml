@@ -73,8 +73,7 @@ androidxJunit = "1.2.1"
 #firebase
 firebasePerfPlugin = "1.4.2"
 firebaseCrashlyticsPlugin = "3.0.1"
-appcompat = "1.7.0"
-material = "1.12.0"
+
 
 
 [libraries]
@@ -165,8 +164,6 @@ firebase-performance-gradlePlugin = { group = "com.google.firebase", name = "per
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "androidx-room" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [bundles]
 compose = ["androidx-compose-activity", "androidx-material3-android", "lifecycle-runtime-compose",

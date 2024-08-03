@@ -8,3 +8,10 @@ plugins {
 android {
     namespace = "com.rahim.yadino.feature.calender"
 }
+dependencies{
+    libs.run {
+        implementation(bundles.vico)
+    }
+    implementation(project(":domain:dateTime"))
+    implementation(project(":domain:sharedPreferences"))
+}

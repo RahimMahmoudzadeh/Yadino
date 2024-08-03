@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,12 +45,12 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
-import com.rahim.R
-import com.rahim.data.modle.data.TimeDate
-import com.rahim.utils.base.view.TimeItems
-import com.rahim.utils.base.view.gradientColors
-import com.rahim.utils.enums.HalfWeekName
-import com.rahim.utils.extention.calculateMonthName
+import com.rahim.yadino.base.calculateMonthName
+import com.rahim.yadino.base.enums.HalfWeekName
+import com.rahim.yadino.base.model.TimeDate
+import com.rahim.yadino.designsystem.component.TimeItems
+import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.feature.calender.R
 
 @Composable
 internal fun CalenderRoute(
@@ -105,7 +106,7 @@ private fun CalenderScreen(
                 }) {
                     Icon(
                         tint = Color.White,
-                        painter = painterResource(id = R.drawable.less_then),
+                        painter = painterResource(id = com.rahim.yadino.library.designsystem.R.drawable.less_then),
                         contentDescription = "less then sign"
                     )
                 }
@@ -127,7 +128,7 @@ private fun CalenderScreen(
                     onMonthChecked(yearClicked, monthClicked)
                 }) {
                     Icon(
-                        painterResource(id = R.drawable.greater_then),
+                        painterResource(id = com.rahim.yadino.library.designsystem.R.drawable.greater_then),
                         contentDescription = "greater then sign",
                         tint = Color.White
                     )
@@ -216,7 +217,7 @@ private fun CalenderScreen(
                     }
                 }
             }
-            val i= arrayListOf("r","a","b")
+            val i = arrayListOf("r", "a", "b")
             val bottomAxisValueFormatter = CartesianValueFormatter { x, _, _ ->
                 i[x.toInt() % i.size]
             }
@@ -225,7 +226,7 @@ private fun CalenderScreen(
                     rememberColumnCartesianLayer(),
                     startAxis = rememberStartAxis(),
                     bottomAxis = rememberBottomAxis(
-                       valueFormatter = bottomAxisValueFormatter,
+                        valueFormatter = bottomAxisValueFormatter,
                         titleComponent = rememberAxisLabelComponent(),
                         label = rememberAxisLabelComponent(color = Blue),
                         axis = rememberAxisLineComponent(color = Blue)
