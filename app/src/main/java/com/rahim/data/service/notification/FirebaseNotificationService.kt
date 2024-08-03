@@ -20,8 +20,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class FirebaseNotificationService : FirebaseMessagingService() {
-    @Inject
-    lateinit var sharedPreferencesCustom: SharedPreferencesCustom
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         remoteMessage.data?.let {

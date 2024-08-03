@@ -2,7 +2,6 @@ package com.rahim.yadino.base
 
 object Constants {
     //Static
-    const val DATABASE_NAME = "main database"
     const val CHANNEL_ID = "Yadinoo"
     const val CHANNEL_NAME = "Main Channel"
     const val NAME_SHARED_PREFERENCE = "YadinooShared"

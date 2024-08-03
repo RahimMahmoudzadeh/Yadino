@@ -15,8 +15,4 @@ class ProvidesClassModule {
     fun provideNotificationManager(): NotificationManager {
         return NotificationManager()
     }
-    @Provides
-    fun provideSharedPreferencesCustom(application: Application): com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom {
-        return com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom(application)
-    }
 }
