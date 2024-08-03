@@ -31,26 +31,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.rahim.R
-import com.rahim.data.modle.Rotin.Routine
-import com.rahim.ui.theme.YadinoTheme
-import com.rahim.utils.Constants
-import com.rahim.utils.base.view.gradientColors
+import com.rahim.yadino.base.Constants
+import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.YadinoTheme
+import com.rahim.yadino.feature.wakeup.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class WakeupActivity : ComponentActivity() {
-    private var routine: Routine? = null
-
+    private var routineName: String? = null
+    private var routineId: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+//        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -79,7 +76,7 @@ class WakeupActivity : ComponentActivity() {
                         Text(
                             fontSize = 32.sp,
                             modifier = Modifier.padding(top = 34.dp),
-                            text = resources.getString(R.string.my_firend),
+                            text = resources.getString(com.rahim.yadino.library.designsystem.R.string.my_firend),
                             color = Color.White
                         )
                         Text(
@@ -89,7 +86,7 @@ class WakeupActivity : ComponentActivity() {
                                 .padding(top = 10.dp)
                                 .fillMaxWidth(),
                             color = Color.White,
-                            text = resources.getString(R.string.forget_work, routine?.name)
+                            text = resources.getString(R.string.forget_work, routineName)
                         )
                         Column {
                             val progress by animateLottieCompositionAsState(
@@ -127,12 +124,10 @@ class WakeupActivity : ComponentActivity() {
         setWakeupSetting()
         getIntentResult()
     }
+
     private fun getIntentResult() {
-        routine = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(Constants.ROUTINE, Routine::class.java)
-        } else {
-            intent.getParcelableExtra(Constants.ROUTINE)
-        }
+        routineName = intent.getStringExtra(Constants.KEY_LAUNCH_NAME)
+        routineId = intent.getStringExtra(Constants.KEY_LAUNCH_ID)
     }
 
     private fun setWakeupSetting() {

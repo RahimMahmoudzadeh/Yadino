@@ -35,8 +35,6 @@
     <string name="for_remmber">برای اینکه بتونیم یادت بندازیم تیک یادآور رو بزن</string>
     <string name="list_routine">لیست روتین</string>
     <string name="empty">خالی</string>
-    <string name="my_firend">دوست خوبم</string>
-    <string name="forget_work"> !! یادت نره %1$s</string>
     <string name="update_version">لطفابرای ادامه نسخه اپ خود را به$% اپدیت کنید</string>
     <string name="update">آپدیت</string>
     <string name="isntall_cafeBazzar">.لطفا برای اپدیت نرم افزار کافه بازار را نصب کنید</string>
