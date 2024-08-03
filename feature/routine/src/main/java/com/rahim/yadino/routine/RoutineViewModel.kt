@@ -1,15 +1,13 @@
 package com.rahim.yadino.routine
 
 import androidx.lifecycle.viewModelScope
-import com.rahim.data.modle.Rotin.Routine
-import com.rahim.data.modle.data.TimeDate
-import com.rahim.data.repository.base.BaseRepository
-import com.rahim.data.repository.dataTime.DataTimeRepository
-import com.rahim.data.repository.routine.RepositoryRoutine
-import com.rahim.data.repository.sharedPreferences.SharedPreferencesRepository
-import com.rahim.utils.base.viewModel.BaseViewModel
-import com.rahim.utils.enums.error.ErrorMessageCode
-import com.rahim.utils.resours.Resource
+import com.rahim.yadino.base.Resource
+import com.rahim.yadino.base.enums.error.ErrorMessageCode
+import com.rahim.yadino.base.model.TimeDate
+import com.rahim.yadino.base.viewmodel.BaseViewModel
+import com.rahim.yadino.dateTime.DataTimeRepository
+import com.rahim.yadino.routine.modle.Routine.Routine
+import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,10 +25,9 @@ import javax.inject.Inject
 class RoutineViewModel @Inject constructor(
     private val routineRepository: RepositoryRoutine,
     private val dateTimeRepository: DataTimeRepository,
-    baseRepository: BaseRepository,
-    sharedPreferencesRepository: SharedPreferencesRepository
+    private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) :
-    BaseViewModel(sharedPreferencesRepository, baseRepository) {
+    BaseViewModel() {
 
     private var lastYearNumber = currentYear
     private var lastMonthNumber = currentMonth
@@ -192,6 +189,11 @@ class RoutineViewModel @Inject constructor(
             } else {
                 getRoutines()
             }
+        }
+    }
+    fun showSampleRoutine(isShow: Boolean = true) {
+        viewModelScope.launch {
+            sharedPreferencesRepository.isShowSampleRoutine(isShow)
         }
     }
 }

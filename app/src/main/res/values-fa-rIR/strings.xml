@@ -33,11 +33,8 @@
     <string name="week_day">تعداد روز در هفته</string>
     <string name="seven_day">7 روز</string>
     <string name="for_remmber">برای اینکه بتونیم یادت بندازیم تیک یادآور رو بزن</string>
-    <string name="not_routine">!شما هنوز روتینی ثبت نکردید</string>
     <string name="list_routine">لیست روتین</string>
     <string name="empty">خالی</string>
-    <string name="setting">تنظیمات</string>
-    <string name="better_performance_access">برای عملکرد بهتر نرم افزار لطفا اجازه دسترسی های لازم را بدهید</string>
     <string name="my_firend">دوست خوبم</string>
     <string name="forget_work"> !! یادت نره %1$s</string>
     <string name="update_version">لطفابرای ادامه نسخه اپ خود را به$% اپدیت کنید</string>
@@ -46,7 +43,6 @@
     <string name="install">نصب</string>
     <string name="update_app_version">لطفا برای ادامه نسخه اپ خود را بروزرسانی کنید. </string>
     <string name="download">دانلود</string>
-    <string name="not_removed_checked_routine">روتین پایان یافته را نمی توان حذف کرد!</string>
     <string name="historyAlarm">تاریخچه آلارم</string>
     <string name="calender">تقویم</string>
     <string name="drawer_item_share_with_ferinds">اشتراک با دوستان</string>

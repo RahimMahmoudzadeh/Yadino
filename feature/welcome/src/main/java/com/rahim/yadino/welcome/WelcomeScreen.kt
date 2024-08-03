@@ -48,6 +48,8 @@ private fun WelcomeScreens(
     viewModel: WelcomeViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
+    rememberSnapperFlingBehavior()
+
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
     val clickNext = remember { mutableStateOf(viewModel.isShowWelcomeScreen()) }

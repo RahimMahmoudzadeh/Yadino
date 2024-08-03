@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="not_removed_checked_routine">روتین پایان یافته را نمی توان حذف کرد!</string>
+    <string name="not_routine">!شما هنوز روتینی ثبت نکردید</string>
+</resources>

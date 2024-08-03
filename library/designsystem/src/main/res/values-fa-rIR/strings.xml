@@ -49,4 +49,6 @@
     <string name="time">زمان</string>
     <string name="date">تاریخ</string>
     <string name="routine">روتین</string>
+    <string name="better_performance_access">برای عملکرد بهتر نرم افزار لطفا اجازه دسترسی های لازم را بدهید</string>
+    <string name="setting">تنظیمات</string>
 </resources>

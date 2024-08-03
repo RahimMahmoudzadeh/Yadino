@@ -3,6 +3,7 @@ package com.rahim.yadino.routine
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -36,28 +37,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.rahim.data.alarm.AlarmManagement
-import com.rahim.data.modle.Rotin.Routine
-import com.rahim.data.modle.data.TimeDate
-import com.rahim.ui.dialog.DialogAddRoutine
-import com.rahim.ui.dialog.ErrorDialog
-import com.rahim.utils.base.view.ItemRoutine
-import com.rahim.utils.base.view.ProcessRoutineAdded
-import com.rahim.utils.base.view.ShowSearchBar
-import com.rahim.utils.base.view.goSettingPermission
-import com.rahim.utils.base.view.gradientColors
-import com.rahim.utils.enums.HalfWeekName
-import com.rahim.utils.extention.calculateMonthName
-import com.rahim.utils.resours.Resource
+import com.rahim.yadino.base.Resource
+import com.rahim.yadino.base.calculateMonthName
+import com.rahim.yadino.base.enums.HalfWeekName
+import com.rahim.yadino.base.model.TimeDate
+import com.rahim.yadino.base.persianLocate
+import com.rahim.yadino.designsystem.component.EmptyMessage
+import com.rahim.yadino.designsystem.component.ItemRoutine
+import com.rahim.yadino.designsystem.component.ProcessRoutineAdded
+import com.rahim.yadino.designsystem.component.ShowSearchBar
+import com.rahim.yadino.designsystem.component.goSettingPermission
+import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.designsystem.dialog.DialogAddRoutine
+import com.rahim.yadino.designsystem.dialog.ErrorDialog
+import com.rahim.yadino.designsystem.theme.font_medium
+import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.routine.modle.Routine.Routine
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import com.rahim.R
-import com.rahim.ui.theme.font_bold
-import com.rahim.ui.theme.font_medium
-import com.rahim.utils.Helper
-import com.rahim.utils.base.view.EmptyMessage
 
 @Composable
 fun RoutineRoute(
@@ -179,7 +178,7 @@ private fun RoutineScreen(
                 dayChecked = day
                 monthChecked = month
                 onCheckedDay(year, month, day)
-                onMonthChecked(year,month)
+                onMonthChecked(year, month)
             },
             currentIndexDay = currentDayIndex,
             indexScrollDay = {
@@ -223,7 +222,7 @@ private fun RoutineScreen(
                 if (it.isChecked) {
                     Toast.makeText(
                         context,
-                        R.string.not_removed_checked_routine,
+                        com.rahim.yadino.feature.routine.R.string.not_removed_checked_routine,
                         Toast.LENGTH_SHORT
                     ).show()
                     return@GetRoutines
@@ -262,13 +261,37 @@ private fun RoutineScreen(
         openDialog = {
             onOpenDialog(false)
         },
-        routineUpdate = routineUpdateDialog.value,
-        routine = { routine ->
+        updateRoutineName = routineUpdateDialog.value?.name ?: "",
+        updateRoutineExplanation = routineUpdateDialog.value?.explanation ?: "",
+        updateRoutineTime = routineUpdateDialog.value?.timeHours ?: "",
+        updateRoutineDay = routineUpdateDialog.value?.dayNumber,
+        updateRoutineMonth = routineUpdateDialog.value?.monthNumber,
+        updateRoutineYear = routineUpdateDialog.value?.dayNumber,
+        routineItems = { routineName, routineExplanation, routineTime, dayChecked, monthChecked, yearChecked, dayName ->
             showSampleRoutine(true)
             if (routineUpdateDialog.value != null) {
-                onUpdateRoutine(routine)
+                val routine = routineUpdateDialog.value?.apply {
+                    name = routineName
+                    explanation = routineExplanation
+                    timeHours = routineTime
+                    dayNumber = dayChecked
+                    monthNumber = monthChecked
+                    yerNumber = yearChecked
+                    this.dayName = dayName
+                }
+                routine?.let { onUpdateRoutine(it) }
             } else {
                 coroutineScope.launch {
+                    val routine = Routine(
+                        name = routineName,
+                        colorTask = null,
+                        dayName = dayName,
+                        dayNumber = dayChecked,
+                        monthNumber = monthChecked,
+                        yerNumber = yearChecked,
+                        timeHours = routineTime,
+                        explanation = routineExplanation
+                    )
                     onAddRoutine(routine)
                 }
             }
@@ -350,12 +373,12 @@ private fun GetRoutines(
                     if (searchText.isNotEmpty()) {
                         EmptyMessage(
                             messageEmpty = R.string.search_empty_routine,
-                            painter = R.drawable.routine_empty
+                            painter = com.rahim.yadino.feature.routine.R.drawable.routine_empty
                         )
                     } else {
                         EmptyMessage(
-                            messageEmpty = R.string.not_routine,
-                            painter = R.drawable.routine_empty
+                            messageEmpty = com.rahim.yadino.feature.routine.R.string.not_routine,
+                            painter = com.rahim.yadino.feature.routine.R.drawable.routine_empty
                         )
                     }
                 } else {
@@ -425,7 +448,7 @@ private fun ItemTimeDate(
             modifier = Modifier
                 .padding(top = 12.dp)
                 .fillMaxWidth(0.3f),
-            text = "${Helper.persianLocate(yerChecked.toString())} ${monthChecked.calculateMonthName()}",
+            text = "${yerChecked.toString().persianLocate()} ${monthChecked.calculateMonthName()}",
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center
         )
@@ -518,7 +541,6 @@ private fun ItemTimeDate(
             )
         }
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-
             LazyRow(
                 userScrollEnabled = false,
                 modifier = Modifier
@@ -577,14 +599,17 @@ private fun ItemsRoutine(
             .padding(end = 16.dp, start = 16.dp),
         contentPadding = PaddingValues(top = 8.dp)
     ) {
-        items(items = routines, itemContent = {
-            ItemRoutine(routine = it, onChecked = {
-                checkedRoutine(it)
-            }, openDialogDelete = {
-                deleteRoutine(it)
-            }, openDialogEdit = {
-                updateRoutine(it)
-            })
+        items(items = routines, itemContent = { routine ->
+            ItemRoutine(isChecked = routine.isChecked,
+                timeHoursRoutine = routine.timeHours ?: "",
+                nameRoutine = routine.name,
+                explanationRoutine = routine.explanation ?: "", onChecked = {
+                    checkedRoutine(routine.apply { isChecked = it })
+                }, openDialogDelete = {
+                    deleteRoutine(routine)
+                }, openDialogEdit = {
+                    updateRoutine(routine)
+                })
         })
     }
 }
@@ -633,7 +658,9 @@ private fun DayItems(
                     timeDate.monthNumber
                 )
         },
-        text = AnnotatedString(if (timeDate.dayNumber > 0)Helper.persianLocate(timeDate.dayNumber.toString()) else ""),
+        text = AnnotatedString(
+            if (timeDate.dayNumber > 0) timeDate.dayNumber.toString().persianLocate() else ""
+        ),
         style = TextStyle(
             fontSize = if (screenWidth <= 420) 16.sp else 18.sp,
             fontWeight = FontWeight.Bold,
