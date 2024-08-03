@@ -2,7 +2,6 @@ package com.rahim.yadino.welcome
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +33,12 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.rahim.yadino.designsystem.component.GradientButton
+import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.designsystem.theme.YadinoTheme
+import com.rahim.yadino.feature.welcome.R
+import com.rahim.yadino.navigation.Destinations
+import com.rahim.yadino.welcome.model.WelcomeScreenModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -48,15 +53,13 @@ private fun WelcomeScreens(
     viewModel: WelcomeViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
-    rememberSnapperFlingBehavior()
-
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
     val clickNext = remember { mutableStateOf(viewModel.isShowWelcomeScreen()) }
     var create by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(key1 = true) {
         if (clickNext.value) {
-            navController.navigate(Screen.Home.route) {
+            navController.navigate(Destinations.Home.route) {
                 popUpTo(0)
             }
             create = false
@@ -113,7 +116,7 @@ private fun WelcomeScreens(
                             if (pagerState.currentPage == 2) {
                                 viewModel.saveShowWelcome(true)
                                 clickNext.value = true
-                                navController.navigate(Screen.Home.route)
+                                navController.navigate(Destinations.Home.route)
                             }
                             pagerState.scrollToPage(pagerState.currentPage.plus(1))
                         }
@@ -172,7 +175,7 @@ private fun WelcomePreview1() {
         WelcomePage(
             textWelcomeTop = "سلااام",
             textWelcomeBottom = "!به خانواده یادینو خوش آمدید",
-            imageRes = R.drawable.welcome1,
+            imageRes = com.rahim.yadino.feature.welcome.R.drawable.welcome1,
         )
     }
 }
@@ -184,7 +187,7 @@ private fun WelcomePreview2() {
         WelcomePage(
             textWelcomeTop = "! با یادینو دیگه ازکارات عقب نمیفتی",
             textWelcomeBottom = "اینجا ما بهت کمک میکنیم تا به همه هدفگذاری هات برسی",
-            imageRes = R.drawable.welcome2,
+            imageRes = com.rahim.yadino.feature.welcome.R.drawable.welcome2,
         )
     }
 }
@@ -196,7 +199,7 @@ private fun WelcomePreview3() {
         WelcomePage(
             textWelcomeTop = "!یادینو اپلیکیشنی برای زندگی بهتر",
             textWelcomeBottom = "با یادینو بانشاط تر منظم تر و هوشمندتر باشید",
-            imageRes = R.drawable.welcome3,
+            imageRes = com.rahim.yadino.feature.welcome.R.drawable.welcome3,
         )
     }
 }

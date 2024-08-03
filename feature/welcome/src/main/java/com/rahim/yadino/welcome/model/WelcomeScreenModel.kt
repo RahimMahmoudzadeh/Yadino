@@ -1,4 +1,4 @@
-package com.rahim.yadino.welcome
+package com.rahim.yadino.welcome.model
 
 data class WelcomeScreenModel(
     val textWelcomeTop :String,

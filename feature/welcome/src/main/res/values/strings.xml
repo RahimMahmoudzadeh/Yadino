@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">سلااام</string>
+    <string name="welcome_yadino">به خانواده یادینو خوش آمدید!</string>
+    <string name="next">بعدی</string>
+    <string name="welcome_2">با یادینو دیگه ازکارات عقب نمیفتی!</string>
+    <string name="welcome_help">اینجا ما بهت کمک میکنیم تا به همه هدفگذاری هات برسی!</string>
+    <string name="yadino_life">یادینو اپلیکیشنی برای زندگی بهتر !</string>
+    <string name="energetic_yadino">با یادینو بانشاط تر منظم تر و هوشمندتر باشید !</string>
+    <string name="lets_go">بزن بریم</string>
+</resources>
