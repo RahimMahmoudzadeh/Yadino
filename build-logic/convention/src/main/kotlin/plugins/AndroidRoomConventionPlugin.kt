@@ -1,4 +1,6 @@
 package plugins
+
+import androidx.room.gradle.RoomExtension
 import applyPlugins
 import com.google.devtools.ksp.gradle.KspExtension
 import versionCatalog
@@ -16,25 +18,9 @@ class AndroidRoomConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         with(target) {
-            applyPlugins {
-                listOf("com.google.devtools.ksp")
-            }
-            extensions.configure<KspExtension> {
-                arg(RoomSchemaArgProvider(File(projectDir, "schemas")))
-            }
-
             dependencies {
                 add("implementation", versionCatalog.findBundle("room").get())
-                add("ksp", versionCatalog.findLibrary("room.compiler").get())
             }
         }
-    }
-
-    class RoomSchemaArgProvider(
-        @get:InputDirectory
-        @get:PathSensitive(PathSensitivity.RELATIVE)
-        val schemaDir: File,
-    ) : CommandLineArgumentProvider {
-        override fun asArguments() = listOf("room.schemaLocation=${schemaDir.path}")
     }
 }

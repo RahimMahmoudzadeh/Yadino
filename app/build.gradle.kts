@@ -6,10 +6,12 @@ plugins {
         alias(android.application.compose)
         alias(android.hilt)
         alias(android.application.firebase)
-        alias(android.room)
     }
 }
 android {
+    buildFeatures {
+        buildConfig = true
+    }
     namespace = "com.rahim.yadino"
     buildTypes {
         debug {
@@ -29,8 +31,11 @@ android {
 dependencies {
     libs.run {
         implementation(androidx.core.splashscreen)
+        implementation(androidx.constraintlayout)
 //        implementation(androidx.tracing.ktx)
         implementation(timber)
+        implementation(kotlinx.collections.immutable)
+        implementation(accompanist.permissions)
 
         implementation(project(":feature:home"))
         implementation(project(":feature:welcome"))
@@ -41,12 +46,10 @@ dependencies {
         implementation(project(":feature:calender"))
 
         implementation(project(":core:database"))
+
         implementation(project(":domain:sharedPreferences"))
-        implementation(project(":domain:routine"))
+        implementation(project(":domain:reminder"))
         implementation(project(":domain:dateTime"))
         implementation(project(":domain:note"))
-
-        implementation(kotlinx.collections.immutable)
-        implementation(bundles.room)
     }
 }
