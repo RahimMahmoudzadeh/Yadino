@@ -7,9 +7,9 @@ interface ReminderScheduler {
 
     fun setReminder(
         reminderName: String,
-        reminderId: Long,
+        reminderId: Int,
         reminderTime: Long,
-        reminderIdAlarm: Int
+        reminderIdAlarm: Long
     ): ReminderState
 
     fun cancelReminder(id: String)

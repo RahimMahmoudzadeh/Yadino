@@ -9,6 +9,6 @@ android {
     namespace = "com.rahim.yadino.reminder_repository"
 }
 dependencies {
-    api(project(":domain:reminder"))
+    implementation(project(":domain:reminder"))
     implementation(project(":core:base"))
 }

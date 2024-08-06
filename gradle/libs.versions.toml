@@ -73,6 +73,7 @@ androidxJunit = "1.2.1"
 #firebase
 firebasePerfPlugin = "1.4.2"
 firebaseCrashlyticsPlugin = "3.0.1"
+constraintlayout = "2.1.4"
 
 
 
@@ -164,6 +165,7 @@ firebase-performance-gradlePlugin = { group = "com.google.firebase", name = "per
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "androidx-room" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
 [bundles]
 compose = ["androidx-compose-activity", "androidx-material3-android", "lifecycle-runtime-compose",
@@ -200,4 +202,5 @@ yadino-android-hilt = { id = "yadino.android.hilt", version = "unspecified" }
 yadino-android-library = { id = "yadino.android.library", version = "unspecified" }
 yadino-android-library-compose = { id = "yadino.android.library.compose", version = "unspecified" }
 yadino-android-room = { id = "yadino.android.room", version = "unspecified" }
+yadino-android-room-base = { id = "yadino.android.room.base", version = "unspecified" }
 yadino-android-navigation = { id = "yadino.android.navigation", version = "unspecified" }

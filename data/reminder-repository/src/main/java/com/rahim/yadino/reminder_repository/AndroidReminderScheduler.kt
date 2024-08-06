@@ -13,6 +13,7 @@ import com.rahim.yadino.base.Constants.ACTION_CANCEL_NOTIFICATION
 import com.rahim.yadino.base.Constants.ACTION_SEND_NOTIFICATION
 import com.rahim.yadino.base.Constants.KEY_LAUNCH_ID
 import com.rahim.yadino.base.Constants.KEY_LAUNCH_NAME
+import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.reminder.ReminderScheduler
 import com.rahim.yadino.reminder.state.ReminderState
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -26,9 +27,9 @@ class AndroidReminderScheduler @Inject constructor(
 
     override fun setReminder(
         reminderName: String,
-        reminderId: Long,
+        reminderId: Int,
         reminderTime: Long,
-        reminderIdAlarm: Int
+        reminderIdAlarm: Long
     ): ReminderState {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             return when {
@@ -39,7 +40,7 @@ class AndroidReminderScheduler @Inject constructor(
                         reminderTime,
                         reminderIdAlarm
                     ).let { errorMessage ->
-                        if (errorMessage.isNullOrBlank()) {
+                        if (errorMessage == null) {
                             ReminderState.SetSuccessfully
                         } else {
                             ReminderState.NotSet(errorMessage)
@@ -83,7 +84,7 @@ class AndroidReminderScheduler @Inject constructor(
                     reminderTime,
                     reminderIdAlarm
                 ).let { errorMessage ->
-                    if (errorMessage.isNullOrBlank()) {
+                    if (errorMessage == null) {
                         ReminderState.SetSuccessfully
                     } else {
                         ReminderState.NotSet(errorMessage)
@@ -102,7 +103,7 @@ class AndroidReminderScheduler @Inject constructor(
                 reminderTime,
                 reminderIdAlarm
             ).let { errorMessage ->
-                if (errorMessage.isNullOrBlank()) {
+                if (errorMessage == null) {
                     ReminderState.SetSuccessfully
                 } else {
                     ReminderState.NotSet(errorMessage)
@@ -125,11 +126,11 @@ class AndroidReminderScheduler @Inject constructor(
 
     private fun setAlarm(
         reminderName: String,
-        reminderId: Long,
+        reminderId: Int,
         reminderTime: Long,
-        reminderIdAlarm: Int
-    ): String? {
-        if (reminderTime < System.currentTimeMillis()) return ""
+        reminderIdAlarm: Long
+    ): ErrorMessageCode? {
+        if (reminderTime < System.currentTimeMillis()) return ErrorMessageCode.ERROR_TIME_PASSED
         val alarmIntent = Intent(ACTION_SEND_NOTIFICATION).let { intent ->
             intent.putExtra(KEY_LAUNCH_NAME, reminderName)
             intent.putExtra(KEY_LAUNCH_ID, reminderId)
@@ -137,7 +138,7 @@ class AndroidReminderScheduler @Inject constructor(
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            reminderIdAlarm,
+            reminderIdAlarm.toInt(),
             alarmIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )

@@ -10,4 +10,5 @@ android {
 }
 dependencies{
     implementation(project(":core:base"))
+    api(project(":domain:routine"))
 }

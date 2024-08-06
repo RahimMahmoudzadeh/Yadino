@@ -9,7 +9,7 @@ android {
     namespace = "com.rahim.yadino.feature.routine"
 }
 dependencies{
-    implementation(project(":domain:routine"))
+    implementation(project(":domain:reminder"))
     implementation(project(":domain:dateTime"))
     implementation(project(":domain:sharedPreferences"))
     libs.run {

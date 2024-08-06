@@ -46,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -56,13 +57,18 @@ import com.rahim.navigation.NavigationComponent
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.theme.YadinoTheme
-import com.rahim.yadino.base.component.TopBarCenterAlign
-import com.rahim.yadino.base.component.goSettingPermission
-import com.rahim.yadino.base.component.requestPermissionNotification
 import com.rahim.yadino.R
+import com.rahim.yadino.base.Constants.CAFE_BAZAAR_PACKAGE_NAME
+import com.rahim.yadino.base.Constants.CAFE_BAZZAR_LINK
+import com.rahim.yadino.base.Constants.DARK
+import com.rahim.yadino.base.Constants.LIGHT
+import com.rahim.yadino.designsystem.component.TopBarCenterAlign
+import com.rahim.yadino.designsystem.component.goSettingPermission
+import com.rahim.yadino.designsystem.component.requestPermissionNotification
 import com.rahim.yadino.navigation.BottomNavItem
 import com.rahim.yadino.navigation.Destinations
 import com.rahim.yadino.navigation.component.BottomNavigationBar
+import com.rahim.yadino.navigation.component.DrawerItemType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -86,6 +92,7 @@ class MainActivity : ComponentActivity() {
             YadinoApp(
                 isShowWelcomeScreen = mainViewModel.isShowWelcomeScreen(),
                 isDarkTheme = if (mainViewModel.isDarkTheme() == DARK) true else if (mainViewModel.isDarkTheme() == LIGHT) false else isSystemInDarkTheme(),
+                haveAlarm = mainViewModel.haveAlarm.collectAsStateWithLifecycle(initialValue = false).value,
                 changeTheme = {
                     if (it) {
                         mainViewModel.setDarkTheme(DARK)
@@ -118,6 +125,7 @@ class MainActivity : ComponentActivity() {
 fun YadinoApp(
     isShowWelcomeScreen: Boolean,
     isDarkTheme: Boolean = isSystemInDarkTheme(),
+    haveAlarm: Boolean,
     changeTheme: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
@@ -195,24 +203,25 @@ fun YadinoApp(
                             enter = fadeIn() + expandVertically(animationSpec = tween(800)),
                             exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
                         ) {
-                            com.rahim.yadino.base.component.TopBarCenterAlign(title = when (destinationNavBackStackEntry) {
-                                BottomNavItem.Home.route -> stringResource(
-                                    id = R.string.my_firend
-                                )
+                            TopBarCenterAlign(
+                                title = when (destinationNavBackStackEntry) {
+                                    BottomNavItem.Home.route -> stringResource(
+                                        id = com.rahim.yadino.library.designsystem.R.string.my_firend
+                                    )
 
-                                BottomNavItem.Routine.route -> stringResource(
-                                    id = R.string.list_routine
-                                )
+                                    BottomNavItem.Routine.route -> stringResource(
+                                        id = R.string.list_routine
+                                    )
 
-                                Destinations.HISTORY.nameScreen -> stringResource(id = R.string.historyAlarm)
+                                    Destinations.AlarmHistory.route -> stringResource(id = R.string.historyAlarm)
 
-                                else -> stringResource(id = R.string.notes)
-                            },
-                                openHistory = {
-                                    navController.navigate(Destinations.HISTORY.nameScreen)
+                                    else -> stringResource(id = R.string.notes)
                                 },
-                                isShowSearchIcon = destinationNavBackStackEntry != BottomNavItem.Calender.route && destinationNavBackStackEntry != Destinations.HISTORY.nameScreen,
-                                isShowBackIcon = destinationNavBackStackEntry == Destinations.HISTORY.nameScreen,
+                                openHistory = {
+                                    navController.navigate(Destinations.AlarmHistory.route)
+                                },
+                                isShowSearchIcon = destinationNavBackStackEntry != BottomNavItem.Calender.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route,
+                                isShowBackIcon = destinationNavBackStackEntry == Destinations.AlarmHistory.route,
                                 onClickBack = {
                                     navController.popBackStack()
                                 },
@@ -221,15 +230,15 @@ fun YadinoApp(
                                 },
                                 onDrawerClick = {
                                     coroutineScope.launch { drawerState.open() }
-                                },
+                                }, haveAlarm =haveAlarm
                             )
                         }
                     }, floatingActionButton = {
-                        if (destinationNavBackStackEntry != BottomNavItem.Welcome.route && destinationNavBackStackEntry != Destinations.HISTORY.nameScreen) {
+                        if (destinationNavBackStackEntry != BottomNavItem.Welcome.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route) {
                             FloatingActionButton(containerColor = CornflowerBlueLight,
                                 contentColor = Color.White,
                                 onClick = {
-                                    com.rahim.yadino.base.component.requestPermissionNotification(
+                                    requestPermissionNotification(
                                         isGranted = {
                                             if (it) openDialog = true
                                             else errorClick = true
@@ -245,7 +254,7 @@ fun YadinoApp(
                         }
                     }, bottomBar = {
                         AnimatedVisibility(
-                            visible = destinationNavBackStackEntry != BottomNavItem.Welcome.route && destinationNavBackStackEntry != Destinations.HISTORY.nameScreen,
+                            visible = destinationNavBackStackEntry != BottomNavItem.Welcome.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route,
                             enter = fadeIn() + expandVertically(animationSpec = tween(800)),
                             exit = fadeOut() + shrinkVertically(animationSpec = tween(800))
                         ) {
@@ -259,13 +268,13 @@ fun YadinoApp(
                 ) { innerPadding ->
                     NavigationComponent(navController,
                         innerPadding = innerPadding,
-                        startDestination = if (isShowWelcomeScreen) Screen.Home.route else Screen.Welcome.route,
+                        startDestination = if (isShowWelcomeScreen) Destinations.Home.route else Destinations.Welcome.route,
                         openDialog = openDialog,
                         clickSearch = clickSearch,
                         onOpenDialog = { isOpen ->
                             openDialog = isOpen
                         })
-                    if (destination == Screen.Home.route) requestPermissionNotification(
+                    if (destination == Destinations.Home.route) requestPermissionNotification(
                         notificationPermission = notificationPermissionState,
                         isGranted = {},
                         permissionState = {
@@ -276,8 +285,8 @@ fun YadinoApp(
         }
     }
     ErrorDialog(isOpen = errorClick,
-        message = stringResource(id = R.string.better_performance_access),
-        okMessage = stringResource(id = R.string.setting),
+        message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.better_performance_access),
+        okMessage = stringResource(id = com.rahim.yadino.library.designsystem.R.string.setting),
         isClickOk = {
             if (it) {
                 goSettingPermission(context)

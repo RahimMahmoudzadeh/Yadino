@@ -9,5 +9,5 @@ android {
     namespace = "com.rahim.yadino.library.navigation"
 }
 dependencies{
-    api(project(":library:designsystem"))
+    implementation(project(":library:designsystem"))
 }

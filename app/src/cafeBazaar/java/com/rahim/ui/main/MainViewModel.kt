@@ -8,6 +8,7 @@ import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,6 +23,7 @@ class MainViewModel @Inject constructor(
     private val sharedPreferencesRepository: SharedPreferencesRepository
 ) :
     BaseViewModel() {
+    val haveAlarm : Flow<Boolean> = repositoryRoutine.haveAlarm()
     init {
         viewModelScope.launch(ioDispatcher) {
             launch {
