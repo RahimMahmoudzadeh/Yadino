@@ -3,7 +3,6 @@ package com.rahim.yadino.routine
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -52,7 +51,7 @@ import com.rahim.yadino.designsystem.dialog.DialogAddRoutine
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.font_medium
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.routine.modle.Routine.Routine
+import com.rahim.yadino.routine.modle.Routine
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.launch
@@ -129,7 +128,6 @@ private fun RoutineScreen(
     onMonthChecked: (Int, Int) -> Unit,
 ) {
     val context = LocalContext.current
-    val alarmManagement = AlarmManagement()
     Timber.tag("routineGetNameDay").d("recomposition RoutineScreen")
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
@@ -211,10 +209,10 @@ private fun RoutineScreen(
             routineChecked = {
                 checkedRoutine(it)
                 coroutineScope.launch {
-                    alarmManagement.cancelAlarm(
-                        context,
-                        it.idAlarm ?: it.id?.toLong()
-                    )
+//                    alarmManagement.cancelAlarm(
+//                        context,
+//                        it.idAlarm ?: it.id?.toLong()
+//                    )
                 }
                 Timber.tag("routineGetNameDay").d("GetRoutines routineChecked->$it")
             },
@@ -241,10 +239,10 @@ private fun RoutineScreen(
                 routineDeleteDialog.value?.let {
                     onDeleteRoutine(it)
                     coroutineScope.launch {
-                        alarmManagement.cancelAlarm(
-                            context,
-                            if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
-                        )
+//                        alarmManagement.cancelAlarm(
+//                            context,
+//                            if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
+//                        )
                     }
                 }
             }
@@ -305,7 +303,7 @@ private fun RoutineScreen(
     ProcessRoutineAdded(addRoutine, context) {
         it?.let {
             onOpenDialog(false)
-            alarmManagement.setAlarm(context, it)
+//            alarmManagement.setAlarm(context, it)
             clearAddRoutine()
         }
     }
@@ -313,7 +311,7 @@ private fun RoutineScreen(
         it?.let {
             onOpenDialog(false)
             coroutineScope.launch {
-                alarmManagement.updateAlarm(context, it)
+//                alarmManagement.updateAlarm(context, it)
                 clearUpdateRoutine()
             }
             routineUpdateDialog.value = null

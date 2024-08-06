@@ -27,7 +27,7 @@ import com.rahim.yadino.designsystem.dialog.DialogAddRoutine
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.routine.modle.Routine.Routine
+import com.rahim.yadino.routine.modle.Routine
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -74,7 +74,7 @@ internal fun HomeRoute(
 private fun HomeScreen(
     modifier: Modifier = Modifier,
     routines: Resource<List<Routine>>,
-    addRoutine: Resource<Routine?>?,
+    addRoutine: Resource<Nothing?>?,
     updateRoutine: Resource<Routine?>?,
     currentYer: Int,
     currentMonth: Int,
@@ -92,7 +92,6 @@ private fun HomeScreen(
     onSearchText: (searchText: String) -> Unit,
 ) {
     val context = LocalContext.current
-    val alarmManagement = AlarmManagement()
     val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
     var searchText by rememberSaveable { mutableStateOf("") }
@@ -126,11 +125,11 @@ private fun HomeScreen(
                             { checkedRoutine ->
                                 onCheckedRoutine(checkedRoutine)
                                 coroutineScope.launch {
-                                    alarmManagement.cancelAlarm(
-                                        context,
-                                        checkedRoutine.idAlarm
-                                            ?: checkedRoutine.id?.toLong()
-                                    )
+//                                    alarmManagement.cancelAlarm(
+//                                        context,
+//                                        checkedRoutine.idAlarm
+//                                            ?: checkedRoutine.id?.toLong()
+//                                    )
                                 }
                             },
                             { routineUpdate ->
@@ -166,10 +165,10 @@ private fun HomeScreen(
                 routineDeleteDialog.value?.let {
                     onDeleteRoutine(it)
                     coroutineScope.launch {
-                        alarmManagement.cancelAlarm(
-                            context,
-                            if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
-                        )
+//                        alarmManagement.cancelAlarm(
+//                            context,
+//                            if (it.idAlarm == null) it.id?.toLong() else it.idAlarm
+//                        )
                     }
                 }
             }
@@ -222,20 +221,19 @@ private fun HomeScreen(
     ProcessRoutineAdded(addRoutine, context) {
         it?.let {
             onOpenDialog(false)
-            alarmManagement.setAlarm(context, it)
             onClearAddRoutine()
         }
     }
-    ProcessRoutineAdded(updateRoutine, context) {
-        it?.let {
-            onOpenDialog(false)
-            coroutineScope.launch {
-                alarmManagement.updateAlarm(context, it)
-            }
-            onClearUpdateRoutine()
-            routineUpdateDialog.value = null
-        }
-    }
+//    ProcessRoutineAdded(updateRoutine, context) {
+//        it?.let {
+//            onOpenDialog(false)
+//            coroutineScope.launch {
+//                alarmManagement.updateAlarm(context, it)
+//            }
+//            onClearUpdateRoutine()
+//            routineUpdateDialog.value = null
+//        }
+//    }
 }
 
 @Composable

@@ -5,7 +5,8 @@ import com.rahim.yadino.base.viewmodel.BaseViewModel
 import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
-import com.rahim.yadino.routine.modle.Routine.Routine
+import com.rahim.yadino.reminder.useCase.AddReminderUseCase
+import com.rahim.yadino.routine.modle.Routine
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,13 +14,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val routineRepository: RepositoryRoutine,
+    private val addReminderUseCase: AddReminderUseCase,
     private val sharedPreferencesRepository: SharedPreferencesRepository
 ) :
     BaseViewModel() {
@@ -28,7 +29,7 @@ class HomeViewModel @Inject constructor(
     val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
 
     private val _addRoutine =
-        MutableStateFlow<Resource<Routine?>?>(null)
+        MutableStateFlow<Resource<Nothing?>?>(null)
     val addRoutine = _addRoutine
 
     private val _updateRoutine =
@@ -74,7 +75,7 @@ class HomeViewModel @Inject constructor(
 
     fun addRoutine(routine: Routine) {
         viewModelScope.launch {
-            routineRepository.addRoutine(routine).catch {
+            addReminderUseCase(routine).catch {
                 _addRoutine.value = Resource.Error(ErrorMessageCode.ERROR_SAVE_PROSES)
             }.collect {
                 Timber.tag("routineAdd")

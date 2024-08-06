@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.RepositoryRoutine
-import com.rahim.yadino.routine.modle.Routine.Routine
+import com.rahim.yadino.routine.modle.Routine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
