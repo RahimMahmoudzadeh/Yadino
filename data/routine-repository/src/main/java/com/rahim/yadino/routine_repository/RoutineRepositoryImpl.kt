@@ -5,7 +5,7 @@ import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
 import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.base.Resource
-import com.rahim.yadino.routine.modle.Routine.Routine
+import com.rahim.yadino.routine.modle.Routine
 import com.rahim.yadino.routine_local.dao.RoutineDao
 import com.rahim.yadino.routine_repository.mapper.toLocalRoutineDto
 import com.rahim.yadino.routine_repository.mapper.toRoutine
@@ -234,4 +234,5 @@ class RoutineRepositoryImpl @Inject constructor(
         name: String, monthNumber: Int?, dayNumber: Int?
     ): Flow<List<Routine>> = routineDao.searchRoutine(name, monthNumber, dayNumber)
         .map { list -> list.map { it.toRoutine() } }
+    override  fun haveAlarm(): Flow<Boolean> = routineDao.haveAlarm()
 }
