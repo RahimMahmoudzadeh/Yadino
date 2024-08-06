@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import com.rahim.yadino.alarmhistory.navigation.historyScreen
 import com.rahim.yadino.calender.navigation.calenderScreen
 import com.rahim.yadino.home.navigation.homeScreen
+import com.rahim.yadino.home.navigation.navigateToHome
 import com.rahim.yadino.note.navigation.noteScreen
 import com.rahim.yadino.routine.navigation.routineScreen
 import com.rahim.yadino.welcome.navigation.welcomeScreen
@@ -23,7 +24,9 @@ fun NavigationComponent(
     onOpenDialog: (isOpen: Boolean) -> Unit,
 ) {
     NavHost(navController, startDestination = startDestination, Modifier.padding(innerPadding)) {
-        welcomeScreen()
+        welcomeScreen {
+            navController.navigateToHome()
+        }
         homeScreen()
         routineScreen()
         noteScreen()

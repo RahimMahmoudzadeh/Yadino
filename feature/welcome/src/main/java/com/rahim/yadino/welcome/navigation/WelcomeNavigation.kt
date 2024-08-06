@@ -11,8 +11,8 @@ fun NavController.navigateToWelcome(navOptions: NavOptions? = null) {
     this.navigate(Destinations.Welcome.route, navOptions)
 }
 
-fun NavGraphBuilder.welcomeScreen() {
+fun NavGraphBuilder.welcomeScreen(navigateToHome: () -> Unit) {
     composable(Destinations.Welcome.route) {
-        WelcomeRoute()
+        WelcomeRoute(navigateToHome = navigateToHome)
     }
 }
