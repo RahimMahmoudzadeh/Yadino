@@ -71,21 +71,32 @@ fun String.calculateTimeFormat(currentYer: Int, currentMonth: Int, currentDay: S
     return "$currentYer-$currentMonth-$currentDay"
 }
 
-fun ErrorMessageCode.errorMessage(context:Context):String{
+fun ErrorMessageCode.errorMessage(context: Context): String {
     return context.run {
-        when(this@errorMessage){
-            ErrorMessageCode.ERROR_GET_PROCESS->{
+        when (this@errorMessage) {
+            ErrorMessageCode.ERROR_GET_PROCESS -> {
                 this.resources.getString(R.string.errorGetProses)
             }
-            ErrorMessageCode.EQUAL_ROUTINE_MESSAGE->{
+
+            ErrorMessageCode.EQUAL_ROUTINE_MESSAGE -> {
                 this.resources.getString(R.string.equalRoutineMessage)
             }
-            ErrorMessageCode.ERROR_SAVE_PROSES->{
+
+            ErrorMessageCode.ERROR_SAVE_PROSES -> {
                 this.resources.getString(R.string.errorSaveProses)
             }
+
+            ErrorMessageCode.ERROR_NOTIFICATION_PERMISSION -> this.resources.getString(R.string.errorSaveProses)
+            ErrorMessageCode.ERROR_REMINDER_PERMISSION -> this.resources.getString(R.string.errorSaveProses)
+            ErrorMessageCode.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION -> this.resources.getString(
+                R.string.errorSaveProses
+            )
+
+            ErrorMessageCode.ERROR_TIME_PASSED -> this.resources.getString(R.string.errorSaveProses)
         }
     }
 }
+
 fun String.persianLocate(): String {
     var result = ""
     var fa = '۰'
