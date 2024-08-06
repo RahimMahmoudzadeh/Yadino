@@ -8,6 +8,7 @@ sealed class Destinations(val route:String) {
     data object Welcome : Destinations(ModuleRoutes.WELCOME.route)
     data object AlarmHistory : Destinations(ModuleRoutes.HISTORY.route)
     data object Calender : Destinations(ModuleRoutes.CALENDER.route)
+    data object Empty : Destinations(ModuleRoutes.EMPTY.route)
 
 }
 private enum class ModuleRoutes(val route: String) {
