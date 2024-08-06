@@ -6,7 +6,7 @@ import com.rahim.yadino.base.Resource
 import com.rahim.yadino.base.calculateTimeFormat
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.base.viewmodel.BaseViewModel
-import com.rahim.yadino.dateTime.DataTimeRepository
+import com.rahim.yadino.dateTime.DateTimeRepository
 import com.rahim.yadino.note.model.NoteModel
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NoteViewModel @Inject constructor(
     private val noteRepository: NoteRepository,
-    private val timeRepository: DataTimeRepository,
+    private val timeRepository: DateTimeRepository,
     private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) :
     BaseViewModel() {

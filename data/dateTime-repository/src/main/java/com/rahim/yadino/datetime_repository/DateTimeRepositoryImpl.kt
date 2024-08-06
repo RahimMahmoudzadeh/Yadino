@@ -6,7 +6,7 @@ import com.rahim.yadino.base.Constants.FIRST_YEAR
 import com.rahim.yadino.base.Constants.VERSION_TIME_DB
 import com.rahim.yadino.base.enums.HalfWeekName
 import com.rahim.yadino.base.enums.WeekName
-import com.rahim.yadino.dateTime.DataTimeRepository
+import com.rahim.yadino.dateTime.DateTimeRepository
 import com.rahim.yadino.base.model.TimeDate
 import com.rahim.yadino.dateTime_local.dao.TimeDao
 import com.rahim.yadino.dateTime_local.dto.LocalTimeDateDto
@@ -25,12 +25,12 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 
-class DataTimeRepositoryImpl @Inject constructor(
+class DateTimeRepositoryImpl @Inject constructor(
     @com.rahim.yadino.base.di.DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
     @com.rahim.yadino.base.di.IODispatcher val ioDispatcher: CoroutineDispatcher,
     private val timeDao: TimeDao
 ) :
-    DataTimeRepository {
+    DateTimeRepository {
     private val persianData = PersianDate()
     private val currentTimeDay = persianData.shDay
     private val currentTimeMonth = persianData.shMonth

@@ -3,8 +3,7 @@ package com.rahim.yadino.calender
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.base.model.TimeDate
 import com.rahim.yadino.base.viewmodel.BaseViewModel
-import com.rahim.yadino.dateTime.DataTimeRepository
-import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
+import com.rahim.yadino.dateTime.DateTimeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalenderViewModel @Inject constructor(
-    private val dateTimeRepository: DataTimeRepository,
+    private val dateTimeRepository: DateTimeRepository,
 ) : BaseViewModel() {
     private val _times =
         MutableStateFlow<List<TimeDate>>(emptyList())

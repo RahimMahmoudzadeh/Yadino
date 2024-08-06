@@ -2,7 +2,7 @@ package com.rahim.ui.main
 
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.base.viewmodel.BaseViewModel
-import com.rahim.yadino.dateTime.DataTimeRepository
+import com.rahim.yadino.dateTime.DateTimeRepository
 import com.rahim.yadino.note.NoteRepository
 import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val dataTimeRepository: DataTimeRepository,
+    private val dateTimeRepository: DateTimeRepository,
     private val repositoryRoutine: RepositoryRoutine,
     private val noteRepository: NoteRepository,
     @com.rahim.yadino.base.di.IODispatcher
@@ -27,10 +27,10 @@ class MainViewModel @Inject constructor(
     init {
         viewModelScope.launch(ioDispatcher) {
             launch {
-                dataTimeRepository.calculateToday()
+                dateTimeRepository.calculateToday()
             }
             launch {
-                dataTimeRepository.addTime()
+                dateTimeRepository.addTime()
             }
             launch {
                 Timber.tag("sampleRoutines").d("mainViewModel")

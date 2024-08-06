@@ -3,7 +3,7 @@ package com.rahim.yadino.dateTime
 import com.rahim.yadino.base.model.TimeDate
 import kotlinx.coroutines.flow.Flow
 
-interface DataTimeRepository {
+interface DateTimeRepository {
     suspend fun addTime()
     suspend fun calculateToday()
     fun getTimes(): Flow<List<TimeDate>>

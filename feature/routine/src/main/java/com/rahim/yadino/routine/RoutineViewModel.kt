@@ -5,7 +5,7 @@ import com.rahim.yadino.base.Resource
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.base.model.TimeDate
 import com.rahim.yadino.base.viewmodel.BaseViewModel
-import com.rahim.yadino.dateTime.DataTimeRepository
+import com.rahim.yadino.dateTime.DateTimeRepository
 import com.rahim.yadino.routine.modle.Routine
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RoutineViewModel @Inject constructor(
     private val routineRepository: RepositoryRoutine,
-    private val dateTimeRepository: DataTimeRepository,
+    private val dateTimeRepository: DateTimeRepository,
     private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) :
     BaseViewModel() {
