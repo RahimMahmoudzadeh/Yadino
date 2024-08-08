@@ -12,7 +12,7 @@ class AndroidHiltConventionPlugin : Plugin<Project> {
         with(target) {
             applyPlugins {
                 listOf(
-                    versionCatalog.findPlugin("hilt.plugin").get().get().pluginId,
+                    "dagger.hilt.android.plugin",
                     versionCatalog.findPlugin("ksp").get().get().pluginId
                 )
             }
@@ -20,10 +20,6 @@ class AndroidHiltConventionPlugin : Plugin<Project> {
             dependencies {
                 add("implementation", versionCatalog.findLibrary("hilt.android").get())
                 add("ksp", versionCatalog.findLibrary("hilt.compiler").get())
-                add(
-                    "implementation",
-                    versionCatalog.findLibrary("hilt.navigation.compose").get()
-                )
             }
         }
     }

@@ -3,6 +3,7 @@ package com.rahim.yadino.note_repository
 import com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
 import com.rahim.yadino.note.NoteRepository
 import com.rahim.yadino.note.model.NoteModel
+import com.rahim.yadino.note_local.NoteDao
 import com.rahim.yadino.note_repository.mapper.toLocalNoteDto
 import com.rahim.yadino.note_repository.mapper.toNote
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +15,7 @@ private const val SAMPLE_NOTE_RIGHT = "من یک یادداشت تستی هست�
 private const val SAMPLE_NOTE_LEFT = "من یک یادداشت تستی هستم لطفا من را به چپ بکشید"
 
 class NoteRepositoryImpl @Inject constructor(
-    private val noteDao: com.rahim.yadino.note_local.NoteDao,
+    private val noteDao: NoteDao,
     private val sharedPreferencesCustom: SharedPreferencesCustom
 ) : NoteRepository {
     private val persianData = PersianDate()

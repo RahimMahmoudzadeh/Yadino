@@ -9,5 +9,5 @@ android {
     namespace = "com.rahim.yadino.feature.alarmHistory"
 }
 dependencies{
-    implementation(project(":domain:reminder"))
+    implementation(project(":data:reminder-repository"))
 }

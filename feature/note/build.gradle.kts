@@ -9,7 +9,7 @@ android {
     namespace = "com.rahim.yadino.feature.note"
 }
 dependencies{
-    implementation(project(":domain:sharedPreferences"))
-    implementation(project(":domain:note"))
-    implementation(project(":domain:dateTime"))
+    implementation(project(":data:sharedPreferences"))
+    implementation(project(":data:note-repository"))
+    implementation(project(":data:dateTime-repository"))
 }

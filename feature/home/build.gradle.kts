@@ -9,7 +9,7 @@ android {
     namespace = "com.rahim.yadino.feature.home"
 }
 dependencies {
-    implementation(project(":domain:reminder"))
-    implementation(project(":domain:dateTime"))
-    implementation(project(":domain:sharedPreferences"))
+    implementation(project(":data:reminder-repository"))
+    implementation(project(":data:dateTime-repository"))
+    implementation(project(":data:sharedPreferences"))
 }

@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalenderViewModel @Inject constructor(
-    private val dateTimeRepository: DateTimeRepository,
+//    private val dateTimeRepository: DateTimeRepository,
 ) : BaseViewModel() {
     private val _times =
         MutableStateFlow<List<TimeDate>>(emptyList())
@@ -25,10 +25,10 @@ class CalenderViewModel @Inject constructor(
     }
 
     fun getTimesMonth(yearNumber: Int = currentYear, monthNumber: Int = currentMonth) {
-        viewModelScope.launch {
-            dateTimeRepository.getTimesMonth(yearNumber, monthNumber).catch {}.collectLatest {
-                _times.value = it
-            }
-        }
+//        viewModelScope.launch {
+//            dateTimeRepository.getTimesMonth(yearNumber, monthNumber).catch {}.collectLatest {
+//                _times.value = it
+//            }
+//        }
     }
 }

@@ -11,4 +11,5 @@ android {
 dependencies{
     implementation(project(":core:base"))
     api(project(":domain:routine"))
+    api(project(":data:routine-repository"))
 }

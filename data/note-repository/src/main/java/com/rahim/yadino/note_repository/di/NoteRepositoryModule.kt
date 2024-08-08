@@ -6,10 +6,11 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-@InstallIn(SingletonComponent::class)
 @Module
-abstract class NoteRepositoryModule {
+@InstallIn(SingletonComponent::class)
+internal interface NoteRepositoryModule {
     @Binds
-    abstract fun provideDataTimeRepository(noteRepositoryImpl: NoteRepositoryImpl): NoteRepository
+    fun bindsNoteRepository(noteRepositoryImpl: NoteRepositoryImpl): NoteRepository
 }
