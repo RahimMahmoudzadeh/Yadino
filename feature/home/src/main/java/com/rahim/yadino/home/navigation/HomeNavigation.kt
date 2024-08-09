@@ -11,8 +11,8 @@ fun NavController.navigateToHome(navOptions: NavOptions? = null) {
     this.navigate(Destinations.Home.route, navOptions)
 }
 
-fun NavGraphBuilder.homeScreen() {
+fun NavGraphBuilder.homeScreen(openDialog:Boolean,clickSearch: Boolean,onOpenDialog:(isOpen:Boolean)->Unit) {
     composable(Destinations.Home.route) {
-        HomeRoute(openDialog = false, clickSearch = false, onOpenDialog = {})
+        HomeRoute(openDialog = openDialog, clickSearch = clickSearch, onOpenDialog = onOpenDialog)
     }
 }

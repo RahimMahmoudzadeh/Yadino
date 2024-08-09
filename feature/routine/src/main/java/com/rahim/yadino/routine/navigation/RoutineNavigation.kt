@@ -11,8 +11,16 @@ fun NavController.navigateToRoutine(navOptions: NavOptions? = null) {
     this.navigate(Destinations.Routine.route, navOptions)
 }
 
-fun NavGraphBuilder.routineScreen() {
+fun NavGraphBuilder.routineScreen(
+    openDialog: Boolean,
+    clickSearch: Boolean,
+    onOpenDialog: (isOpen: Boolean) -> Unit
+) {
     composable(Destinations.Routine.route) {
-        RoutineRoute(openDialog = false, clickSearch = false, onOpenDialog = {})
+        RoutineRoute(
+            openDialog = openDialog,
+            clickSearch = clickSearch,
+            onOpenDialog = onOpenDialog
+        )
     }
 }

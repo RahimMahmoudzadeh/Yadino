@@ -27,9 +27,17 @@ fun NavigationComponent(
         welcomeScreen {
             navController.navigateToHome()
         }
-        homeScreen()
-        routineScreen()
-        noteScreen()
+        homeScreen(openDialog = openDialog, onOpenDialog = onOpenDialog, clickSearch = clickSearch)
+        routineScreen(
+            openDialog = openDialog,
+            onOpenDialog = onOpenDialog,
+            clickSearch = clickSearch
+        )
+        noteScreen(
+            openDialog = openDialog,
+            onOpenDialog = onOpenDialog,
+            clickSearch = clickSearch
+        )
         historyScreen()
         calenderScreen()
 //        composable(Screen.Home.route) {
