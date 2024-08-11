@@ -92,7 +92,7 @@ fun ErrorMessageCode.errorMessage(context: Context): String {
                 R.string.errorSaveProses
             )
 
-            ErrorMessageCode.ERROR_TIME_PASSED -> this.resources.getString(R.string.errorSaveProses)
+            ErrorMessageCode.ERROR_TIME_PASSED -> this.resources.getString(R.string.errorTimePassed)
         }
     }
 }

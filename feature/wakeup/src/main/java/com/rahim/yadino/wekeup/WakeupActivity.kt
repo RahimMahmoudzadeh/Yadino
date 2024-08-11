@@ -1,6 +1,10 @@
 package com.rahim.yadino.wekeup
 
 import android.app.KeyguardManager
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
@@ -31,25 +35,56 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.rahim.yadino.base.Constants
+import com.rahim.yadino.base.Constants.ACTION_SEND_NOTIFICATION
+import com.rahim.yadino.base.Constants.KEY_LAUNCH_ID
+import com.rahim.yadino.base.Constants.KEY_LAUNCH_NAME
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.feature.wakeup.R
+import com.rahim.yadino.wekeup.notification.NotificationManager
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class WakeupActivity : ComponentActivity() {
     private var routineName: String? = null
     private var routineId: String? = null
+    @Inject
+    lateinit var notificationManager: NotificationManager
     override fun onCreate(savedInstanceState: Bundle?) {
 //        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val b = object : BroadcastReceiver() {
+            override fun onReceive(p0: Context?, intent: Intent?) {
+                if (intent?.action != ACTION_SEND_NOTIFICATION) return
+                val reminderName = intent.getStringExtra(KEY_LAUNCH_NAME)
+                val reminderId = intent.getIntExtra(KEY_LAUNCH_ID, 0)
+                Timber.tag("yadinoBroadcast").d("WakeupActivity reminderName->$reminderName")
+                Timber.tag("yadinoBroadcast").d("WakeupActivity reminderId->$reminderId")
+                notificationManager.createFullNotification(
+                    context = this@WakeupActivity,
+                    routineName = reminderName ?: "",
+                    routineIdAlarm = reminderId.toLong(),
+                    routineExplanation = ""
+                )
+            }
+        }
+        ContextCompat.registerReceiver(
+            this@WakeupActivity,
+            b,
+            IntentFilter(ACTION_SEND_NOTIFICATION),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+
         setContent {
             var isPlaying by remember { mutableStateOf(true) }
             var speed by remember { mutableFloatStateOf(1f) }

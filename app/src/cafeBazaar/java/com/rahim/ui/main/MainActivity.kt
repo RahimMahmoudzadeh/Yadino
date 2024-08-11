@@ -2,7 +2,10 @@ package com.rahim.ui.main
 
 import android.Manifest
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -44,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -52,15 +56,19 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.messaging.FirebaseMessaging
+import com.rahim.yadino.wekeup.notification.NotificationManager
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.navigation.NavigationComponent
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.R
+import com.rahim.yadino.base.Constants.ACTION_SEND_NOTIFICATION
 import com.rahim.yadino.base.Constants.CAFE_BAZAAR_PACKAGE_NAME
 import com.rahim.yadino.base.Constants.CAFE_BAZZAR_LINK
 import com.rahim.yadino.base.Constants.DARK
+import com.rahim.yadino.base.Constants.KEY_LAUNCH_ID
+import com.rahim.yadino.base.Constants.KEY_LAUNCH_NAME
 import com.rahim.yadino.base.Constants.LIGHT
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
 import com.rahim.yadino.designsystem.component.goSettingPermission
@@ -71,19 +79,43 @@ import com.rahim.yadino.navigation.component.BottomNavigationBar
 import com.rahim.yadino.navigation.component.DrawerItemType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
+    private var receiver: BroadcastReceiver? = null
 
+    @Inject
+    lateinit var notificationManager: NotificationManager
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-
-
+        receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (intent.action != ACTION_SEND_NOTIFICATION) return
+                val reminderName = intent.getStringExtra(KEY_LAUNCH_NAME)
+                val reminderId = intent.getStringExtra(KEY_LAUNCH_ID)
+                Timber.tag("yadinoBroadcast").d("main activity reminderName->$reminderName")
+                Timber.tag("yadinoBroadcast").d("main activity reminderId->$reminderId")
+                notificationManager.createFullNotification(
+                    this@MainActivity,
+                    reminderName ?: "",
+                    reminderId?.toLong() ?: 0,
+                    ""
+                )
+            }
+        }
+        ContextCompat.registerReceiver(
+            this@MainActivity,
+            receiver,
+            IntentFilter(ACTION_SEND_NOTIFICATION),
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
         getTokenFirebase()
         setContent {
             val context = LocalContext.current
@@ -117,6 +149,20 @@ class MainActivity : ComponentActivity() {
     private fun getTokenFirebase() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
         }
+    }
+
+    //    override fun notify(reminderName: String, reminderId: Int) {
+//        val notify = NotificationManager()
+//        notify.createFullNotification(
+//            routineName = reminderName,
+//            routineIdAlarm = reminderId.toLong(),
+//            routineExplanation = "",
+//            context = this@MainActivity
+//        )
+//    }
+    override fun onDestroy() {
+        super.onDestroy()
+        this@MainActivity.unregisterReceiver(receiver)
     }
 }
 
@@ -230,7 +276,7 @@ fun YadinoApp(
                                 },
                                 onDrawerClick = {
                                     coroutineScope.launch { drawerState.open() }
-                                }, haveAlarm =haveAlarm
+                                }, haveAlarm = haveAlarm
                             )
                         }
                     }, floatingActionButton = {

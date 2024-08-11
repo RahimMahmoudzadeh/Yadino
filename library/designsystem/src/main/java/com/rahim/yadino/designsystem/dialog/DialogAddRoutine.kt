@@ -76,18 +76,14 @@ fun DialogAddRoutine(
     var monthChecked by rememberSaveable { mutableIntStateOf(currentNumberMonth) }
     var yearChecked by rememberSaveable { mutableIntStateOf(currentNumberYear) }
     var dayChecked by rememberSaveable { mutableIntStateOf(currentNumberDay) }
-    var routineName by rememberSaveable { mutableStateOf("") }
-    var routineExplanation by rememberSaveable { mutableStateOf("") }
-    var time by rememberSaveable { mutableStateOf("") }
+    var routineName by rememberSaveable { mutableStateOf(if (updateRoutineName.isNullOrBlank()) "" else updateRoutineName) }
+    var routineExplanation by rememberSaveable { mutableStateOf(if (updateRoutineExplanation.isNullOrBlank()) "" else updateRoutineExplanation) }
+    var time by rememberSaveable { mutableStateOf(if (updateRoutineTime.isNullOrBlank()) "12:00" else updateRoutineTime) }
     var checkedStateAllDay by remember { mutableStateOf(false) }
     var isErrorName by remember { mutableStateOf(false) }
     var isShowDateDialog by remember { mutableStateOf(false) }
     var isErrorExplanation by remember { mutableStateOf(false) }
     val alarmDialogState = rememberMaterialDialogState()
-
-    routineName = updateRoutineName
-    routineExplanation = updateRoutineExplanation
-    time = updateRoutineTime
 
     val persianData = PersianDate()
     val date = persianData.initJalaliDate(

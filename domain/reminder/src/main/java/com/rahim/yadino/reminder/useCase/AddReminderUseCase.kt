@@ -19,78 +19,89 @@ class AddReminderUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(routine: Routine): Flow<Resource<Nothing?>> = flow {
         try {
-            routineRepository.addRoutine(routine).catch {
-                emit(Resource.Error(ErrorMessageCode.ERROR_SAVE_PROSES))
-            }.collect {
-                when (it) {
-                    is Resource.Loading -> {
-                        emit(Resource.Loading())
-                    }
+            routine.apply {
+                idAlarm = routineRepository.getRoutineAlarmId()
+                colorTask = 0
+                timeInMillisecond = routineRepository.convertDateToMilSecond(
+                    yerNumber,
+                    monthNumber,
+                    dayNumber,
+                    timeHours
+                )
+            }
+            val equalRoutine = routineRepository.checkEqualRoutine(routine)
+            if (equalRoutine == null) {
+                val reminderState = reminderScheduler.setReminder(
+                    routine.name,
+                    routine.id ?: 0,
+                    routine.timeInMillisecond ?: 0,
+                    routine.idAlarm ?: 0
+                )
+                when (reminderState) {
+                    ReminderState.SetSuccessfully -> {
+                        routineRepository.addRoutine(routine).catch {
+                            emit(Resource.Error(ErrorMessageCode.ERROR_SAVE_PROSES))
+                        }.collect {
+                            when (it) {
+                                is Resource.Loading -> {
+                                    emit(Resource.Loading())
+                                }
 
-                    is Resource.Success -> {
-                        it.data?.let { routine ->
-                            val reminderState = reminderScheduler.setReminder(
-                                routine.name,
-                                routine.id ?: 0,
-                                routine.timeInMillisecond ?: 0,
-                                routine.idAlarm ?: 0
-                            )
-                            when (reminderState) {
-                                ReminderState.SetSuccessfully -> {
+                                is Resource.Success -> {
                                     emit(Resource.Success(null))
                                 }
 
-                                is ReminderState.NotSet -> {
-                                    emit(Resource.Error(reminderState.errorMessage))
-                                }
-
-                                is ReminderState.PermissionsState -> {
-                                    when {
-                                        reminderState.reminderPermission && !reminderState.notificationPermission -> {
-                                            emit(
-                                                Resource.Error(
-                                                    message = ErrorMessageCode.ERROR_NOTIFICATION_PERMISSION
-                                                )
-                                            )
-                                        }
-
-                                        !reminderState.reminderPermission && reminderState.notificationPermission -> {
-                                            emit(
-                                                Resource.Error(
-                                                    message = ErrorMessageCode.ERROR_REMINDER_PERMISSION
-                                                )
-                                            )
-                                        }
-
-                                        !reminderState.reminderPermission && !reminderState.notificationPermission -> {
-                                            emit(
-                                                Resource.Error(
-                                                    message = ErrorMessageCode.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION
-                                                )
-                                            )
-                                        }
-
-                                        else -> {
-                                            emit(
-                                                Resource.Error(
-                                                    message = ErrorMessageCode.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION
-                                                )
-                                            )
-                                        }
-                                    }
+                                is Resource.Error -> {
+                                    emit(Resource.Error(it.message))
                                 }
                             }
 
                         }
                     }
 
-                    is Resource.Error -> {
-                        emit(Resource.Error(it.message))
+                    is ReminderState.NotSet -> {
+                        emit(Resource.Error(reminderState.errorMessage))
+                    }
+
+                    is ReminderState.PermissionsState -> {
+                        when {
+                            reminderState.reminderPermission && !reminderState.notificationPermission -> {
+                                emit(
+                                    Resource.Error(
+                                        message = ErrorMessageCode.ERROR_NOTIFICATION_PERMISSION
+                                    )
+                                )
+                            }
+
+                            !reminderState.reminderPermission && reminderState.notificationPermission -> {
+                                emit(
+                                    Resource.Error(
+                                        message = ErrorMessageCode.ERROR_REMINDER_PERMISSION
+                                    )
+                                )
+                            }
+
+                            !reminderState.reminderPermission && !reminderState.notificationPermission -> {
+                                emit(
+                                    Resource.Error(
+                                        message = ErrorMessageCode.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION
+                                    )
+                                )
+                            }
+
+                            else -> {
+                                emit(
+                                    Resource.Error(
+                                        message = ErrorMessageCode.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION
+                                    )
+                                )
+                            }
+                        }
                     }
                 }
-
+            } else {
+                emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
             }
-
         } catch (e: Exception) {
             emit(Resource.Error(message = ErrorMessageCode.ERROR_SAVE_PROSES))
         }

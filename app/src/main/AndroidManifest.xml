@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
@@ -42,10 +41,10 @@
             android:showWhenLocked="true"
             android:turnScreenOn="true" />
 
-<!--        <receiver-->
-<!--            android:name=".data.broadcast.YadinoBroadCastReceiver"-->
-<!--            android:enabled="true"-->
-<!--            android:exported="false" />-->
+        <receiver
+            android:name=".base.broadcast.YadinoBroadCastReceiver"
+            android:enabled="true"
+            android:exported="false" />
         <service
             android:name="com.rahim.data.service.notification.FirebaseNotificationService"
             android:exported="false">

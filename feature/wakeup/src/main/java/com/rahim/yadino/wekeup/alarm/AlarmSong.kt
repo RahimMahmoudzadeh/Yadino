@@ -1,4 +1,4 @@
-package com.rahim.data.alarm
+package com.rahim.yadino.wekeup.alarm
 
 import android.content.Context
 import android.media.Ringtone

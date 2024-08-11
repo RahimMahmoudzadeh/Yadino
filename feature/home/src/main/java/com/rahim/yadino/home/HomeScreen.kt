@@ -219,10 +219,8 @@ private fun HomeScreen(
         currentNumberYear = currentYer, monthChange = { year: Int, month: Int -> }
     )
     ProcessRoutineAdded(addRoutine, context) {
-        it?.let {
-            onOpenDialog(false)
-            onClearAddRoutine()
-        }
+        onOpenDialog(false)
+        onClearAddRoutine()
     }
 //    ProcessRoutineAdded(updateRoutine, context) {
 //        it?.let {

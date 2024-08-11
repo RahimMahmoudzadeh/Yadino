@@ -13,6 +13,7 @@ import com.rahim.yadino.base.Constants.ACTION_CANCEL_NOTIFICATION
 import com.rahim.yadino.base.Constants.ACTION_SEND_NOTIFICATION
 import com.rahim.yadino.base.Constants.KEY_LAUNCH_ID
 import com.rahim.yadino.base.Constants.KEY_LAUNCH_NAME
+import com.rahim.yadino.base.broadcast.YadinoBroadCastReceiver
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.reminder.ReminderScheduler
 import com.rahim.yadino.reminder.state.ReminderState
@@ -131,9 +132,9 @@ class AndroidReminderScheduler @Inject constructor(
         reminderIdAlarm: Long
     ): ErrorMessageCode? {
         if (reminderTime < System.currentTimeMillis()) return ErrorMessageCode.ERROR_TIME_PASSED
-        val alarmIntent = Intent(ACTION_SEND_NOTIFICATION).let { intent ->
-            intent.putExtra(KEY_LAUNCH_NAME, reminderName)
-            intent.putExtra(KEY_LAUNCH_ID, reminderId)
+        val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).apply {
+            putExtra(KEY_LAUNCH_NAME, reminderName)
+            putExtra(KEY_LAUNCH_ID, reminderId)
         }
 
         val pendingIntent = PendingIntent.getBroadcast(
