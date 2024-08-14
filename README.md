@@ -18,8 +18,8 @@ Hi! Yadino is a ToDo app the use of MVI Architecture Pattern And Clean Architect
 
 **You can download the app from Cafe Bazaar or Myket 🚀**
 
-<a href='https://cafebazaar.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Bazaar' src='https://github.com/RahimMahmoudzadeh/Yadino/blob/multi_module/asset/cafebazzar.png'/></a>
-<a href='https://myket.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Myket' src='https://github.com/RahimMahmoudzadeh/Yadino/blob/multi_module/asset/myket.png'/></a>
+<a href='https://cafebazaar.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Bazaar' src="asset/cafebazzar.png"/></a>
+<a href='https://myket.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Myket' src="asset/myket.png"/></a>
 
 ## 🛠 Built With  
 |  Architecture   |MVVM Architecture Pattern |  
@@ -64,7 +64,7 @@ Hi! Yadino is a ToDo app the use of MVI Architecture Pattern And Clean Architect
 <br>
 
 ## 🤝 Contribution
-Feel free to fork the repository and submit pull requests. If you encounter any issues or have suggestions, you can open an issue.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## License
 
