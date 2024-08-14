@@ -29,7 +29,7 @@ firebase-crashlytics-plugin = "3.0.2"
 material3Android = "1.2.1"
 compose-vewrsion = "1.6.8"
 androidxCoreSplashscreen = "1.0.1"
-vico = "2.0.0-alpha.21"
+vico = "2.0.0-alpha.28"
 
 #target version
 project-target-sdk-version = "34"
