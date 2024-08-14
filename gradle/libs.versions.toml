@@ -1,6 +1,4 @@
 [versions]
-#kotlin
-kotlinxImmutableCollection = "0.3.7"
 ksp = "2.0.0-1.0.21"
 kotlin = "2.0.0"
 
