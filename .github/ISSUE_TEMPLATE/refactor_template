@@ -1,0 +1,46 @@
+name: refactor request
+description: File a refactor request
+title: "[RF]: "
+labels: ["refactor"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this form!
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for this feature request.
+      options:
+        - label: I have searched the existing issues
+          required: true
+  - type: textarea
+    id: describe-problem
+    attributes:
+      label: Describe the problem
+      description: Is your refactor request related to a problem? Please describe.
+      placeholder: I'm always frustrated when...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the solution
+      description: Please describe the solution you'd like. A clear and concise description of what you want to happen.
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the refactor request here.
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/RahimMahmoudzadeh/Yadino/blob/dev/CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
