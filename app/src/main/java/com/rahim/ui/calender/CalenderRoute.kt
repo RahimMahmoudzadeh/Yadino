@@ -56,8 +56,6 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.core.cartesian.CartesianChart
-import com.patrykandpatrick.vico.core.cartesian.axis.AxisItemPlacer
-import com.patrykandpatrick.vico.core.cartesian.axis.AxisPosition
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.ChartValues
@@ -250,7 +248,7 @@ private fun CalenderScreen(
                        valueFormatter = bottomAxisValueFormatter,
                         titleComponent = rememberAxisLabelComponent(),
                         label = rememberAxisLabelComponent(color = Blue),
-                        axis = rememberAxisLineComponent(color = Blue)
+//                        axis = rememberAxisLineComponent(color = Blue)
                     )
                 ),
                 modelProducer,
