@@ -14,18 +14,6 @@ body:
       options:
         - label: I have searched the existing issues
           required: true
-  - type: dropdown
-    id: related-app
-    attributes:
-      label: Related app
-      description: What app did you encounter a bug on?
-      options:
-        - Mobile - Android
-        - TV - Android
-        - All - Android
-        - Other (bug not related to any app)
-    validations:
-      required: true
   - type: textarea
     id: what-happened
     attributes:
