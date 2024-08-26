@@ -30,7 +30,7 @@ material3Android = "1.2.1"
 compose-vewrsion = "1.6.8"
 androidxCoreSplashscreen = "1.0.1"
 vico = "2.0.0-alpha.28"
-
+spotless="6.20.0"
 #target version
 project-target-sdk-version = "34"
 project-min-sdk-version = "26"
