@@ -15,27 +15,27 @@ import timber.log.Timber
 
 @HiltAndroidApp
 class App : Application() {
-    override fun onCreate() {
-        super.onCreate()
+  override fun onCreate() {
+    super.onCreate()
 
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
-        createNotificationChannel()
-        setFirebaseAnalyse()
+    if (BuildConfig.DEBUG) {
+      Timber.plant(Timber.DebugTree())
     }
-    private fun setFirebaseAnalyse() {
-        FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(!BuildConfig.DEBUG)
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
+    createNotificationChannel()
+    setFirebaseAnalyse()
+  }
+  private fun setFirebaseAnalyse() {
+    FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(!BuildConfig.DEBUG)
+    FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
+  }
+  private fun createNotificationChannel() {
+    val descriptionText = getString(R.string.channel_description)
+    val importance = NotificationManager.IMPORTANCE_HIGH
+    val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance).apply {
+      description = descriptionText
     }
-    private fun createNotificationChannel() {
-        val descriptionText = getString(R.string.channel_description)
-        val importance = NotificationManager.IMPORTANCE_HIGH
-        val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance).apply {
-            description = descriptionText
-        }
-        val notificationManager: NotificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
-    }
+    val notificationManager: NotificationManager =
+      getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    notificationManager.createNotificationChannel(channel)
+  }
 }

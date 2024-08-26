@@ -37,69 +37,69 @@ import com.rahim.utils.base.view.gradientColors
 
 @Composable
 fun DialogUpdateVersion(
-    isForce: Boolean,
-    @StringRes messageUpdate: Int = R.string.update_app_version,
-    @StringRes successBtn: Int = R.string.update,
-    onUpdate: () -> Unit,
-    onDismiss: () -> Unit,
-    onDismissRequest: () -> Unit
+  isForce: Boolean,
+  @StringRes messageUpdate: Int = R.string.update_app_version,
+  @StringRes successBtn: Int = R.string.update,
+  onUpdate: () -> Unit,
+  onDismiss: () -> Unit,
+  onDismissRequest: () -> Unit,
 ) {
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        Dialog(onDismissRequest =onDismissRequest) {
-            Surface(
-                shape = RoundedCornerShape(4.dp),
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)) {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.mipmap.ic_launcher_foreground),
-                            contentDescription = "app icon"
-                        )
-                        Text(
-                            text = stringResource(id = messageUpdate),
-                            textAlign = TextAlign.Center,
-                            style = TextStyle(color = MaterialTheme.colorScheme.primary),
-                            fontSize = 16.sp
-                        )
-                    }
-                    Row(
-                        modifier = Modifier.padding(top = 20.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        DialogButtonBackground(
-                            text = stringResource(id = successBtn),
-                            gradient = Brush.verticalGradient(
-                                gradientColors
-                            ),
-                            textSize = 12.sp,
-                            modifier = Modifier
-                                .fillMaxWidth(0.3f)
-                                .height(35.dp),
-                            onClick = onUpdate,
-                           textStyle =  MaterialTheme.typography.bodyMedium
-                        )
-                        if (!isForce) {
-                            TextButton(
-                                modifier = Modifier.padding(start = 8.dp),
-                                onClick = onDismiss
-                            ) {
-                                Text(
-                                    fontSize = 12.sp,
-                                    text = stringResource(id = R.string.cancel),
-                                    style =MaterialTheme.typography.bodyMedium.copy(brush = Brush.verticalGradient(gradientColors))
-                                )
-                            }
-                        }
-                    }
-                }
+  CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+    Dialog(onDismissRequest = onDismissRequest) {
+      Surface(
+        shape = RoundedCornerShape(4.dp),
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.background,
+      ) {
+        Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)) {
+          Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+          ) {
+            Image(
+              painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+              contentDescription = "app icon",
+            )
+            Text(
+              text = stringResource(id = messageUpdate),
+              textAlign = TextAlign.Center,
+              style = TextStyle(color = MaterialTheme.colorScheme.primary),
+              fontSize = 16.sp,
+            )
+          }
+          Row(
+            modifier = Modifier.padding(top = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+          ) {
+            DialogButtonBackground(
+              text = stringResource(id = successBtn),
+              gradient = Brush.verticalGradient(
+                gradientColors,
+              ),
+              textSize = 12.sp,
+              modifier = Modifier
+                .fillMaxWidth(0.3f)
+                .height(35.dp),
+              onClick = onUpdate,
+              textStyle = MaterialTheme.typography.bodyMedium,
+            )
+            if (!isForce) {
+              TextButton(
+                modifier = Modifier.padding(start = 8.dp),
+                onClick = onDismiss,
+              ) {
+                Text(
+                  fontSize = 12.sp,
+                  text = stringResource(id = R.string.cancel),
+                  style = MaterialTheme.typography.bodyMedium.copy(brush = Brush.verticalGradient(gradientColors)),
+                )
+              }
             }
+          }
         }
+      }
     }
+  }
 }
 
 @Preview(name = "dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -107,13 +107,14 @@ fun DialogUpdateVersion(
 @Preview(name = "device size", device = Devices.PIXEL_4_XL)
 @Composable
 fun PreviewDialogUpdateVersionLight() {
-    YadinoTheme {
-        DialogUpdateVersion(
-            messageUpdate = R.string.update_app_version,
-            successBtn = R.string.update,
-            isForce = false,
-            onUpdate = {},
-            onDismiss = {},
-            onDismissRequest = {})
-    }
+  YadinoTheme {
+    DialogUpdateVersion(
+      messageUpdate = R.string.update_app_version,
+      successBtn = R.string.update,
+      isForce = false,
+      onUpdate = {},
+      onDismiss = {},
+      onDismissRequest = {},
+    )
+  }
 }

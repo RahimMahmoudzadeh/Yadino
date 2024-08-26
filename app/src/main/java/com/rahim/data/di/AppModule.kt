@@ -10,6 +10,6 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class AppModule {
-    @Binds
-    abstract fun providePermissionHandler(permissionHandlerNotificationImpl: PermissionHandlerNotificationImpl): PermissionHandlerNotification
+  @Binds
+  abstract fun providePermissionHandler(permissionHandlerNotificationImpl: PermissionHandlerNotificationImpl): PermissionHandlerNotification
 }

@@ -16,39 +16,39 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val dataTimeRepository: DataTimeRepository,
-    private val repositoryRoutine: RepositoryRoutine,
-    private val noteRepository: NoteRepository,
-    @IODispatcher
-    private val ioDispatcher: CoroutineDispatcher,
-    baseRepository: BaseRepository,
-    sharedPreferencesRepository: SharedPreferencesRepository
+  private val dataTimeRepository: DataTimeRepository,
+  private val repositoryRoutine: RepositoryRoutine,
+  private val noteRepository: NoteRepository,
+  @IODispatcher
+  private val ioDispatcher: CoroutineDispatcher,
+  baseRepository: BaseRepository,
+  sharedPreferencesRepository: SharedPreferencesRepository,
 ) :
-    BaseViewModel(sharedPreferencesRepository, baseRepository) {
-    init {
-        viewModelScope.launch(ioDispatcher) {
-            launch {
-                dataTimeRepository.calculateToday()
-            }
-            launch {
-                dataTimeRepository.addTime()
-            }
-            launch {
-                Timber.tag("sampleRoutines").d("mainViewModel")
-                repositoryRoutine.addSampleRoutine()
-            }
-            launch {
-                noteRepository.addSampleNote()
-            }
-            launch {
-                repositoryRoutine.changeRoutineId()
-            }
-        }
+  BaseViewModel(sharedPreferencesRepository, baseRepository) {
+  init {
+    viewModelScope.launch(ioDispatcher) {
+      launch {
+        dataTimeRepository.calculateToday()
+      }
+      launch {
+        dataTimeRepository.addTime()
+      }
+      launch {
+        Timber.tag("sampleRoutines").d("mainViewModel")
+        repositoryRoutine.addSampleRoutine()
+      }
+      launch {
+        noteRepository.addSampleNote()
+      }
+      launch {
+        repositoryRoutine.changeRoutineId()
+      }
     }
+  }
 
-    fun checkedAllRoutinePastTime() {
-        viewModelScope.launch {
-            repositoryRoutine.checkEdAllRoutinePastTime()
-        }
+  fun checkedAllRoutinePastTime() {
+    viewModelScope.launch {
+      repositoryRoutine.checkEdAllRoutinePastTime()
     }
+  }
 }

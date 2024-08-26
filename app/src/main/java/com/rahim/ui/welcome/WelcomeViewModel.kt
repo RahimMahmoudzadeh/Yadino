@@ -7,10 +7,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 @HiltViewModel
 class WelcomeViewModel @Inject constructor(
-    val sharedPreferencesRepository: SharedPreferencesRepository,
-    baseRepository: BaseRepository
+  val sharedPreferencesRepository: SharedPreferencesRepository,
+  baseRepository: BaseRepository,
 ) : BaseViewModel(sharedPreferencesRepository, baseRepository) {
-    fun saveShowWelcome(isShow: Boolean) {
-        sharedPreferencesRepository.saveShowWelcome(isShow)
-    }
+  fun saveShowWelcome(isShow: Boolean) {
+    sharedPreferencesRepository.saveShowWelcome(isShow)
+  }
 }

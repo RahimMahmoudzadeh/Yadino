@@ -1,4 +1,4 @@
-package com.rahim.data.modle.dialog
+package com.rahim.data.model.dialog
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
