@@ -63,27 +63,20 @@ class WakeupActivity : ComponentActivity() {
 //        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val b = object : BroadcastReceiver() {
-            override fun onReceive(p0: Context?, intent: Intent?) {
-                if (intent?.action != ACTION_SEND_NOTIFICATION) return
-                val reminderName = intent.getStringExtra(KEY_LAUNCH_NAME)
-                val reminderId = intent.getIntExtra(KEY_LAUNCH_ID, 0)
-                Timber.tag("yadinoBroadcast").d("WakeupActivity reminderName->$reminderName")
-                Timber.tag("yadinoBroadcast").d("WakeupActivity reminderId->$reminderId")
-                notificationManager.createFullNotification(
-                    context = this@WakeupActivity,
-                    routineName = reminderName ?: "",
-                    routineIdAlarm = reminderId.toLong(),
-                    routineExplanation = ""
-                )
-            }
-        }
-        ContextCompat.registerReceiver(
-            this@WakeupActivity,
-            b,
-            IntentFilter(ACTION_SEND_NOTIFICATION),
-            ContextCompat.RECEIVER_NOT_EXPORTED
-        )
+//        val b = object : BroadcastReceiver() {
+//            override fun onReceive(p0: Context?, intent: Intent?) {
+//                if (intent?.action != ACTION_SEND_NOTIFICATION) return
+//                val reminderName = intent.getStringExtra(KEY_LAUNCH_NAME)
+//                val reminderId = intent.getIntExtra(KEY_LAUNCH_ID, 0)
+//
+//            }
+//        }
+//        ContextCompat.registerReceiver(
+//            this@WakeupActivity,
+//            b,
+//            IntentFilter(ACTION_SEND_NOTIFICATION),
+//            ContextCompat.RECEIVER_NOT_EXPORTED
+//        )
 
         setContent {
             var isPlaying by remember { mutableStateOf(true) }

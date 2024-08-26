@@ -11,9 +11,9 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
-    <queries>
-        <package android:name="com.farsitel.bazaar" />
-    </queries>
+<!--    <queries>-->
+<!--        <package android:name="com.farsitel.bazaar" />-->
+<!--    </queries>-->
     <application
         android:name="com.rahim.utils.App"
         android:allowBackup="true"
