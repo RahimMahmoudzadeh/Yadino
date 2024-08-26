@@ -24,10 +24,12 @@ class App : Application() {
     createNotificationChannel()
     setFirebaseAnalyse()
   }
+
   private fun setFirebaseAnalyse() {
     FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(!BuildConfig.DEBUG)
     FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
   }
+
   private fun createNotificationChannel() {
     val descriptionText = getString(R.string.channel_description)
     val importance = NotificationManager.IMPORTANCE_HIGH
