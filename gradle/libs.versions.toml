@@ -155,3 +155,5 @@ com-android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin" }
 androidx-room = { id = "androidx.room", version.ref = "androidx-room" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+
