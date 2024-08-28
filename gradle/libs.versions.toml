@@ -202,5 +202,4 @@ yadino-android-hilt = { id = "yadino.android.hilt", version = "unspecified" }
 yadino-android-library = { id = "yadino.android.library", version = "unspecified" }
 yadino-android-library-compose = { id = "yadino.android.library.compose", version = "unspecified" }
 yadino-android-room = { id = "yadino.android.room", version = "unspecified" }
-yadino-android-room-base = { id = "yadino.android.room.base", version = "unspecified" }
 yadino-android-navigation = { id = "yadino.android.navigation", version = "unspecified" }

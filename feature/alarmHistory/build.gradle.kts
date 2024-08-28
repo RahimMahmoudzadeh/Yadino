@@ -8,6 +8,6 @@ plugins {
 android {
     namespace = "com.rahim.yadino.feature.alarmHistory"
 }
-dependencies{
-    implementation(project(":data:reminder-repository"))
+dependencies {
+    implementation(project(":data:reminder"))
 }

@@ -9,8 +9,8 @@ android {
     namespace = "com.rahim.yadino.feature.routine"
 }
 dependencies{
-    implementation(project(":data:reminder-repository"))
-    implementation(project(":data:dateTime-repository"))
+    implementation(project(":data:reminder"))
+    implementation(project(":data:dateTime"))
     implementation(project(":data:sharedPreferences"))
     libs.run {
         implementation(bundles.accompanist)

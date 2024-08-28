@@ -55,10 +55,6 @@ gradlePlugin {
             id = "yadino.android.room"
             implementationClass = "plugins.AndroidRoomConventionPlugin"
         }
-        register("androidRoomBase") {
-            id = "yadino.android.room.base"
-            implementationClass = "plugins.AndroidRoomBaseConventionPlugin"
-        }
         register("androidFirebase") {
             id = "yadino.android.application.firebase"
             implementationClass = "plugins.AndroidApplicationFirebaseConventionPlugin"

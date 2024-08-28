@@ -10,6 +10,6 @@ android {
 }
 dependencies{
     implementation(project(":data:sharedPreferences"))
-    implementation(project(":data:note-repository"))
-    implementation(project(":data:dateTime-repository"))
+    implementation(project(":data:note"))
+    implementation(project(":data:dateTime"))
 }

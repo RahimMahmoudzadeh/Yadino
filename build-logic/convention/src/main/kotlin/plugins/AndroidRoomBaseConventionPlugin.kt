@@ -35,12 +35,4 @@ class AndroidRoomBaseConventionPlugin:Plugin<Project> {
             }
         }
     }
-
-//    class RoomSchemaArgProvider(
-//        @get:InputDirectory
-//        @get:PathSensitive(PathSensitivity.RELATIVE)
-//        val schemaDir: File,
-//    ) : CommandLineArgumentProvider {
-//        override fun asArguments() = listOf("room.schemaLocation=${schemaDir.path}")
-//    }
 }

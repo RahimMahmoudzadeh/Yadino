@@ -45,8 +45,6 @@ dependencies {
         implementation(project(":feature:wakeup"))
         implementation(project(":feature:calender"))
 
-        implementation(project(":core:database"))
-
         implementation(project(":domain:sharedPreferences"))
         implementation(project(":domain:reminder"))
         implementation(project(":domain:dateTime"))

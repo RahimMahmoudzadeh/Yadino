@@ -9,9 +9,9 @@ android {
     namespace = "com.rahim.yadino.feature.calender"
 }
 dependencies{
+    implementation(project(":data:dateTime"))
     libs.run {
         implementation(bundles.vico)
     }
-    implementation(project(":data:dateTime-repository"))
     implementation(project(":data:sharedPreferences"))
 }

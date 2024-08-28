@@ -18,8 +18,21 @@ class AndroidRoomConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         with(target) {
+            applyPlugins {
+                listOf(
+                    versionCatalog.findPlugin("androidx.room").get().get().pluginId,
+                    versionCatalog.findPlugin("ksp").get().get().pluginId,
+                )
+            }
+            extensions.configure<KspExtension> {
+                arg("room.generateKotlin", "true")
+            }
+            extensions.configure<RoomExtension> {
+                schemaDirectory("$projectDir/schemas")
+            }
             dependencies {
                 add("implementation", versionCatalog.findBundle("room").get())
+                add("ksp", versionCatalog.findLibrary("room.compiler").get())
             }
         }
     }
