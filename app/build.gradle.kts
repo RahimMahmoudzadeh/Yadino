@@ -37,11 +37,9 @@ dependencies {
         implementation(kotlinx.collections.immutable)
         implementation(accompanist.permissions)
 
-        implementation(project(":feature:home"))
         implementation(project(":feature:welcome"))
         implementation(project(":feature:note"))
         implementation(project(":feature:routine"))
-        implementation(project(":feature:alarmHistory"))
         implementation(project(":feature:wakeup"))
         implementation(project(":feature:calender"))
 

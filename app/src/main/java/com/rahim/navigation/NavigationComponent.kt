@@ -6,12 +6,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.rahim.yadino.alarmhistory.navigation.historyScreen
+import com.rahim.yadino.routine.alarmScreen.navigation.historyScreen
 import com.rahim.yadino.calender.navigation.calenderScreen
-import com.rahim.yadino.home.navigation.homeScreen
-import com.rahim.yadino.home.navigation.navigateToHome
+import com.rahim.yadino.routine.homeScreen.navigation.homeScreen
+import com.rahim.yadino.routine.homeScreen.navigation.navigateToHome
 import com.rahim.yadino.note.navigation.noteScreen
-import com.rahim.yadino.routine.navigation.routineScreen
+import com.rahim.yadino.routine.routineScreen.navigation.routineScreen
 import com.rahim.yadino.welcome.navigation.welcomeScreen
 
 @Composable

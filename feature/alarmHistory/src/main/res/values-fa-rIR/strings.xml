@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="not_alarm">آلارم فعالی ندارید</string>
-    <string name="you">شما</string>
-    <string name="have_alarm">آلارم فعال دارید</string>
-    <string name="completed">تکمیل شده</string>
-</resources>
