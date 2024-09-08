@@ -1,5 +1,5 @@
 [versions]
-ksp = "2.0.20-1.0.24"
+ksp = "2.0.20-1.0.25"
 androidx-core = "1.13.1"
 compose-bom = "2024.09.00"
 activity-compose = "1.9.1"
