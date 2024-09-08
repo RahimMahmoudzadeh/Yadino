@@ -127,8 +127,6 @@ dependencies {
     implementation(bundles.navigation)
     //timber
     implementation(timber)
-    //lifecycle
-    implementation(bundles.lifecycle)
     //firebase
     implementation(platform(firebaseBom))
     implementation(bundles.firebase)

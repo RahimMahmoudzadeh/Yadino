@@ -137,11 +137,12 @@ fun DialogAddNote(
                 )
               },
               textStyle = MaterialTheme.typography.bodyLarge,
-              colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.background,
+              colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.background,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
+                unfocusedContainerColor =  Color.Transparent,
               ),
             )
             if (isErrorName.value) {
@@ -180,11 +181,12 @@ fun DialogAddNote(
                   color = MaterialTheme.colorScheme.primary,
                 )
               },
-              colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.background,
+              colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.background,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
+                unfocusedContainerColor =  Color.Transparent,
               ),
             )
             if (isErrorExplanation.value) {
