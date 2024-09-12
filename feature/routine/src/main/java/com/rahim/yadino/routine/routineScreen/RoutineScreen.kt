@@ -39,7 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.base.calculateMonthName
 import com.rahim.yadino.base.enums.HalfWeekName
-import com.rahim.yadino.base.model.TimeDate
+import com.rahim.yadino.base.db.model.TimeDate
 import com.rahim.yadino.base.persianLocate
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ItemRoutine

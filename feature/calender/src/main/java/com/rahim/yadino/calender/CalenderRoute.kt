@@ -47,10 +47,9 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
 import com.rahim.yadino.base.calculateMonthName
 import com.rahim.yadino.base.enums.HalfWeekName
-import com.rahim.yadino.base.model.TimeDate
+import com.rahim.yadino.base.db.model.TimeDate
 import com.rahim.yadino.designsystem.component.TimeItems
 import com.rahim.yadino.designsystem.component.gradientColors
-import com.rahim.yadino.feature.calender.R
 
 @Composable
 internal fun CalenderRoute(

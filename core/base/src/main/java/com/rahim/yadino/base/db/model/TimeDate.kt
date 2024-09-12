@@ -2,9 +2,8 @@ package com.rahim.yadino.base.db.model
 
 import androidx.room.Entity
 
-
 @Entity(tableName = "tbl_timeDate", primaryKeys = ["dayNumber","yerNumber","monthNumber"])
-data class LocalTimeDateDto(
+data class TimeDate(
     val dayNumber: Int,
     val haveTask: Boolean,
     var isToday: Boolean = false,

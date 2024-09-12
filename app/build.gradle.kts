@@ -44,6 +44,7 @@ dependencies {
 
         implementation(project(":domain:sharedPreferences"))
         implementation(project(":domain:dateTime"))
+        implementation(project(":domain:routine"))
         implementation(project(":domain:note"))
     }
 }

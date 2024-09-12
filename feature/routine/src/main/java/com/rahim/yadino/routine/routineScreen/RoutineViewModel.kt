@@ -3,7 +3,7 @@ package com.rahim.yadino.routine.routineScreen
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
-import com.rahim.yadino.base.model.TimeDate
+import com.rahim.yadino.base.db.model.TimeDate
 import com.rahim.yadino.base.viewmodel.BaseViewModel
 import com.rahim.yadino.dateTime.DateTimeRepository
 import com.rahim.yadino.routine.RepositoryRoutine
