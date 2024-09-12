@@ -1,8 +1,6 @@
 package com.rahim.data.di
 
-import android.app.Application
-import com.rahim.yadino.wekeup.notification.NotificationManager
-import com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
+import com.rahim.yadino.routine.wekeup.notification.NotificationManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

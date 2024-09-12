@@ -5,7 +5,7 @@ import com.rahim.yadino.base.viewmodel.BaseViewModel
 import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
-import com.rahim.yadino.reminder.useCase.AddReminderUseCase
+import com.rahim.yadino.routine.useCase.AddReminderUseCase
 import com.rahim.yadino.routine.modle.Routine
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

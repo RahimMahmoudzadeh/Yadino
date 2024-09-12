@@ -24,7 +24,6 @@ include(
     ":feature:routine",
     ":feature:note",
     ":feature:welcome",
-    ":feature:wakeup",
     ":feature:calender",
     ":data:routine",
     ":domain:routine",
@@ -34,6 +33,4 @@ include(
     ":data:dateTime",
     ":domain:note",
     ":data:note",
-    ":domain:reminder",
-    ":data:reminder",
 )

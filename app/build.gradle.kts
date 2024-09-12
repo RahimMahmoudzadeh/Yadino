@@ -40,11 +40,9 @@ dependencies {
         implementation(project(":feature:welcome"))
         implementation(project(":feature:note"))
         implementation(project(":feature:routine"))
-        implementation(project(":feature:wakeup"))
         implementation(project(":feature:calender"))
 
         implementation(project(":domain:sharedPreferences"))
-        implementation(project(":domain:reminder"))
         implementation(project(":domain:dateTime"))
         implementation(project(":domain:note"))
     }

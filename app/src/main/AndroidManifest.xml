@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".wekeup.WakeupActivity"
+            android:name=".routine.wekeup.WakeupActivity"
             android:excludeFromRecents="true"
             android:launchMode="standard"
             android:parentActivityName="com.rahim.ui.main.MainActivity"
