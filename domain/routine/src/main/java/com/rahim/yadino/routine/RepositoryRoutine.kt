@@ -1,22 +1,22 @@
 package com.rahim.yadino.routine
 
 import com.rahim.yadino.base.Resource
-import com.rahim.yadino.routine.modle.Routine
+import com.rahim.yadino.base.db.model.RoutineModel
 import kotlinx.coroutines.flow.Flow
 
 interface RepositoryRoutine {
     suspend fun addSampleRoutine()
-    fun addRoutine(routine: Routine): Flow<Resource<Routine?>>
-    suspend fun removeRoutine(routine: Routine): Int
+    fun addRoutine(routineModel: RoutineModel): Flow<Resource<RoutineModel?>>
+    suspend fun removeRoutine(routineModel: RoutineModel): Int
     suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yerNumber: Int?)
-    suspend fun updateRoutine(routine: Routine): Flow<Resource<Routine?>>
-    suspend fun checkedRoutine(routine: Routine)
-    suspend fun getRoutine(id: Int): Routine
-    fun getRoutines(monthNumber: Int, numberDay: Int, yerNumber: Int): Flow<List<Routine>>
-    fun searchRoutine(name: String, monthNumber: Int?, dayNumber: Int?): Flow<List<Routine>>
+    suspend fun updateRoutine(routineModel: RoutineModel): Flow<Resource<RoutineModel?>>
+    suspend fun checkedRoutine(routineModel: RoutineModel)
+    suspend fun getRoutine(id: Int): RoutineModel
+    fun getRoutines(monthNumber: Int, numberDay: Int, yerNumber: Int): Flow<List<RoutineModel>>
+    fun searchRoutine(name: String, monthNumber: Int?, dayNumber: Int?): Flow<List<RoutineModel>>
     suspend fun changeRoutineId()
     suspend fun checkEdAllRoutinePastTime()
-    suspend fun getAllRoutine(): List<Routine>
+    suspend fun getAllRoutine(): List<RoutineModel>
     fun haveAlarm(): Flow<Boolean>
     suspend fun getRoutineAlarmId(): Long
     fun convertDateToMilSecond(
@@ -25,5 +25,5 @@ interface RepositoryRoutine {
         dayNumber: Int?,
         timeHours: String?
     ): Long
-    suspend fun checkEqualRoutine(routine: Routine): Routine?
+    suspend fun checkEqualRoutine(routineModel: RoutineModel): RoutineModel?
 }

@@ -5,10 +5,8 @@ import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
 import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.base.Resource
-import com.rahim.yadino.routine.modle.Routine
+import com.rahim.yadino.base.db.model.RoutineModel
 import com.rahim.yadino.base.db.dao.RoutineDao
-import com.rahim.yadino.routine_repository.mapper.toLocalRoutineDto
-import com.rahim.yadino.routine_repository.mapper.toRoutine
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -44,7 +42,7 @@ class RoutineRepositoryImpl @Inject constructor(
         }
 
         (0..1).forEachIndexed { index, it ->
-            val routine = Routine(
+            val routineModel = RoutineModel(
                 "تست${index.plus(1)}",
                 0,
                 currentTimeDay.toString(),
@@ -59,7 +57,7 @@ class RoutineRepositoryImpl @Inject constructor(
                 timeInMillisecond = persianData.time,
                 id = index,
             )
-            routineDao.addRoutine(routine.toLocalRoutineDto())
+            routineDao.addRoutine(routineModel)
         }
     }
 
@@ -106,32 +104,32 @@ class RoutineRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAllRoutine(): List<Routine> =
-        routineDao.getRoutines().map { list -> list.toRoutine() }
+    override suspend fun getAllRoutine(): List<RoutineModel> =
+        routineDao.getRoutines().map { list -> list }
 
-    override fun addRoutine(routine: Routine): Flow<Resource<Routine?>> =
-        flow<Resource<Routine?>> {
+    override fun addRoutine(routineModel: RoutineModel): Flow<Resource<RoutineModel?>> =
+        flow<Resource<RoutineModel?>> {
             emit(Resource.Loading())
             runCatching {
-                routineDao.addRoutine(routine.toLocalRoutineDto())
+                routineDao.addRoutine(routineModel)
             }.onSuccess {
-                emit(Resource.Success(routine))
+                emit(Resource.Success(routineModel))
             }.onFailure {
                 emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
             }
 
         }.flowOn(ioDispatcher)
 
-    override suspend fun checkEqualRoutine(routine: Routine): Routine? {
+    override suspend fun checkEqualRoutine(routineModel: RoutineModel): RoutineModel? {
         return routineDao.checkEqualRoutine(
-            routineName = routine.name,
-            routineExplanation = routine.explanation ?: "",
-            routineDayName = routine.dayName,
-            routineDayNumber = routine.dayNumber ?: 0,
-            routineYearNumber = routine.yerNumber ?: 0,
-            routineMonthNumber = routine.monthNumber ?: 0,
-            routineTimeMilSecond = routine.timeInMillisecond ?: 0,
-        )?.toRoutine()
+            routineName = routineModel.name,
+            routineExplanation = routineModel.explanation ?: "",
+            routineDayName = routineModel.dayName,
+            routineDayNumber = routineModel.dayNumber ?: 0,
+            routineYearNumber = routineModel.yerNumber ?: 0,
+            routineMonthNumber = routineModel.monthNumber ?: 0,
+            routineTimeMilSecond = routineModel.timeInMillisecond ?: 0,
+        )
     }
 
     override fun convertDateToMilSecond(
@@ -167,17 +165,17 @@ class RoutineRepositoryImpl @Inject constructor(
         return idRandom.toLong()
     }
 
-    override suspend fun removeRoutine(routine: Routine): Int {
-        return routineDao.removeRoutine(routine.toLocalRoutineDto())
+    override suspend fun removeRoutine(routineModel: RoutineModel): Int {
+        return routineDao.removeRoutine(routineModel)
     }
 
     override suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yerNumber: Int?) {
         routineDao.removeAllRoutine(nameMonth, dayNumber, yerNumber)
     }
 
-    override suspend fun updateRoutine(routine: Routine): Flow<Resource<Routine?>> =
+    override suspend fun updateRoutine(routineModel: RoutineModel): Flow<Resource<RoutineModel?>> =
         flow {
-            routine.apply {
+            routineModel.apply {
                 timeInMillisecond = convertDateToMilSecond(
                     this.yerNumber,
                     this.monthNumber,
@@ -186,43 +184,43 @@ class RoutineRepositoryImpl @Inject constructor(
                 )
             }
             val equalRoutine = routineDao.checkEqualRoutine(
-                routineName = routine.name,
-                routineExplanation = routine.explanation ?: "",
-                routineDayName = routine.dayName,
-                routineDayNumber = routine.dayNumber ?: 0,
-                routineYearNumber = routine.yerNumber ?: 0,
-                routineMonthNumber = routine.monthNumber ?: 0,
-                routineTimeMilSecond = routine.timeInMillisecond ?: 0,
+                routineName = routineModel.name,
+                routineExplanation = routineModel.explanation ?: "",
+                routineDayName = routineModel.dayName,
+                routineDayNumber = routineModel.dayNumber ?: 0,
+                routineYearNumber = routineModel.yerNumber ?: 0,
+                routineMonthNumber = routineModel.monthNumber ?: 0,
+                routineTimeMilSecond = routineModel.timeInMillisecond ?: 0,
             )
             if (equalRoutine != null) {
                 emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
             } else {
                 runCatching {
-                    routineDao.updateRoutine(routine.toLocalRoutineDto())
+                    routineDao.updateRoutine(routineModel)
                 }.onSuccess {
-                    emit(Resource.Success(routine))
+                    emit(Resource.Success(routineModel))
                 }.onFailure {
                     emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
                 }
             }
         }
 
-    override suspend fun getRoutine(id: Int): Routine = routineDao.getRoutine(id).toRoutine()
-    override suspend fun checkedRoutine(routine: Routine) {
-        routineDao.updateRoutine(routine.toLocalRoutineDto())
+    override suspend fun getRoutine(id: Int): RoutineModel = routineDao.getRoutine(id)
+    override suspend fun checkedRoutine(routineModel: RoutineModel) {
+        routineDao.updateRoutine(routineModel)
     }
 
     override fun getRoutines(
         monthNumber: Int, numberDay: Int, yerNumber: Int
-    ): Flow<List<Routine>> =
+    ): Flow<List<RoutineModel>> =
         routineDao.getRoutines(monthNumber, numberDay, yerNumber)
-            .map { list -> list.map { it.toRoutine() } }
+            .map { list -> list.map { it} }
             .distinctUntilChangedBy { it.map { it.isChecked } }
 
     override fun searchRoutine(
         name: String, monthNumber: Int?, dayNumber: Int?
-    ): Flow<List<Routine>> = routineDao.searchRoutine(name, monthNumber, dayNumber)
-        .map { list -> list.map { it.toRoutine() } }
+    ): Flow<List<RoutineModel>> = routineDao.searchRoutine(name, monthNumber, dayNumber)
+        .map { list -> list.map { it} }
 
     override fun haveAlarm(): Flow<Boolean> = routineDao.haveAlarm()
 }

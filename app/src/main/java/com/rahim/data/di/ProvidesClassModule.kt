@@ -1,6 +1,6 @@
 package com.rahim.data.di
 
-import com.rahim.yadino.routine.wekeup.notification.NotificationManager
+import com.rahim.broadcast.NotificationManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

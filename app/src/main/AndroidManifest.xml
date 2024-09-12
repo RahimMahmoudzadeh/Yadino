@@ -42,7 +42,7 @@
             android:turnScreenOn="true" />
 
         <receiver
-            android:name=".base.broadcast.YadinoBroadCastReceiver"
+            android:name="com.rahim.broadcast.YadinoBroadCastReceiver"
             android:enabled="true"
             android:exported="false" />
         <service

@@ -5,7 +5,7 @@ import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.ReminderScheduler
 import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.routine.modle.ReminderState
-import com.rahim.yadino.routine.modle.Routine
+import com.rahim.yadino.base.db.model.RoutineModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -15,9 +15,9 @@ class AddReminderUseCase @Inject constructor(
     private val routineRepository: RepositoryRoutine,
     private val reminderScheduler: ReminderScheduler
 ) {
-    suspend operator fun invoke(routine: Routine): Flow<Resource<Nothing?>> = flow {
+    suspend operator fun invoke(routineModel: RoutineModel): Flow<Resource<Nothing?>> = flow {
         try {
-            routine.apply {
+            routineModel.apply {
                 idAlarm = routineRepository.getRoutineAlarmId()
                 colorTask = 0
                 timeInMillisecond = routineRepository.convertDateToMilSecond(
@@ -27,17 +27,17 @@ class AddReminderUseCase @Inject constructor(
                     timeHours
                 )
             }
-            val equalRoutine = routineRepository.checkEqualRoutine(routine)
+            val equalRoutine = routineRepository.checkEqualRoutine(routineModel)
             if (equalRoutine == null) {
                 val reminderState = reminderScheduler.setReminder(
-                    routine.name,
-                    routine.id ?: 0,
-                    routine.timeInMillisecond ?: 0,
-                    routine.idAlarm ?: 0
+                    routineModel.name,
+                    routineModel.id ?: 0,
+                    routineModel.timeInMillisecond ?: 0,
+                    routineModel.idAlarm ?: 0
                 )
                 when (reminderState) {
                     ReminderState.SetSuccessfully -> {
-                        routineRepository.addRoutine(routine).catch {
+                        routineRepository.addRoutine(routineModel).catch {
                             emit(Resource.Error(ErrorMessageCode.ERROR_SAVE_PROSES))
                         }.collect {
                             when (it) {

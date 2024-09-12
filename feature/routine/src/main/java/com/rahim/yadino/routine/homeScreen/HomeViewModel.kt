@@ -6,7 +6,7 @@ import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.useCase.AddReminderUseCase
-import com.rahim.yadino.routine.modle.Routine
+import com.rahim.yadino.base.db.model.RoutineModel
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,16 +25,16 @@ class HomeViewModel @Inject constructor(
 ) :
     BaseViewModel() {
 
-    private var _flowRoutines = MutableStateFlow<Resource<List<Routine>>>(Resource.Loading())
-    val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
+    private var _flowRoutines = MutableStateFlow<Resource<List<RoutineModel>>>(Resource.Loading())
+    val flowRoutines: StateFlow<Resource<List<RoutineModel>>> = _flowRoutines
 
     private val _addRoutine =
         MutableStateFlow<Resource<Nothing?>?>(null)
     val addRoutine = _addRoutine
 
-    private val _updateRoutine =
-        MutableStateFlow<Resource<Routine?>?>(null)
-    val updateRoutine = _updateRoutine
+    private val _updateRoutineModel =
+        MutableStateFlow<Resource<RoutineModel?>?>(null)
+    val updateRoutine = _updateRoutineModel
 
 
     init {
@@ -53,29 +53,29 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun deleteRoutine(routine: Routine) {
+    fun deleteRoutine(routineModel: RoutineModel) {
         viewModelScope.launch {
-            routineRepository.removeRoutine(routine)
+            routineRepository.removeRoutine(routineModel)
         }
     }
 
-    fun updateRoutine(routine: Routine) {
+    fun updateRoutine(routineModel: RoutineModel) {
         viewModelScope.launch {
-            routineRepository.updateRoutine(routine).catch {}.collectLatest {
-                _updateRoutine.value = it
+            routineRepository.updateRoutine(routineModel).catch {}.collectLatest {
+                _updateRoutineModel.value = it
             }
         }
     }
 
-    fun checkedRoutine(routine: Routine) {
+    fun checkedRoutine(routineModel: RoutineModel) {
         viewModelScope.launch {
-            routineRepository.checkedRoutine(routine)
+            routineRepository.checkedRoutine(routineModel)
         }
     }
 
-    fun addRoutine(routine: Routine) {
+    fun addRoutine(routineModel: RoutineModel) {
         viewModelScope.launch {
-            addReminderUseCase(routine).catch {
+            addReminderUseCase(routineModel).catch {
                 _addRoutine.value = Resource.Error(ErrorMessageCode.ERROR_SAVE_PROSES)
             }.collect {
                 Timber.tag("routineAdd")
@@ -90,7 +90,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun clearUpdateRoutine() {
-        _updateRoutine.value = null
+        _updateRoutineModel.value = null
     }
 
     fun searchItems(searchText: String) {

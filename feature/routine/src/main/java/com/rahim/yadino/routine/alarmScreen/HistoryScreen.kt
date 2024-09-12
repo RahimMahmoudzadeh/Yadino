@@ -45,7 +45,7 @@ import com.rahim.yadino.base.persianLocate
 import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.feature.routine.R
-import com.rahim.yadino.routine.modle.Routine
+import com.rahim.yadino.base.db.model.RoutineModel
 
 @Composable
 internal fun HistoryRoute(
@@ -60,9 +60,9 @@ internal fun HistoryRoute(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HistoryScreen(
-    routineItems: List<Routine>,
+    routineModelItems: List<RoutineModel>,
 ) {
-    val (completedTasks, incompleteTasks) = routineItems.partition { sort -> sort.isChecked }
+    val (completedTasks, incompleteTasks) = routineModelItems.partition { sort -> sort.isChecked }
 
     var expanded by rememberSaveable {
         mutableStateOf(false)

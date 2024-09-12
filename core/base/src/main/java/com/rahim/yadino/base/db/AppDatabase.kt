@@ -9,12 +9,12 @@ import androidx.room.migration.AutoMigrationSpec
 import com.rahim.yadino.base.db.dao.NoteDao
 import com.rahim.yadino.base.db.dao.RoutineDao
 import com.rahim.yadino.base.db.dao.TimeDao
-import com.rahim.yadino.base.db.model.LocalNoteDto
-import com.rahim.yadino.base.db.model.LocalRoutineDto
 import com.rahim.yadino.base.db.model.LocalTimeDateDto
+import com.rahim.yadino.base.db.model.NoteModel
+import com.rahim.yadino.base.db.model.RoutineModel
 
 @Database(
-    entities = [LocalNoteDto::class, LocalTimeDateDto::class, LocalRoutineDto::class],
+    entities = [LocalNoteDto::class, LocalTimeDateDto::class, RoutineModel::class],
     //2024/08/05
     version = 5,
     exportSchema = true,

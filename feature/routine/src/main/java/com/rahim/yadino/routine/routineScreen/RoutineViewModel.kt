@@ -7,7 +7,7 @@ import com.rahim.yadino.base.model.TimeDate
 import com.rahim.yadino.base.viewmodel.BaseViewModel
 import com.rahim.yadino.dateTime.DateTimeRepository
 import com.rahim.yadino.routine.RepositoryRoutine
-import com.rahim.yadino.routine.modle.Routine
+import com.rahim.yadino.base.db.model.RoutineModel
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -35,19 +35,19 @@ class RoutineViewModel @Inject constructor(
     private var lastDayNumber = currentDay
 
     private val _flowRoutines =
-        MutableStateFlow<Resource<List<Routine>>>(Resource.Loading())
-    val flowRoutines: StateFlow<Resource<List<Routine>>> = _flowRoutines
+        MutableStateFlow<Resource<List<RoutineModel>>>(Resource.Loading())
+    val flowRoutines: StateFlow<Resource<List<RoutineModel>>> = _flowRoutines
 
     private val _times =
         MutableStateFlow<List<TimeDate>>(emptyList())
     val times: StateFlow<List<TimeDate>> = _times
 
-    private val _addRoutine =
-        MutableStateFlow<Resource<Routine?>?>(null)
-    val addRoutine: StateFlow<Resource<Routine?>?> = _addRoutine
-    private val _updateRoutine =
-        MutableStateFlow<Resource<Routine?>?>(null)
-    val updateRoutine: StateFlow<Resource<Routine?>?> = _updateRoutine
+    private val _addRoutineModel =
+        MutableStateFlow<Resource<RoutineModel?>?>(null)
+    val addRoutineModel: StateFlow<Resource<RoutineModel?>?> = _addRoutineModel
+    private val _updateRoutineModel =
+        MutableStateFlow<Resource<RoutineModel?>?>(null)
+    val updateRoutineModel: StateFlow<Resource<RoutineModel?>?> = _updateRoutineModel
 
     private val _indexDay =
         MutableStateFlow(0)
@@ -89,30 +89,30 @@ class RoutineViewModel @Inject constructor(
         }
     }
 
-    fun deleteRoutine(routine: Routine) {
+    fun deleteRoutine(routineModel: RoutineModel) {
         viewModelScope.launch {
-            routineRepository.removeRoutine(routine)
+            routineRepository.removeRoutine(routineModel)
         }
     }
 
-    fun updateRoutine(routine: Routine) {
+    fun updateRoutine(routineModel: RoutineModel) {
         viewModelScope.launch {
-            routineRepository.updateRoutine(routine).catch {}.collectLatest {
-                _updateRoutine.value = it
+            routineRepository.updateRoutine(routineModel).catch {}.collectLatest {
+                _updateRoutineModel.value = it
             }
         }
     }
 
-    fun checkedRoutine(routine: Routine) {
+    fun checkedRoutine(routineModel: RoutineModel) {
         viewModelScope.launch {
-            routineRepository.checkedRoutine(routine)
+            routineRepository.checkedRoutine(routineModel)
         }
     }
 
-    fun addRoutine(routine: Routine) {
+    fun addRoutine(routineModel: RoutineModel) {
         viewModelScope.launch {
-            routineRepository.addRoutine(routine).catch {}.collectLatest {
-                _addRoutine.value = it
+            routineRepository.addRoutine(routineModel).catch {}.collectLatest {
+                _addRoutineModel.value = it
             }
         }
     }
@@ -130,11 +130,11 @@ class RoutineViewModel @Inject constructor(
     }
 
     fun clearAddRoutine() {
-        _addRoutine.value = null
+        _addRoutineModel.value = null
     }
 
     fun clearUpdateRoutine() {
-        _updateRoutine.value = null
+        _updateRoutineModel.value = null
     }
 
     private fun calculateIndexDay() {

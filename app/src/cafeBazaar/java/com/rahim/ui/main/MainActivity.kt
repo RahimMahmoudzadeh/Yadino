@@ -56,7 +56,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.messaging.FirebaseMessaging
-import com.rahim.yadino.routine.wekeup.notification.NotificationManager
+import com.rahim.broadcast.NotificationManager
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.navigation.NavigationComponent
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer

@@ -27,7 +27,7 @@ import com.rahim.yadino.designsystem.dialog.DialogAddRoutine
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.routine.modle.Routine
+import com.rahim.yadino.base.db.model.RoutineModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -52,7 +52,7 @@ internal fun HomeRoute(
         modifier = modifier,
         routines = routines,
         addRoutine = addRoutine,
-        updateRoutine = updateRoutine,
+        updateRoutineModel = updateRoutine,
         currentYer = currentYer,
         currentMonth = currentMonth,
         currentDay = currentDay,
@@ -73,27 +73,27 @@ internal fun HomeRoute(
 @Composable
 private fun HomeScreen(
     modifier: Modifier = Modifier,
-    routines: Resource<List<Routine>>,
+    routines: Resource<List<RoutineModel>>,
     addRoutine: Resource<Nothing?>?,
-    updateRoutine: Resource<Routine?>?,
+    updateRoutineModel: Resource<RoutineModel?>?,
     currentYer: Int,
     currentMonth: Int,
     currentDay: Int,
     openDialog: Boolean,
     clickSearch: Boolean,
-    onCheckedRoutine: (Routine) -> Unit,
+    onCheckedRoutine: (RoutineModel) -> Unit,
     onShowSampleRoutine: () -> Unit,
-    onDeleteRoutine: (Routine) -> Unit,
-    onUpdateRoutine: (Routine) -> Unit,
-    onAddRoutine: (Routine) -> Unit,
+    onDeleteRoutine: (RoutineModel) -> Unit,
+    onUpdateRoutine: (RoutineModel) -> Unit,
+    onAddRoutine: (RoutineModel) -> Unit,
     onClearAddRoutine: () -> Unit,
     onClearUpdateRoutine: () -> Unit,
     onOpenDialog: (isOpen: Boolean) -> Unit,
     onSearchText: (searchText: String) -> Unit,
 ) {
     val context = LocalContext.current
-    val routineDeleteDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
-    val routineUpdateDialog = rememberSaveable { mutableStateOf<Routine?>(null) }
+    val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineModel?>(null) }
+    val routineModelUpdateDialog = rememberSaveable { mutableStateOf<RoutineModel?>(null) }
     var searchText by rememberSaveable { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
 
@@ -143,13 +143,13 @@ private fun HomeScreen(
                                 }
                                 if (routineUpdate.isSample)
                                     onShowSampleRoutine()
-                                routineUpdateDialog.value = routineUpdate
+                                routineModelUpdateDialog.value = routineUpdate
                                 onOpenDialog(true)
                             },
                             { deleteRoutine ->
                                 if (deleteRoutine.isSample)
                                     onShowSampleRoutine()
-                                routineDeleteDialog.value = deleteRoutine
+                                routineModelDeleteDialog.value = deleteRoutine
                             })
                     }
                 }
@@ -159,10 +159,10 @@ private fun HomeScreen(
         }
     }
     ErrorDialog(
-        isOpen = routineDeleteDialog.value != null,
+        isOpen = routineModelDeleteDialog.value != null,
         isClickOk = {
             if (it) {
-                routineDeleteDialog.value?.let {
+                routineModelDeleteDialog.value?.let {
                     onDeleteRoutine(it)
                     coroutineScope.launch {
 //                        alarmManagement.cancelAlarm(
@@ -172,7 +172,7 @@ private fun HomeScreen(
                     }
                 }
             }
-            routineDeleteDialog.value = null
+            routineModelDeleteDialog.value = null
         },
         message = stringResource(id = R.string.can_you_delete),
         okMessage = stringResource(
@@ -184,18 +184,18 @@ private fun HomeScreen(
         isOpen = openDialog,
         openDialog = {
             onOpenDialog(false)
-            routineUpdateDialog.value = null
+            routineModelUpdateDialog.value = null
         },
         routineItems = { routineName, routineExplanation, routineTime, dayChecked, monthChecked, yearChecked, dayName ->
             onShowSampleRoutine()
-            val routine = if (routineUpdateDialog.value != null) {
-                routineUpdateDialog.value?.apply {
+            val routineModel = if (routineModelUpdateDialog.value != null) {
+                routineModelUpdateDialog.value?.apply {
                     name = routineName
                     explanation = routineExplanation
                     timeHours = routineTime
                 }
             } else {
-                Routine(
+                RoutineModel(
                     name = routineName,
                     dayName = dayName,
                     dayNumber = dayChecked,
@@ -206,11 +206,11 @@ private fun HomeScreen(
                     colorTask = null
                 )
             }
-            routine?.let {
-                if (routineUpdateDialog.value != null) {
+            routineModel?.let {
+                if (routineModelUpdateDialog.value != null) {
                     onUpdateRoutine(it)
                 } else {
-                    onAddRoutine(routine)
+                    onAddRoutine(routineModel)
                 }
             }
         },
@@ -239,10 +239,10 @@ fun ItemsHome(
     currentDay: Int,
     currentMonth: Int,
     currentYer: Int,
-    routines: List<Routine>,
-    checkedRoutine: (Routine) -> Unit,
-    updateRoutine: (Routine) -> Unit,
-    deleteRoutine: (Routine) -> Unit
+    routineModels: List<RoutineModel>,
+    checkedRoutine: (RoutineModel) -> Unit,
+    updateRoutine: (RoutineModel) -> Unit,
+    deleteRoutine: (RoutineModel) -> Unit
 ) {
     val data = "$currentDay/$currentMonth/$currentYer"
     Row(
@@ -267,7 +267,7 @@ fun ItemsHome(
             .fillMaxWidth(),
         contentPadding = PaddingValues(top = 0.dp, start = 16.dp, end = 16.dp)
     ) {
-        items(items = routines) { routine ->
+        items(items = routineModels) { routine ->
             ItemRoutine(
                 nameRoutine = routine.name,
                 isChecked = routine.isChecked,
