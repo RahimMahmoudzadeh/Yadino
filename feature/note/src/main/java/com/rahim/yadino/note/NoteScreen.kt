@@ -22,7 +22,7 @@ import com.rahim.yadino.designsystem.component.ItemListNote
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.dialog.DialogAddNote
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
-import com.rahim.yadino.note.model.NoteModel
+import com.rahim.yadino.base.db.model.NoteModel
 
 @Composable
 internal fun NoteRoute(

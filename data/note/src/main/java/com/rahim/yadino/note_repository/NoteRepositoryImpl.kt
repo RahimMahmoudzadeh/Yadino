@@ -2,10 +2,8 @@ package com.rahim.yadino.note_repository
 
 import com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
 import com.rahim.yadino.note.NoteRepository
-import com.rahim.yadino.note.model.NoteModel
+import com.rahim.yadino.base.db.model.NoteModel
 import com.rahim.yadino.base.db.dao.NoteDao
-import com.rahim.yadino.note_repository.mapper.toLocalNoteDto
-import com.rahim.yadino.note_repository.mapper.toNote
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import saman.zamani.persiandate.PersianDate
@@ -45,22 +43,22 @@ class NoteRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addNote(noteModel: NoteModel) {
-        noteDao.insertNote(noteModel.toLocalNoteDto())
+        noteDao.insertNote(noteModel)
     }
 
     override suspend fun updateNote(noteModel: NoteModel) {
-        noteDao.update(noteModel.toLocalNoteDto())
+        noteDao.update(noteModel)
     }
 
     override suspend fun deleteNote(noteModel: NoteModel) {
-        noteDao.delete(noteModel.toLocalNoteDto())
+        noteDao.delete(noteModel)
     }
 
     override fun getNotes(): Flow<List<NoteModel>> =
-        noteDao.getNotes().map { it.map { it.toNote() } }
+        noteDao.getNotes().map { it.map { it} }
 
     override fun searchNote(
         name: String
-    ): Flow<List<NoteModel>> = noteDao.searchRoutine(name).map { it.map { it.toNote() } }
+    ): Flow<List<NoteModel>> = noteDao.searchRoutine(name).map { it.map { it} }
 
 }

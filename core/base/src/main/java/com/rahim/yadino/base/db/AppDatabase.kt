@@ -14,7 +14,7 @@ import com.rahim.yadino.base.db.model.NoteModel
 import com.rahim.yadino.base.db.model.RoutineModel
 
 @Database(
-    entities = [LocalNoteDto::class, LocalTimeDateDto::class, RoutineModel::class],
+    entities = [NoteModel::class, LocalTimeDateDto::class, RoutineModel::class],
     //2024/08/05
     version = 5,
     exportSchema = true,

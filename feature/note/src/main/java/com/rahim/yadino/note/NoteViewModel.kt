@@ -7,7 +7,7 @@ import com.rahim.yadino.base.calculateTimeFormat
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.base.viewmodel.BaseViewModel
 import com.rahim.yadino.dateTime.DateTimeRepository
-import com.rahim.yadino.note.model.NoteModel
+import com.rahim.yadino.base.db.model.NoteModel
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

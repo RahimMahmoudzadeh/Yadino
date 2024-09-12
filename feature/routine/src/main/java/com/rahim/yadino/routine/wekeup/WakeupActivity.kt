@@ -40,7 +40,6 @@ import com.rahim.yadino.base.Constants
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.feature.routine.R
-import com.rahim.yadino.routine.wekeup.notification.NotificationManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -48,8 +47,8 @@ import javax.inject.Inject
 class WakeupActivity : ComponentActivity() {
     private var routineName: String? = null
     private var routineId: String? = null
-    @Inject
-    lateinit var notificationManager: NotificationManager
+//    @Inject
+//    lateinit var notificationManager: NotificationManager
     override fun onCreate(savedInstanceState: Bundle?) {
 //        installSplashScreen()
         super.onCreate(savedInstanceState)
