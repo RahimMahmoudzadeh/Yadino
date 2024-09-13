@@ -54,198 +54,207 @@ import com.rahim.yadino.library.navigation.R
 import kotlinx.coroutines.launch
 
 sealed interface DrawerItemType {
-    val title: Int
-    val iconRes: Int
+  val title: Int
+  val iconRes: Int
 
-    data class AboutUs(
-        @StringRes override val title: Int, @DrawableRes override val iconRes: Int
-    ) : DrawerItemType
+  data class AboutUs(
+    @StringRes override val title: Int, @DrawableRes override val iconRes: Int,
+  ) : DrawerItemType
 
-    data class Theme(
-        @StringRes override val title: Int, @DrawableRes override val iconRes: Int
-    ) : DrawerItemType
+  data class Theme(
+    @StringRes override val title: Int, @DrawableRes override val iconRes: Int,
+  ) : DrawerItemType
 
-    data class ShareWithFriends(
-        @StringRes override val title: Int, @DrawableRes override val iconRes: Int
-    ) : DrawerItemType
+  data class ShareWithFriends(
+    @StringRes override val title: Int, @DrawableRes override val iconRes: Int,
+  ) : DrawerItemType
 
-    data class Guide(
-        @StringRes override val title: Int, @DrawableRes override val iconRes: Int
-    ) : DrawerItemType
+  data class Guide(
+    @StringRes override val title: Int, @DrawableRes override val iconRes: Int,
+  ) : DrawerItemType
 
-    data class RateToApp(
-        @StringRes override val title: Int, @DrawableRes override val iconRes: Int
-    ) : DrawerItemType
+  data class RateToApp(
+    @StringRes override val title: Int, @DrawableRes override val iconRes: Int,
+  ) : DrawerItemType
 }
 
 val yadinoDrawerItems = listOf(
-    ShareWithFriends(R.string.drawer_item_share_with_ferinds, R.drawable.share),
-    RateToApp(R.string.drawer_item_rate_to_app, R.drawable.star),
+  ShareWithFriends(R.string.drawer_item_share_with_ferinds, R.drawable.share),
+  RateToApp(R.string.drawer_item_rate_to_app, R.drawable.star),
 //    AboutUs(R.string.drawer_item_about_us, R.drawable.info_square),
-    Theme(R.string.drawer_item_theme, R.drawable.color_lens),
+  Theme(R.string.drawer_item_theme, R.drawable.color_lens),
 //    Guide(R.string.drawer_item_guide, R.drawable.guide)
 )
 
 @Composable
 fun YadinoNavigationDrawer(
-    modifier: Modifier = Modifier,
-    drawerState: DrawerState,
-    itemHeight: Dp = 50.dp,
-    drawerWidth: Dp = 240.dp,
-    headerHeight: Dp = 150.dp,
-    onItemClick: (DrawerItemType) -> Unit = {},
-    isDarkTheme: Boolean = false,
-    content: @Composable () -> Unit
+  modifier: Modifier = Modifier,
+  drawerState: DrawerState,
+  itemHeight: Dp = 50.dp,
+  drawerWidth: Dp = 240.dp,
+  headerHeight: Dp = 150.dp,
+  onItemClick: (DrawerItemType) -> Unit = {},
+  isDarkTheme: Boolean = false,
+  onDarkThemeCheckedChange: (isDark: Boolean) -> Unit,
+  content: @Composable () -> Unit,
 ) {
-    val headerGradientColors = remember(isDarkTheme) {
-        if (!isDarkTheme) listOf(Color(0xFF363BC1), Color(0xFF1291E7))
-        else listOf(Color(0xff0d2b6e), Color(0xff0b5180))
+  val headerGradientColors = remember(isDarkTheme) {
+    if (!isDarkTheme) listOf(Color(0xFF363BC1), Color(0xFF1291E7))
+    else listOf(Color(0xff0d2b6e), Color(0xff0b5180))
 
+  }
+  val scope = rememberCoroutineScope()
+  if (drawerState.isOpen) {
+    BackHandler {
+      scope.launch {
+        drawerState.close()
+      }
     }
-    val scope = rememberCoroutineScope()
-    if (drawerState.isOpen) {
-        BackHandler {
-            scope.launch {
-                drawerState.close()
-            }
-        }
-    }
-    ModalNavigationDrawer(
-        modifier = modifier, drawerState = drawerState, drawerContent = {
-            ModalDrawerSheet(
-                modifier = Modifier.width(drawerWidth),
-                drawerContainerColor = MaterialTheme.colorScheme.background,
-                drawerContentColor = MaterialTheme.colorScheme.onSurface,
-                windowInsets = WindowInsets(0)
-            ) {
-                YadinoDrawerHeader(modifier = Modifier
-                    .height(headerHeight)
-                    .fillMaxWidth()
-                    .drawBehind {
-                        drawRect(
-                            brush = Brush.linearGradient(
-                                colors = headerGradientColors,
-                                start = Offset(0f, size.height),
-                                end = Offset(size.width, 0f)
-                            )
-                        )
-                    }
-                    .statusBarsPadding(),
-                    greetingTitle = R.string.hello_friend,
-                    iconRes = R.drawable.share)
-                Spacer(Modifier.height(12.dp))
-                LazyColumn {
-                    items(yadinoDrawerItems) { drawerItem ->
-                        YadinoDrawerItem(modifier = Modifier
-                            .padding(NavigationDrawerItemDefaults.ItemPadding)
-                            .height(itemHeight)
-                            .clickable { onItemClick(drawerItem) },
-                            title = drawerItem.title,
-                            iconRes = drawerItem.iconRes,
-                            rightSlot = if (drawerItem is Theme) {
-                                {
-                                    ThemeSwitch(
-                                        isDark = isDarkTheme, onChange = {
-                                            onItemClick(drawerItem)
-                                        }
-                                    )
-                                }
-                            } else null)
-                    }
-                }
-            }
-        }, content = content
-    )
+  }
+  ModalNavigationDrawer(
+      modifier = modifier, drawerState = drawerState,
+      drawerContent = {
+          ModalDrawerSheet(
+              modifier = Modifier.width(drawerWidth),
+              drawerContainerColor = MaterialTheme.colorScheme.background,
+              drawerContentColor = MaterialTheme.colorScheme.onSurface,
+              windowInsets = WindowInsets(0),
+          ) {
+              YadinoDrawerHeader(
+                  modifier = Modifier
+                      .height(headerHeight)
+                      .fillMaxWidth()
+                      .drawBehind {
+                          drawRect(
+                              brush = Brush.linearGradient(
+                                  colors = headerGradientColors,
+                                  start = Offset(0f, size.height),
+                                  end = Offset(size.width, 0f),
+                              ),
+                          )
+                      }
+                      .statusBarsPadding(),
+                  greetingTitle = R.string.hello_friend,
+                  iconRes = R.drawable.share,
+              )
+              Spacer(Modifier.height(12.dp))
+              LazyColumn {
+                  items(yadinoDrawerItems) { drawerItem ->
+                      YadinoDrawerItem(
+                          modifier = Modifier
+                              .padding(NavigationDrawerItemDefaults.ItemPadding)
+                              .height(itemHeight)
+                              .clickable { onItemClick(drawerItem) },
+                          title = drawerItem.title,
+                          iconRes = drawerItem.iconRes,
+                          rightSlot = if (drawerItem is Theme) {
+                              {
+                                  ThemeSwitch(
+                                      isDark = isDarkTheme, onChange = onDarkThemeCheckedChange,
+                                  )
+                              }
+                          } else null,
+                      )
+                  }
+              }
+          }
+      },
+      content = content,
+  )
 
 }
 
 @Composable
 private fun ThemeSwitch(
-    isDark: Boolean = false,
-    onChange: (Boolean) -> Unit,
+  isDark: Boolean = false,
+  onChange: (Boolean) -> Unit,
 ) {
-    val thumbIconRes = if (isDark) R.drawable.brightness_2_24
-    else R.drawable.brightness_high_24
+  val thumbIconRes = if (isDark) R.drawable.brightness_2_24
+  else R.drawable.brightness_high_24
 
-    Switch(
-        checked = isDark, onCheckedChange = onChange, thumbContent = {
-            Icon(
-                painter = painterResource(id = thumbIconRes),
-                contentDescription = null,
-                modifier = Modifier.size(SwitchDefaults.IconSize)
-            )
-        }, colors = SwitchDefaults.colors(
-            checkedTrackColor = CornflowerBlueLight,
-            checkedThumbColor = Color.White,
-            checkedIconColor = CornflowerBlueLight
-        )
-    )
+  Switch(
+      checked = isDark, onCheckedChange = onChange,
+      thumbContent = {
+          Icon(
+              painter = painterResource(id = thumbIconRes),
+              contentDescription = null,
+              modifier = Modifier.size(SwitchDefaults.IconSize),
+          )
+      },
+      colors = SwitchDefaults.colors(
+          checkedTrackColor = CornflowerBlueLight,
+          checkedThumbColor = Color.White,
+          checkedIconColor = CornflowerBlueLight,
+      ),
+  )
 }
 
 @Composable
 private fun YadinoDrawerHeader(
-    modifier: Modifier = Modifier,
-    @StringRes greetingTitle: Int,
-    @DrawableRes iconRes: Int,
+  modifier: Modifier = Modifier,
+  @StringRes greetingTitle: Int,
+  @DrawableRes iconRes: Int,
 ) {
-    Box(modifier = modifier) {
-        Image(
-            painter = painterResource(id = iconRes),
-            contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .size(
-                    72.dp
-                )
-        )
+  Box(modifier = modifier) {
+    Image(
+        painter = painterResource(id = iconRes),
+        contentDescription = null,
+        modifier = Modifier
+            .align(Alignment.TopEnd)
+            .size(
+                72.dp,
+            ),
+    )
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.align(Alignment.Center).padding(top = 16.dp),
-        ) {
-            Text(
-                text = stringResource(id = greetingTitle),
-                style = MaterialTheme.typography.labelSmall,
-                color = Color.White
-            )
-        }
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      modifier = Modifier
+          .align(Alignment.Center)
+          .padding(top = 16.dp),
+    ) {
+      Text(
+          text = stringResource(id = greetingTitle),
+          style = MaterialTheme.typography.labelSmall,
+          color = Color.White,
+      )
     }
+  }
 }
 
 @Composable
 private fun YadinoDrawerItem(
-    modifier: Modifier = Modifier,
-    @StringRes title: Int,
-    @DrawableRes iconRes: Int,
-    rightSlot: @Composable (() -> Unit)? = null
+  modifier: Modifier = Modifier,
+  @StringRes title: Int,
+  @DrawableRes iconRes: Int,
+  rightSlot: @Composable (() -> Unit)? = null,
 ) {
-    Row(
-        modifier = modifier, verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(id = iconRes),
-            contentDescription = null,
-            modifier = Modifier.padding(horizontal = 12.dp),
-            tint = Color.Unspecified
-        )
-        Text(text = stringResource(id = title))
-        Spacer(modifier = Modifier.weight(1f))
-        rightSlot?.run {
-            this()
-            Spacer(modifier = Modifier.width(12.dp))
-        }
-
-
+  Row(
+      modifier = modifier, verticalAlignment = Alignment.CenterVertically,
+  ) {
+    Icon(
+        painter = painterResource(id = iconRes),
+        contentDescription = null,
+        modifier = Modifier.padding(horizontal = 12.dp),
+        tint = Color.Unspecified,
+    )
+    Text(text = stringResource(id = title))
+    Spacer(modifier = Modifier.weight(1f))
+    rightSlot?.run {
+      this()
+      Spacer(modifier = Modifier.width(12.dp))
     }
+
+
+  }
 
 }
 
 
 @Composable
 private fun YadinoNavDrawerPreview() {
-    YadinoTheme {
-        YadinoNavigationDrawer(
-            drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
-        ) {}
-    }
+  YadinoTheme {
+    YadinoNavigationDrawer(
+        drawerState = rememberDrawerState(initialValue = DrawerValue.Open), onDarkThemeCheckedChange = {},
+    ) {}
+  }
 }
