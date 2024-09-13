@@ -72,7 +72,7 @@ androidTools = "31.5.1"
 androidxJunit = "1.2.1"
 #firebase
 firebasePerfPlugin = "1.4.2"
-firebaseCrashlyticsPlugin = "3.0.1"
+firebaseCrashlyticsPlugin = "3.0.2"
 constraintlayout = "2.1.4"
 
 
