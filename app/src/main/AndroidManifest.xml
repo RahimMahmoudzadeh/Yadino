@@ -42,9 +42,10 @@
             android:turnScreenOn="true" />
 
         <receiver
-            android:name="com.rahim.broadcast.YadinoBroadCastReceiver"
+            android:name=".routine.reminder.YadinoBroadCastReceiver"
             android:enabled="true"
             android:exported="false" />
+
         <service
             android:name="com.rahim.data.service.notification.FirebaseNotificationService"
             android:exported="false">

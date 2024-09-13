@@ -1,8 +1,8 @@
-package com.rahim.yadino.routine_repository.di
+package com.rahim.yadino.routine.reminder.di
 
 import android.content.Context
 import com.rahim.yadino.routine.ReminderScheduler
-import com.rahim.yadino.routine_repository.AndroidReminderScheduler
+import com.rahim.yadino.routine.reminder.ReminderSchedulerImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,6 +17,6 @@ internal class ProvideModule {
     @Provides
     @Singleton
     fun provideReminderScheduler(@ApplicationContext context: Context): ReminderScheduler {
-        return AndroidReminderScheduler(context)
+        return ReminderSchedulerImpl(context)
     }
 }

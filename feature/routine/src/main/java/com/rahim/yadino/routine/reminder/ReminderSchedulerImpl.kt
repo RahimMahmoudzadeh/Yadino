@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine_repository
+package com.rahim.yadino.routine.reminder
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -12,14 +12,14 @@ import androidx.core.content.ContextCompat
 import com.rahim.yadino.base.Constants.ACTION_CANCEL_NOTIFICATION
 import com.rahim.yadino.base.Constants.KEY_LAUNCH_ID
 import com.rahim.yadino.base.Constants.KEY_LAUNCH_NAME
-import com.rahim.yadino.base.broadcast.YadinoBroadCastReceiver
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.ReminderScheduler
 import com.rahim.yadino.routine.modle.ReminderState
 import dagger.hilt.android.qualifiers.ApplicationContext
+import timber.log.Timber
 import javax.inject.Inject
 
-class AndroidReminderScheduler @Inject constructor(
+class ReminderSchedulerImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ReminderScheduler {
 
@@ -135,7 +135,7 @@ class AndroidReminderScheduler @Inject constructor(
             putExtra(KEY_LAUNCH_NAME, reminderName)
             putExtra(KEY_LAUNCH_ID, reminderId)
         }
-
+        Timber.tag("intentTitle").d("AndroidReminderScheduler setAlarm-> ${reminderName}")
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             reminderIdAlarm.toInt(),

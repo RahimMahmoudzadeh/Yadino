@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.wekeup.notification
+package com.rahim.yadino.routine.reminder
 
 import android.Manifest
 import android.app.AlarmManager
@@ -16,10 +16,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.rahim.yadino.base.Constants.CHANNEL_ID
 import com.rahim.yadino.base.Constants.KEY_LAUNCH_NAME
-import com.rahim.yadino.base.broadcast.YadinoBroadCastReceiver
 import com.rahim.yadino.routine.wekeup.WakeupActivity
-import com.rahim.yadino.routine.wekeup.alarm.Alarm
-import com.rahim.yadino.routine.wekeup.alarm.AlarmSong
+import com.rahim.yadino.routine.reminder.alarm.Alarm
+import com.rahim.yadino.routine.reminder.alarm.AlarmSong
 import java.util.Random
 import javax.inject.Inject
 
