@@ -15,7 +15,7 @@ hilt_navigation_compose = "1.2.0"
 androidDesugarJdkLibs = "2.0.4"
 androidx-core = "1.13.1"
 
-androidx-lifecycle = "2.7.0"
+androidx-lifecycle = "2.8.5"
 androidx-room = "2.6.1"
 
 androidx-navigation = "2.7.7"
