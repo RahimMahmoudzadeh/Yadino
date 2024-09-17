@@ -68,7 +68,7 @@ key-alias = "keyAlias"
 key-password = "keyPassword"
 release = "release"
 
-androidTools = "31.6.0"
+androidTools = "31.6.1"
 androidxJunit = "1.2.1"
 #firebase
 firebasePerfPlugin = "1.4.2"
