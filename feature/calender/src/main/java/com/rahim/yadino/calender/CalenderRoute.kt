@@ -38,8 +38,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLineComponent
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
@@ -199,40 +197,40 @@ private fun CalenderScreen(
                 }
             }
         }
-        Column(
-            modifier = Modifier
-                .padding(top = 12.dp, bottom = 10.dp, start = 30.dp, end = 40.dp)
-        ) {
-            val modelProducer = remember { CartesianChartModelProducer.build() }
-            LaunchedEffect(Unit) {
-                modelProducer.tryRunTransaction {
-                    columnSeries {
-                        series(
-                            4,
-                            12,
-                            8,
-                            16
-                        )
-                    }
-                }
-            }
-            val i = arrayListOf("r", "a", "b")
-            val bottomAxisValueFormatter = CartesianValueFormatter { x, _, _ ->
-                i[x.toInt() % i.size]
-            }
-            CartesianChartHost(
-                rememberCartesianChart(
-                    rememberColumnCartesianLayer(),
-                    startAxis = rememberStartAxis(),
-                    bottomAxis = rememberBottomAxis(
-                        valueFormatter = bottomAxisValueFormatter,
-                        titleComponent = rememberAxisLabelComponent(),
-                        label = rememberAxisLabelComponent(color = Blue),
-                        axis = rememberAxisLineComponent(color = Blue)
-                    )
-                ),
-                modelProducer,
-            )
-        }
+//        Column(
+//            modifier = Modifier
+//                .padding(top = 12.dp, bottom = 10.dp, start = 30.dp, end = 40.dp)
+//        ) {
+//            val modelProducer = remember { CartesianChartModelProducer.build() }
+//            LaunchedEffect(Unit) {
+//                modelProducer.tryRunTransaction {
+//                    columnSeries {
+//                        series(
+//                            4,
+//                            12,
+//                            8,
+//                            16
+//                        )
+//                    }
+//                }
+//            }
+//            val i = arrayListOf("r", "a", "b")
+//            val bottomAxisValueFormatter = CartesianValueFormatter { x, _, _ ->
+//                i[x.toInt() % i.size]
+//            }
+//            CartesianChartHost(
+//                rememberCartesianChart(
+//                    rememberColumnCartesianLayer(),
+//                    startAxis = rememberStartAxis(),
+//                    bottomAxis = rememberBottomAxis(
+//                        valueFormatter = bottomAxisValueFormatter,
+//                        titleComponent = rememberAxisLabelComponent(),
+//                        label = rememberAxisLabelComponent(color = Blue),
+//                        axis = rememberAxisLineComponent(color = Blue)
+//                    )
+//                ),
+//                modelProducer,
+//            )
+//        }
     }
 }

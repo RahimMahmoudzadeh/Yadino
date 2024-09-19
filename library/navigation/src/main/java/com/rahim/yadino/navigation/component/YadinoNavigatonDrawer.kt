@@ -135,7 +135,7 @@ fun YadinoNavigationDrawer(
                       }
                       .statusBarsPadding(),
                   greetingTitle = R.string.hello_friend,
-                  iconRes = R.drawable.share,
+                  iconRes = com.rahim.yadino.library.designsystem.R.drawable.img_app_wekup,
               )
               Spacer(Modifier.height(12.dp))
               LazyColumn {
@@ -203,14 +203,14 @@ private fun YadinoDrawerHeader(
             .align(Alignment.TopEnd)
             .size(
                 72.dp,
-            ),
+            )
     )
 
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier
           .align(Alignment.Center)
-          .padding(top = 16.dp),
+          .padding(top = 16.dp, end = 16.dp),
     ) {
       Text(
           text = stringResource(id = greetingTitle),

@@ -88,7 +88,7 @@ class WakeupActivity : ComponentActivity() {
                     ) {
                         Image(
                             modifier = Modifier.padding(top = 28.dp),
-                            painter = painterResource(id = R.drawable.img_app_wekup),
+                            painter = painterResource(id = com.rahim.yadino.library.designsystem.R.drawable.img_app_wekup),
                             contentDescription = "empty list home"
                         )
                         Text(
