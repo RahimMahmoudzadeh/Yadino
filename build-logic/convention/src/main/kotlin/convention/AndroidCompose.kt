@@ -22,7 +22,7 @@ internal fun Project.configureAndroidCompose(
             add("implementation", platform(bom))
             add("implementation",compose)
             add("androidTestImplementation", platform(bom))
-            add("debugImplementation", versionCatalog.findLibrary("ui-tooling").get())
+            add("implementation", versionCatalog.findLibrary("ui-tooling").get())
         }
 
         testOptions {

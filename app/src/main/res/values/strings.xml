@@ -23,8 +23,8 @@
     <string name="notes">یادداشت ها</string>
     <string name="not_note">!شما هنوز یادداشتی ثبت نکردید</string>
     <string name="list_routine">لیست روتین</string>
-
     <string name="empty">خالی</string>
+    <string name="note">یادداشت</string>
     <string name="update_version">لطفابرای ادامه نسخه اپ خود را به$% اپدیت کنید</string>
     <string name="update">آپدیت</string>
     <string name="download">دانلود</string>
