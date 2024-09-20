@@ -1,8 +1,8 @@
 package com.rahim.ui.main
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.base.di.IODispatcher
-import com.rahim.yadino.base.viewmodel.BaseViewModel
 import com.rahim.yadino.dateTime.DateTimeRepository
 import com.rahim.yadino.note.NoteRepository
 import com.rahim.yadino.routine.RepositoryRoutine
@@ -23,7 +23,7 @@ class MainViewModel @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
     private val sharedPreferencesRepository: SharedPreferencesRepository
 ) :
-    BaseViewModel() {
+    ViewModel() {
     val haveAlarm : Flow<Boolean> = repositoryRoutine.haveAlarm()
     init {
         viewModelScope.launch(ioDispatcher) {

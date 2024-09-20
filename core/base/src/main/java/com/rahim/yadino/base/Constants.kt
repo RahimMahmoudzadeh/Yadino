@@ -21,7 +21,7 @@ object Constants {
     const val CAFE_BAZZAR_LINK="https://cafebazaar.ir/app/com.rahim.yadino"
     const val MY_KET_LINK="https://myket.ir/app/com.rahim.yadino"
     const val CAFE_BAZAAR_PACKAGE_NAME="com.farsitel.bazaar"
-    const val MY_KET_PACKAGE_NAME="ir.mservices.mybook"
+    const val MY_KET_PACKAGE_NAME="ir.mservices.market"
     const val IS_DARK_THEME="is dark theme"
     const val DARK="dark theme"
     const val LIGHT="light theme"

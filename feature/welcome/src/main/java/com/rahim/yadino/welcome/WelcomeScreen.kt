@@ -55,7 +55,6 @@ internal fun WelcomeRoute(
     )
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun WelcomeScreens(
     modifier: Modifier = Modifier,

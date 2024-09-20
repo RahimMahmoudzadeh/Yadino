@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.navigation.component.DrawerItemType.AboutUs
 import com.rahim.yadino.navigation.component.DrawerItemType.Guide
 import com.rahim.yadino.navigation.component.DrawerItemType.RateToApp
@@ -95,14 +96,8 @@ fun YadinoNavigationDrawer(
   headerHeight: Dp = 150.dp,
   onItemClick: (DrawerItemType) -> Unit = {},
   isDarkTheme: Boolean = false,
-  onDarkThemeCheckedChange: (isDark: Boolean) -> Unit,
   content: @Composable () -> Unit,
 ) {
-  val headerGradientColors = remember(isDarkTheme) {
-    if (!isDarkTheme) listOf(Color(0xFF363BC1), Color(0xFF1291E7))
-    else listOf(Color(0xff0d2b6e), Color(0xff0b5180))
-
-  }
   val scope = rememberCoroutineScope()
   if (drawerState.isOpen) {
     BackHandler {
@@ -112,54 +107,52 @@ fun YadinoNavigationDrawer(
     }
   }
   ModalNavigationDrawer(
-      modifier = modifier, drawerState = drawerState,
-      drawerContent = {
-          ModalDrawerSheet(
-              modifier = Modifier.width(drawerWidth),
-              drawerContainerColor = MaterialTheme.colorScheme.background,
-              drawerContentColor = MaterialTheme.colorScheme.onSurface,
-              windowInsets = WindowInsets(0),
-          ) {
-              YadinoDrawerHeader(
-                  modifier = Modifier
-                      .height(headerHeight)
-                      .fillMaxWidth()
-                      .drawBehind {
-                          drawRect(
-                              brush = Brush.linearGradient(
-                                  colors = headerGradientColors,
-                                  start = Offset(0f, size.height),
-                                  end = Offset(size.width, 0f),
-                              ),
-                          )
-                      }
-                      .statusBarsPadding(),
-                  greetingTitle = R.string.hello_friend,
-                  iconRes = com.rahim.yadino.library.designsystem.R.drawable.img_app_wekup,
+    modifier = modifier, drawerState = drawerState,
+    drawerContent = {
+      ModalDrawerSheet(
+        modifier = Modifier.width(drawerWidth),
+        drawerContainerColor = MaterialTheme.colorScheme.background,
+        drawerContentColor = MaterialTheme.colorScheme.onSurface,
+        windowInsets = WindowInsets(0),
+      ) {
+        YadinoDrawerHeader(
+          modifier = Modifier
+            .height(headerHeight)
+            .fillMaxWidth()
+            .drawBehind {
+              drawRect(
+                brush = Brush.linearGradient(
+                  colors = gradientColors,
+                  start = Offset(0f, size.height),
+                  end = Offset(size.width, 0f),
+                ),
               )
-              Spacer(Modifier.height(12.dp))
-              LazyColumn {
-                  items(yadinoDrawerItems) { drawerItem ->
-                      YadinoDrawerItem(
-                          modifier = Modifier
-                              .padding(NavigationDrawerItemDefaults.ItemPadding)
-                              .height(itemHeight)
-                              .clickable { onItemClick(drawerItem) },
-                          title = drawerItem.title,
-                          iconRes = drawerItem.iconRes,
-                          rightSlot = if (drawerItem is Theme) {
-                              {
-                                  ThemeSwitch(
-                                      isDark = isDarkTheme, onChange = onDarkThemeCheckedChange,
-                                  )
-                              }
-                          } else null,
-                      )
-                  }
+            }
+            .statusBarsPadding(),
+          greetingTitle = R.string.hello_friend,
+          iconRes = com.rahim.yadino.library.designsystem.R.drawable.img_app_wekup,
+        )
+        Spacer(Modifier.height(12.dp))
+        yadinoDrawerItems.forEach { yadinoDrawerItem ->
+          YadinoDrawerItem(
+            modifier = Modifier
+              .padding(NavigationDrawerItemDefaults.ItemPadding)
+              .height(itemHeight)
+              .clickable { onItemClick(yadinoDrawerItem) },
+            title = yadinoDrawerItem.title,
+            iconRes = yadinoDrawerItem.iconRes,
+            rightSlot = if (yadinoDrawerItem is Theme) {
+              {
+                ThemeSwitch(
+                  isDark = isDarkTheme, onChange = {onItemClick(yadinoDrawerItem)},
+                )
               }
-          }
-      },
-      content = content,
+            } else null,
+          )
+        }
+      }
+    },
+    content = content,
   )
 
 }
@@ -173,19 +166,19 @@ private fun ThemeSwitch(
   else R.drawable.brightness_high_24
 
   Switch(
-      checked = isDark, onCheckedChange = onChange,
-      thumbContent = {
-          Icon(
-              painter = painterResource(id = thumbIconRes),
-              contentDescription = null,
-              modifier = Modifier.size(SwitchDefaults.IconSize),
-          )
-      },
-      colors = SwitchDefaults.colors(
-          checkedTrackColor = CornflowerBlueLight,
-          checkedThumbColor = Color.White,
-          checkedIconColor = CornflowerBlueLight,
-      ),
+    checked = isDark, onCheckedChange = onChange,
+    thumbContent = {
+      Icon(
+        painter = painterResource(id = thumbIconRes),
+        contentDescription = null,
+        modifier = Modifier.size(SwitchDefaults.IconSize),
+      )
+    },
+    colors = SwitchDefaults.colors(
+      checkedTrackColor = CornflowerBlueLight,
+      checkedThumbColor = Color.White,
+      checkedIconColor = CornflowerBlueLight,
+    ),
   )
 }
 
@@ -197,25 +190,25 @@ private fun YadinoDrawerHeader(
 ) {
   Box(modifier = modifier) {
     Image(
-        painter = painterResource(id = iconRes),
-        contentDescription = null,
-        modifier = Modifier
-            .align(Alignment.TopEnd)
-            .size(
-                72.dp,
-            )
+      painter = painterResource(id = iconRes),
+      contentDescription = null,
+      modifier = Modifier
+        .align(Alignment.TopEnd)
+        .size(
+          72.dp,
+        ),
     )
 
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier
-          .align(Alignment.Center)
-          .padding(top = 16.dp, end = 16.dp),
+        .align(Alignment.Center)
+        .padding(top = 16.dp, end = 16.dp),
     ) {
       Text(
-          text = stringResource(id = greetingTitle),
-          style = MaterialTheme.typography.labelSmall,
-          color = Color.White,
+        text = stringResource(id = greetingTitle),
+        style = MaterialTheme.typography.labelSmall,
+        color = Color.White,
       )
     }
   }
@@ -229,13 +222,13 @@ private fun YadinoDrawerItem(
   rightSlot: @Composable (() -> Unit)? = null,
 ) {
   Row(
-      modifier = modifier, verticalAlignment = Alignment.CenterVertically,
+    modifier = modifier, verticalAlignment = Alignment.CenterVertically,
   ) {
     Icon(
-        painter = painterResource(id = iconRes),
-        contentDescription = null,
-        modifier = Modifier.padding(horizontal = 12.dp),
-        tint = Color.Unspecified,
+      painter = painterResource(id = iconRes),
+      contentDescription = null,
+      modifier = Modifier.padding(horizontal = 12.dp),
+      tint = Color.Unspecified,
     )
     Text(text = stringResource(id = title))
     Spacer(modifier = Modifier.weight(1f))
@@ -243,10 +236,7 @@ private fun YadinoDrawerItem(
       this()
       Spacer(modifier = Modifier.width(12.dp))
     }
-
-
   }
-
 }
 
 
@@ -254,7 +244,7 @@ private fun YadinoDrawerItem(
 private fun YadinoNavDrawerPreview() {
   YadinoTheme {
     YadinoNavigationDrawer(
-        drawerState = rememberDrawerState(initialValue = DrawerValue.Open), onDarkThemeCheckedChange = {},
+      drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
     ) {}
   }
 }
