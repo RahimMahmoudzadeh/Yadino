@@ -53,7 +53,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.navigation.NavigationComponent
-import com.rahim.yadino.R
+import com.rahim.R
 import com.rahim.yadino.base.Constants.DARK
 import com.rahim.yadino.base.Constants.LIGHT
 import com.rahim.yadino.base.Constants.MY_KET_LINK

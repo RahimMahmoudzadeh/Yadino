@@ -101,12 +101,12 @@ class MainActivity : ComponentActivity() {
           if (it) {
             mainViewModel.setDarkTheme(DARK)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-              this@MainActivity.splashScreen.setSplashScreenTheme(com.rahim.yadino.R.style.Theme_dark)
+              this@MainActivity.splashScreen.setSplashScreenTheme(com.rahim.R.style.Theme_dark)
             }
           } else {
             mainViewModel.setDarkTheme(LIGHT)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-              this@MainActivity.splashScreen.setSplashScreenTheme(com.rahim.yadino.R.style.Theme_Light)
+              this@MainActivity.splashScreen.setSplashScreenTheme(com.rahim.R.style.Theme_Light)
             }
           }
         },
@@ -179,7 +179,7 @@ fun YadinoApp(
                 ) {
                   Toast.makeText(
                     context,
-                    context.resources.getString(com.rahim.yadino.R.string.install_cafeBazaar),
+                    context.resources.getString(com.rahim.R.string.install_cafeBazaar),
                     Toast.LENGTH_SHORT,
                   ).show()
                   return@YadinoNavigationDrawer
@@ -213,12 +213,12 @@ fun YadinoApp(
                     )
 
                     Destinations.Routine.route -> stringResource(
-                      id = com.rahim.yadino.R.string.list_routine,
+                      id = com.rahim.R.string.list_routine,
                     )
 
-                    Destinations.AlarmHistory.route -> stringResource(id = com.rahim.yadino.R.string.historyAlarm)
+                    Destinations.AlarmHistory.route -> stringResource(id = com.rahim.R.string.historyAlarm)
 
-                    else -> stringResource(id = com.rahim.yadino.R.string.notes)
+                    else -> stringResource(id = com.rahim.R.string.notes)
                   },
                   openHistory = {
                     navController.navigate(Destinations.AlarmHistory.route)

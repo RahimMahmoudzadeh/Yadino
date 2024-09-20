@@ -7,15 +7,15 @@ object Config {
         minSdkVersion = 26,
         targetSdkVersion = 34,
         compileSdkVersion = 34,
-        applicationId = "com.rahim.yadino",
-        versionCode = 125,
-        versionName = "1.4.0",
-        nameSpace = "com.rahim.yadino",
+        applicationId = "com.rahim",
+        versionCode = 127,
+        versionName = "1.5.1",
+        nameSpace = "com.rahim",
         versionNameSuffixCafeBazaar ="-c",
         versionNameSuffixGooglePlay ="-g",
         versionNameSuffixMyket ="-m",
         applicationIdSuffix = ".yadino",
-        dimension = "contentType"
+        dimension = "rahim"
     )
     val jvm = JvmConfig(
         javaVersion = JavaVersion.VERSION_17,

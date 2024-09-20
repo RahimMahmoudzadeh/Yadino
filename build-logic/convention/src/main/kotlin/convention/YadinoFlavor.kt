@@ -8,39 +8,39 @@ import config.Config
 
 @Suppress("EnumEntryName")
 enum class FlavorDimension {
-    contentType
+  contentType
 }
 
 @Suppress("EnumEntryName")
 enum class YadinoFlavor(
-    val dimension: FlavorDimension,
-    val applicationIdSuffix: String? = null,
-    val versionNameSuffix: String
+  val dimension: FlavorDimension,
+  val applicationIdSuffix: String? = null,
+  val versionNameSuffix: String,
 ) {
-    googlePlay(FlavorDimension.contentType, versionNameSuffix = Config.android.versionNameSuffixGooglePlay),
-    cafeBazaar(FlavorDimension.contentType, versionNameSuffix = Config.android.versionNameSuffixCafeBazaar),
-    myket(FlavorDimension.contentType, versionNameSuffix = Config.android.versionNameSuffixMyket),
+  googlePlay(FlavorDimension.contentType, applicationIdSuffix = Config.android.applicationIdSuffix, versionNameSuffix = Config.android.versionNameSuffixGooglePlay),
+  cafeBazaar(FlavorDimension.contentType, applicationIdSuffix = Config.android.applicationIdSuffix, versionNameSuffix = Config.android.versionNameSuffixCafeBazaar),
+  myket(FlavorDimension.contentType, applicationIdSuffix = Config.android.applicationIdSuffix, versionNameSuffix = Config.android.versionNameSuffixMyket),
 }
 
 internal fun configureFlavors(
-    commonExtension: CommonExtension<*, *, *, *, *, *>,
-    flavorConfigurationBlock: ProductFlavor.(flavor: YadinoFlavor) -> Unit = {}
+  commonExtension: CommonExtension<*, *, *, *, *, *>,
+  flavorConfigurationBlock: ProductFlavor.(flavor: YadinoFlavor) -> Unit = {},
 ) {
-    commonExtension.apply {
-        flavorDimensions += FlavorDimension.contentType.name
-        productFlavors {
-            YadinoFlavor.values().forEach {
-                create(it.name) {
-                    dimension = it.dimension.name
-                    flavorConfigurationBlock(this, it)
-                    if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {
-                        if (it.applicationIdSuffix != null) {
-                            applicationIdSuffix = it.applicationIdSuffix
-                        }
-                        versionNameSuffix = it.versionNameSuffix
-                    }
-                }
+  commonExtension.apply {
+    flavorDimensions += FlavorDimension.contentType.name
+    productFlavors {
+      YadinoFlavor.values().forEach {
+        create(it.name) {
+          dimension = it.dimension.name
+          flavorConfigurationBlock(this, it)
+          if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {
+            if (it.applicationIdSuffix != null) {
+              applicationIdSuffix = it.applicationIdSuffix
             }
+            versionNameSuffix = it.versionNameSuffix
+          }
         }
+      }
     }
+  }
 }

@@ -14,28 +14,29 @@ import org.gradle.kotlin.dsl.dependencies
 import versionCatalog
 
 class AndroidApplicationConventionPlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        with(target) {
-            applyPlugins {
-                listOf("com.android.application", "org.jetbrains.kotlin.android")
-            }
-            applicationGradle {
-                defaultConfig.apply {
-                    targetSdk = Config.android.targetSdkVersion
-                    applicationId = Config.android.applicationId
-                    versionCode = Config.android.versionCode
-                    versionName = Config.android.versionName
-                }
-                configureKotlinAndroid(this)
-                configureFlavors(this)
-            }
-            dependencies {
-                add(
-                    "implementation",
-                    versionCatalog.findLibrary("hilt.navigation.compose").get()
-                )
-            }
+  override fun apply(target: Project) {
+    with(target) {
+      applyPlugins {
+        listOf("com.android.application", "org.jetbrains.kotlin.android")
+      }
+      applicationGradle {
+        defaultConfig.apply {
+          targetSdk = Config.android.targetSdkVersion
+          applicationId = Config.android.applicationId
+          versionCode = Config.android.versionCode
+          versionName = Config.android.versionName
+          namespace = Config.android.applicationId
         }
+        configureKotlinAndroid(this)
+        configureFlavors(this)
+      }
+      dependencies {
+        add(
+          "implementation",
+          versionCatalog.findLibrary("hilt.navigation.compose").get(),
+        )
+      }
     }
+  }
 
 }

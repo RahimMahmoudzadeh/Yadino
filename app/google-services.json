@@ -38,7 +38,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:124617331311:android:477b8c4b423b1cb864339a",
         "android_client_info": {
-          "package_name": "com.rahim.yadino.debug"
+          "package_name": "com.rahim.debug"
         }
       },
       "oauth_client": [
