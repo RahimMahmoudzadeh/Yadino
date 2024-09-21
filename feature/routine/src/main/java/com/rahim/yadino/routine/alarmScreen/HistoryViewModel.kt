@@ -15,25 +15,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
-    private val routineRepository: RepositoryRoutine,
+  private val routineRepository: RepositoryRoutine,
 ) : ViewModel() {
-    private var _flowRoutines = MutableStateFlow<Resource<List<RoutineModel>>>(Resource.Loading())
-    val flowRoutines: StateFlow<Resource<List<RoutineModel>>> = _flowRoutines
+  private var _flowRoutines = MutableStateFlow<Resource<List<RoutineModel>>>(Resource.Loading())
+  val flowRoutines: StateFlow<Resource<List<RoutineModel>>> = _flowRoutines
 
-    val haveAlarm: Flow<Boolean> = routineRepository.haveAlarm()
+  val haveAlarm: Flow<Boolean> = routineRepository.haveAlarm()
 
-
-    fun getAllRoutine() {
-        viewModelScope.launch {
-            runCatching {
-                routineRepository.getAllRoutine()
-            }.onSuccess {
-                _flowRoutines.value = Resource.Success(it)
-            }.onFailure {
-                _flowRoutines.value = Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
-            }
-        }
+  fun getAllRoutine() {
+    viewModelScope.launch {
+      runCatching {
+        routineRepository.getAllRoutine()
+      }.onSuccess {
+        _flowRoutines.value = Resource.Success(it)
+      }.onFailure {
+        _flowRoutines.value = Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
+      }
     }
-
-
+  }
 }

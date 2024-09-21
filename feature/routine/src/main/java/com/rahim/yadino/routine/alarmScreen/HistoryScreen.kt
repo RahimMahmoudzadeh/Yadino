@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,138 +50,141 @@ import com.rahim.yadino.base.db.model.RoutineModel
 
 @Composable
 internal fun HistoryRoute(
-    historyViewModel: HistoryViewModel = hiltViewModel()
+  historyViewModel: HistoryViewModel = hiltViewModel(),
 ) {
-    val routineItems by historyViewModel.flowRoutines
-        .collectAsStateWithLifecycle()
+  LaunchedEffect(Unit) {
+    historyViewModel.getAllRoutine()
+  }
+  val routineItems by historyViewModel.flowRoutines
+    .collectAsStateWithLifecycle()
 
-    HistoryScreen(routineItems.data ?: emptyList())
+  HistoryScreen(routineItems.data ?: emptyList())
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HistoryScreen(
-    routineModelItems: List<RoutineModel>,
+  routineModelItems: List<RoutineModel>,
 ) {
-    val (completedTasks, incompleteTasks) = routineModelItems.partition { sort -> sort.isChecked }
+  val (completedTasks, incompleteTasks) = routineModelItems.partition { sort -> sort.isChecked }
 
-    var expanded by rememberSaveable {
-        mutableStateOf(false)
-    }
-    val rotateState by animateFloatAsState(
-        targetValue = if (expanded) 180f else 0f,
-        label = ""
-    )
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
+  var expanded by rememberSaveable {
+    mutableStateOf(false)
+  }
+  val rotateState by animateFloatAsState(
+    targetValue = if (expanded) 180f else 0f,
+    label = "",
+  )
+  CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+    LazyColumn(
+      modifier = Modifier
+        .fillMaxSize(),
+    ) {
+      item {
+        val text =
+          if (incompleteTasks.isEmpty()) stringResource(id = R.string.not_alarm) else
+            "${stringResource(id = R.string.you)} ${
+              incompleteTasks.size.toString().persianLocate()
+            } ${stringResource(id = R.string.have_alarm)}"
+        Text(
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(15.dp),
+          text = text,
+          textAlign = TextAlign.Center,
+          style = MaterialTheme.typography.labelMedium,
+          color = if (incompleteTasks.isEmpty()) MaterialTheme.colorScheme.secondaryContainer else CornflowerBlueLight,
+          fontWeight = FontWeight.Bold,
+        )
+      }
+      items(incompleteTasks) { routine ->
+        AlarmHistoryCardItem(
+          routineIsChecked = routine.isChecked,
+          routineName = routine.name,
+          routineDayNumber = routine.dayNumber ?: 0,
+          routineYearNumber = routine.yerNumber ?: 0,
+          routineMonthNumber = routine.monthNumber ?: 0,
+          routineTimeHours = routine.timeHours ?: "",
+        )
+      }
+      stickyHeader {
+        RoutineCompleted(
+          size = completedTasks.size,
+          rotateState = rotateState,
+          onClick = { expanded = !expanded },
+        )
+      }
+      items(completedTasks) { routine ->
+        AnimatedVisibility(
+          visible = expanded,
+          enter = fadeIn() + expandVertically(animationSpec = tween(1000)),
+          exit = fadeOut() + shrinkVertically(animationSpec = tween(1000)),
         ) {
-            item {
-                val text =
-                    if (incompleteTasks.isEmpty()) stringResource(id = R.string.not_alarm) else
-                        "${stringResource(id = R.string.you)} ${
-                            incompleteTasks.size.toString().persianLocate()
-                        } ${stringResource(id = R.string.have_alarm)}"
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(15.dp),
-                    text = text,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = if (incompleteTasks.isEmpty()) MaterialTheme.colorScheme.secondaryContainer else CornflowerBlueLight,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            items(incompleteTasks) { routine ->
-                AlarmHistoryCardItem(
-                    routineIsChecked = routine.isChecked,
-                    routineName = routine.name,
-                    routineDayNumber = routine.dayNumber ?: 0,
-                    routineYearNumber = routine.yerNumber ?: 0,
-                    routineMonthNumber = routine.monthNumber ?: 0,
-                    routineTimeHours = routine.timeHours ?: "",
-                )
-            }
-            stickyHeader {
-                RoutineCompleted(
-                    size = completedTasks.size,
-                    rotateState = rotateState,
-                    onClick = { expanded = !expanded }
-                )
-            }
-            items(completedTasks) { routine ->
-                AnimatedVisibility(
-                    visible = expanded,
-                    enter = fadeIn() + expandVertically(animationSpec = tween(1000)),
-                    exit = fadeOut() + shrinkVertically(animationSpec = tween(1000))
-                ) {
-                    AlarmHistoryCardItem(
-                        routineIsChecked = routine.isChecked,
-                        routineName = routine.name,
-                        routineDayNumber = routine.dayNumber ?: 0,
-                        routineYearNumber = routine.yerNumber ?: 0,
-                        routineMonthNumber = routine.monthNumber ?: 0,
-                        routineTimeHours = routine.timeHours ?: "",
-                    )
-                }
-            }
-
+          AlarmHistoryCardItem(
+            routineIsChecked = routine.isChecked,
+            routineName = routine.name,
+            routineDayNumber = routine.dayNumber ?: 0,
+            routineYearNumber = routine.yerNumber ?: 0,
+            routineMonthNumber = routine.monthNumber ?: 0,
+            routineTimeHours = routine.timeHours ?: "",
+          )
         }
+      }
+
     }
+  }
 }
 
 @Composable
 private fun RoutineCompleted(
-    size: Int,
-    rotateState: Float,
-    onClick: () -> Unit
+  size: Int,
+  rotateState: Float,
+  onClick: () -> Unit,
 ) {
 
+  Row(
+    modifier = Modifier
+      .background(MaterialTheme.colorScheme.background)
+      .fillMaxWidth()
+      .padding(horizontal = 12.dp, vertical = 9.dp),
+    horizontalArrangement = Arrangement.Start,
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+
     Row(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 9.dp),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
+      horizontalArrangement = Arrangement.Center,
+      verticalAlignment = Alignment.CenterVertically,
     ) {
+      Text(
+        text = stringResource(id = R.string.completed),
+        color = MaterialTheme.colorScheme.primary,
+        style = MaterialTheme.typography.bodyLarge,
+      )
+      Spacer(modifier = Modifier.width(8.dp))
+      Text(
+        text = "( ${
+          size.toString().persianLocate()
+        } ${stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine)} )",
+        style = MaterialTheme.typography.bodyMedium,
+        color = CornflowerBlueLight,
+        fontWeight = FontWeight.SemiBold,
+      )
 
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(id = R.string.completed),
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyLarge,
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "( ${
-                    size.toString().persianLocate()
-                } ${stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine)} )",
-                style = MaterialTheme.typography.bodyMedium,
-                color = CornflowerBlueLight,
-                fontWeight = FontWeight.SemiBold,
-            )
-
-        }
-
-
-        IconButton(onClick = {
-            onClick()
-        }) {
-            Icon(
-                imageVector = Icons.Rounded.KeyboardArrowDown, contentDescription = "",
-                modifier = Modifier
-                    .rotate(rotateState),
-                tint = MaterialTheme.colorScheme.primary,
-            )
-        }
     }
 
 
+    IconButton(
+      onClick = {
+        onClick()
+      },
+    ) {
+      Icon(
+        imageVector = Icons.Rounded.KeyboardArrowDown, contentDescription = "",
+        modifier = Modifier
+          .rotate(rotateState),
+        tint = MaterialTheme.colorScheme.primary,
+      )
+    }
+  }
 }
 
