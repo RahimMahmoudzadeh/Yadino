@@ -1,5 +1,6 @@
 package com.rahim.yadino.routine.reminder.di
 
+import android.app.AlarmManager
 import android.content.Context
 import com.rahim.yadino.routine.ReminderScheduler
 import com.rahim.yadino.routine.reminder.ReminderSchedulerImpl
@@ -14,9 +15,15 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 internal class ProvideModule {
 
-    @Provides
-    @Singleton
-    fun provideReminderScheduler(@ApplicationContext context: Context): ReminderScheduler {
-        return ReminderSchedulerImpl(context)
-    }
+  @Provides
+  @Singleton
+  fun provideAlarmManager(@ApplicationContext context: Context): AlarmManager {
+    return context.getSystemService(AlarmManager::class.java)
+  }
+
+  @Provides
+  @Singleton
+  fun provideReminderScheduler(alarmManager: AlarmManager, @ApplicationContext context: Context): ReminderScheduler {
+    return ReminderSchedulerImpl(alarmManager, context)
+  }
 }

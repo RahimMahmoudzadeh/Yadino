@@ -21,10 +21,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ReminderSchedulerImpl @Inject constructor(
-  @ApplicationContext private val context: Context,
+  private val alarmManager: AlarmManager,
+  private val context: Context,
 ) : ReminderScheduler {
-
-  private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
   override fun setReminder(
     reminderName: String,
@@ -129,50 +128,12 @@ class ReminderSchedulerImpl @Inject constructor(
     )
   }
 
-  //  private suspend fun updateAlarm(
-//    reminderName: String,
-//    reminderId: Int,
-//    reminderTime: Long,
-//    reminderIdAlarm: Long,
-//  ): ErrorMessageCode? {
-//    if (reminderTime < System.currentTimeMillis()) return ErrorMessageCode.ERROR_TIME_PASSED
-//
-//    cancelAlarm(context, reminderTime)
-//    val alarmManager =
-//      context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//    val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).apply {
-//      putExtra(KEY_LAUNCH_NAME, reminderName)
-//      putExtra(KEY_LAUNCH_ID, reminderId)
-//    }
-//    val pendingIntent = PendingIntent.getBroadcast(
-//      context,
-//      reminderIdAlarm.toInt(),
-//      alarmIntent,
-//      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-//    )
-//    alarmManager.setAlarmClock(
-//      AlarmManager.AlarmClockInfo(reminderTime, pendingIntent),
-//      pendingIntent,
-//    )
-//    return null
-//  }
-//  private suspend fun cancelAlarm(context: Context, idAlarm: Long?) {
-//    val intent = Intent(context, YadinoBroadCastReceiver::class.java)
-//    val pendingIntent = PendingIntent.getBroadcast(
-//      context,
-//      idAlarm?.toInt() ?: 0,
-//      intent,
-//      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-//    )
-//    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
-//    alarmManager?.cancel(pendingIntent)
-//    delay(100)
-//  }
   override suspend fun cancelReminder(id: Long) {
+    val intent = Intent(context, YadinoBroadCastReceiver::class.java)
     val pendingIntent = PendingIntent.getBroadcast(
       context,
       id.toInt(),
-      Intent(ACTION_CANCEL_NOTIFICATION),
+      intent,
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
     alarmManager.cancel(
