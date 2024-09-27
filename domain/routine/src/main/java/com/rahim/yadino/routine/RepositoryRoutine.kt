@@ -15,7 +15,7 @@ interface RepositoryRoutine {
     suspend fun getRoutines(monthNumber: Int, numberDay: Int, yerNumber: Int): List<RoutineModel>
     suspend fun searchRoutine(name: String, yearNumber: Int?,monthNumber: Int?, dayNumber: Int?): List<RoutineModel>
     suspend fun changeRoutineId()
-    suspend fun checkEdAllRoutinePastTime()
+    suspend fun checkedAllRoutinePastTime()
     suspend fun getAllRoutine(): List<RoutineModel>
     fun haveAlarm(): Flow<Boolean>
     suspend fun getRoutineAlarmId(): Long

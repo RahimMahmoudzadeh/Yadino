@@ -8,29 +8,14 @@ import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.base.model.RoutineModel
 import com.rahim.yadino.base.db.dao.RoutineDao
-import com.rahim.yadino.base.getMatchingItems
-import com.rahim.yadino.base.model.UpdateRoutine
-import com.rahim.yadino.routine.useCase.UpdateReminderUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.count
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.forEach
-import kotlinx.coroutines.flow.lastOrNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -105,26 +90,14 @@ class RoutineRepositoryImpl @Inject constructor(
     return idNotNull
   }
 
-  override suspend fun checkEdAllRoutinePastTime() {
-    withContext(ioDispatcher) {
-      val routines = routineDao.getRoutines().filter { it.timeInMillisecond != null }
-      val pastTimeRoutine = routines.filter {
-        (it.timeInMillisecond ?: 0) < System.currentTimeMillis() && !it.isSample
-      }
-      pastTimeRoutine.forEach {
-        routineDao.updateRoutine(
-          it.apply {
-            isChecked = true
-          },
-        )
-      }
-    }
+  override suspend fun checkedAllRoutinePastTime() {
+    routineDao.updateRoutinesPastTime(System.currentTimeMillis())
   }
 
   override suspend fun getAllRoutine(): List<RoutineModel> =
     routineDao.getRoutines()
 
-  override suspend fun addRoutine(routineModel: RoutineModel){
+  override suspend fun addRoutine(routineModel: RoutineModel) {
     routineDao.addRoutine(routineModel)
   }
 
@@ -225,7 +198,7 @@ class RoutineRepositoryImpl @Inject constructor(
 
   override suspend fun searchRoutine(
     name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?,
-  ):List<RoutineModel> = routineDao.searchRoutine(name, monthNumber, dayNumber)
+  ): List<RoutineModel> = routineDao.searchRoutine(name, monthNumber, dayNumber)
 
   override fun haveAlarm(): Flow<Boolean> = routineDao.haveAlarm()
 }
