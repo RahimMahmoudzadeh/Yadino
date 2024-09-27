@@ -6,19 +6,20 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.rahim.yadino.base.db.model.RoutineModel
+import androidx.room.Upsert
+import com.rahim.yadino.base.model.RoutineModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RoutineDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun addRoutine(routineModel: RoutineModel): Long
 
     @Query("SELECT * FROM tbl_routine WHERE id =:id")
     suspend fun getRoutine(id: Int): RoutineModel
 
     @Query("SELECT * FROM tbl_routine WHERE  yerNumber =:yerNumber AND monthNumber =:monthNumber AND dayNumber =:dayNumber")
-    fun getRoutines(monthNumber: Int, dayNumber: Int, yerNumber: Int): Flow<List<RoutineModel>>
+    suspend fun getRoutines(monthNumber: Int, dayNumber: Int, yerNumber: Int): List<RoutineModel>
 
     @Query("SELECT * FROM tbl_routine")
     suspend fun getRoutines(): List<RoutineModel>
@@ -47,11 +48,11 @@ interface RoutineDao {
     suspend fun updateCheckedByAlarmId(id: Long)
 
     @Query("SELECT * FROM tbl_routine WHERE monthNumber=:monthNumber AND dayNumber=:dayNumber AND name LIKE '%'||:nameRoutine|| '%'")
-    fun searchRoutine(
+    suspend fun searchRoutine(
         nameRoutine: String,
         monthNumber: Int?,
         dayNumber: Int?
-    ): Flow<List<RoutineModel>>
+    ):List<RoutineModel>
 
     @Query("SELECT * FROM tbl_routine WHERE isSample=1")
     suspend fun getSampleRoutines(): List<RoutineModel>

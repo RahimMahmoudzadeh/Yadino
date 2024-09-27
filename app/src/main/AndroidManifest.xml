@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".routine.wekeup.WakeupActivity"
+            android:name=".yadino.routine.wekeup.WakeupActivity"
             android:excludeFromRecents="true"
             android:launchMode="standard"
             android:parentActivityName="com.rahim.ui.main.MainActivity"
@@ -43,7 +43,7 @@
             android:turnScreenOn="true" />
 
         <receiver
-            android:name=".routine.reminder.YadinoBroadCastReceiver"
+            android:name=".yadino.routine.reminder.YadinoBroadCastReceiver"
             android:enabled="true"
             android:exported="false" />
 

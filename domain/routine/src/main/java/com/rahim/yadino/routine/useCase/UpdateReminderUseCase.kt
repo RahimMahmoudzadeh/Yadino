@@ -1,22 +1,23 @@
 package com.rahim.yadino.routine.useCase
 
 import com.rahim.yadino.base.Resource
+import com.rahim.yadino.base.model.RoutineModel
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.ReminderScheduler
 import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.routine.modle.ReminderState
-import com.rahim.yadino.base.model.RoutineModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class AddReminderUseCase @Inject constructor(
+class UpdateReminderUseCase @Inject constructor(
   private val routineRepository: RepositoryRoutine,
   private val reminderScheduler: ReminderScheduler,
 ) {
   suspend operator fun invoke(routineModel: RoutineModel): Flow<Resource<Nothing?>> = flow {
     try {
+      reminderScheduler.cancelReminder(routineModel.idAlarm ?: 0)
       routineModel.apply {
         idAlarm = routineRepository.getRoutineAlarmId()
         colorTask = 0

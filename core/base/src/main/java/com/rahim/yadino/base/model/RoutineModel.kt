@@ -1,4 +1,4 @@
-package com.rahim.yadino.base.db.model
+package com.rahim.yadino.base.model
 
 import android.os.Parcelable
 import androidx.room.Entity

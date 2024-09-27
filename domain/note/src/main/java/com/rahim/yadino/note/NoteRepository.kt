@@ -1,6 +1,6 @@
 package com.rahim.yadino.note
 
-import com.rahim.yadino.base.db.model.NoteModel
+import com.rahim.yadino.base.model.NoteModel
 import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {

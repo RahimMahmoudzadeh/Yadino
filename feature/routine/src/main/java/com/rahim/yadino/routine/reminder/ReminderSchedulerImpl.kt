@@ -16,144 +16,176 @@ import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.ReminderScheduler
 import com.rahim.yadino.routine.modle.ReminderState
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
 
 class ReminderSchedulerImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+  @ApplicationContext private val context: Context,
 ) : ReminderScheduler {
 
-    private val alarmManager = context.getSystemService(AlarmManager::class.java)
+  private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
-    override fun setReminder(
-        reminderName: String,
-        reminderId: Int,
-        reminderTime: Long,
-        reminderIdAlarm: Long
-    ): ReminderState {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return when {
-                alarmManager.canScheduleExactAlarms() && areNotificationsEnabled(context) -> {
-                    return setAlarm(
-                        reminderName,
-                        reminderId,
-                        reminderTime,
-                        reminderIdAlarm
-                    ).let { errorMessage ->
-                        if (errorMessage == null) {
-                            ReminderState.SetSuccessfully
-                        } else {
-                            ReminderState.NotSet(errorMessage)
-                        }
-                    }
-                }
+  override fun setReminder(
+    reminderName: String,
+    reminderId: Int,
+    reminderTime: Long,
+    reminderIdAlarm: Long,
+  ): ReminderState {
+    if (reminderTime < System.currentTimeMillis()) return ReminderState.NotSet(ErrorMessageCode.ERROR_TIME_PASSED)
 
-                alarmManager.canScheduleExactAlarms() && !areNotificationsEnabled(context) -> {
-                    ReminderState.PermissionsState(
-                        reminderPermission = true,
-                        notificationPermission = false
-                    )
-                }
-
-                !alarmManager.canScheduleExactAlarms() && areNotificationsEnabled(context) -> {
-                    ReminderState.PermissionsState(
-                        reminderPermission = false,
-                        notificationPermission = true
-                    )
-                }
-
-                !alarmManager.canScheduleExactAlarms() && !areNotificationsEnabled(context) -> {
-                    ReminderState.PermissionsState(
-                        reminderPermission = false,
-                        notificationPermission = false
-                    )
-                }
-
-                else -> {
-                    ReminderState.PermissionsState(
-                        reminderPermission = false,
-                        notificationPermission = false
-                    )
-                }
-            }
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            return if (alarmManager.canScheduleExactAlarms()) {
-                return setAlarm(
-                    reminderName,
-                    reminderId,
-                    reminderTime,
-                    reminderIdAlarm
-                ).let { errorMessage ->
-                    if (errorMessage == null) {
-                        ReminderState.SetSuccessfully
-                    } else {
-                        ReminderState.NotSet(errorMessage)
-                    }
-                }
-            } else {
-                ReminderState.PermissionsState(
-                    reminderPermission = false,
-                    notificationPermission = true
-                )
-            }
-        } else {
-            return setAlarm(
-                reminderName,
-                reminderId,
-                reminderTime,
-                reminderIdAlarm
-            ).let { errorMessage ->
-                if (errorMessage == null) {
-                    ReminderState.SetSuccessfully
-                } else {
-                    ReminderState.NotSet(errorMessage)
-                }
-            }
-        }
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      checkPermissionAfterApiLevel33(reminderName, reminderId, reminderTime, reminderIdAlarm)
+    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      checkPermissionAfterApiLevel31(reminderName, reminderId, reminderTime, reminderIdAlarm)
+    } else {
+      setAlarm(
+        reminderName,
+        reminderId,
+        reminderTime,
+        reminderIdAlarm,
+      ).let { ReminderState.SetSuccessfully }
     }
+  }
 
-    override fun cancelReminder(id: String) {
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            id.hashCode(),
-            Intent(ACTION_CANCEL_NOTIFICATION),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        alarmManager.cancel(
-            pendingIntent
-        )
+  private fun checkPermissionAfterApiLevel31(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Long): ReminderState {
+    return if (alarmManager.canScheduleExactAlarms()) {
+      setAlarm(
+        reminderName,
+        reminderId,
+        reminderTime,
+        reminderIdAlarm,
+      )
+      ReminderState.SetSuccessfully
+    } else {
+      ReminderState.PermissionsState(
+        reminderPermission = false,
+        notificationPermission = true,
+      )
     }
+  }
 
-    private fun setAlarm(
-        reminderName: String,
-        reminderId: Int,
-        reminderTime: Long,
-        reminderIdAlarm: Long
-    ): ErrorMessageCode? {
-        if (reminderTime < System.currentTimeMillis()) return ErrorMessageCode.ERROR_TIME_PASSED
-        val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).apply {
-            putExtra(KEY_LAUNCH_NAME, reminderName)
-            putExtra(KEY_LAUNCH_ID, reminderId)
-        }
-        Timber.tag("intentTitle").d("AndroidReminderScheduler setAlarm-> ${reminderName}")
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            reminderIdAlarm.toInt(),
-            alarmIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        alarmManager.setAlarmClock(
-            AlarmManager.AlarmClockInfo(reminderTime, pendingIntent),
-            pendingIntent
-        )
-        return null
-    }
+  @SuppressLint("NewApi")
+  private fun checkPermissionAfterApiLevel33(
+    reminderName: String,
+    reminderId: Int,
+    reminderTime: Long,
+    reminderIdAlarm: Long,
+  ): ReminderState {
+    return when {
+      alarmManager.canScheduleExactAlarms() && areNotificationsEnabled(context) -> {
+        setAlarm(
+          reminderName,
+          reminderId,
+          reminderTime,
+          reminderIdAlarm,
+        ).let { ReminderState.SetSuccessfully }
+      }
 
-    @SuppressLint("InlinedApi")
-    private fun areNotificationsEnabled(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.POST_NOTIFICATIONS
-        ) == PackageManager.PERMISSION_GRANTED
+      alarmManager.canScheduleExactAlarms() && !areNotificationsEnabled(context) -> {
+        ReminderState.PermissionsState(
+          reminderPermission = true,
+          notificationPermission = false,
+        )
+      }
+
+      !alarmManager.canScheduleExactAlarms() && areNotificationsEnabled(context) -> {
+        ReminderState.PermissionsState(
+          reminderPermission = false,
+          notificationPermission = true,
+        )
+      }
+
+      else -> {
+        ReminderState.PermissionsState(
+          reminderPermission = false,
+          notificationPermission = false,
+        )
+      }
     }
+  }
+
+
+  private fun setAlarm(
+    reminderName: String,
+    reminderId: Int,
+    reminderTime: Long,
+    reminderIdAlarm: Long,
+  ) {
+    val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).apply {
+      putExtra(KEY_LAUNCH_NAME, reminderName)
+      putExtra(KEY_LAUNCH_ID, reminderId)
+    }
+    Timber.tag("intentTitle").d("AndroidReminderScheduler setAlarm-> ${reminderName}")
+    val pendingIntent = PendingIntent.getBroadcast(
+      context,
+      reminderIdAlarm.toInt(),
+      alarmIntent,
+      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+    alarmManager.setAlarmClock(
+      AlarmManager.AlarmClockInfo(reminderTime, pendingIntent),
+      pendingIntent,
+    )
+  }
+
+  //  private suspend fun updateAlarm(
+//    reminderName: String,
+//    reminderId: Int,
+//    reminderTime: Long,
+//    reminderIdAlarm: Long,
+//  ): ErrorMessageCode? {
+//    if (reminderTime < System.currentTimeMillis()) return ErrorMessageCode.ERROR_TIME_PASSED
+//
+//    cancelAlarm(context, reminderTime)
+//    val alarmManager =
+//      context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//    val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).apply {
+//      putExtra(KEY_LAUNCH_NAME, reminderName)
+//      putExtra(KEY_LAUNCH_ID, reminderId)
+//    }
+//    val pendingIntent = PendingIntent.getBroadcast(
+//      context,
+//      reminderIdAlarm.toInt(),
+//      alarmIntent,
+//      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+//    )
+//    alarmManager.setAlarmClock(
+//      AlarmManager.AlarmClockInfo(reminderTime, pendingIntent),
+//      pendingIntent,
+//    )
+//    return null
+//  }
+//  private suspend fun cancelAlarm(context: Context, idAlarm: Long?) {
+//    val intent = Intent(context, YadinoBroadCastReceiver::class.java)
+//    val pendingIntent = PendingIntent.getBroadcast(
+//      context,
+//      idAlarm?.toInt() ?: 0,
+//      intent,
+//      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+//    )
+//    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
+//    alarmManager?.cancel(pendingIntent)
+//    delay(100)
+//  }
+  override suspend fun cancelReminder(id: Long) {
+    val pendingIntent = PendingIntent.getBroadcast(
+      context,
+      id.toInt(),
+      Intent(ACTION_CANCEL_NOTIFICATION),
+      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+    alarmManager.cancel(
+      pendingIntent,
+    )
+    delay(100)
+  }
+
+  @SuppressLint("InlinedApi")
+  private fun areNotificationsEnabled(context: Context): Boolean {
+    return ContextCompat.checkSelfPermission(
+      context,
+      Manifest.permission.POST_NOTIFICATIONS,
+    ) == PackageManager.PERMISSION_GRANTED
+  }
 }

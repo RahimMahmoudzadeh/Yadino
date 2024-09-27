@@ -25,6 +25,7 @@ object Constants {
     const val IS_DARK_THEME="is dark theme"
     const val DARK="dark theme"
     const val LIGHT="light theme"
+    const val PATTERN_DATE="yyyy-MM-dd HH:mm:ss a"
 
     //Action
     const val ACTION_SEND_NOTIFICATION="action send notification"

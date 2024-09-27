@@ -3,28 +3,42 @@ package com.rahim.yadino.routine.routineScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.base.Resource
-import com.rahim.yadino.base.enums.error.ErrorMessageCode
-import com.rahim.yadino.base.db.model.TimeDate
+import com.rahim.yadino.base.model.TimeDate
 import com.rahim.yadino.dateTime.DateTimeRepository
-import com.rahim.yadino.routine.RepositoryRoutine
-import com.rahim.yadino.base.db.model.RoutineModel
+import com.rahim.yadino.base.model.RoutineModel
+import com.rahim.yadino.routine.useCase.AddReminderUseCase
+import com.rahim.yadino.routine.useCase.CancelReminderUseCase
+import com.rahim.yadino.routine.useCase.DeleteReminderUseCase
+import com.rahim.yadino.routine.useCase.GetRemindersUseCase
+import com.rahim.yadino.routine.useCase.SearchRoutineUseCase
+import com.rahim.yadino.routine.useCase.UpdateReminderUseCase
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class RoutineViewModel @Inject constructor(
-  private val routineRepository: RepositoryRoutine,
+class RoutineScreenViewModel @Inject constructor(
+  private val addReminderUseCase: AddReminderUseCase,
+  private val updateReminderUseCase: UpdateReminderUseCase,
+  private val cancelReminderUseCase: CancelReminderUseCase,
+  private val deleteReminderUseCase: DeleteReminderUseCase,
+  private val getRemindersUseCase: GetRemindersUseCase,
+  private val searchRoutineUseCase: SearchRoutineUseCase,
   private val dateTimeRepository: DateTimeRepository,
   private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) :
@@ -39,18 +53,18 @@ class RoutineViewModel @Inject constructor(
 
   private val _flowRoutines =
     MutableStateFlow<Resource<List<RoutineModel>>>(Resource.Loading())
-  val flowRoutines: StateFlow<Resource<List<RoutineModel>>> = _flowRoutines
+  val flowRoutines: StateFlow<Resource<List<RoutineModel>>> = _flowRoutines.stateIn(viewModelScope, started = SharingStarted.WhileSubscribed(5_000), initialValue = Resource.Loading())
 
   private val _times =
     MutableStateFlow<List<TimeDate>>(emptyList())
   val times: StateFlow<List<TimeDate>> = _times
 
   private val _addRoutineModel =
-    MutableStateFlow<Resource<RoutineModel?>?>(null)
-  val addRoutineModel: StateFlow<Resource<RoutineModel?>?> = _addRoutineModel
+    MutableStateFlow<Resource<Nothing?>?>(null)
+  val addRoutineModel: StateFlow<Resource<Nothing?>?> = _addRoutineModel
   private val _updateRoutineModel =
-    MutableStateFlow<Resource<RoutineModel?>?>(null)
-  val updateRoutineModel: StateFlow<Resource<RoutineModel?>?> = _updateRoutineModel
+    MutableStateFlow<Resource<Nothing?>?>(null)
+  val updateRoutineModel: StateFlow<Resource<Nothing?>?> = _updateRoutineModel
 
   private val _indexDay =
     MutableStateFlow(0)
@@ -71,52 +85,45 @@ class RoutineViewModel @Inject constructor(
       lastYearNumber = yerNumber
       lastMonthNumber = monthNumber
       lastDayNumber = numberDay
-      _flowRoutines.value = Resource.Loading()
       Timber.tag("routineGetNameDay").d("getRoutines model monthNumber->$monthNumber")
       Timber.tag("routineGetNameDay").d("getRoutines model numberDay->$numberDay")
       Timber.tag("routineGetNameDay").d("getRoutines model yerNumber->$yerNumber")
-      routineRepository.getRoutines(lastMonthNumber, lastDayNumber, lastYearNumber).catch {
-        _flowRoutines.value = Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
-      }.collectLatest {
-        Timber.tag("routineGetNameDay").d("getRoutines routines->$it")
-        if (it.isNotEmpty()) {
-          _flowRoutines.value =
-            Resource.Success(
-                it.sortedBy {
-                    it.timeHours?.replace(":", "")?.toInt()
-                },
-            )
-        } else {
-          _flowRoutines.value = Resource.Success(emptyList())
-        }
-      }
+      _flowRoutines.value = Resource.Success(
+        getRemindersUseCase(lastMonthNumber, lastDayNumber, lastYearNumber).sortedBy {
+          it.timeHours?.replace(":", "")?.toInt()
+        },
+      )
     }
   }
 
   fun deleteRoutine(routineModel: RoutineModel) {
     viewModelScope.launch {
-      routineRepository.removeRoutine(routineModel)
+      deleteReminderUseCase(routineModel)
+      getRoutines(lastYearNumber, lastMonthNumber, lastDayNumber)
     }
   }
 
   fun updateRoutine(routineModel: RoutineModel) {
     viewModelScope.launch {
-      routineRepository.updateRoutine(routineModel).catch {}.collectLatest {
+      updateReminderUseCase(routineModel).catch {}.collectLatest {
         _updateRoutineModel.value = it
+        getRoutines(lastYearNumber, lastMonthNumber, lastDayNumber)
       }
     }
   }
 
   fun checkedRoutine(routineModel: RoutineModel) {
     viewModelScope.launch {
-      routineRepository.checkedRoutine(routineModel)
+      cancelReminderUseCase(routineModel)
+      getRoutines(lastYearNumber, lastMonthNumber, lastDayNumber)
     }
   }
 
   fun addRoutine(routineModel: RoutineModel) {
     viewModelScope.launch {
-      routineRepository.addRoutine(routineModel).catch {}.collectLatest {
+      addReminderUseCase(routineModel).catch {}.collectLatest {
         _addRoutineModel.value = it
+        getRoutines(lastYearNumber, lastMonthNumber, lastDayNumber)
       }
     }
   }
@@ -174,24 +181,14 @@ class RoutineViewModel @Inject constructor(
   fun searchItems(searchText: String) {
     viewModelScope.launch {
       if (searchText.isNotEmpty()) {
-        _flowRoutines.value = Resource.Loading()
+        _flowRoutines.value=Resource.Loading()
         Timber.tag("searchRoutine").d("searchText:$searchText")
-        routineRepository.searchRoutine(searchText, dateTimeRepository.currentTimeMonth, dateTimeRepository.currentTimeYer).catch {
-          _flowRoutines.value = Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
-        }.collectLatest {
-          if (it.isNotEmpty()) {
-            val firstRoutine = it.first()
-            if (firstRoutine.dayNumber == lastDayNumber && firstRoutine.yerNumber == lastYearNumber && firstRoutine.monthNumber == lastMonthNumber)
-              _flowRoutines.value =
-                Resource.Success(
-                    it.sortedBy {
-                        it.timeHours?.replace(":", "")?.toInt()
-                    },
-                )
-          } else {
-            _flowRoutines.value = Resource.Success(emptyList())
-          }
-        }
+        val searchItems = searchRoutineUseCase(searchText, lastYearNumber, lastMonthNumber, lastDayNumber)
+        _flowRoutines.value=Resource.Success(
+          searchItems.sortedBy {
+            it.timeHours?.replace(":", "")?.toInt()
+          },
+        )
       } else {
         getRoutines()
       }

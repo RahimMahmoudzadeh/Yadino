@@ -46,7 +46,7 @@ import com.rahim.yadino.base.persianLocate
 import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.feature.routine.R
-import com.rahim.yadino.base.db.model.RoutineModel
+import com.rahim.yadino.base.model.RoutineModel
 
 @Composable
 internal fun HistoryRoute(

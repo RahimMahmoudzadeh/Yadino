@@ -7,7 +7,7 @@ import com.rahim.yadino.base.Constants.VERSION_TIME_DB
 import com.rahim.yadino.base.enums.HalfWeekName
 import com.rahim.yadino.base.enums.WeekName
 import com.rahim.yadino.dateTime.DateTimeRepository
-import com.rahim.yadino.base.db.model.TimeDate
+import com.rahim.yadino.base.model.TimeDate
 import com.rahim.yadino.base.db.dao.TimeDao
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow

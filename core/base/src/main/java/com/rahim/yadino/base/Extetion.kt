@@ -5,6 +5,11 @@ import android.content.pm.PackageManager
 import com.rahim.yadino.base.enums.MonthName
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.core.base.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import timber.log.Timber
 
 fun Int.calculateMonthName(): String {
   return when (this) {
@@ -127,4 +132,15 @@ fun String.isPackageInstalled(packageManager: PackageManager): Boolean {
   } catch (e: PackageManager.NameNotFoundException) {
     return false
   }
+}
+
+fun <T> Flow<List<T>>.getMatchingItems(predicate: (T) -> Boolean): Flow<List<T>> {
+  return this.map { list ->
+    val matchingItems = list.filter(predicate)
+    Timber.tag("getMatchingItems").d("getMatchingItems list${list.map { it }}")
+    Timber.tag("getMatchingItems").d("getMatchingItems ${matchingItems.map { it }}")
+    matchingItems.ifEmpty {
+      emptyList()
+    }
+  }.flowOn(Dispatchers.IO)
 }

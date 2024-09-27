@@ -1,4 +1,4 @@
-package com.rahim.yadino.base.db.model
+package com.rahim.yadino.base.model
 
 import androidx.room.Entity
 

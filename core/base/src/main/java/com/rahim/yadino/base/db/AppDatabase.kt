@@ -9,9 +9,9 @@ import androidx.room.migration.AutoMigrationSpec
 import com.rahim.yadino.base.db.dao.NoteDao
 import com.rahim.yadino.base.db.dao.RoutineDao
 import com.rahim.yadino.base.db.dao.TimeDao
-import com.rahim.yadino.base.db.model.NoteModel
-import com.rahim.yadino.base.db.model.RoutineModel
-import com.rahim.yadino.base.db.model.TimeDate
+import com.rahim.yadino.base.model.NoteModel
+import com.rahim.yadino.base.model.RoutineModel
+import com.rahim.yadino.base.model.TimeDate
 
 @Database(
     entities = [NoteModel::class, TimeDate::class, RoutineModel::class],

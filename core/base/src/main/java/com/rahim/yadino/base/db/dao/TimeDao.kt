@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Update
-import com.rahim.yadino.base.db.model.TimeDate
+import com.rahim.yadino.base.model.TimeDate
 import kotlinx.coroutines.flow.Flow
 
 @Dao

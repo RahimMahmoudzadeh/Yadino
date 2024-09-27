@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.base.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.RepositoryRoutine
-import com.rahim.yadino.base.db.model.RoutineModel
+import com.rahim.yadino.base.model.RoutineModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +19,6 @@ class HistoryViewModel @Inject constructor(
 ) : ViewModel() {
   private var _flowRoutines = MutableStateFlow<Resource<List<RoutineModel>>>(Resource.Loading())
   val flowRoutines: StateFlow<Resource<List<RoutineModel>>> = _flowRoutines
-
-  val haveAlarm: Flow<Boolean> = routineRepository.haveAlarm()
 
   fun getAllRoutine() {
     viewModelScope.launch {
