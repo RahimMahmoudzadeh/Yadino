@@ -8,7 +8,7 @@ object Config {
         targetSdkVersion = 34,
         compileSdkVersion = 34,
         applicationId = "com.rahim",
-        versionCode = 128,
+        versionCode = 130,
         versionName = "1.5.2",
         nameSpace = "com.rahim",
         versionNameSuffixCafeBazaar ="-c",

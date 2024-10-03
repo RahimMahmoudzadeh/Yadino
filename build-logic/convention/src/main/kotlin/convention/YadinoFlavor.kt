@@ -31,6 +31,11 @@ internal fun configureFlavors(
     productFlavors {
       YadinoFlavor.values().forEach {
         create(it.name) {
+          manifestPlaceholders += if (it == YadinoFlavor.cafeBazaar || it == YadinoFlavor.myket) {
+            mapOf("queryAllPackages" to "android.permission.QUERY_ALL_PACKAGES")
+          }else{
+            mapOf("queryAllPackages" to "false")
+          }
           dimension = it.dimension.name
           flavorConfigurationBlock(this, it)
           if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {

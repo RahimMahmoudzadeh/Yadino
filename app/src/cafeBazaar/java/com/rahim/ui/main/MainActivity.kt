@@ -88,7 +88,6 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     getTokenFirebase()
     Timber.tag("packageName").d("packageName: $packageName")
-
     setContent {
       val context = LocalContext.current
       (context as? Activity)?.requestedOrientation =

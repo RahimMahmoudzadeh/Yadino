@@ -3,6 +3,7 @@ package com.rahim.ui.main
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -82,7 +83,6 @@ class MainActivity : ComponentActivity() {
     installSplashScreen()
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
-
 
     getTokenFirebase()
     setContent {

@@ -14,49 +14,56 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val dateTimeRepository: DateTimeRepository,
-    private val repositoryRoutine: RepositoryRoutine,
-    private val noteRepository: NoteRepository,
-    @IODispatcher
-    private val ioDispatcher: CoroutineDispatcher,
-    private val sharedPreferencesRepository: SharedPreferencesRepository
+  private val dateTimeRepository: DateTimeRepository,
+  private val repositoryRoutine: RepositoryRoutine,
+  private val noteRepository: NoteRepository,
+  @IODispatcher
+  private val ioDispatcher: CoroutineDispatcher,
+  private val sharedPreferencesRepository: SharedPreferencesRepository
 ) :
-    ViewModel() {
-    val haveAlarm : Flow<Boolean> = repositoryRoutine.haveAlarm()
-    init {
-        viewModelScope.launch(ioDispatcher) {
-            launch {
-                dateTimeRepository.calculateToday()
-            }
-            launch {
-                dateTimeRepository.addTime()
-            }
-            launch {
-                Timber.tag("sampleRoutines").d("mainViewModel")
-                repositoryRoutine.addSampleRoutine()
-            }
-            launch {
-                noteRepository.addSampleNote()
-            }
-            launch {
-                repositoryRoutine.changeRoutineId()
-            }
-        }
+  ViewModel() {
+  val haveAlarm : Flow<Boolean> = repositoryRoutine.haveAlarm()
+  init {
+    viewModelScope.launch(ioDispatcher) {
+      launch {
+        dateTimeRepository.calculateToday()
+      }
+      launch {
+        dateTimeRepository.addTime()
+      }
+      launch {
+        Timber.tag("sampleRoutines").d("mainViewModel")
+        repositoryRoutine.addSampleRoutine()
+      }
+      launch {
+        noteRepository.addSampleNote()
+      }
+      launch {
+        repositoryRoutine.changeRoutineId()
+      }
     }
+  }
 
-    fun checkedAllRoutinePastTime() {
-        viewModelScope.launch {
-            repositoryRoutine.checkEdAllRoutinePastTime()
-        }
+  fun checkedAllRoutinePastTime() {
+    viewModelScope.launch {
+      repositoryRoutine.checkedAllRoutinePastTime()
     }
+  }
 
-    fun setDarkTheme(isDarkTheme: String) {
-        sharedPreferencesRepository.changeTheme(isDarkTheme)
+  fun setDarkTheme(isDarkTheme: String) {
+    sharedPreferencesRepository.changeTheme(isDarkTheme)
+  }
+
+  fun isDarkTheme() = sharedPreferencesRepository.isDarkTheme()
+
+  fun isShowWelcomeScreen() = sharedPreferencesRepository.isShowWelcomeScreen()
+
+  fun showSampleRoutine(isShow: Boolean = true) {
+    viewModelScope.launch {
+      sharedPreferencesRepository.isShowSampleRoutine(isShow)
     }
-
-    fun isDarkTheme() = sharedPreferencesRepository.isDarkTheme()
-
-    fun isShowWelcomeScreen() = sharedPreferencesRepository.isShowWelcomeScreen()
+  }
 }
