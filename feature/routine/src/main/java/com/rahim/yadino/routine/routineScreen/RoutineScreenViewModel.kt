@@ -2,10 +2,10 @@ package com.rahim.yadino.routine.routineScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rahim.yadino.base.Resource
-import com.rahim.yadino.base.model.TimeDate
+import com.rahim.yadino.Resource
+import com.rahim.yadino.model.TimeDate
 import com.rahim.yadino.dateTime.DateTimeRepository
-import com.rahim.yadino.base.model.RoutineModel
+import com.rahim.yadino.model.RoutineModel
 import com.rahim.yadino.routine.useCase.AddReminderUseCase
 import com.rahim.yadino.routine.useCase.CancelReminderUseCase
 import com.rahim.yadino.routine.useCase.DeleteReminderUseCase
@@ -14,11 +14,8 @@ import com.rahim.yadino.routine.useCase.SearchRoutineUseCase
 import com.rahim.yadino.routine.useCase.UpdateReminderUseCase
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -181,10 +178,10 @@ class RoutineScreenViewModel @Inject constructor(
   fun searchItems(searchText: String) {
     viewModelScope.launch {
       if (searchText.isNotEmpty()) {
-        _flowRoutines.value=Resource.Loading()
+        _flowRoutines.value= Resource.Loading()
         Timber.tag("searchRoutine").d("searchText:$searchText")
         val searchItems = searchRoutineUseCase(searchText, lastYearNumber, lastMonthNumber, lastDayNumber)
-        _flowRoutines.value=Resource.Success(
+        _flowRoutines.value= Resource.Success(
           searchItems.sortedBy {
             it.timeHours?.replace(":", "")?.toInt()
           },

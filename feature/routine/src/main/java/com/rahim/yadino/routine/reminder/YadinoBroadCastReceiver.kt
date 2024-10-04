@@ -3,8 +3,8 @@ package com.rahim.yadino.routine.reminder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.rahim.yadino.base.Constants.KEY_LAUNCH_ID
-import com.rahim.yadino.base.Constants.KEY_LAUNCH_NAME
+import com.rahim.yadino.Constants.KEY_LAUNCH_ID
+import com.rahim.yadino.Constants.KEY_LAUNCH_NAME
 import timber.log.Timber
 
 

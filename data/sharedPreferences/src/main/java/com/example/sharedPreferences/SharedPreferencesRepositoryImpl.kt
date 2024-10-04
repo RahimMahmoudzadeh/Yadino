@@ -1,6 +1,6 @@
 package com.example.sharedPreferences
 
-import com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
+import com.rahim.yadino.sharedPreferences.SharedPreferencesCustom
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import javax.inject.Inject
 

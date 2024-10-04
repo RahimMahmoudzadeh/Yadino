@@ -1,6 +1,6 @@
 package com.rahim.yadino.routine.modle
 
-import com.rahim.yadino.base.enums.error.ErrorMessageCode
+import com.rahim.yadino.enums.error.ErrorMessageCode
 
 sealed class ReminderState(val errorMessage: ErrorMessageCode? = null) {
     data object SetSuccessfully : ReminderState()

@@ -1,13 +1,12 @@
 package com.rahim.yadino.routine.useCase
 
-import com.rahim.yadino.base.Resource
-import com.rahim.yadino.base.enums.error.ErrorMessageCode
+import com.rahim.yadino.Resource
+import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.ReminderScheduler
 import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.routine.modle.ReminderState
-import com.rahim.yadino.base.model.RoutineModel
+import com.rahim.yadino.model.RoutineModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -17,30 +16,30 @@ class AddReminderUseCase @Inject constructor(
 ) {
   suspend operator fun invoke(routineModel: RoutineModel): Flow<Resource<Nothing?>> = flow {
     try {
-      routineModel.apply {
-        idAlarm = routineRepository.getRoutineAlarmId()
-        colorTask = 0
+      val routine=routineModel.copy(
+        idAlarm = routineRepository.getRoutineAlarmId(),
+        colorTask = 0,
         timeInMillisecond = routineRepository.convertDateToMilSecond(
-          yerNumber,
-          monthNumber,
-          dayNumber,
-          timeHours,
-        )
-      }
-      val equalRoutine = routineRepository.checkEqualRoutine(routineModel)
+          routineModel.yerNumber,
+          routineModel.monthNumber,
+          routineModel.dayNumber,
+          routineModel.timeHours,
+        ),
+      )
+      val equalRoutine = routineRepository.checkEqualRoutine(routine)
       if (equalRoutine != null) {
         emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
         return@flow
       }
       val reminderState = reminderScheduler.setReminder(
-        routineModel.name,
-        routineModel.id ?: 0,
-        routineModel.timeInMillisecond ?: 0,
-        routineModel.idAlarm ?: 0,
+        routine.name,
+        routine.id ?: 0,
+        routine.timeInMillisecond ?: 0,
+        routine.idAlarm ?: 0,
       )
       when (reminderState) {
         ReminderState.SetSuccessfully -> {
-          routineRepository.addRoutine(routineModel)
+          routineRepository.addRoutine(routine)
           emit(Resource.Success(null))
         }
 

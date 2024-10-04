@@ -8,8 +8,8 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.rahim.BuildConfig
 import com.rahim.R
-import com.rahim.yadino.base.Constants.CHANNEL_ID
-import com.rahim.yadino.base.Constants.CHANNEL_NAME
+import com.rahim.yadino.Constants.CHANNEL_ID
+import com.rahim.yadino.Constants.CHANNEL_NAME
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 

@@ -1,9 +1,9 @@
 package com.rahim.yadino.note_repository
 
-import com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
+import com.rahim.yadino.sharedPreferences.SharedPreferencesCustom
 import com.rahim.yadino.note.NoteRepository
-import com.rahim.yadino.base.model.NoteModel
-import com.rahim.yadino.base.db.dao.NoteDao
+import com.rahim.yadino.model.NoteModel
+import com.rahim.yadino.db.dao.NoteDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import saman.zamani.persiandate.PersianDate

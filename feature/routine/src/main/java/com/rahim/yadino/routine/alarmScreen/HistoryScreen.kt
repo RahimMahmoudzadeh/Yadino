@@ -42,11 +42,11 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.rahim.yadino.base.persianLocate
+import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.feature.routine.R
-import com.rahim.yadino.base.model.RoutineModel
+import com.rahim.yadino.model.RoutineModel
 
 @Composable
 internal fun HistoryRoute(
@@ -64,7 +64,7 @@ internal fun HistoryRoute(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HistoryScreen(
-  routineModelItems: List<RoutineModel>,
+    routineModelItems: List<RoutineModel>,
 ) {
   val (completedTasks, incompleteTasks) = routineModelItems.partition { sort -> sort.isChecked }
 

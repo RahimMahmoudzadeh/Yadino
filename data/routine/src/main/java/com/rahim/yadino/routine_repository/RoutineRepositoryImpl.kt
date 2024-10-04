@@ -1,13 +1,13 @@
 package com.rahim.yadino.routine_repository
 
-import com.rahim.yadino.base.Constants.PATTERN_DATE
-import com.rahim.yadino.base.di.IODispatcher
-import com.rahim.yadino.base.enums.error.ErrorMessageCode
-import com.rahim.yadino.base.sharedPreferences.SharedPreferencesCustom
+import com.rahim.yadino.Constants.PATTERN_DATE
+import com.rahim.yadino.di.IODispatcher
+import com.rahim.yadino.enums.error.ErrorMessageCode
+import com.rahim.yadino.sharedPreferences.SharedPreferencesCustom
 import com.rahim.yadino.routine.RepositoryRoutine
-import com.rahim.yadino.base.Resource
-import com.rahim.yadino.base.model.RoutineModel
-import com.rahim.yadino.base.db.dao.RoutineDao
+import com.rahim.yadino.Resource
+import com.rahim.yadino.model.RoutineModel
+import com.rahim.yadino.db.dao.RoutineDao
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -23,9 +23,9 @@ private const val ROUTINE_LEFT_SAMPLE = "من یک روتین تستی هستم 
 private const val ROUTINE_RIGHT_SAMPLE = "من یک روتین تستی هستم لطفا من را به راست بکشید"
 
 class RoutineRepositoryImpl @Inject constructor(
-  private val routineDao: RoutineDao,
-  private val sharedPreferencesCustom: SharedPreferencesCustom,
-  @IODispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val routineDao: RoutineDao,
+    private val sharedPreferencesCustom: SharedPreferencesCustom,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : RepositoryRoutine {
   private val persianData = PersianDate()
   private val currentTimeDay = persianData.shDay

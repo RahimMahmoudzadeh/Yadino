@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.rahim.yadino.base.Resource
-import com.rahim.yadino.base.persianLocate
+import com.rahim.yadino.Resource
+import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ItemRoutine
 import com.rahim.yadino.designsystem.component.ProcessRoutineAdded
@@ -27,8 +27,7 @@ import com.rahim.yadino.designsystem.dialog.DialogAddRoutine
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.base.model.RoutineModel
-import kotlinx.coroutines.launch
+import com.rahim.yadino.model.RoutineModel
 import timber.log.Timber
 
 @Composable
@@ -72,24 +71,24 @@ internal fun HomeRoute(
 
 @Composable
 private fun HomeScreen(
-  modifier: Modifier = Modifier,
-  routines: Resource<List<RoutineModel>>,
-  addRoutine: Resource<Nothing?>?,
-  updateRoutineModel: Resource<Nothing?>?,
-  currentYer: Int,
-  currentMonth: Int,
-  currentDay: Int,
-  openDialog: Boolean,
-  clickSearch: Boolean,
-  onCheckedRoutine: (RoutineModel) -> Unit,
-  onShowSampleRoutine: () -> Unit,
-  onDeleteRoutine: (RoutineModel) -> Unit,
-  onUpdateRoutine: (RoutineModel) -> Unit,
-  onAddRoutine: (RoutineModel) -> Unit,
-  onClearAddRoutine: () -> Unit,
-  onClearUpdateRoutine: () -> Unit,
-  onOpenDialog: (isOpen: Boolean) -> Unit,
-  onSearchText: (searchText: String) -> Unit,
+    modifier: Modifier = Modifier,
+    routines: Resource<List<RoutineModel>>,
+    addRoutine: Resource<Nothing?>?,
+    updateRoutineModel: Resource<Nothing?>?,
+    currentYer: Int,
+    currentMonth: Int,
+    currentDay: Int,
+    openDialog: Boolean,
+    clickSearch: Boolean,
+    onCheckedRoutine: (RoutineModel) -> Unit,
+    onShowSampleRoutine: () -> Unit,
+    onDeleteRoutine: (RoutineModel) -> Unit,
+    onUpdateRoutine: (RoutineModel) -> Unit,
+    onAddRoutine: (RoutineModel) -> Unit,
+    onClearAddRoutine: () -> Unit,
+    onClearUpdateRoutine: () -> Unit,
+    onOpenDialog: (isOpen: Boolean) -> Unit,
+    onSearchText: (searchText: String) -> Unit,
 ) {
   val context = LocalContext.current
   val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineModel?>(null) }
@@ -224,13 +223,13 @@ private fun HomeScreen(
 
 @Composable
 fun ItemsHome(
-  currentDay: Int,
-  currentMonth: Int,
-  currentYer: Int,
-  routineModels: List<RoutineModel>,
-  checkedRoutine: (RoutineModel) -> Unit,
-  updateRoutine: (RoutineModel) -> Unit,
-  deleteRoutine: (RoutineModel) -> Unit,
+    currentDay: Int,
+    currentMonth: Int,
+    currentYer: Int,
+    routineModels: List<RoutineModel>,
+    checkedRoutine: (RoutineModel) -> Unit,
+    updateRoutine: (RoutineModel) -> Unit,
+    deleteRoutine: (RoutineModel) -> Unit,
 ) {
   val data = "$currentDay/$currentMonth/$currentYer"
   Row(
