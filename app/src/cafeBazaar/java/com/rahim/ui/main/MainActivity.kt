@@ -7,7 +7,6 @@ import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.ContactsContract.Directory.PACKAGE_NAME
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -56,11 +55,11 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.navigation.NavigationComponent
-import com.rahim.yadino.base.Constants.CAFE_BAZAAR_PACKAGE_NAME
-import com.rahim.yadino.base.Constants.CAFE_BAZZAR_LINK
-import com.rahim.yadino.base.Constants.DARK
-import com.rahim.yadino.base.Constants.LIGHT
-import com.rahim.yadino.base.isPackageInstalled
+import com.rahim.yadino.Constants.CAFE_BAZAAR_PACKAGE_NAME
+import com.rahim.yadino.Constants.CAFE_BAZZAR_LINK
+import com.rahim.yadino.Constants.DARK
+import com.rahim.yadino.Constants.LIGHT
+import com.rahim.yadino.isPackageInstalled
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
 import com.rahim.yadino.designsystem.component.goSettingPermission
 import com.rahim.yadino.designsystem.component.requestPermissionNotification

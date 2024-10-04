@@ -36,12 +36,11 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.rahim.yadino.base.Constants
+import com.rahim.yadino.Constants
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.feature.routine.R
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class WakeupActivity : ComponentActivity() {

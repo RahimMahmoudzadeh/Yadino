@@ -43,11 +43,11 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.rahim.yadino.base.calculateMonthName
-import com.rahim.yadino.base.enums.HalfWeekName
+import com.rahim.yadino.calculateMonthName
+import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.designsystem.theme.YadinoTheme
-import com.rahim.yadino.base.model.TimeDate
-import com.rahim.yadino.base.persianLocate
+import com.rahim.yadino.model.TimeDate
+import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.TimeItems
 import com.rahim.yadino.designsystem.component.gradientColors

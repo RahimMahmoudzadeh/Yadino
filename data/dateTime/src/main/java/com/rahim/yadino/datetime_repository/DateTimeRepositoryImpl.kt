@@ -1,14 +1,16 @@
 package com.rahim.yadino.datetime_repository
 
-import com.rahim.yadino.base.Constants.END_YEAR
-import com.rahim.yadino.base.Constants.FIRST_KABISE_DATA
-import com.rahim.yadino.base.Constants.FIRST_YEAR
-import com.rahim.yadino.base.Constants.VERSION_TIME_DB
-import com.rahim.yadino.base.enums.HalfWeekName
-import com.rahim.yadino.base.enums.WeekName
+import com.rahim.yadino.Constants.END_YEAR
+import com.rahim.yadino.Constants.FIRST_KABISE_DATA
+import com.rahim.yadino.Constants.FIRST_YEAR
+import com.rahim.yadino.Constants.VERSION_TIME_DB
+import com.rahim.yadino.enums.HalfWeekName
+import com.rahim.yadino.enums.WeekName
 import com.rahim.yadino.dateTime.DateTimeRepository
-import com.rahim.yadino.base.model.TimeDate
-import com.rahim.yadino.base.db.dao.TimeDao
+import com.rahim.yadino.model.TimeDate
+import com.rahim.yadino.db.dao.TimeDao
+import com.rahim.yadino.di.DefaultDispatcher
+import com.rahim.yadino.di.IODispatcher
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -23,9 +25,9 @@ import kotlin.collections.ArrayList
 
 
 class DateTimeRepositoryImpl @Inject constructor(
-  @com.rahim.yadino.base.di.DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
-  @com.rahim.yadino.base.di.IODispatcher val ioDispatcher: CoroutineDispatcher,
-  private val timeDao: TimeDao,
+    @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
+    @IODispatcher val ioDispatcher: CoroutineDispatcher,
+    private val timeDao: TimeDao,
 ) :
   DateTimeRepository {
   private val persianData = PersianDate()

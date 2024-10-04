@@ -36,11 +36,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.rahim.yadino.base.Resource
-import com.rahim.yadino.base.calculateMonthName
-import com.rahim.yadino.base.enums.HalfWeekName
-import com.rahim.yadino.base.model.TimeDate
-import com.rahim.yadino.base.persianLocate
+import com.rahim.yadino.Resource
+import com.rahim.yadino.calculateMonthName
+import com.rahim.yadino.enums.HalfWeekName
+import com.rahim.yadino.model.TimeDate
+import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ItemRoutine
 import com.rahim.yadino.designsystem.component.ProcessRoutineAdded
@@ -51,7 +51,7 @@ import com.rahim.yadino.designsystem.dialog.DialogAddRoutine
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.font_medium
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.base.model.RoutineModel
+import com.rahim.yadino.model.RoutineModel
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.launch
@@ -102,30 +102,30 @@ fun RoutineRoute(
 
 @Composable
 private fun RoutineScreen(
-  modifier: Modifier,
-  routines: Resource<List<RoutineModel>>,
-  times: List<TimeDate>,
-  timeMonth: List<TimeDate>,
-  updateRoutineModel: Resource<Nothing?>?,
-  addRoutineModel: Resource<Nothing?>?,
-  currentMonth: Int,
-  currentYer: Int,
-  currentDay: Int,
-  dayIndex: Int,
-  openDialog: Boolean,
-  onOpenDialog: (isOpen: Boolean) -> Unit,
-  clickSearch: Boolean,
-  checkedRoutine: (RoutineModel) -> Unit,
-  onCheckedDay: (year: Int, month: Int, day: Int) -> Unit,
-  onUpdateRoutine: (RoutineModel) -> Unit,
-  onAddRoutine: (RoutineModel) -> Unit,
-  onDeleteRoutine: (RoutineModel) -> Unit,
-  showSampleRoutine: (Boolean) -> Unit,
-  clearUpdateRoutine: () -> Unit,
-  clearAddRoutine: () -> Unit,
-  onSearchText: (String) -> Unit,
-  onDayIndex: (Int) -> Unit,
-  onMonthChecked: (Int, Int) -> Unit,
+    modifier: Modifier,
+    routines: Resource<List<RoutineModel>>,
+    times: List<TimeDate>,
+    timeMonth: List<TimeDate>,
+    updateRoutineModel: Resource<Nothing?>?,
+    addRoutineModel: Resource<Nothing?>?,
+    currentMonth: Int,
+    currentYer: Int,
+    currentDay: Int,
+    dayIndex: Int,
+    openDialog: Boolean,
+    onOpenDialog: (isOpen: Boolean) -> Unit,
+    clickSearch: Boolean,
+    checkedRoutine: (RoutineModel) -> Unit,
+    onCheckedDay: (year: Int, month: Int, day: Int) -> Unit,
+    onUpdateRoutine: (RoutineModel) -> Unit,
+    onAddRoutine: (RoutineModel) -> Unit,
+    onDeleteRoutine: (RoutineModel) -> Unit,
+    showSampleRoutine: (Boolean) -> Unit,
+    clearUpdateRoutine: () -> Unit,
+    clearAddRoutine: () -> Unit,
+    onSearchText: (String) -> Unit,
+    onDayIndex: (Int) -> Unit,
+    onMonthChecked: (Int, Int) -> Unit,
 ) {
   val context = LocalContext.current
   Timber.tag("routineGetNameDay").d("recomposition RoutineScreen")
@@ -336,11 +336,11 @@ private fun calculateIndexDay(index: Int): Int {
 
 @Composable
 private fun GetRoutines(
-  routines: Resource<List<RoutineModel>>,
-  searchText: String,
-  routineUpdateDialog: (RoutineModel) -> Unit,
-  routineChecked: (RoutineModel) -> Unit,
-  routineDeleteDialog: (RoutineModel) -> Unit,
+    routines: Resource<List<RoutineModel>>,
+    searchText: String,
+    routineUpdateDialog: (RoutineModel) -> Unit,
+    routineChecked: (RoutineModel) -> Unit,
+    routineDeleteDialog: (RoutineModel) -> Unit,
 ) {
   when (routines) {
     is Resource.Loading -> {}
@@ -384,16 +384,16 @@ private fun GetRoutines(
 @OptIn(ExperimentalSnapperApi::class)
 @Composable
 private fun ItemTimeDate(
-  times: List<TimeDate>,
-  dayChecked: Int,
-  yerChecked: Int,
-  monthChecked: Int,
-  listStateDay: LazyListState,
-  indexDay: Int,
-  currentIndexDay: Int,
-  screenWidth: Int,
-  dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit,
-  indexScrollDay: (Int) -> Unit,
+    times: List<TimeDate>,
+    dayChecked: Int,
+    yerChecked: Int,
+    monthChecked: Int,
+    listStateDay: LazyListState,
+    indexDay: Int,
+    currentIndexDay: Int,
+    screenWidth: Int,
+    dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit,
+    indexScrollDay: (Int) -> Unit,
 ) {
   Row(
     modifier = Modifier.padding(top = 28.dp),
@@ -579,10 +579,10 @@ private fun ItemTimeDate(
 
 @Composable
 private fun ItemsRoutine(
-  routineModels: List<RoutineModel>,
-  checkedRoutine: (RoutineModel) -> Unit,
-  updateRoutine: (RoutineModel) -> Unit,
-  deleteRoutine: (RoutineModel) -> Unit,
+    routineModels: List<RoutineModel>,
+    checkedRoutine: (RoutineModel) -> Unit,
+    updateRoutine: (RoutineModel) -> Unit,
+    deleteRoutine: (RoutineModel) -> Unit,
 ) {
 
   LazyColumn(
@@ -616,12 +616,12 @@ private fun ItemsRoutine(
 
 @Composable
 private fun DayItems(
-  timeDate: TimeDate,
-  dayChecked: Int,
-  dayYerChecked: Int,
-  dayMonthChecked: Int,
-  screenWidth: Int,
-  dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit,
+    timeDate: TimeDate,
+    dayChecked: Int,
+    dayYerChecked: Int,
+    dayMonthChecked: Int,
+    screenWidth: Int,
+    dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit,
 ) {
 
   Timber.tag("timeClicked").d("dayChecked->$dayChecked")

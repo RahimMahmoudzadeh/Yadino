@@ -2,12 +2,12 @@ package com.rahim.yadino.note
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rahim.yadino.base.Constants
-import com.rahim.yadino.base.Resource
-import com.rahim.yadino.base.calculateTimeFormat
-import com.rahim.yadino.base.enums.error.ErrorMessageCode
+import com.rahim.yadino.Constants
+import com.rahim.yadino.Resource
+import com.rahim.yadino.calculateTimeFormat
+import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.dateTime.DateTimeRepository
-import com.rahim.yadino.base.model.NoteModel
+import com.rahim.yadino.model.NoteModel
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,12 +53,12 @@ class NoteViewModel @Inject constructor(
   }
 
   private fun getCurrentNameDay(
-    date: String = String().calculateTimeFormat(
+      date: String = String().calculateTimeFormat(
       timeRepository.currentTimeYer,
       timeRepository.currentTimeMonth,
       timeRepository.currentTimeDay.toString(),
     ),
-    format: String = Constants.YYYY_MM_DD,
+      format: String = Constants.YYYY_MM_DD,
   ) {
     nameDay = timeRepository.getCurrentNameDay(date, format)
   }

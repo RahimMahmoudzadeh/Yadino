@@ -16,13 +16,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.rahim.yadino.base.Resource
+import com.rahim.yadino.Resource
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ItemListNote
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.dialog.DialogAddNote
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
-import com.rahim.yadino.base.model.NoteModel
+import com.rahim.yadino.model.NoteModel
 
 @Composable
 internal fun NoteRoute(

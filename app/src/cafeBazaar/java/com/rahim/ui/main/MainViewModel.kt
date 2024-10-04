@@ -2,7 +2,7 @@ package com.rahim.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rahim.yadino.base.di.IODispatcher
+import com.rahim.yadino.di.IODispatcher
 import com.rahim.yadino.dateTime.DateTimeRepository
 import com.rahim.yadino.note.NoteRepository
 import com.rahim.yadino.routine.RepositoryRoutine

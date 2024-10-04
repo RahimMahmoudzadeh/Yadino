@@ -1,7 +1,7 @@
 package com.rahim.yadino.routine.useCase
 
 
-import com.rahim.yadino.base.model.RoutineModel
+import com.rahim.yadino.model.RoutineModel
 import com.rahim.yadino.routine.ReminderScheduler
 import com.rahim.yadino.routine.RepositoryRoutine
 import javax.inject.Inject
