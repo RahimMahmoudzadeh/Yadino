@@ -8,18 +8,18 @@ import kotlinx.parcelize.Parcelize
 @Entity("tbl_routine")
 @Parcelize
 data class RoutineModel(
-    var name: String,
-    var colorTask: Int?,
-    var dayName: String,
-    var dayNumber: Int?,
-    var monthNumber: Int?,
-    var yerNumber: Int?,
-    var timeHours: String?,
-    var isChecked: Boolean = false,
+    val name: String,
+    val colorTask: Int?,
+    val dayName: String,
+    val dayNumber: Int?,
+    val monthNumber: Int?,
+    val yerNumber: Int?,
+    val timeHours: String?,
+    val isChecked: Boolean = false,
     @PrimaryKey(autoGenerate = true)
-    var id: Int? = null,
-    var explanation: String? = null,
-    var isSample:Boolean = false,
-    var idAlarm:Long?=null,
-    var timeInMillisecond:Long?=null
+    val id: Int? = null,
+    val explanation: String? = null,
+    val isSample:Boolean = false,
+    val idAlarm:Long?=null,
+    val timeInMillisecond:Long?=null
 ) : Parcelable

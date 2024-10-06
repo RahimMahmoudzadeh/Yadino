@@ -70,10 +70,7 @@ class RoutineRepositoryImpl @Inject constructor(
           idRandom = Random.nextInt(0, 10000000)
           equalIdAlarm = getIdAlarmsNotNull().find { it == idRandom.toLong() }
         }
-        it.apply {
-          idAlarm = idRandom.toLong()
-        }
-        routineDao.updateRoutine(it)
+        routineDao.updateRoutine(it.copy(idAlarm = idRandom.toLong()))
       }
     }
   }
@@ -156,14 +153,14 @@ class RoutineRepositoryImpl @Inject constructor(
 
   override suspend fun updateRoutine(routineModel: RoutineModel): Flow<Resource<RoutineModel?>> =
     flow {
-      routineModel.apply {
-        timeInMillisecond = convertDateToMilSecond(
-          this.yerNumber,
-          this.monthNumber,
-          this.dayNumber,
-          this.timeHours,
-        )
-      }
+//      routineModel.apply {
+//        timeInMillisecond = convertDateToMilSecond(
+//          this.yerNumber,
+//          this.monthNumber,
+//          this.dayNumber,
+//          this.timeHours,
+//        )
+//      }
       val equalRoutine = routineDao.checkEqualRoutine(
         routineName = routineModel.name,
         routineExplanation = routineModel.explanation ?: "",
@@ -193,7 +190,7 @@ class RoutineRepositoryImpl @Inject constructor(
 
   override suspend fun getRoutines(
     monthNumber: Int, numberDay: Int, yerNumber: Int,
-  ): List<RoutineModel> = routineDao.getRoutines(monthNumber, numberDay, yerNumber)
+  ): Flow<List<RoutineModel>> = routineDao.getRoutines(monthNumber, numberDay, yerNumber)
 
 
   override suspend fun searchRoutine(
