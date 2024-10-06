@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.yadino.Resource
+import com.rahim.yadino.base.use
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ItemRoutine
@@ -28,7 +29,6 @@ import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.model.RoutineModel
-import timber.log.Timber
 
 @Composable
 internal fun HomeRoute(
@@ -43,52 +43,55 @@ internal fun HomeRoute(
   val currentMonth = viewModel.currentMonth
   val currentDay = viewModel.currentDay
 
-  val routines by viewModel.flowRoutines.collectAsStateWithLifecycle(Resource.Loading())
-  val addRoutine by viewModel.addRoutine.collectAsStateWithLifecycle()
-  val updateRoutine by viewModel.updateRoutine.collectAsStateWithLifecycle()
-  Timber.tag("routineGetNameDay").d("recomposition HomeRoute->${routines.data}")
+  val (state, event) = use(viewModel = viewModel)
+
   HomeScreen(
     modifier = modifier,
-    routines = routines,
-    addRoutine = addRoutine,
-    updateRoutineModel = updateRoutine,
+    homeState = state,
     currentYer = currentYer,
     currentMonth = currentMonth,
     currentDay = currentDay,
     openDialog = openDialog,
     clickSearch = clickSearch,
-    onCheckedRoutine = viewModel::checkedRoutine,
-    onShowSampleRoutine = viewModel::showSampleRoutine,
-    onDeleteRoutine = viewModel::deleteRoutine,
-    onUpdateRoutine = viewModel::updateRoutine,
-    onAddRoutine = viewModel::addRoutine,
-    onClearAddRoutine = viewModel::clearAddRoutine,
-    onClearUpdateRoutine = viewModel::clearUpdateRoutine,
+    onCheckedRoutine = {
+      event.invoke(HomeContract.HomeEvent.CheckedRoutine(it))
+    },
+    onShowSampleRoutine = {
+      event.invoke(HomeContract.HomeEvent.ShowSampleRoutines)
+    },
+    onDeleteRoutine = {
+      event.invoke(HomeContract.HomeEvent.DeleteRoutine(it))
+    },
+    onUpdateRoutine = {
+      event.invoke(HomeContract.HomeEvent.UpdateRoutine(it))
+
+    },
+    onAddRoutine = {
+      event.invoke(HomeContract.HomeEvent.AddRoutine(it))
+    },
     onOpenDialog = onOpenDialog,
-    onSearchText = viewModel::searchItems,
+    onSearchText = {
+      event.invoke(HomeContract.HomeEvent.SearchRoutine(it))
+    },
   )
 }
 
 @Composable
 private fun HomeScreen(
-    modifier: Modifier = Modifier,
-    routines: Resource<List<RoutineModel>>,
-    addRoutine: Resource<Nothing?>?,
-    updateRoutineModel: Resource<Nothing?>?,
-    currentYer: Int,
-    currentMonth: Int,
-    currentDay: Int,
-    openDialog: Boolean,
-    clickSearch: Boolean,
-    onCheckedRoutine: (RoutineModel) -> Unit,
-    onShowSampleRoutine: () -> Unit,
-    onDeleteRoutine: (RoutineModel) -> Unit,
-    onUpdateRoutine: (RoutineModel) -> Unit,
-    onAddRoutine: (RoutineModel) -> Unit,
-    onClearAddRoutine: () -> Unit,
-    onClearUpdateRoutine: () -> Unit,
-    onOpenDialog: (isOpen: Boolean) -> Unit,
-    onSearchText: (searchText: String) -> Unit,
+  modifier: Modifier = Modifier,
+  homeState: HomeContract.HomeState,
+  currentYer: Int,
+  currentMonth: Int,
+  currentDay: Int,
+  openDialog: Boolean,
+  clickSearch: Boolean,
+  onCheckedRoutine: (RoutineModel) -> Unit,
+  onShowSampleRoutine: () -> Unit,
+  onDeleteRoutine: (RoutineModel) -> Unit,
+  onUpdateRoutine: (RoutineModel) -> Unit,
+  onAddRoutine: (RoutineModel) -> Unit,
+  onOpenDialog: (isOpen: Boolean) -> Unit,
+  onSearchText: (searchText: String) -> Unit,
 ) {
   val context = LocalContext.current
   val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineModel?>(null) }
@@ -98,57 +101,48 @@ private fun HomeScreen(
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Top,
-    modifier = modifier
-      .fillMaxSize(),
+    modifier = modifier.fillMaxSize(),
   ) {
     ShowSearchBar(clickSearch, searchText = searchText) { search ->
       searchText = search
       onSearchText(searchText)
     }
-    when (routines) {
-      is Resource.Loading -> {}
-      is Resource.Success -> {
-        routines.data?.let {
-          if (it.isEmpty()) {
-            if (searchText.isNotEmpty()) {
-              EmptyMessage(
-                messageEmpty = R.string.search_empty_routine,
-              )
-            } else {
-              EmptyMessage()
-            }
-          } else {
-            ItemsHome(
-              currentYer, currentMonth, currentDay,
-              it,
-              { checkedRoutine ->
-                onCheckedRoutine(checkedRoutine)
-              },
-              { routineUpdate ->
-                if (routineUpdate.isChecked) {
-                  Toast.makeText(
-                    context,
-                    R.string.not_update_checked_routine,
-                    Toast.LENGTH_SHORT,
-                  ).show()
-                  return@ItemsHome
-                }
-                if (routineUpdate.isSample)
-                  onShowSampleRoutine()
-                routineModelUpdateDialog.value = routineUpdate
-                onOpenDialog(true)
-              },
-              { deleteRoutine ->
-                if (deleteRoutine.isSample)
-                  onShowSampleRoutine()
-                routineModelDeleteDialog.value = deleteRoutine
-              },
-            )
-          }
-        }
-      }
+    if (homeState.routineLoading) {
 
-      is Resource.Error -> {}
+    }
+    if (homeState.routines.isEmpty()) {
+      if (searchText.isNotEmpty()) {
+        EmptyMessage(
+          messageEmpty = R.string.search_empty_routine,
+        )
+      } else {
+        EmptyMessage()
+      }
+    } else {
+      ItemsHome(
+        currentYer, currentMonth, currentDay,
+        homeState.routines,
+        { checkedRoutine ->
+          onCheckedRoutine(checkedRoutine)
+        },
+        { routineUpdate ->
+          if (routineUpdate.isChecked) {
+            Toast.makeText(
+              context,
+              R.string.not_update_checked_routine,
+              Toast.LENGTH_SHORT,
+            ).show()
+            return@ItemsHome
+          }
+          if (routineUpdate.isSample) onShowSampleRoutine()
+          routineModelUpdateDialog.value = routineUpdate
+          onOpenDialog(true)
+        },
+        { deleteRoutine ->
+          if (deleteRoutine.isSample) onShowSampleRoutine()
+          routineModelDeleteDialog.value = deleteRoutine
+        },
+      )
     }
   }
   ErrorDialog(
@@ -176,15 +170,15 @@ private fun HomeScreen(
     routineItems = { routineName, routineExplanation, routineTime, dayChecked, monthChecked, yearChecked, dayName ->
       onShowSampleRoutine()
       if (routineModelUpdateDialog.value != null) {
-        routineModelUpdateDialog.value?.apply {
-          name = routineName
-          explanation = routineExplanation
-          timeHours = routineTime
-          dayNumber = dayChecked
-          monthNumber = monthChecked
-          yerNumber = yearChecked
-          this.dayName = dayName
-        }
+//        routineModelUpdateDialog.value?.apply {
+//          name = routineName
+//          explanation = routineExplanation
+//          timeHours = routineTime
+//          dayNumber = dayChecked
+//          monthNumber = monthChecked
+//          yerNumber = yearChecked
+//          this.dayName = dayName
+//        }
         routineModelUpdateDialog.value?.let(onUpdateRoutine)
       } else {
         val routineModel = RoutineModel(
@@ -198,6 +192,7 @@ private fun HomeScreen(
           colorTask = null,
         )
         onAddRoutine(routineModel)
+        onOpenDialog(false)
       }
     },
     updateRoutineExplanation = routineModelUpdateDialog.value?.explanation ?: "",
@@ -211,32 +206,24 @@ private fun HomeScreen(
     currentNumberYear = currentYer,
     monthChange = { year: Int, month: Int -> },
   )
-  ProcessRoutineAdded(addRoutine, context) {
-    onOpenDialog(false)
-    onClearAddRoutine()
-  }
-  ProcessRoutineAdded(updateRoutineModel, context) {
-    onOpenDialog(false)
-    onClearUpdateRoutine()
-  }
 }
 
 @Composable
 fun ItemsHome(
-    currentDay: Int,
-    currentMonth: Int,
-    currentYer: Int,
-    routineModels: List<RoutineModel>,
-    checkedRoutine: (RoutineModel) -> Unit,
-    updateRoutine: (RoutineModel) -> Unit,
-    deleteRoutine: (RoutineModel) -> Unit,
+  currentDay: Int,
+  currentMonth: Int,
+  currentYer: Int,
+  routineModels: List<RoutineModel>,
+  checkedRoutine: (RoutineModel) -> Unit,
+  updateRoutine: (RoutineModel) -> Unit,
+  deleteRoutine: (RoutineModel) -> Unit,
 ) {
   val data = "$currentDay/$currentMonth/$currentYer"
   Row(
     horizontalArrangement = Arrangement.SpaceBetween,
     modifier = Modifier
-        .padding(horizontal = 28.dp, vertical = 25.dp)
-        .fillMaxWidth(),
+      .padding(horizontal = 28.dp, vertical = 25.dp)
+      .fillMaxWidth(),
   ) {
     Text(
       text = data.persianLocate(),
@@ -250,8 +237,7 @@ fun ItemsHome(
     )
   }
   LazyColumn(
-    modifier = Modifier
-      .fillMaxWidth(),
+    modifier = Modifier.fillMaxWidth(),
     contentPadding = PaddingValues(top = 0.dp, start = 16.dp, end = 16.dp),
   ) {
     items(items = routineModels) { routine ->
@@ -261,7 +247,7 @@ fun ItemsHome(
         timeHoursRoutine = routine.timeHours ?: "",
         explanationRoutine = routine.explanation ?: "",
         onChecked = {
-          checkedRoutine(routine.apply { isChecked = it })
+          checkedRoutine(routine.copy(isChecked = it))
         },
         openDialogDelete = {
           deleteRoutine(routine)

@@ -2,14 +2,19 @@ package com.rahim.yadino.routine.homeScreen
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.UnidirectionalViewModel
+import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.model.RoutineModel
 
 interface HomeContract : UnidirectionalViewModel<HomeContract.HomeEvent, HomeContract.HomeState> {
   @Immutable
   sealed class HomeEvent {
     data class AddRoutine(val routine: RoutineModel) : HomeEvent()
-    data object GetRoutines : HomeEvent()
+    data class CheckedRoutine(val routine: RoutineModel) : HomeEvent()
     data class UpdateRoutine(val routine: RoutineModel) : HomeEvent()
+    data class DeleteRoutine(val routine: RoutineModel) : HomeEvent()
+    data class SearchRoutine(val routineName: String) : HomeEvent()
+    data object GetRoutines : HomeEvent()
+    data object ShowSampleRoutines : HomeEvent()
   }
 
   @Immutable
@@ -21,5 +26,6 @@ interface HomeContract : UnidirectionalViewModel<HomeContract.HomeEvent, HomeCon
   data class HomeState(
     val routineLoading: Boolean = true,
     val routines: List<RoutineModel> = emptyList(),
+    val errorMessage: ErrorMessageCode? = null,
   )
 }
