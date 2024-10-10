@@ -77,30 +77,16 @@ fun String.calculateTimeFormat(currentYer: Int, currentMonth: Int, currentDay: S
   return "$currentYer-$currentMonth-$currentDay"
 }
 
-fun ErrorMessageCode.errorMessage(context: Context): String {
-  return context.run {
-    when (this@errorMessage) {
-      ErrorMessageCode.ERROR_GET_PROCESS -> {
-        this.resources.getString(R.string.errorGetProses)
-      }
+fun ErrorMessageCode.errorMessage() = when (this@errorMessage) {
+  ErrorMessageCode.ERROR_GET_PROCESS -> R.string.errorGetProses
+  ErrorMessageCode.EQUAL_ROUTINE_MESSAGE -> R.string.equalRoutineMessage
 
-      ErrorMessageCode.EQUAL_ROUTINE_MESSAGE -> {
-        this.resources.getString(R.string.equalRoutineMessage)
-      }
+  ErrorMessageCode.ERROR_SAVE_PROSES -> R.string.errorSaveProses
 
-      ErrorMessageCode.ERROR_SAVE_PROSES -> {
-        this.resources.getString(R.string.errorSaveProses)
-      }
-
-      ErrorMessageCode.ERROR_NOTIFICATION_PERMISSION -> this.resources.getString(R.string.errorSaveProses)
-      ErrorMessageCode.ERROR_REMINDER_PERMISSION -> this.resources.getString(R.string.errorSaveProses)
-      ErrorMessageCode.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION -> this.resources.getString(
-          R.string.errorSaveProses,
-      )
-
-      ErrorMessageCode.ERROR_TIME_PASSED -> this.resources.getString(R.string.errorTimePassed)
-    }
-  }
+  ErrorMessageCode.ERROR_NOTIFICATION_PERMISSION -> R.string.errorSaveProses
+  ErrorMessageCode.ERROR_REMINDER_PERMISSION -> R.string.errorSaveProses
+  ErrorMessageCode.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION -> R.string.errorSaveProses
+  ErrorMessageCode.ERROR_TIME_PASSED -> R.string.errorTimePassed
 }
 
 fun String.persianLocate(): String {
@@ -143,4 +129,14 @@ fun <T> Flow<List<T>>.getMatchingItems(predicate: (T) -> Boolean): Flow<List<T>>
       emptyList()
     }
   }.flowOn(Dispatchers.IO)
+}
+
+suspend fun <T> Flow<T>.collectWithoutHistory(collector: suspend (T) -> Unit) {
+  var firstEmission = true
+  collect { value ->
+    if (!firstEmission) {
+      collector(value)
+    }
+    firstEmission = false
+  }
 }

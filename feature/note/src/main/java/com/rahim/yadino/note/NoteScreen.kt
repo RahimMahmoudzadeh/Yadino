@@ -33,14 +33,14 @@ internal fun NoteRoute(
     onOpenDialog: (isOpen: Boolean) -> Unit,
 ) {
 
-    val notes by viewModel.notes.collectAsStateWithLifecycle()
+//    val notes by viewModel.notes.collectAsStateWithLifecycle()
     NoteScreen(
         modifier = modifier,
         currentYear = viewModel.currentYear,
         currentMonth = viewModel.currentMonth,
         currentDay = viewModel.currentDay,
         currentNameDay = viewModel.nameDay ?: "",
-        notes = notes,
+//        notes = notes,
         onUpdateNote = viewModel::updateNote,
         showSampleNote = viewModel::showSampleNote,
         onAddNote = viewModel::addNote,
@@ -59,7 +59,7 @@ private fun NoteScreen(
     currentMonth: Int,
     currentDay: Int,
     currentNameDay: String,
-    notes: Resource<List<NoteModel>>,
+//    notes: Resource<List<NoteModel>>,
     openDialog: Boolean,
     clickSearch: Boolean,
     onOpenDialog: (isOpen: Boolean) -> Unit,
@@ -88,65 +88,61 @@ private fun NoteScreen(
             onSearchText(searchText)
         }
 
-        when (notes) {
-            is Resource.Loading -> {
-
-            }
-
-            is Resource.Success -> {
-                notes.data?.let {
-                    if (it.isEmpty()) {
-                        if (searchText.isNotEmpty()) {
-                            EmptyMessage(
-                                messageEmpty = com.rahim.yadino.feature.note.R.string.search_empty_note,
-                                painter = com.rahim.yadino.feature.note.R.drawable.empty_note
-                            )
-                        } else {
-                            EmptyMessage(
-                                messageEmpty = com.rahim.yadino.feature.note.R.string.not_note,
-                                painter = com.rahim.yadino.feature.note.R.drawable.empty_note
-                            )
-                        }
-                    } else {
-                        ItemsNote(
-                            notes.data ?: emptyList(),
-                            checkedNote = {
-                                onUpdateNote(it)
-                            },
-                            updateNote = {
-                                if (it.isChecked) {
-                                    Toast.makeText(
-                                        context,
-                                        com.rahim.yadino.feature.note.R.string.not_update_checked_note,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    return@ItemsNote
-                                }
-                                showSampleNote(true)
-
-                                noteUpdateDialog.value = it
-                                onOpenDialog(true)
-                            },
-                            deleteNote = {
-                                if (it.isChecked) {
-                                    Toast.makeText(
-                                        context,
-                                        com.rahim.yadino.feature.note.R.string.not_removed_checked_note,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    return@ItemsNote
-                                }
-                                showSampleNote(true)
-                                noteDeleteDialog.value = it
-                            })
-                    }
-                }
-            }
-
-            is Resource.Error -> {
-
-            }
-        }
+//        when (notes) {
+//            is Resource.Success -> {
+//                notes.data?.let {
+//                    if (it.isEmpty()) {
+//                        if (searchText.isNotEmpty()) {
+//                            EmptyMessage(
+//                                messageEmpty = com.rahim.yadino.feature.note.R.string.search_empty_note,
+//                                painter = com.rahim.yadino.feature.note.R.drawable.empty_note
+//                            )
+//                        } else {
+//                            EmptyMessage(
+//                                messageEmpty = com.rahim.yadino.feature.note.R.string.not_note,
+//                                painter = com.rahim.yadino.feature.note.R.drawable.empty_note
+//                            )
+//                        }
+//                    } else {
+//                        ItemsNote(
+//                            notes.data ?: emptyList(),
+//                            checkedNote = {
+//                                onUpdateNote(it)
+//                            },
+//                            updateNote = {
+//                                if (it.isChecked) {
+//                                    Toast.makeText(
+//                                        context,
+//                                        com.rahim.yadino.feature.note.R.string.not_update_checked_note,
+//                                        Toast.LENGTH_SHORT
+//                                    ).show()
+//                                    return@ItemsNote
+//                                }
+//                                showSampleNote(true)
+//
+//                                noteUpdateDialog.value = it
+//                                onOpenDialog(true)
+//                            },
+//                            deleteNote = {
+//                                if (it.isChecked) {
+//                                    Toast.makeText(
+//                                        context,
+//                                        com.rahim.yadino.feature.note.R.string.not_removed_checked_note,
+//                                        Toast.LENGTH_SHORT
+//                                    ).show()
+//                                    return@ItemsNote
+//                                }
+//                                showSampleNote(true)
+//                                noteDeleteDialog.value = it
+//                            })
+//                    }
+//                }
+//            }
+//
+//            is Resource.Error -> {
+//
+//            }
+//        }
     }
     DialogAddNote(
         updateNoteState = noteUpdateDialog.value?.state ?: 0,

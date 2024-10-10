@@ -22,11 +22,13 @@ import com.rahim.yadino.base.use
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ItemRoutine
-import com.rahim.yadino.designsystem.component.ProcessRoutineAdded
+import com.rahim.yadino.designsystem.component.ListRoutines
 import com.rahim.yadino.designsystem.component.ShowSearchBar
+import com.rahim.yadino.designsystem.component.ShowToastShort
 import com.rahim.yadino.designsystem.dialog.DialogAddRoutine
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.YadinoTheme
+import com.rahim.yadino.errorMessage
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.model.RoutineModel
 
@@ -64,7 +66,6 @@ internal fun HomeRoute(
     },
     onUpdateRoutine = {
       event.invoke(HomeContract.HomeEvent.UpdateRoutine(it))
-
     },
     onAddRoutine = {
       event.invoke(HomeContract.HomeEvent.AddRoutine(it))
@@ -98,6 +99,9 @@ private fun HomeScreen(
   val routineModelUpdateDialog = rememberSaveable { mutableStateOf<RoutineModel?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
 
+  homeState.errorMessage?.let { errorMessage ->
+    ShowToastShort(errorMessage.errorMessage(), context)
+  }
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Top,
@@ -170,15 +174,16 @@ private fun HomeScreen(
     routineItems = { routineName, routineExplanation, routineTime, dayChecked, monthChecked, yearChecked, dayName ->
       onShowSampleRoutine()
       if (routineModelUpdateDialog.value != null) {
-//        routineModelUpdateDialog.value?.apply {
-//          name = routineName
-//          explanation = routineExplanation
-//          timeHours = routineTime
-//          dayNumber = dayChecked
-//          monthNumber = monthChecked
-//          yerNumber = yearChecked
-//          this.dayName = dayName
-//        }
+        val updatedRoutine = routineModelUpdateDialog.value?.copy(
+          name = routineName,
+          explanation = routineExplanation,
+          timeHours = routineTime,
+          dayNumber = dayChecked,
+          monthNumber = monthChecked,
+          yerNumber = yearChecked,
+          dayName = dayName,
+        )
+        routineModelUpdateDialog.value = updatedRoutine
         routineModelUpdateDialog.value?.let(onUpdateRoutine)
       } else {
         val routineModel = RoutineModel(
@@ -192,8 +197,8 @@ private fun HomeScreen(
           colorTask = null,
         )
         onAddRoutine(routineModel)
-        onOpenDialog(false)
       }
+      onOpenDialog(false)
     },
     updateRoutineExplanation = routineModelUpdateDialog.value?.explanation ?: "",
     updateRoutineDay = routineModelUpdateDialog.value?.dayNumber,
@@ -236,28 +241,7 @@ fun ItemsHome(
       color = MaterialTheme.colorScheme.primary,
     )
   }
-  LazyColumn(
-    modifier = Modifier.fillMaxWidth(),
-    contentPadding = PaddingValues(top = 0.dp, start = 16.dp, end = 16.dp),
-  ) {
-    items(items = routineModels) { routine ->
-      ItemRoutine(
-        nameRoutine = routine.name,
-        isChecked = routine.isChecked,
-        timeHoursRoutine = routine.timeHours ?: "",
-        explanationRoutine = routine.explanation ?: "",
-        onChecked = {
-          checkedRoutine(routine.copy(isChecked = it))
-        },
-        openDialogDelete = {
-          deleteRoutine(routine)
-        },
-        openDialogEdit = {
-          updateRoutine(routine)
-        },
-      )
-    }
-  }
+  ListRoutines(modifier = Modifier.fillMaxWidth(),routines = routineModels, checkedRoutine = checkedRoutine, deleteRoutine = deleteRoutine, updateRoutine = updateRoutine)
 }
 
 @Preview

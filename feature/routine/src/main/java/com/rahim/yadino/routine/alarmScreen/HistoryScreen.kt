@@ -55,10 +55,10 @@ internal fun HistoryRoute(
   LaunchedEffect(Unit) {
     historyViewModel.getAllRoutine()
   }
-  val routineItems by historyViewModel.flowRoutines
-    .collectAsStateWithLifecycle()
+//  val routineItems by historyViewModel.flowRoutines
+//    .collectAsStateWithLifecycle()
 
-  HistoryScreen(routineItems.data ?: emptyList())
+//  HistoryScreen(routineItems.data ?: emptyList())
 }
 
 @OptIn(ExperimentalFoundationApi::class)

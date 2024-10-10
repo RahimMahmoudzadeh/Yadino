@@ -30,8 +30,8 @@ class NoteViewModel @Inject constructor(
   val currentDay = timeRepository.currentTimeDay
 
 
-  private var _notes = MutableStateFlow<Resource<List<NoteModel>>>(Resource.Loading())
-  var notes: StateFlow<Resource<List<NoteModel>>> = _notes
+//  private var _notes = MutableStateFlow<Resource<List<NoteModel>>>(Resource.Loading())
+//  var notes: StateFlow<Resource<List<NoteModel>>> = _notes
 
   var nameDay: String? = null
 
@@ -74,12 +74,12 @@ class NoteViewModel @Inject constructor(
     viewModelScope.launch {
       if (searchText.isNotEmpty()) {
         Timber.tag("searchRoutine").d("searchText:$searchText")
-        _notes.value = Resource.Loading()
-        noteRepository.searchNote(searchText).catch {
-          _notes.value = Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
-        }.collectLatest {
-          _notes.value = Resource.Success(it)
-        }
+//        _notes.value = Resource.Loading()
+//        noteRepository.searchNote(searchText).catch {
+//          _notes.value = Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
+//        }.collectLatest {
+//          _notes.value = Resource.Success(it)
+//        }
       } else {
         getNotes()
       }
@@ -88,15 +88,15 @@ class NoteViewModel @Inject constructor(
 
   private fun getNotes() {
     viewModelScope.launch {
-      _notes.value = Resource.Loading()
-      noteRepository.getNotes()
-        .catch {
-          _notes.value =
-            Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
-        }
-        .collectLatest {
-          _notes.value = Resource.Success(it)
-        }
+//      _notes.value = Resource.Loading()
+//      noteRepository.getNotes()
+//        .catch {
+//          _notes.value =
+//            Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
+//        }
+//        .collectLatest {
+//          _notes.value = Resource.Success(it)
+//        }
     }
   }
 
