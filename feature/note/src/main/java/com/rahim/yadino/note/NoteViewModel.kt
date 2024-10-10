@@ -1,9 +1,8 @@
 package com.rahim.yadino.note
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.Constants
-import com.rahim.yadino.Resource
+import com.rahim.yadino.base.BaseViewModel
 import com.rahim.yadino.calculateTimeFormat
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.dateTime.DateTimeRepository
@@ -11,9 +10,13 @@ import com.rahim.yadino.model.NoteModel
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -24,62 +27,73 @@ class NoteViewModel @Inject constructor(
   private val timeRepository: DateTimeRepository,
   private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) :
-  ViewModel() {
-  val currentYear = timeRepository.currentTimeYer
-  val currentMonth = timeRepository.currentTimeMonth
-  val currentDay = timeRepository.currentTimeDay
+  BaseViewModel(), NoteContract {
+  private val currentYear = timeRepository.currentTimeYer
+  private val currentMonth = timeRepository.currentTimeMonth
+  private val currentDay = timeRepository.currentTimeDay
 
 
-//  private var _notes = MutableStateFlow<Resource<List<NoteModel>>>(Resource.Loading())
-//  var notes: StateFlow<Resource<List<NoteModel>>> = _notes
-
-  var nameDay: String? = null
-
-  init {
+  private var mutableState = MutableStateFlow<NoteContract.NoteState>(NoteContract.NoteState())
+  override val state: StateFlow<NoteContract.NoteState> = mutableState.onStart {
     getCurrentNameDay()
     getNotes()
+  }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NoteContract.NoteState())
+
+  override fun event(event: NoteContract.NoteEvent) = when (event) {
+    is NoteContract.NoteEvent.GetNotes -> getNotes()
+    is NoteContract.NoteEvent.SearchNote -> searchItems(event.searchText)
+    is NoteContract.NoteEvent.DeleteNote -> delete(event.deleteNote)
+    is NoteContract.NoteEvent.UpdateNote -> updateNote(event.updateNote)
+    is NoteContract.NoteEvent.AddNote -> addNote(event.addNote)
+    is NoteContract.NoteEvent.ShowSampleNote -> showSampleNote(event.isShowSampleNote)
   }
 
-  fun addNote(noteModel: NoteModel) {
+  private fun addNote(noteModel: NoteModel) {
     viewModelScope.launch {
-      noteRepository.addNote(noteModel)
+      val updateNote=noteModel.copy(dayNumber = currentDay, monthNumber = currentMonth, yerNumber = currentYear)
+      noteRepository.addNote(updateNote)
     }
   }
 
-  fun updateNote(noteModel: NoteModel) {
+  private fun updateNote(noteModel: NoteModel) {
     viewModelScope.launch {
       noteRepository.updateNote(noteModel)
     }
   }
 
   private fun getCurrentNameDay(
-      date: String = String().calculateTimeFormat(
+    date: String = String().calculateTimeFormat(
       timeRepository.currentTimeYer,
       timeRepository.currentTimeMonth,
       timeRepository.currentTimeDay.toString(),
     ),
-      format: String = Constants.YYYY_MM_DD,
+    format: String = Constants.YYYY_MM_DD,
   ) {
-    nameDay = timeRepository.getCurrentNameDay(date, format)
+    mutableState.update {
+      it.copy(nameDay = timeRepository.getCurrentNameDay(date, format))
+    }
   }
 
 
-  fun delete(noteModel: NoteModel) {
+  private fun delete(noteModel: NoteModel) {
     viewModelScope.launch {
       noteRepository.deleteNote(noteModel)
     }
   }
 
-  fun searchItems(searchText: String) {
+  private fun searchItems(searchText: String) {
     viewModelScope.launch {
       if (searchText.isNotEmpty()) {
         Timber.tag("searchRoutine").d("searchText:$searchText")
-//        _notes.value = Resource.Loading()
-//        noteRepository.searchNote(searchText).catch {
-//          _notes.value = Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
-//        }.collectLatest {
-//          _notes.value = Resource.Success(it)
-//        }
+        noteRepository.searchNote(searchText).catch {
+          mutableState.update {
+            it.copy(errorMessage = ErrorMessageCode.ERROR_GET_PROCESS)
+          }
+        }.collectLatest { notes ->
+          mutableState.update {
+            it.copy(notes = notes, errorMessage = null, isLoading = false)
+          }
+        }
       } else {
         getNotes()
       }
@@ -88,19 +102,21 @@ class NoteViewModel @Inject constructor(
 
   private fun getNotes() {
     viewModelScope.launch {
-//      _notes.value = Resource.Loading()
-//      noteRepository.getNotes()
-//        .catch {
-//          _notes.value =
-//            Resource.Error(ErrorMessageCode.ERROR_GET_PROCESS)
-//        }
-//        .collectLatest {
-//          _notes.value = Resource.Success(it)
-//        }
+      noteRepository.getNotes()
+        .catch {
+          mutableState.update {
+            it.copy(errorMessage = ErrorMessageCode.ERROR_GET_PROCESS)
+          }
+        }
+        .collectLatest { notes ->
+          mutableState.update {
+            it.copy(notes = notes, errorMessage = null, isLoading = false)
+          }
+        }
     }
   }
 
-  fun showSampleNote(isShow: Boolean) {
+  private fun showSampleNote(isShow: Boolean) {
     viewModelScope.launch {
       sharedPreferencesRepository.isShowSampleNote(isShow)
     }
