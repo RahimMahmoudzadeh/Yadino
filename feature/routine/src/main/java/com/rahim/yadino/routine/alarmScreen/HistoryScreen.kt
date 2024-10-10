@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.rahim.yadino.base.use
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
@@ -52,21 +53,21 @@ import com.rahim.yadino.model.RoutineModel
 internal fun HistoryRoute(
   historyViewModel: HistoryViewModel = hiltViewModel(),
 ) {
-  LaunchedEffect(Unit) {
-    historyViewModel.getAllRoutine()
-  }
-//  val routineItems by historyViewModel.flowRoutines
-//    .collectAsStateWithLifecycle()
+  val (state, event) = use(historyViewModel)
 
-//  HistoryScreen(routineItems.data ?: emptyList())
+  HistoryScreen(state)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HistoryScreen(
-    routineModelItems: List<RoutineModel>,
+  state: RoutineHistoryContract.HistoryState,
 ) {
-  val (completedTasks, incompleteTasks) = routineModelItems.partition { sort -> sort.isChecked }
+  val (completedTasks, incompleteTasks) = if (state.routines.isNotEmpty()) {
+     state.routines.partition { sort -> sort.isChecked }
+  }else{
+    emptyList<RoutineModel>() to emptyList()
+  }
 
   var expanded by rememberSaveable {
     mutableStateOf(false)
