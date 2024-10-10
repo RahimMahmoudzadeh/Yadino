@@ -14,9 +14,9 @@ data class NoteModel(
     var isChecked: Boolean = false,
     var state: Int = 0,
     var dayName: String,
-    var dayNumber: Int?,
-    var monthNumber: Int?,
-    var yerNumber: Int?,
+    var dayNumber: Int?=null,
+    var monthNumber: Int?=null,
+    var yerNumber: Int?=null,
     var isSample: Boolean = false,
     var timeInMileSecond:Long?=null
 ) : Parcelable

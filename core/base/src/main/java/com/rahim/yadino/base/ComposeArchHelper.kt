@@ -2,7 +2,6 @@ package com.rahim.yadino.base
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.Flow
@@ -16,8 +15,8 @@ data class StateEffectDispatch<EVENT, EFFECT, STATE>(
 )
 
 data class StateDispatch<EVENT, STATE>(
-    val state: STATE,
-    val dispatch: (EVENT) -> Unit,
+  val state: STATE,
+  val event: (EVENT) -> Unit,
 )
 
 @Composable
@@ -31,7 +30,7 @@ inline fun <reified EVENT, STATE> use(
     }
     return StateDispatch(
         state = state,
-        dispatch = dispatch,
+        event = dispatch,
     )
 }
 
