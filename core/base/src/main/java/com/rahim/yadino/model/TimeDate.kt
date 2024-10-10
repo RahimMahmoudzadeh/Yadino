@@ -6,11 +6,11 @@ import androidx.room.Entity
 data class TimeDate(
     val dayNumber: Int,
     val haveTask: Boolean,
-    var isToday: Boolean = false,
+    val isToday: Boolean = false,
     val nameDay: String,
     val yerNumber: Int,
     val monthNumber: Int,
-    var isChecked: Boolean,
-    var monthName: String? = null,
-    var versionNumber: Long? = null,
+    val isChecked: Boolean,
+    val monthName: String? = null,
+    val versionNumber: Long? = null,
 )

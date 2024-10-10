@@ -6,16 +6,21 @@ import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.sharedPreferences.SharedPreferencesCustom
 import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.Resource
+import com.rahim.yadino.collectWithoutHistory
 import com.rahim.yadino.model.RoutineModel
 import com.rahim.yadino.db.dao.RoutineDao
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.withContext
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -23,9 +28,9 @@ private const val ROUTINE_LEFT_SAMPLE = "من یک روتین تستی هستم 
 private const val ROUTINE_RIGHT_SAMPLE = "من یک روتین تستی هستم لطفا من را به راست بکشید"
 
 class RoutineRepositoryImpl @Inject constructor(
-    private val routineDao: RoutineDao,
-    private val sharedPreferencesCustom: SharedPreferencesCustom,
-    @IODispatcher private val ioDispatcher: CoroutineDispatcher,
+  private val routineDao: RoutineDao,
+  private val sharedPreferencesCustom: SharedPreferencesCustom,
+  @IODispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : RepositoryRoutine {
   private val persianData = PersianDate()
   private val currentTimeDay = persianData.shDay
@@ -188,9 +193,27 @@ class RoutineRepositoryImpl @Inject constructor(
     routineDao.updateRoutine(routineModel)
   }
 
+  private var lastYearNumber = 0
+  private var lastMonthNumber = 0
+  private var lastDayNumber = 0
   override suspend fun getRoutines(
     monthNumber: Int, numberDay: Int, yerNumber: Int,
-  ): Flow<List<RoutineModel>> = routineDao.getRoutines(monthNumber, numberDay, yerNumber)
+  ): Flow<List<RoutineModel>> = flow {
+    lastYearNumber = yerNumber
+    lastMonthNumber = monthNumber
+    lastDayNumber = numberDay
+    routineDao.getRoutines(monthNumber, numberDay, yerNumber).takeWhile {
+      if (it.isEmpty()) {
+        Timber.tag("routineRepo").d("getRoutines collect monthNumber in if")
+        true
+      } else {
+        val firstRoutine = it.first()
+        (firstRoutine.monthNumber == lastMonthNumber && firstRoutine.dayNumber == lastDayNumber && firstRoutine.yerNumber == lastYearNumber)
+      }
+    }.collect {
+      emit(it)
+    }
+  }
 
 
   override suspend fun searchRoutine(

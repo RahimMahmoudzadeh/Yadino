@@ -88,6 +88,7 @@ class HomeViewModel @Inject constructor(
             routines = routines.sortedBy {
               it.timeHours?.replace(":", "")?.toInt()
             },
+            errorMessage = null
           )
         }
       }
@@ -152,6 +153,7 @@ class HomeViewModel @Inject constructor(
             routines = searchItems.sortedBy {
               it.timeHours?.replace(":", "")?.toInt()
             },
+            errorMessage = null
           )
         }
       } else {
