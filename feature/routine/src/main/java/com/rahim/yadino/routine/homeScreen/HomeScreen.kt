@@ -41,18 +41,11 @@ internal fun HomeRoute(
   viewModel: HomeViewModel = hiltViewModel(),
 ) {
 
-  val currentYer = viewModel.currentYear
-  val currentMonth = viewModel.currentMonth
-  val currentDay = viewModel.currentDay
-
   val (state, event) = use(viewModel = viewModel)
 
   HomeScreen(
     modifier = modifier,
     homeState = state,
-    currentYer = currentYer,
-    currentMonth = currentMonth,
-    currentDay = currentDay,
     openDialog = openDialog,
     clickSearch = clickSearch,
     onCheckedRoutine = {
@@ -81,9 +74,6 @@ internal fun HomeRoute(
 private fun HomeScreen(
   modifier: Modifier = Modifier,
   homeState: HomeContract.HomeState,
-  currentYer: Int,
-  currentMonth: Int,
-  currentDay: Int,
   openDialog: Boolean,
   clickSearch: Boolean,
   onCheckedRoutine: (RoutineModel) -> Unit,
@@ -115,16 +105,12 @@ private fun HomeScreen(
 
     }
     if (homeState.routines.isEmpty()) {
-      if (searchText.isNotEmpty()) {
-        EmptyMessage(
-          messageEmpty = R.string.search_empty_routine,
-        )
-      } else {
-        EmptyMessage()
-      }
+      EmptyMessage(
+        messageEmpty = if (searchText.isNotEmpty()) R.string.search_empty_routine else R.string.not_work_for_day,
+      )
     } else {
       ItemsHome(
-        currentYer, currentMonth, currentDay,
+        homeState.currentYer, homeState.currentMonth, homeState.currentDay,
         homeState.routines,
         { checkedRoutine ->
           onCheckedRoutine(checkedRoutine)
@@ -206,9 +192,9 @@ private fun HomeScreen(
     updateRoutineYear = routineModelUpdateDialog.value?.yerNumber,
     updateRoutineName = routineModelUpdateDialog.value?.name ?: "",
     updateRoutineTime = routineModelUpdateDialog.value?.timeHours ?: "",
-    currentNumberDay = currentDay,
-    currentNumberMonth = currentMonth,
-    currentNumberYear = currentYer,
+    currentNumberDay = homeState.currentDay,
+    currentNumberMonth = homeState.currentMonth,
+    currentNumberYear = homeState.currentYer,
     monthChange = { year: Int, month: Int -> },
   )
 }
@@ -241,7 +227,7 @@ fun ItemsHome(
       color = MaterialTheme.colorScheme.primary,
     )
   }
-  ListRoutines(modifier = Modifier.fillMaxWidth(),routines = routineModels, checkedRoutine = checkedRoutine, deleteRoutine = deleteRoutine, updateRoutine = updateRoutine)
+  ListRoutines(modifier = Modifier.fillMaxWidth(), routines = routineModels, checkedRoutine = checkedRoutine, deleteRoutine = deleteRoutine, updateRoutine = updateRoutine)
 }
 
 @Preview
