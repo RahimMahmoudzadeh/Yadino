@@ -7,7 +7,7 @@ kotlinxImmutableCollection = "0.3.8"
 
 #compose
 compose-bom = "2024.09.03"
-activity-compose = "1.9.2"
+activity-compose = "1.9.3"
 
 #navigation
 hilt = "2.52"
