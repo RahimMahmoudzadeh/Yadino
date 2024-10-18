@@ -6,6 +6,7 @@ import com.rahim.yadino.di.IODispatcher
 import com.rahim.yadino.dateTime.DateTimeRepository
 import com.rahim.yadino.note.NoteRepository
 import com.rahim.yadino.routine.RepositoryRoutine
+import com.rahim.yadino.routine.routineScreen.RoutineContract
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -62,7 +63,7 @@ class MainViewModel @Inject constructor(
 
     fun showSampleRoutine(isShow: Boolean = true) {
         viewModelScope.launch {
-            sharedPreferencesRepository.isShowSampleRoutine(isShow)
+            sharedPreferencesRepository.setShowSampleRoutine(isShow)
         }
     }
 }

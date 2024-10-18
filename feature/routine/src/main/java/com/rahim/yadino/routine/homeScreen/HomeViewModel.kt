@@ -1,10 +1,8 @@
 package com.rahim.yadino.routine.homeScreen
 
-import android.R.id.message
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.Resource
 import com.rahim.yadino.base.BaseViewModel
-import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.useCase.AddReminderUseCase
 import com.rahim.yadino.model.RoutineModel
 import com.rahim.yadino.dateTime.DateTimeRepository
@@ -35,14 +33,11 @@ class HomeViewModel @Inject constructor(
   private val getRemindersUseCase: GetRemindersUseCase,
   private val searchRoutineUseCase: SearchRoutineUseCase,
   private val dateTimeRepository: DateTimeRepository,
-  private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : BaseViewModel(), HomeContract {
-  val currentYear = dateTimeRepository.currentTimeYer
-  val currentMonth = dateTimeRepository.currentTimeMonth
-  val currentDay = dateTimeRepository.currentTimeDay
 
   private val mutableState = MutableStateFlow(HomeContract.HomeState())
   override val state: StateFlow<HomeContract.HomeState> = mutableState.onStart {
+    setCurrentTime()
     getCurrentRoutines()
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeContract.HomeState())
 
@@ -71,16 +66,22 @@ class HomeViewModel @Inject constructor(
       is HomeContract.HomeEvent.SearchRoutine -> {
         searchItems(event.routineName)
       }
+    }
+  }
 
-      HomeContract.HomeEvent.ShowSampleRoutines -> {
-        showSampleRoutine()
-      }
+  private fun setCurrentTime() {
+    mutableState.update {
+      it.copy(
+        currentDay = dateTimeRepository.currentTimeDay,
+        currentMonth = dateTimeRepository.currentTimeMonth,
+        currentYear = dateTimeRepository.currentTimeYear,
+      )
     }
   }
 
   private fun getCurrentRoutines() {
     viewModelScope.launch {
-      getRemindersUseCase(dateTimeRepository.currentTimeMonth, dateTimeRepository.currentTimeDay, dateTimeRepository.currentTimeYer).catch {
+      getRemindersUseCase(dateTimeRepository.currentTimeMonth, dateTimeRepository.currentTimeDay, dateTimeRepository.currentTimeYear).catch {
 
       }.collect { routines ->
         mutableState.update {
@@ -88,7 +89,7 @@ class HomeViewModel @Inject constructor(
             routines = routines.sortedBy {
               it.timeHours?.replace(":", "")?.toInt()
             },
-            errorMessage = null
+            errorMessage = null,
           )
         }
       }
@@ -147,24 +148,18 @@ class HomeViewModel @Inject constructor(
     viewModelScope.launch {
       if (searchText.isNotEmpty()) {
         Timber.tag("searchRoutine").d("searchText:$searchText")
-        val searchItems = searchRoutineUseCase(searchText, dateTimeRepository.currentTimeYer, dateTimeRepository.currentTimeMonth, dateTimeRepository.currentTimeDay)
+        val searchItems = searchRoutineUseCase(searchText, dateTimeRepository.currentTimeYear, dateTimeRepository.currentTimeMonth, dateTimeRepository.currentTimeDay)
         mutableState.update {
           it.copy(
             routines = searchItems.sortedBy {
               it.timeHours?.replace(":", "")?.toInt()
             },
-            errorMessage = null
+            errorMessage = null,
           )
         }
       } else {
         getCurrentRoutines()
       }
-    }
-  }
-
-  private fun showSampleRoutine(isShow: Boolean = true) {
-    viewModelScope.launch {
-      sharedPreferencesRepository.isShowSampleRoutine(isShow)
     }
   }
 

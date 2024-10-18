@@ -62,7 +62,7 @@ fun DialogChoseDate(
     monthNumber: Int,
     dayNumber: Int,
     closeDialog: () -> Unit = {},
-    dayCheckedNumber: (yer: Int, month: Int, day: Int) -> Unit,
+    dayCheckedNumber: (year: Int, month: Int, day: Int) -> Unit,
     monthChange: (year: Int, month: Int) -> Unit,
 ) {
     var currentMonth by rememberSaveable { mutableIntStateOf(monthNumber) }
@@ -183,8 +183,8 @@ fun DialogChoseDate(
                                 dayClicked,
                                 monthClicked,
                                 yearClicked,
-                                dayCheckedNumber = { yer, month, day ->
-                                    yearClicked = yer
+                                dayCheckedNumber = { year, month, day ->
+                                    yearClicked = year
                                     monthClicked = month
                                     dayClicked = day
                                 })
@@ -238,7 +238,7 @@ fun DialogChoseDateWrapperLight() {
                 dayNumber = i,
                 nameDay = if (i == 7 || i == 14 || i == 21 || i == 28) "ج" else "ش",
                 haveTask = false,
-                yerNumber = 1403,
+                yearNumber = 1403,
                 monthNumber = 2,
                 monthName = "اردیبهشت",
                 isChecked = false,
@@ -253,7 +253,7 @@ fun DialogChoseDateWrapperLight() {
             monthNumber = 2,
             dayNumber = 21,
             closeDialog = {},
-            dayCheckedNumber = { yer, month, day -> },
+            dayCheckedNumber = { year, month, day -> },
             monthChange = { year, month -> }
         )
     }
@@ -269,7 +269,7 @@ fun DialogChoseDateWrapperDark() {
                 dayNumber = i,
                 nameDay = if (i == 7 || i == 14 || i == 21 || i == 28) "ج" else "ش",
                 haveTask = false,
-                yerNumber = 1403,
+                yearNumber = 1403,
                 monthNumber = 2,
                 monthName = "اردیبهشت",
                 isChecked = false,
@@ -284,8 +284,8 @@ fun DialogChoseDateWrapperDark() {
             monthNumber = 2,
             dayNumber = 22,
             closeDialog = {},
-            dayCheckedNumber = { yer, month, day -> },
-            monthChange = { yer, month -> }
+            dayCheckedNumber = { year, month, day -> },
+            monthChange = { year, month -> }
         )
     }
 }

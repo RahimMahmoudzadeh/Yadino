@@ -10,5 +10,6 @@ android {
 }
 dependencies {
     api(project(":domain:routine"))
+    api(project(":domain:sharedPreferences"))
     implementation(project(":core:base"))
 }

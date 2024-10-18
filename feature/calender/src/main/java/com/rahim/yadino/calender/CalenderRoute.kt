@@ -177,8 +177,8 @@ private fun CalenderScreen(
                             dayClicked,
                             monthClicked,
                             yearClicked,
-                            dayCheckedNumber = { yer, month, day ->
-                                yearClicked = yer
+                            dayCheckedNumber = { year, month, day ->
+                                yearClicked = year
                                 monthClicked = month
                                 dayClicked = day
                             })

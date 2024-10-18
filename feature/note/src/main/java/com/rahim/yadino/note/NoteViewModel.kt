@@ -28,7 +28,7 @@ class NoteViewModel @Inject constructor(
   private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) :
   BaseViewModel(), NoteContract {
-  private val currentYear = timeRepository.currentTimeYer
+  private val currentYear = timeRepository.currentTimeYear
   private val currentMonth = timeRepository.currentTimeMonth
   private val currentDay = timeRepository.currentTimeDay
 
@@ -50,7 +50,7 @@ class NoteViewModel @Inject constructor(
 
   private fun addNote(noteModel: NoteModel) {
     viewModelScope.launch {
-      val updateNote=noteModel.copy(dayNumber = currentDay, monthNumber = currentMonth, yerNumber = currentYear)
+      val updateNote=noteModel.copy(dayNumber = currentDay, monthNumber = currentMonth, yearNumber = currentYear)
       noteRepository.addNote(updateNote)
     }
   }
@@ -63,7 +63,7 @@ class NoteViewModel @Inject constructor(
 
   private fun getCurrentNameDay(
     date: String = String().calculateTimeFormat(
-      timeRepository.currentTimeYer,
+      timeRepository.currentTimeYear,
       timeRepository.currentTimeMonth,
       timeRepository.currentTimeDay.toString(),
     ),

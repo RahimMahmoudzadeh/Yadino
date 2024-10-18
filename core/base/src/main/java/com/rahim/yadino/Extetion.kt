@@ -63,7 +63,7 @@ fun Int.calculateMonthName(): String {
   }
 }
 
-fun String.calculateTimeFormat(currentYer: Int, currentMonth: Int, currentDay: String): String {
+fun String.calculateTimeFormat(currentYear: Int, currentMonth: Int, currentDay: String): String {
   val currentMonth = if (currentMonth.toString().length == 1) {
     "0$currentMonth"
   } else {
@@ -74,7 +74,7 @@ fun String.calculateTimeFormat(currentYer: Int, currentMonth: Int, currentDay: S
   } else {
     currentDay
   }
-  return "$currentYer-$currentMonth-$currentDay"
+  return "$currentYear-$currentMonth-$currentDay"
 }
 
 fun ErrorMessageCode.errorMessage() = when (this@errorMessage) {

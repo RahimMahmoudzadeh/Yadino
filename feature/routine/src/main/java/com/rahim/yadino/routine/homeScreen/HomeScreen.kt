@@ -2,8 +2,6 @@ package com.rahim.yadino.routine.homeScreen
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
@@ -16,12 +14,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.rahim.yadino.Resource
 import com.rahim.yadino.base.use
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.EmptyMessage
-import com.rahim.yadino.designsystem.component.ItemRoutine
 import com.rahim.yadino.designsystem.component.ListRoutines
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.component.ShowToastShort
@@ -51,9 +46,6 @@ internal fun HomeRoute(
     onCheckedRoutine = {
       event.invoke(HomeContract.HomeEvent.CheckedRoutine(it))
     },
-    onShowSampleRoutine = {
-      event.invoke(HomeContract.HomeEvent.ShowSampleRoutines)
-    },
     onDeleteRoutine = {
       event.invoke(HomeContract.HomeEvent.DeleteRoutine(it))
     },
@@ -77,7 +69,6 @@ private fun HomeScreen(
   openDialog: Boolean,
   clickSearch: Boolean,
   onCheckedRoutine: (RoutineModel) -> Unit,
-  onShowSampleRoutine: () -> Unit,
   onDeleteRoutine: (RoutineModel) -> Unit,
   onUpdateRoutine: (RoutineModel) -> Unit,
   onAddRoutine: (RoutineModel) -> Unit,
@@ -110,7 +101,7 @@ private fun HomeScreen(
       )
     } else {
       ItemsHome(
-        homeState.currentYer, homeState.currentMonth, homeState.currentDay,
+        homeState.currentYear, homeState.currentMonth, homeState.currentDay,
         homeState.routines,
         { checkedRoutine ->
           onCheckedRoutine(checkedRoutine)
@@ -124,12 +115,10 @@ private fun HomeScreen(
             ).show()
             return@ItemsHome
           }
-          if (routineUpdate.isSample) onShowSampleRoutine()
           routineModelUpdateDialog.value = routineUpdate
           onOpenDialog(true)
         },
         { deleteRoutine ->
-          if (deleteRoutine.isSample) onShowSampleRoutine()
           routineModelDeleteDialog.value = deleteRoutine
         },
       )
@@ -157,44 +146,18 @@ private fun HomeScreen(
       onOpenDialog(false)
       routineModelUpdateDialog.value = null
     },
-    routineItems = { routineName, routineExplanation, routineTime, dayChecked, monthChecked, yearChecked, dayName ->
-      onShowSampleRoutine()
+    routineItems = { routine ->
       if (routineModelUpdateDialog.value != null) {
-        val updatedRoutine = routineModelUpdateDialog.value?.copy(
-          name = routineName,
-          explanation = routineExplanation,
-          timeHours = routineTime,
-          dayNumber = dayChecked,
-          monthNumber = monthChecked,
-          yerNumber = yearChecked,
-          dayName = dayName,
-        )
-        routineModelUpdateDialog.value = updatedRoutine
-        routineModelUpdateDialog.value?.let(onUpdateRoutine)
+        onUpdateRoutine(routine)
       } else {
-        val routineModel = RoutineModel(
-          name = routineName,
-          dayName = dayName,
-          dayNumber = dayChecked,
-          monthNumber = monthChecked,
-          yerNumber = yearChecked,
-          explanation = routineExplanation,
-          timeHours = routineTime,
-          colorTask = null,
-        )
-        onAddRoutine(routineModel)
+        onAddRoutine(routine)
       }
       onOpenDialog(false)
     },
-    updateRoutineExplanation = routineModelUpdateDialog.value?.explanation ?: "",
-    updateRoutineDay = routineModelUpdateDialog.value?.dayNumber,
-    updateRoutineMonth = routineModelUpdateDialog.value?.monthNumber,
-    updateRoutineYear = routineModelUpdateDialog.value?.yerNumber,
-    updateRoutineName = routineModelUpdateDialog.value?.name ?: "",
-    updateRoutineTime = routineModelUpdateDialog.value?.timeHours ?: "",
+    updateRoutine = routineModelUpdateDialog.value,
     currentNumberDay = homeState.currentDay,
     currentNumberMonth = homeState.currentMonth,
-    currentNumberYear = homeState.currentYer,
+    currentNumberYear = homeState.currentYear,
     monthChange = { year: Int, month: Int -> },
   )
 }
@@ -203,13 +166,13 @@ private fun HomeScreen(
 fun ItemsHome(
   currentDay: Int,
   currentMonth: Int,
-  currentYer: Int,
+  currentYear: Int,
   routineModels: List<RoutineModel>,
   checkedRoutine: (RoutineModel) -> Unit,
   updateRoutine: (RoutineModel) -> Unit,
   deleteRoutine: (RoutineModel) -> Unit,
 ) {
-  val data = "$currentDay/$currentMonth/$currentYer"
+  val data = "$currentDay/$currentMonth/$currentYear"
   Row(
     horizontalArrangement = Arrangement.SpaceBetween,
     modifier = Modifier

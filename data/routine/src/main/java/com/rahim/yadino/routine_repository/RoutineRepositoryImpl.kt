@@ -1,26 +1,21 @@
 package com.rahim.yadino.routine_repository
 
 import com.rahim.yadino.Constants.PATTERN_DATE
-import com.rahim.yadino.di.IODispatcher
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.rahim.yadino.sharedPreferences.SharedPreferencesCustom
 import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.Resource
-import com.rahim.yadino.collectWithoutHistory
 import com.rahim.yadino.model.RoutineModel
 import com.rahim.yadino.db.dao.RoutineDao
-import kotlinx.coroutines.CoroutineDispatcher
+import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.withContext
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -29,17 +24,16 @@ private const val ROUTINE_RIGHT_SAMPLE = "من یک روتین تستی هستم
 
 class RoutineRepositoryImpl @Inject constructor(
   private val routineDao: RoutineDao,
-  private val sharedPreferencesCustom: SharedPreferencesCustom,
-  @IODispatcher private val ioDispatcher: CoroutineDispatcher,
+  private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : RepositoryRoutine {
   private val persianData = PersianDate()
   private val currentTimeDay = persianData.shDay
   private val currentTimeMonth = persianData.shMonth
-  private val currentTimeYer = persianData.shYear
+  private val currentTimeYear = persianData.shYear
 
   override suspend fun addSampleRoutine() {
     delay(500)
-    if (sharedPreferencesCustom.isShowSampleRoutine()) {
+    if (sharedPreferencesRepository.isShowSampleRoutine()) {
       routineDao.removeSampleRoutine()
       return
     }
@@ -51,7 +45,7 @@ class RoutineRepositoryImpl @Inject constructor(
         currentTimeDay.toString(),
         currentTimeDay,
         currentTimeMonth,
-        currentTimeYer,
+        currentTimeYear,
         "12:00",
         false,
         explanation = if (index == 1) ROUTINE_LEFT_SAMPLE else ROUTINE_RIGHT_SAMPLE,
@@ -100,6 +94,7 @@ class RoutineRepositoryImpl @Inject constructor(
     routineDao.getRoutines()
 
   override suspend fun addRoutine(routineModel: RoutineModel) {
+    sharedPreferencesRepository.setShowSampleRoutine(true)
     routineDao.addRoutine(routineModel)
   }
 
@@ -109,14 +104,14 @@ class RoutineRepositoryImpl @Inject constructor(
       routineExplanation = routineModel.explanation ?: "",
       routineDayName = routineModel.dayName,
       routineDayNumber = routineModel.dayNumber ?: 0,
-      routineYearNumber = routineModel.yerNumber ?: 0,
+      routineYearNumber = routineModel.yearNumber ?: 0,
       routineMonthNumber = routineModel.monthNumber ?: 0,
       routineTimeMilSecond = routineModel.timeInMillisecond ?: 0,
     )
   }
 
   override fun convertDateToMilSecond(
-    yerNumber: Int?,
+    yearNumber: Int?,
     monthNumber: Int?,
     dayNumber: Int?,
     timeHours: String?,
@@ -129,7 +124,7 @@ class RoutineRepositoryImpl @Inject constructor(
     val hoursDate =
       if (timeHours.toString().length == 4) "0${timeHours.toString()}" else timeHours
     val time =
-      "${yerNumber}-${monthDate}-${dayNumber} ${hoursDate}:00"
+      "${yearNumber}-${monthDate}-${dayNumber} ${hoursDate}:00"
     val persianDate = persianDateFormat.parse(
       time,
       PATTERN_DATE,
@@ -149,68 +144,72 @@ class RoutineRepositoryImpl @Inject constructor(
   }
 
   override suspend fun removeRoutine(routineModel: RoutineModel): Int {
+    sharedPreferencesRepository.setShowSampleRoutine(true)
     return routineDao.removeRoutine(routineModel)
   }
 
-  override suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yerNumber: Int?) {
-    routineDao.removeAllRoutine(nameMonth, dayNumber, yerNumber)
+  override suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yearNumber: Int?) {
+    routineDao.removeAllRoutine(nameMonth, dayNumber, yearNumber)
   }
 
-  override suspend fun updateRoutine(routineModel: RoutineModel): Flow<Resource<RoutineModel?>> =
+  override fun updateRoutine(routineModel: RoutineModel): Flow<Resource<RoutineModel?>> =
     flow {
-//      routineModel.apply {
-//        timeInMillisecond = convertDateToMilSecond(
-//          this.yerNumber,
-//          this.monthNumber,
-//          this.dayNumber,
-//          this.timeHours,
-//        )
-//      }
-      val equalRoutine = routineDao.checkEqualRoutine(
-        routineName = routineModel.name,
-        routineExplanation = routineModel.explanation ?: "",
-        routineDayName = routineModel.dayName,
-        routineDayNumber = routineModel.dayNumber ?: 0,
-        routineYearNumber = routineModel.yerNumber ?: 0,
-        routineMonthNumber = routineModel.monthNumber ?: 0,
-        routineTimeMilSecond = routineModel.timeInMillisecond ?: 0,
+      sharedPreferencesRepository.setShowSampleRoutine(true)
+      val updateRoutine = routineModel.copy(
+        timeInMillisecond = convertDateToMilSecond(
+          routineModel.yearNumber,
+          routineModel.monthNumber,
+          routineModel.dayNumber,
+          routineModel.timeHours,
+        ),
       )
-      if (equalRoutine != null) {
-        emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
-      } else {
-        runCatching {
-          routineDao.updateRoutine(routineModel)
-        }.onSuccess {
-          emit(Resource.Success(routineModel))
-        }.onFailure {
+      updateRoutine.run {
+        val equalRoutine = routineDao.checkEqualRoutine(
+          routineName = name,
+          routineExplanation = explanation ?: "",
+          routineDayName = dayName,
+          routineDayNumber = dayNumber ?: 0,
+          routineYearNumber = yearNumber ?: 0,
+          routineMonthNumber = monthNumber ?: 0,
+          routineTimeMilSecond = timeInMillisecond ?: 0,
+        )
+        if (equalRoutine != null) {
           emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
+        } else {
+          runCatching {
+            routineDao.updateRoutine(this)
+          }.onSuccess {
+            emit(Resource.Success(this))
+          }.onFailure {
+            emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
+          }
         }
       }
     }
 
   override suspend fun getRoutine(id: Int): RoutineModel = routineDao.getRoutine(id)
   override suspend fun checkedRoutine(routineModel: RoutineModel) {
+    sharedPreferencesRepository.setShowSampleRoutine(true)
     routineDao.updateRoutine(routineModel)
   }
 
   private var lastYearNumber = 0
   private var lastMonthNumber = 0
   private var lastDayNumber = 0
-  override suspend fun getRoutines(
-    monthNumber: Int, numberDay: Int, yerNumber: Int,
+  override fun getRoutines(
+    monthNumber: Int, numberDay: Int, yearNumber: Int,
   ): Flow<List<RoutineModel>> = flow {
-    lastYearNumber = yerNumber
+    lastYearNumber = yearNumber
     lastMonthNumber = monthNumber
     lastDayNumber = numberDay
-    routineDao.getRoutines(monthNumber, numberDay, yerNumber).takeWhile {
+    routineDao.getRoutines(monthNumber, numberDay, yearNumber).takeWhile {
       if (it.isEmpty()) {
-        Timber.tag("routineRepo").d("getRoutines collect monthNumber in if")
         true
       } else {
         val firstRoutine = it.first()
-        (firstRoutine.monthNumber == lastMonthNumber && firstRoutine.dayNumber == lastDayNumber && firstRoutine.yerNumber == lastYearNumber)
+        (firstRoutine.monthNumber == lastMonthNumber && firstRoutine.dayNumber == lastDayNumber && firstRoutine.yearNumber == lastYearNumber)
       }
-    }.collect {
+    }.collectLatest {
       emit(it)
     }
   }
