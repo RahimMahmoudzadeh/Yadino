@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -37,7 +38,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rahim.yadino.base.use
 import com.rahim.yadino.calculateMonthName
-import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.model.TimeDate
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.EmptyMessage
@@ -73,9 +73,6 @@ fun RoutineRoute(
     openDialog = openDialog,
     clickSearch = clickSearch,
     onOpenDialog = onOpenDialog,
-    currentMonth = viewModel.currentMonth,
-    currentYer = viewModel.currentYear,
-    currentDay = viewModel.currentDay,
     onUpdateRoutine = {
       event.invoke(RoutineContract.RoutineEvent.UpdateRoutine(it))
     },
@@ -91,17 +88,23 @@ fun RoutineRoute(
     checkedRoutine = {
       event.invoke(RoutineContract.RoutineEvent.CheckedRoutine(it))
     },
-    showSampleRoutine = {
-      event.invoke(RoutineContract.RoutineEvent.ShowSampleRoutines)
-    },
-    onDayIndex = {
-      event.invoke(RoutineContract.RoutineEvent.SetDayIndex(it))
-    },
-    onCheckedDay = { year, month, day ->
-      event.invoke(RoutineContract.RoutineEvent.GetRoutines(year, month, day))
+    dayCheckedNumber = { timeDate ->
+      event.invoke(RoutineContract.RoutineEvent.GetRoutines(timeDate))
     },
     onMonthChecked = { year, month ->
       event.invoke(RoutineContract.RoutineEvent.GetTimesMonth(year, month))
+    },
+    monthIncrease = {
+      event.invoke(RoutineContract.RoutineEvent.MonthIncrease)
+    },
+    monthDecrease = {
+      event.invoke(RoutineContract.RoutineEvent.MonthDecrease)
+    },
+    weekIncrease = {
+      event.invoke(RoutineContract.RoutineEvent.WeekIncrease)
+    },
+    weekDecrease = {
+      event.invoke(RoutineContract.RoutineEvent.WeekDecrease)
     },
   )
 }
@@ -110,49 +113,30 @@ fun RoutineRoute(
 private fun RoutineScreen(
   modifier: Modifier,
   state: RoutineContract.RoutineState,
-  currentMonth: Int,
-  currentYer: Int,
-  currentDay: Int,
   openDialog: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,
   clickSearch: Boolean,
   checkedRoutine: (RoutineModel) -> Unit,
-  onCheckedDay: (year: Int, month: Int, day: Int) -> Unit,
+  dayCheckedNumber: (timeDate: TimeDate) -> Unit,
   onUpdateRoutine: (RoutineModel) -> Unit,
   onAddRoutine: (RoutineModel) -> Unit,
   onDeleteRoutine: (RoutineModel) -> Unit,
-  showSampleRoutine: (Boolean) -> Unit,
   onSearchText: (String) -> Unit,
-  onDayIndex: (Int) -> Unit,
   onMonthChecked: (Int, Int) -> Unit,
+  monthIncrease: () -> Unit,
+  monthDecrease: () -> Unit,
+  weekIncrease: () -> Unit,
+  weekDecrease: () -> Unit,
 ) {
   val context = LocalContext.current
+
   Timber.tag("routineGetNameDay").d("recomposition RoutineScreen")
   val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineModel?>(null) }
   val routineModelUpdateDialog = rememberSaveable { mutableStateOf<RoutineModel?>(null) }
   var errorClick by rememberSaveable { mutableStateOf(false) }
-  var dayChecked by rememberSaveable { mutableIntStateOf(currentDay) }
-  var monthChecked by rememberSaveable { mutableIntStateOf(currentMonth) }
-  var yerChecked by rememberSaveable { mutableIntStateOf(currentYer) }
 
   var searchText by rememberSaveable { mutableStateOf("") }
 
-  val listStateDay = rememberLazyListState()
-  val coroutineScope = rememberCoroutineScope()
-  val currentDayIndex by remember {
-    derivedStateOf {
-      listStateDay.firstVisibleItemIndex
-    }
-  }
-
-  val configuration = LocalConfiguration.current
-  val screenWidth = configuration.screenWidthDp
-
-  coroutineScope.launch {
-    if (state.index >= 0) {
-      listStateDay.scrollToItem(state.index)
-    }
-  }
   state.errorMessage?.let { errorMessage ->
     ShowToastShort(errorMessage.errorMessage(), context)
   }
@@ -166,30 +150,19 @@ private fun RoutineScreen(
       searchText = search
       onSearchText(searchText)
     }
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp
     ItemTimeDate(
-      state.times,
-      dayChecked,
-      yerChecked,
-      monthChecked,
-      listStateDay = listStateDay,
+      times = state.times,
+      yearChecked = state.currentYear,
+      monthChecked = state.currentMonth,
       indexDay = state.index,
-      dayCheckedNumber = { day, year, month ->
-        yerChecked = year
-        dayChecked = day
-        monthChecked = month
-        onCheckedDay(year, month, day)
-//        onMonthChecked(year, month)
-      },
-      currentIndexDay = currentDayIndex,
-      indexScrollDay = {
-        if (it != state.times.size) {
-          onDayIndex(it)
-          coroutineScope.launch {
-            listStateDay.animateScrollToItem(state.index)
-          }
-        }
-      },
+      dayCheckedNumber = dayCheckedNumber,
       screenWidth = screenWidth,
+      monthIncrease = monthIncrease,
+      monthDecrease = monthDecrease,
+      weekDecrease = weekDecrease,
+      weekIncrease = weekIncrease,
     )
     GetRoutines(
       state.routines,
@@ -204,8 +177,6 @@ private fun RoutineScreen(
           return@GetRoutines
         }
         onOpenDialog(true)
-        if (it.isSample)
-          showSampleRoutine(true)
         routineModelUpdateDialog.value = it
       },
       routineChecked = {
@@ -221,9 +192,6 @@ private fun RoutineScreen(
           ).show()
           return@GetRoutines
         }
-        if (it.isSample)
-          showSampleRoutine(true)
-
         routineModelDeleteDialog.value = it
       },
     )
@@ -251,45 +219,19 @@ private fun RoutineScreen(
       onOpenDialog(false)
       routineModelUpdateDialog.value = null
     },
-    updateRoutineName = routineModelUpdateDialog.value?.name ?: "",
-    updateRoutineExplanation = routineModelUpdateDialog.value?.explanation ?: "",
-    updateRoutineTime = routineModelUpdateDialog.value?.timeHours ?: "",
-    updateRoutineDay = routineModelUpdateDialog.value?.dayNumber,
-    updateRoutineMonth = routineModelUpdateDialog.value?.monthNumber,
-    updateRoutineYear = routineModelUpdateDialog.value?.dayNumber,
-    routineItems = { routineName, routineExplanation, routineTime, dayChecked, monthChecked, yearChecked, dayName ->
-      showSampleRoutine(true)
+    updateRoutine = routineModelUpdateDialog.value,
+    routineItems = { routine ->
       if (routineModelUpdateDialog.value != null) {
-        val updatedRoutine = routineModelUpdateDialog.value?.copy(
-          name = routineName,
-          explanation = routineExplanation,
-          timeHours = routineTime,
-          dayNumber = dayChecked,
-          monthNumber = monthChecked,
-          yerNumber = yearChecked,
-          dayName = dayName,
-        )
-        routineModelUpdateDialog.value = updatedRoutine
-        routineModelUpdateDialog.value?.let(onUpdateRoutine)
+        onUpdateRoutine(routine)
       } else {
-        val routineModel = RoutineModel(
-          name = routineName,
-          colorTask = null,
-          dayName = dayName,
-          dayNumber = dayChecked,
-          monthNumber = monthChecked,
-          yerNumber = yearChecked,
-          timeHours = routineTime,
-          explanation = routineExplanation,
-        )
-        onAddRoutine(routineModel)
+        onAddRoutine(routine)
       }
       onOpenDialog(false)
     },
-    currentNumberDay = dayChecked,
-    currentNumberMonth = monthChecked,
-    currentNumberYear = yerChecked,
-    times = state.timesMonth,
+    currentNumberDay = state.currentDay,
+    currentNumberMonth = state.currentMonth,
+    currentNumberYear = state.currentYear,
+    timesMonth = state.timesMonth,
     monthChange = onMonthChecked,
   )
   ErrorDialog(
@@ -303,31 +245,6 @@ private fun RoutineScreen(
       errorClick = false
     },
   )
-}
-
-
-private fun calculateCurrentIndexDay(currentIndex: Int, previousIndex: Int): Int {
-  return if (currentIndex > previousIndex) {
-    previousIndex + 7
-  } else {
-    if (previousIndex - 7 < 0) {
-      previousIndex
-    } else {
-      previousIndex - 7
-    }
-  }
-}
-
-private fun calculateIndexDay(index: Int): Int {
-  var indexPosition = 0
-  while (true) {
-    indexPosition += 7
-    if (indexPosition > index) {
-      indexPosition -= 7
-      break
-    }
-  }
-  return indexPosition
 }
 
 @Composable
@@ -353,8 +270,8 @@ private fun GetRoutines(
   } else {
     ListRoutines(
       modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 16.dp),
+          .fillMaxWidth()
+          .padding(top = 16.dp),
       routines = routines,
       checkedRoutine = {
         Timber.tag("routineGetNameDay")
@@ -375,36 +292,24 @@ private fun GetRoutines(
 @Composable
 private fun ItemTimeDate(
   times: List<TimeDate>,
-  dayChecked: Int,
   yearChecked: Int,
   monthChecked: Int,
-  listStateDay: LazyListState,
   indexDay: Int,
-  currentIndexDay: Int,
   screenWidth: Int,
-  dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit,
-  indexScrollDay: (Int) -> Unit,
+  dayCheckedNumber: (timeDate: TimeDate) -> Unit,
+  monthIncrease: () -> Unit,
+  monthDecrease: () -> Unit,
+  weekIncrease: () -> Unit,
+  weekDecrease: () -> Unit,
 ) {
+  val arrayString = stringArrayResource(id = R.array.half_week_name)
+
   Row(
     modifier = Modifier.padding(top = 28.dp),
   ) {
     IconButton(
       onClick = {
-        var month = monthChecked.plus(1)
-        var year = yearChecked
-        if (month > 12) {
-          month = 1
-          year = yearChecked.plus(1)
-        }
-        val time =
-          times.find { it.monthNumber == month && it.yerNumber == year && it.dayNumber == 1 }
-        if (time != null) {
-          dayCheckedNumber(1, year, month)
-          val index = times.indexOf(time)
-          indexScrollDay(
-            calculateIndexDay(index),
-          )
-        }
+        monthIncrease()
       },
     ) {
       Icon(
@@ -415,29 +320,15 @@ private fun ItemTimeDate(
     }
     Text(
       modifier = Modifier
-        .padding(top = 12.dp)
-        .fillMaxWidth(0.3f),
+          .padding(top = 12.dp)
+          .fillMaxWidth(0.3f),
       text = "${yearChecked.toString().persianLocate()} ${monthChecked.calculateMonthName()}",
       color = MaterialTheme.colorScheme.primary,
       textAlign = TextAlign.Center,
     )
     IconButton(
       onClick = {
-        var month = monthChecked.minus(1)
-        var year = yearChecked
-        if (month < 1) {
-          month = 12
-          year = yearChecked.minus(1)
-        }
-        val time =
-          times.find { it.monthNumber == month && it.yerNumber == year && it.dayNumber == 1 }
-        if (time != null) {
-          dayCheckedNumber(1, year, month)
-          val index = times.indexOf(time)
-          indexScrollDay(
-            calculateIndexDay(index),
-          )
-        }
+        monthDecrease()
       },
     ) {
       Icon(
@@ -450,64 +341,31 @@ private fun ItemTimeDate(
 
   Row(
     modifier = Modifier
-      .padding(top = 18.dp, end = 50.dp, start = 50.dp)
-      .fillMaxWidth(),
+        .padding(top = 18.dp, end = 50.dp, start = 50.dp)
+        .fillMaxWidth(),
     horizontalArrangement = Arrangement.SpaceBetween,
   ) {
-    Text(
-      modifier = Modifier.padding(start = 13.dp),
-      fontSize = 14.sp,
-      text = HalfWeekName.FRIDAY.nameDay,
-      color = MaterialTheme.colorScheme.primary,
-    )
-    Text(
-      fontSize = 14.sp,
-      text = HalfWeekName.THURSDAY.nameDay,
-      color = MaterialTheme.colorScheme.primary,
-    )
-    Text(
-      fontSize = 14.sp,
-      text = HalfWeekName.WEDNESDAY.nameDay,
-      color = MaterialTheme.colorScheme.primary,
-    )
-    Text(
-      fontSize = 14.sp,
-      text = HalfWeekName.TUESDAY.nameDay,
-      color = MaterialTheme.colorScheme.primary,
-    )
-    Text(
-      fontSize = 14.sp,
-      text = HalfWeekName.MONDAY.nameDay,
-      color = MaterialTheme.colorScheme.primary,
-    )
-    Text(
-      fontSize = 14.sp,
-      text = HalfWeekName.SUNDAY.nameDay,
-      color = MaterialTheme.colorScheme.primary,
-    )
-    Text(
-      modifier = Modifier.padding(end = 12.dp, top = 3.dp),
-      fontSize = 12.sp,
-      text = HalfWeekName.SATURDAY.nameDay,
-      color = MaterialTheme.colorScheme.primary,
-    )
+    arrayString.reversed().forEachIndexed { index, nameDay ->
+      Text(
+        modifier = Modifier.padding(
+          start = if (index == 0) 13.dp else 0.dp,
+          end = if (index == 7) 12.dp else 0.dp,
+          top = if (index == 7) 3.dp else 0.dp,
+        ),
+        fontSize = 14.sp,
+        text = nameDay,
+        color = MaterialTheme.colorScheme.primary,
+      )
+    }
   }
 
   Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
     IconButton(
       modifier = Modifier
-        .weight(1f)
-        .padding(top = 10.dp),
+          .weight(1f)
+          .padding(top = 10.dp),
       onClick = {
-        indexScrollDay(
-          if (times.size <= indexDay + 7) {
-            times.size
-          } else if (indexDay == -1) {
-            indexDay + 8
-          } else {
-            indexDay + 7
-          },
-        )
+        weekIncrease()
       },
     ) {
       Icon(
@@ -517,30 +375,20 @@ private fun ItemTimeDate(
       )
     }
     ListTimes(
-      modifier = Modifier.weight(8f).padding(top = 6.dp),
-      listStateDay = listStateDay,
+      modifier = Modifier
+          .weight(8f)
+          .padding(top = 6.dp),
       times = times,
-      dayChecked = dayChecked,
-      yearChecked = yearChecked,
-      monthChecked = monthChecked,
       screenWidth = screenWidth,
       dayCheckedNumber = dayCheckedNumber,
-      indexScrollDay = indexScrollDay,
       indexDay = indexDay,
-      currentIndexDay = currentIndexDay,
     )
     IconButton(
       modifier = Modifier
-        .weight(1f)
-        .padding(top = 10.dp),
+          .weight(1f)
+          .padding(top = 10.dp),
       onClick = {
-        indexScrollDay(
-          if (indexDay <= 6) {
-            0
-          } else {
-            indexDay - 7
-          },
-        )
+        weekDecrease()
       },
     ) {
       Icon(
@@ -556,9 +404,20 @@ private fun ItemTimeDate(
 @Composable
 fun ListTimes(
   modifier: Modifier = Modifier,
-  listStateDay: LazyListState, times: List<TimeDate>, dayChecked: Int, yearChecked: Int, monthChecked: Int, screenWidth: Int,
-  dayCheckedNumber: (Int, Int, Int) -> Unit, indexScrollDay: (Int) -> Unit, indexDay: Int, currentIndexDay: Int,
+  times: List<TimeDate>,
+  screenWidth: Int,
+  dayCheckedNumber: (timeDate: TimeDate) -> Unit,
+  indexDay: Int,
 ) {
+  val listStateDay = rememberLazyListState()
+  val coroutineScope = rememberCoroutineScope()
+
+  coroutineScope.launch {
+    if (indexDay > 0) {
+      listStateDay.scrollToItem(indexDay)
+    }
+  }
+
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
     LazyRow(
       userScrollEnabled = false,
@@ -567,7 +426,6 @@ fun ListTimes(
       flingBehavior = rememberSnapperFlingBehavior(
         lazyListState = listStateDay,
         snapIndex = { _, _, _ ->
-          indexScrollDay(calculateCurrentIndexDay(currentIndexDay, indexDay))
           indexDay
         },
       ),
@@ -577,12 +435,9 @@ fun ListTimes(
         itemContent = {
           DayItems(
             it,
-            dayChecked,
-            yearChecked,
-            monthChecked,
             screenWidth = screenWidth,
-            dayCheckedNumber = { day, yer, month ->
-              dayCheckedNumber(day, yer, month)
+            dayCheckedNumber = { timeDate ->
+              dayCheckedNumber(timeDate)
             },
           )
         },
@@ -594,45 +449,35 @@ fun ListTimes(
 @Composable
 private fun DayItems(
   timeDate: TimeDate,
-  dayChecked: Int,
-  dayYerChecked: Int,
-  dayMonthChecked: Int,
   screenWidth: Int,
-  dayCheckedNumber: (day: Int, yer: Int, month: Int) -> Unit,
+  dayCheckedNumber: (timeDate: TimeDate) -> Unit,
 ) {
-
-  Timber.tag("timeClicked").d("dayChecked->$dayChecked")
-  Timber.tag("timeClicked").d("dayYerChecked->$dayYerChecked")
-  Timber.tag("timeClicked").d("dayMonthChecked->$dayMonthChecked")
-  Timber.tag("timeClicked").d("timeData->$timeDate")
   ClickableText(
     modifier = Modifier
-      .padding(
-        top = 4.dp,
-        start = if (dayChecked == 1) if (screenWidth <= 420) 5.dp else 7.dp else 6.dp,
-      )
-      .size(if (screenWidth <= 400) 36.dp else if (screenWidth in 400..420) 39.dp else 43.dp)
-      .clip(CircleShape)
-      .background(
-        brush = if (dayChecked == timeDate.dayNumber && dayMonthChecked == timeDate.monthNumber && dayYerChecked == timeDate.yerNumber) {
-          Brush.verticalGradient(
-            gradientColors,
-          )
-        } else Brush.horizontalGradient(
-          listOf(
-            MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.background,
-          ),
+        .padding(
+            top = 4.dp,
+            start = if (timeDate.isChecked) if (screenWidth <= 420) 5.dp else 7.dp else 6.dp,
+        )
+        .size(if (screenWidth <= 400) 36.dp else if (screenWidth in 400..420) 39.dp else 43.dp)
+        .clip(CircleShape)
+        .background(
+            brush = if (timeDate.isChecked) {
+                Brush.verticalGradient(
+                    gradientColors,
+                )
+            } else Brush.horizontalGradient(
+                listOf(
+                    MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.background,
+                ),
+            ),
+        )
+        .padding(
+            top = if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp,
         ),
-      )
-      .padding(
-        top = if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp,
-      ),
     onClick = {
       if (timeDate.dayNumber > 0)
         dayCheckedNumber(
-          timeDate.dayNumber,
-          timeDate.yerNumber,
-          timeDate.monthNumber,
+          timeDate,
         )
     },
     text = AnnotatedString(
@@ -643,7 +488,7 @@ private fun DayItems(
       fontWeight = FontWeight.Bold,
       textAlign = TextAlign.Center,
       fontFamily = font_medium,
-      color = if (dayChecked == timeDate.dayNumber && dayMonthChecked == timeDate.monthNumber && dayYerChecked == timeDate.yerNumber) (Color.White) else MaterialTheme.colorScheme.primary,
+      color = if (timeDate.isChecked) (Color.White) else MaterialTheme.colorScheme.primary,
     ),
   )
 }

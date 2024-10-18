@@ -52,4 +52,14 @@
     <string name="better_performance_access">برای عملکرد بهتر نرم افزار لطفا اجازه دسترسی های لازم را بدهید</string>
     <string name="setting">تنظیمات</string>
     <string name="my_firend">دوست خوبم</string>
+
+    <string-array name="half_week_name">
+        <item>ش</item>
+        <item>ی</item>
+        <item>د</item>
+        <item>س</item>
+        <item>چ</item>
+        <item>پ</item>
+        <item>ج</item>
+    </string-array>
 </resources>

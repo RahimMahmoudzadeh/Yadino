@@ -19,7 +19,7 @@ class NoteRepositoryImpl @Inject constructor(
     private val persianData = PersianDate()
     private val currentTimeDay = persianData.shDay
     private val currentTimeMonth = persianData.shMonth
-    private val currentTimeYer = persianData.shYear
+    private val currentTimeYear = persianData.shYear
     override suspend fun addSampleNote() {
         if (sharedPreferencesCustom.isSampleNote()) {
             noteDao.removeSampleNote()
@@ -33,7 +33,7 @@ class NoteRepositoryImpl @Inject constructor(
                     state = 2,
                     dayName = currentTimeDay.toString(),
                     dayNumber = currentTimeDay,
-                    yerNumber = currentTimeYer,
+                    yearNumber = currentTimeYear,
                     monthNumber = currentTimeMonth,
                     isSample = true,
                     id = index

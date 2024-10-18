@@ -6,8 +6,6 @@ import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.ReminderScheduler
 import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.routine.modle.ReminderState
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class UpdateReminderUseCase @Inject constructor(
@@ -21,7 +19,7 @@ class UpdateReminderUseCase @Inject constructor(
         idAlarm = routineRepository.getRoutineAlarmId(),
         colorTask = 0,
         timeInMillisecond = routineRepository.convertDateToMilSecond(
-          routineModel.yerNumber,
+          routineModel.yearNumber,
           routineModel.monthNumber,
           routineModel.dayNumber,
           routineModel.timeHours,

@@ -14,7 +14,6 @@ interface HomeContract : UnidirectionalViewModel<HomeContract.HomeEvent, HomeCon
     data class DeleteRoutine(val routine: RoutineModel) : HomeEvent()
     data class SearchRoutine(val routineName: String) : HomeEvent()
     data object GetRoutines : HomeEvent()
-    data object ShowSampleRoutines : HomeEvent()
   }
 
   @Immutable
@@ -26,7 +25,7 @@ interface HomeContract : UnidirectionalViewModel<HomeContract.HomeEvent, HomeCon
   data class HomeState(
     val routineLoading: Boolean = true,
     val routines: List<RoutineModel> = emptyList(),
-    val currentYer: Int = 0,
+    val currentYear: Int = 0,
     val currentMonth: Int = 0,
     val currentDay: Int = 0,
     val errorMessage: ErrorMessageCode? = null,

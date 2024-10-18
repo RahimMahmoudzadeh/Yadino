@@ -8,11 +8,11 @@ interface RepositoryRoutine {
     suspend fun addSampleRoutine()
     suspend fun addRoutine(routineModel: RoutineModel)
     suspend fun removeRoutine(routineModel: RoutineModel): Int
-    suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yerNumber: Int?)
-    suspend fun updateRoutine(routineModel: RoutineModel): Flow<Resource<RoutineModel?>>
+    suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yearNumber: Int?)
+    fun updateRoutine(routineModel: RoutineModel): Flow<Resource<RoutineModel?>>
     suspend fun checkedRoutine(routineModel: RoutineModel)
     suspend fun getRoutine(id: Int): RoutineModel
-    suspend fun getRoutines(monthNumber: Int, numberDay: Int, yerNumber: Int): Flow<List<RoutineModel>>
+    fun getRoutines(monthNumber: Int, numberDay: Int, yearNumber: Int): Flow<List<RoutineModel>>
     suspend fun searchRoutine(name: String, yearNumber: Int?,monthNumber: Int?, dayNumber: Int?): List<RoutineModel>
     suspend fun changeRoutineId()
     suspend fun checkedAllRoutinePastTime()
@@ -20,7 +20,7 @@ interface RepositoryRoutine {
     fun haveAlarm(): Flow<Boolean>
     suspend fun getRoutineAlarmId(): Long
     fun convertDateToMilSecond(
-        yerNumber: Int?,
+        yearNumber: Int?,
         monthNumber: Int?,
         dayNumber: Int?,
         timeHours: String?

@@ -404,8 +404,8 @@ fun TimeItems(
   timeDate: TimeDate,
   dayNumberChecked: Int,
   monthNumberChecked: Int,
-  yerNumberChecked: Int,
-  dayCheckedNumber: (yer: Int, month: Int, day: Int) -> Unit,
+  yearNumberChecked: Int,
+  dayCheckedNumber: (year: Int, month: Int, day: Int) -> Unit,
 ) {
   if (timeDate.dayNumber <= 0 || timeDate.nameDay.isNullOrEmpty()) return
   if (timeDate.isToday && timeDate.dayNumber != dayNumberChecked) {
@@ -423,7 +423,7 @@ fun TimeItems(
       Text(
         modifier = Modifier.clickable {
           dayCheckedNumber(
-            timeDate.yerNumber,
+            timeDate.yearNumber,
             timeDate.monthNumber,
             timeDate.dayNumber,
           )
@@ -452,7 +452,7 @@ fun TimeItems(
       Text(
         modifier = Modifier.clickable {
           dayCheckedNumber(
-            timeDate.yerNumber,
+            timeDate.yearNumber,
             timeDate.monthNumber,
             timeDate.dayNumber,
           )
@@ -463,7 +463,7 @@ fun TimeItems(
         color = MaterialTheme.colorScheme.surface,
       )
     }
-  } else if (timeDate.dayNumber == dayNumberChecked && timeDate.yerNumber == yerNumberChecked && timeDate.monthNumber == monthNumberChecked) {
+  } else if (timeDate.dayNumber == dayNumberChecked && timeDate.yearNumber == yearNumberChecked && timeDate.monthNumber == monthNumberChecked) {
     Box(
       modifier = Modifier
         .size(46.dp)
@@ -495,7 +495,7 @@ fun TimeItems(
       Text(
         modifier = Modifier.clickable {
           dayCheckedNumber(
-            timeDate.yerNumber,
+            timeDate.yearNumber,
             timeDate.monthNumber,
             timeDate.dayNumber,
           )

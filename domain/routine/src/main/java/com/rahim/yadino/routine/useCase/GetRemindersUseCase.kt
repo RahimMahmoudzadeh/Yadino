@@ -8,5 +8,5 @@ import javax.inject.Inject
 class GetRemindersUseCase @Inject constructor(
   private val routineRepository: RepositoryRoutine,
 ) {
-  suspend operator fun invoke(monthNumber: Int, numberDay: Int, yerNumber: Int): Flow<List<RoutineModel>> = routineRepository.getRoutines(monthNumber, numberDay, yerNumber)
+  suspend operator fun invoke(monthNumber: Int, numberDay: Int, yearNumber: Int): Flow<List<RoutineModel>> = routineRepository.getRoutines(monthNumber, numberDay, yearNumber)
 }

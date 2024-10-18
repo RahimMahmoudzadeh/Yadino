@@ -17,7 +17,7 @@ class CalenderViewModel @Inject constructor(
     MutableStateFlow<List<TimeDate>>(emptyList())
   val times: StateFlow<List<TimeDate>> = _times
 
-  val currentYear = dateTimeRepository.currentTimeYer
+  val currentYear = dateTimeRepository.currentTimeYear
   val currentMonth = dateTimeRepository.currentTimeMonth
   val currentDay = dateTimeRepository.currentTimeDay
 
@@ -25,7 +25,7 @@ class CalenderViewModel @Inject constructor(
     getTimesMonth()
   }
 
-  fun getTimesMonth(yearNumber: Int = dateTimeRepository.currentTimeYer, monthNumber: Int = dateTimeRepository.currentTimeMonth) {
+  fun getTimesMonth(yearNumber: Int = dateTimeRepository.currentTimeYear, monthNumber: Int = dateTimeRepository.currentTimeMonth) {
 //        viewModelScope.launch {
 //            dateTimeRepository.getTimesMonth(yearNumber, monthNumber).catch {}.collectLatest {
 //                _times.value = it

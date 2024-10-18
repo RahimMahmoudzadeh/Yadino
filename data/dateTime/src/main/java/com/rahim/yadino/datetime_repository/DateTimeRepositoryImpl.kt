@@ -32,12 +32,12 @@ class DateTimeRepositoryImpl @Inject constructor(
   DateTimeRepository {
   private val persianData = PersianDate()
   override val currentTimeDay = persianData.shDay
-  override val currentTimeYer = persianData.shYear
+  override val currentTimeYear = persianData.shYear
   override val currentTimeMonth = persianData.shMonth
   override suspend fun addTime() {
     val times = timeDao.getAllTime()
     val firstTime =
-      times.find { it.yerNumber == FIRST_YEAR && it.versionNumber == VERSION_TIME_DB }
+      times.find { it.yearNumber == FIRST_YEAR && it.versionNumber == VERSION_TIME_DB }
     if (firstTime != null) {
       return
     }
@@ -50,22 +50,22 @@ class DateTimeRepositoryImpl @Inject constructor(
   override suspend fun calculateToday() {
     val today = timeDao.getToday()
     today?.let {
-      if (checkDayIsToday(today.yerNumber, today.monthNumber, today.dayNumber))
+      if (checkDayIsToday(today.yearNumber, today.monthNumber, today.dayNumber))
         return
-      timeDao.updateDayToNotToday(today.dayNumber, today.yerNumber, today.monthNumber)
-      timeDao.updateDayToToday(currentTimeDay, currentTimeYer, currentTimeMonth)
+      timeDao.updateDayToNotToday(today.dayNumber, today.yearNumber, today.monthNumber)
+      timeDao.updateDayToToday(currentTimeDay, currentTimeYear, currentTimeMonth)
     } ?: run {
-      timeDao.updateDayToToday(currentTimeDay, currentTimeYer, currentTimeMonth)
+      timeDao.updateDayToToday(currentTimeDay, currentTimeYear, currentTimeMonth)
     }
   }
 
   override fun getTimes(): Flow<List<TimeDate>> = timeDao.getAllTimeFlow().distinctUntilChanged()
     .map { items -> items.map { it } }
 
-  override fun getTimesMonth(yerNumber: Int, monthNumber: Int): Flow<List<TimeDate>> =
+  override fun getTimesMonth(yearNumber: Int, monthNumber: Int): Flow<List<TimeDate>> =
     flow {
-      if (yerNumber != FIRST_YEAR || yerNumber != END_YEAR) {
-        timeDao.getSpecificMonthFromYer(monthNumber, yerNumber).distinctUntilChanged()
+      if (yearNumber != FIRST_YEAR || yearNumber != END_YEAR) {
+        timeDao.getSpecificMonthFromYear(monthNumber, yearNumber).distinctUntilChanged()
           .catch {}
           .map { items -> items.map { it } }.collect {
             if (it.isNotEmpty()) {
@@ -80,7 +80,7 @@ class DateTimeRepositoryImpl @Inject constructor(
           }
       } else {
         emitAll(
-          timeDao.getSpecificMonthFromYer(monthNumber, yerNumber).distinctUntilChanged()
+          timeDao.getSpecificMonthFromYear(monthNumber, yearNumber).distinctUntilChanged()
             .map { it.map { it } },
         )
       }
@@ -129,7 +129,7 @@ class DateTimeRepositoryImpl @Inject constructor(
           false,
           false,
           "",
-          timeDate.yerNumber,
+          timeDate.yearNumber,
           timeDate.monthNumber,
           false,
           timeDate.monthName,
@@ -181,7 +181,7 @@ class DateTimeRepositoryImpl @Inject constructor(
           false,
           false,
           "",
-          timeDate.yerNumber,
+          timeDate.yearNumber,
           timeDate.monthNumber,
           false,
           timeDate.monthName,
@@ -210,7 +210,7 @@ class DateTimeRepositoryImpl @Inject constructor(
       launch {
         val persianData = PersianDate()
         val dates = ArrayList<TimeDate>()
-        for (year in currentDate.yerNumber.minus(2)..END_YEAR) {
+        for (year in currentDate.yearNumber.minus(2)..END_YEAR) {
           val isYearKabisy = yearKabesi.find { it == year } != null
           for (month in 1..12) {
             val dayNumber = if (month == 12) {
@@ -241,7 +241,7 @@ class DateTimeRepositoryImpl @Inject constructor(
       launch {
         val persianData = PersianDate()
         val dates = ArrayList<TimeDate>()
-        for (year in currentDate.yerNumber.minus(3) downTo FIRST_YEAR) {
+        for (year in currentDate.yearNumber.minus(3) downTo FIRST_YEAR) {
           val isYearKabisy = yearKabesi.find { it == year } != null
           for (month in 1..12) {
             val dayNumber = if (month == 12) {
@@ -371,7 +371,7 @@ class DateTimeRepositoryImpl @Inject constructor(
   }
 
   private fun checkDayIsToday(yer: Int, month: Int, day: Int): Boolean {
-    if (yer != currentTimeYer)
+    if (yer != currentTimeYear)
       return false
     if (month != currentTimeMonth)
       return false

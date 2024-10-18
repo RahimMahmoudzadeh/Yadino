@@ -212,7 +212,7 @@ fun ItemsNote(
           descriptionNote = it.description,
           nameNote = it.name,
           monthNumber = it.monthNumber ?: 0,
-          yerNumber = it.yerNumber ?: 0,
+          yearNumber = it.yearNumber ?: 0,
           dayNumber = it.dayNumber ?: 0,
           onChecked = { checked ->
             checkedNote(it.apply { isChecked = checked })

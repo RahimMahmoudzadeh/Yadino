@@ -32,13 +32,13 @@ fun ItemListNote(
     nameNote:String,
     descriptionNote:String,
     monthNumber:Int,
-    yerNumber:Int,
+    yearNumber:Int,
     dayNumber:Int,
     openDialogEdit: () -> Unit,
     openDialogDelete: () -> Unit,
 ) {
     val textUnderLine = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
-    val date ="${yerNumber}/${monthNumber}/${dayNumber}"
+    val date ="${yearNumber}/${monthNumber}/${dayNumber}"
     val delete = SwipeAction(
         icon = painterResource(id = R.drawable.delete),
         background = MaterialTheme.colorScheme.background,

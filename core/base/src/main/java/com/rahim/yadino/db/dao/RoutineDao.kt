@@ -16,8 +16,8 @@ interface RoutineDao {
   @Query("SELECT * FROM tbl_routine WHERE id =:id")
   suspend fun getRoutine(id: Int): RoutineModel
 
-  @Query("SELECT * FROM tbl_routine WHERE  yerNumber =:yerNumber AND monthNumber =:monthNumber AND dayNumber =:dayNumber")
-  fun getRoutines(monthNumber: Int, dayNumber: Int, yerNumber: Int): Flow<List<RoutineModel>>
+  @Query("SELECT * FROM tbl_routine WHERE  yearNumber =:yearNumber AND monthNumber =:monthNumber AND dayNumber =:dayNumber")
+  fun getRoutines(monthNumber: Int, dayNumber: Int, yearNumber: Int): Flow<List<RoutineModel>>
 
   @Query("SELECT * FROM tbl_routine")
   suspend fun getRoutines(): List<RoutineModel>
@@ -25,7 +25,7 @@ interface RoutineDao {
   @Query("UPDATE tbl_routine SET isChecked=1 WHERE isChecked=0 AND timeInMillisecond<:currentTime AND isSample=0")
   suspend fun updateRoutinesPastTime(currentTime: Long)
 
-  @Query("SELECT * FROM tbl_routine WHERE explanation=:routineExplanation AND dayName=:routineDayName AND timeInMillisecond=:routineTimeMilSecond AND name=:routineName AND dayNumber=:routineDayNumber AND monthNumber=:routineMonthNumber AND yerNumber=:routineYearNumber LIMIT 1")
+  @Query("SELECT * FROM tbl_routine WHERE explanation=:routineExplanation AND dayName=:routineDayName AND timeInMillisecond=:routineTimeMilSecond AND name=:routineName AND dayNumber=:routineDayNumber AND monthNumber=:routineMonthNumber AND yearNumber=:routineYearNumber LIMIT 1")
   suspend fun checkEqualRoutine(
     routineName: String,
     routineExplanation: String,
@@ -36,8 +36,8 @@ interface RoutineDao {
     routineTimeMilSecond: Long,
   ): RoutineModel?
 
-  @Query("DELETE FROM tbl_routine WHERE dayNumber=:dayNumber AND monthNumber=:monthNumber AND yerNumber=:yerNumber")
-  suspend fun removeAllRoutine(monthNumber: Int?, dayNumber: Int?, yerNumber: Int?)
+  @Query("DELETE FROM tbl_routine WHERE dayNumber=:dayNumber AND monthNumber=:monthNumber AND yearNumber=:yearNumber")
+  suspend fun removeAllRoutine(monthNumber: Int?, dayNumber: Int?, yearNumber: Int?)
 
   @Delete
   suspend fun removeRoutine(routineModel: RoutineModel): Int

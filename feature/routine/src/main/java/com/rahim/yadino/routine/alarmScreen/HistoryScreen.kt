@@ -26,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,7 +40,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.yadino.base.use
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
@@ -103,7 +101,7 @@ private fun HistoryScreen(
           routineIsChecked = routine.isChecked,
           routineName = routine.name,
           routineDayNumber = routine.dayNumber ?: 0,
-          routineYearNumber = routine.yerNumber ?: 0,
+          routineYearNumber = routine.yearNumber ?: 0,
           routineMonthNumber = routine.monthNumber ?: 0,
           routineTimeHours = routine.timeHours ?: "",
         )
@@ -125,7 +123,7 @@ private fun HistoryScreen(
             routineIsChecked = routine.isChecked,
             routineName = routine.name,
             routineDayNumber = routine.dayNumber ?: 0,
-            routineYearNumber = routine.yerNumber ?: 0,
+            routineYearNumber = routine.yearNumber ?: 0,
             routineMonthNumber = routine.monthNumber ?: 0,
             routineTimeHours = routine.timeHours ?: "",
           )
