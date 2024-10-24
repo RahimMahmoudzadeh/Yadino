@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -46,27 +47,10 @@ import dagger.hilt.android.AndroidEntryPoint
 class WakeupActivity : ComponentActivity() {
     private var routineName: String? = null
     private var routineId: String? = null
-//    @Inject
-//    lateinit var notificationManager: NotificationManager
     override fun onCreate(savedInstanceState: Bundle?) {
-//        installSplashScreen()
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-//        val b = object : BroadcastReceiver() {
-//            override fun onReceive(p0: Context?, intent: Intent?) {
-//                if (intent?.action != ACTION_SEND_NOTIFICATION) return
-//                val reminderName = intent.getStringExtra(KEY_LAUNCH_NAME)
-//                val reminderId = intent.getIntExtra(KEY_LAUNCH_ID, 0)
-//
-//            }
-//        }
-//        ContextCompat.registerReceiver(
-//            this@WakeupActivity,
-//            b,
-//            IntentFilter(ACTION_SEND_NOTIFICATION),
-//            ContextCompat.RECEIVER_NOT_EXPORTED
-//        )
-
         setContent {
             var isPlaying by remember { mutableStateOf(true) }
             var speed by remember { mutableFloatStateOf(1f) }
@@ -121,10 +105,6 @@ class WakeupActivity : ComponentActivity() {
                                 modifier = Modifier
                                     .size(300.dp)
                                     .clickable {
-                                        //                                val ringtone =
-//                                    RingtoneManager.getRingtone(this@WakeupActivity, alarmUri)
-//                                ringtone.stop()
-//                                alarmManagement.cancelAlarm(this@WakeupActivity, alarmId)
                                         finish()
                                     },
                             )
