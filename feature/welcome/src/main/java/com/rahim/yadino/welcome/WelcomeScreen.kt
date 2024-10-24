@@ -72,6 +72,7 @@ private fun WelcomeScreens(
   val pagerState = rememberPagerState()
   val clickNext = remember { mutableStateOf(state.isShowedWelcome) }
   var create by rememberSaveable { mutableStateOf(false) }
+
   LaunchedEffect(key1 = true) {
     if (clickNext.value) {
       navigateToHome()

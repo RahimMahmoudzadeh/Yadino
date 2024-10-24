@@ -57,8 +57,6 @@ const val MAX_EXPLANATION_LENGTH = 40
 @Composable
 fun DialogAddRoutine(
   modifier: Modifier = Modifier,
-  isOpen: Boolean,
-  isShowDay: Boolean,
   currentNumberDay: Int,
   currentNumberMonth: Int,
   currentNumberYear: Int,
@@ -66,19 +64,21 @@ fun DialogAddRoutine(
   timesMonth: List<TimeDate> = emptyList(),
   openDialog: () -> Unit,
   routineItems: (routine: RoutineModel) -> Unit,
-  monthChange: (year: Int, month: Int) -> Unit,
+  monthIncrease: ((year: Int, month: Int) -> Unit)? = null,
+  monthDecrease: ((year: Int, month: Int) -> Unit)? = null,
 ) {
-  if (!isOpen) return
+  var monthChecked by rememberSaveable { mutableIntStateOf(0) }
+  var yearChecked by rememberSaveable { mutableIntStateOf(0) }
+  var dayChecked by rememberSaveable { mutableIntStateOf(0) }
 
-  var monthChecked by rememberSaveable { mutableIntStateOf(currentNumberMonth) }
-  var yearChecked by rememberSaveable { mutableIntStateOf(currentNumberYear) }
-  var dayChecked by rememberSaveable { mutableIntStateOf(currentNumberDay) }
+  monthChecked = currentNumberMonth
+  yearChecked = currentNumberYear
+  dayChecked = currentNumberDay
 
   var routineName by rememberSaveable { mutableStateOf(if (updateRoutine?.name.isNullOrBlank()) "" else updateRoutine.name) }
   var routineExplanation by rememberSaveable { mutableStateOf(if (updateRoutine?.explanation.isNullOrBlank()) "" else updateRoutine.explanation) }
   var time by rememberSaveable { mutableStateOf(if (updateRoutine?.timeHours.isNullOrBlank()) "12:00" else updateRoutine.timeHours) }
 
-  var checkedStateAllDay by remember { mutableStateOf(false) }
   var isErrorName by remember { mutableStateOf(false) }
   var isShowDateDialog by remember { mutableStateOf(false) }
   var isErrorExplanation by remember { mutableStateOf(false) }
@@ -86,11 +86,10 @@ fun DialogAddRoutine(
 
   val persianData = PersianDate()
   val date = persianData.initJalaliDate(
-    updateRoutine?.yearNumber ?: yearChecked,
-    updateRoutine?.monthNumber ?: monthChecked,
-    updateRoutine?.dayNumber ?: dayChecked,
+    updateRoutine?.yearNumber ?: currentNumberYear,
+    updateRoutine?.monthNumber ?: currentNumberMonth,
+    updateRoutine?.dayNumber ?: currentNumberDay,
   )
-  val dayWeek = stringArrayResource(id = R.array.day_weeks)
 
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
     BasicAlertDialog(
@@ -210,70 +209,13 @@ fun DialogAddRoutine(
               color = MaterialTheme.colorScheme.error,
             )
           }
-          if (isShowDay) {
-            Row(
-              modifier = Modifier.padding(top = 4.dp, end = 4.dp, start = 4.dp),
-            ) {
-              dayWeek.forEach { dayName ->
-                Box(
-                  modifier = Modifier
-                    .padding(
-                      top = 9.dp,
-                      end = 6.dp,
-                    )
-                    .size(30.dp)
-                    .clip(CircleShape),
-//                                        .background(
-//                                            brush = if (checkedStateAllDay.value || dayChecked == dayName) {
-//                                                Brush.verticalGradient(
-//                                                    gradientColors
-//                                                )
-//                                            } else Brush.horizontalGradient(
-//                                                listOf(
-//                                                    Color.White, Color.White
-//                                                )
-//                                            )
-//                                        )
-                ) {
-//                                        ClickableText(
-//                                            modifier = Modifier.padding(
-//                                                top = 8.dp,
-//                                                start = if (dayName in dayWeekSmale) 10.dp else 6.dp
-//                                            ),
-////                                            onClick = { dayChecked = dayName },
-//                                            text = AnnotatedString(dayName),
-//                                            style = TextStyle(
-//                                                fontSize = 10.sp,
-//                                                fontWeight = FontWeight.Bold,
-//                                                color = if (checkedStateAllDay.value || dayChecked == dayName) (Color.White)
-//                                                else Color.Black
-//                                            )
-//                                        )
-                }
-              }
-              ClickableText(
-                onClick = {},
-                text = AnnotatedString(stringResource(id = R.string.all)),
-                modifier = Modifier.padding(top = 14.dp),
-              )
-              Checkbox(
-                modifier = Modifier.padding(start = 10.dp),
-                checked = checkedStateAllDay,
-                onCheckedChange = { checkedStateAllDay = it },
-                colors = CheckboxDefaults.colors(
-                  checkedColor = Purple, uncheckedColor = CornflowerBlueLight,
-                ),
-              )
-            }
-          }
           Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
               .fillMaxWidth()
               .padding(
-                top = if (isShowDay) 0.dp else 10.dp,
+                top = 10.dp,
                 start = 20.dp,
-                end = if (isShowDay) 15.dp else 0.dp,
               ),
           ) {
             Row(
@@ -317,9 +259,8 @@ fun DialogAddRoutine(
               modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                  top = if (isShowDay) 0.dp else 10.dp,
+                  top = if (timesMonth.isNotEmpty()) 0.dp else 10.dp,
                   start = 20.dp,
-                  end = if (isShowDay) 15.dp else 0.dp,
                 ),
             ) {
               Text(
@@ -364,9 +305,9 @@ fun DialogAddRoutine(
                     name = routineName,
                     explanation = routineExplanation,
                     timeHours = time,
-                    dayNumber = dayChecked,
-                    monthNumber = monthChecked,
-                    yearNumber = yearChecked,
+                    dayNumber = currentNumberDay,
+                    monthNumber = currentNumberMonth,
+                    yearNumber = currentNumberYear,
                     dayName = persianData.dayName(date),
                     colorTask = null,
                   )
@@ -402,18 +343,16 @@ fun DialogAddRoutine(
                   isShowDateDialog = false
                 },
                 dayCheckedNumber = { year, month, day ->
-                  if (day == 0) {
-                    dayChecked = currentNumberDay
-                    monthChecked = currentNumberMonth
-                    yearChecked = currentNumberYear
-                    monthChange(currentNumberYear, currentNumberMonth)
-                  } else {
-                    dayChecked = day
-                    monthChecked = month
-                    yearChecked = year
-                  }
+                  dayChecked = day
+                  monthChecked = month
+                  yearChecked = year
                 },
-                monthChange = monthChange,
+                monthIncrease = { year, month ->
+                  monthIncrease?.invoke(year, month)
+                },
+                monthDecrease = { year, month ->
+                  monthDecrease?.invoke(year, month)
+                },
               )
             }
           }

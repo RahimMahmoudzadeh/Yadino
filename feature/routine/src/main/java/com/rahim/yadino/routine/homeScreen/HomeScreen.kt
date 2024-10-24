@@ -139,27 +139,26 @@ private fun HomeScreen(
       id = R.string.ok,
     ),
   )
-  DialogAddRoutine(
-    isShowDay = false,
-    isOpen = openDialog,
-    openDialog = {
-      onOpenDialog(false)
-      routineModelUpdateDialog.value = null
-    },
-    routineItems = { routine ->
-      if (routineModelUpdateDialog.value != null) {
-        onUpdateRoutine(routine)
-      } else {
-        onAddRoutine(routine)
-      }
-      onOpenDialog(false)
-    },
-    updateRoutine = routineModelUpdateDialog.value,
-    currentNumberDay = homeState.currentDay,
-    currentNumberMonth = homeState.currentMonth,
-    currentNumberYear = homeState.currentYear,
-    monthChange = { year: Int, month: Int -> },
-  )
+  if (openDialog){
+    DialogAddRoutine(
+      openDialog = {
+        onOpenDialog(false)
+        routineModelUpdateDialog.value = null
+      },
+      routineItems = { routine ->
+        if (routineModelUpdateDialog.value != null) {
+          onUpdateRoutine(routine)
+        } else {
+          onAddRoutine(routine)
+        }
+        onOpenDialog(false)
+      },
+      updateRoutine = routineModelUpdateDialog.value,
+      currentNumberDay = homeState.currentDay,
+      currentNumberMonth = homeState.currentMonth,
+      currentNumberYear = homeState.currentYear,
+    )
+  }
 }
 
 @Composable

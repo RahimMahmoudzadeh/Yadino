@@ -29,7 +29,7 @@ interface TimeDao {
   fun getIsSpecificMonthFromYear(monthNumber: Int, yearNumber: Int?): Boolean
 
   @Query("SELECT * FROM tbl_timeDate WHERE monthNumber=:monthNumber And yearNumber=:yearNumber")
-  fun getSpecificMonthFromYear(monthNumber: Int, yearNumber: Int?): Flow<List<TimeDate>>
+  suspend fun getSpecificMonthFromYear(monthNumber: Int, yearNumber: Int?): List<TimeDate>
 
   @Update
   suspend fun updateTimeData(timeDate: TimeDate)
@@ -37,8 +37,14 @@ interface TimeDao {
   @Query("UPDATE tbl_timeDate SET isToday=1 , isChecked=1 WHERE dayNumber=:currentDay AND yearNumber=:currentYear AND monthNumber=:currentMonth")
   suspend fun updateDayToToday(currentDay: Int, currentYear: Int, currentMonth: Int)
 
-  @Query("UPDATE tbl_timeDate SET isToday=0 WHERE dayNumber=:currentDay AND yearNumber=:currentYear AND monthNumber=:currentMonth")
-  suspend fun updateDayToNotToday(currentDay: Int, currentYear: Int, currentMonth: Int)
+  @Query("UPDATE tbl_timeDate SET isToday=0 , isChecked=0 WHERE isToday=1 OR isChecked=1")
+  suspend fun updateDayToNotToday()
+
+  @Query("UPDATE tbl_timeDate SET isChecked=1 WHERE dayNumber=:currentDay AND yearNumber=:currentYear AND monthNumber=:currentMonth")
+  suspend fun updateIsChecked(currentDay: Int, currentYear: Int, currentMonth: Int)
+
+  @Query("UPDATE tbl_timeDate SET isChecked=0 WHERE isChecked=1")
+  suspend fun updateNotIsChecked()
 
   @Query("DELETE FROM tbl_timeDate")
   suspend fun deleteAllTimes()

@@ -172,16 +172,16 @@ private fun CalenderScreen(
                     userScrollEnabled = false
                 ) {
                     items(times) {
-                        TimeItems(
-                            it,
-                            dayClicked,
-                            monthClicked,
-                            yearClicked,
-                            dayCheckedNumber = { year, month, day ->
-                                yearClicked = year
-                                monthClicked = month
-                                dayClicked = day
-                            })
+//                        TimeItems(
+//                            it,
+//                            dayClicked,
+//                            monthClicked,
+//                            yearClicked,
+//                            dayCheckedNumber = { year, month, day ->
+//                                yearClicked = year
+//                                monthClicked = month
+//                                dayClicked = day
+//                            })
                     }
                 }
             }

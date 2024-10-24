@@ -6,14 +6,12 @@ import com.rahim.yadino.base.BaseViewModel
 import com.rahim.yadino.dateTime.DateTimeRepository
 import com.rahim.yadino.di.IODispatcher
 import com.rahim.yadino.model.RoutineModel
-import com.rahim.yadino.model.TimeDate
 import com.rahim.yadino.routine.useCase.AddReminderUseCase
 import com.rahim.yadino.routine.useCase.CancelReminderUseCase
 import com.rahim.yadino.routine.useCase.DeleteReminderUseCase
 import com.rahim.yadino.routine.useCase.GetRemindersUseCase
 import com.rahim.yadino.routine.useCase.SearchRoutineUseCase
 import com.rahim.yadino.routine.useCase.UpdateReminderUseCase
-import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,13 +19,17 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+
+const val MONTH_MAX = 12
+const val MONTH_MIN = 1
+const val DAY_MAX = 31
+const val DAY_MIN = 1
 
 @HiltViewModel
 class RoutineScreenViewModel @Inject constructor(
@@ -47,10 +49,9 @@ class RoutineScreenViewModel @Inject constructor(
   private var lastMonthNumber = dateTimeRepository.currentTimeMonth
   private var lastDayNumber = dateTimeRepository.currentTimeDay
 
-  private val mutableState = MutableStateFlow(RoutineContract.RoutineState())
+  private var mutableState = MutableStateFlow(RoutineContract.RoutineState())
   override val state: StateFlow<RoutineContract.RoutineState> = mutableState.onStart {
     setCurrentTime()
-    calculateCurrentIndexDay()
     getTimesMonth()
     getRoutines()
     getTimes()
@@ -62,18 +63,57 @@ class RoutineScreenViewModel @Inject constructor(
       is RoutineContract.RoutineEvent.CheckedRoutine -> checkedRoutine(event.routine)
       is RoutineContract.RoutineEvent.DeleteRoutine -> deleteRoutine(event.routine)
       is RoutineContract.RoutineEvent.GetRoutines -> {
-        updateDayChecked(event.timeDate)
+        updateDayChecked(event.timeDate.yearNumber, event.timeDate.monthNumber, event.timeDate.dayNumber)
         getRoutines(event.timeDate.yearNumber, event.timeDate.monthNumber, event.timeDate.dayNumber)
       }
 
       is RoutineContract.RoutineEvent.SearchRoutine -> searchRoutine(event.routineName)
       is RoutineContract.RoutineEvent.UpdateRoutine -> updateRoutine(event.routine)
-      is RoutineContract.RoutineEvent.GetTimesMonth -> getTimesMonth(event.yearNumber, event.monthNumber)
       is RoutineContract.RoutineEvent.GetAllTimes -> getTimes()
-      RoutineContract.RoutineEvent.MonthIncrease -> monthIncrease()
-      RoutineContract.RoutineEvent.MonthDecrease -> monthDecrease()
+      is RoutineContract.RoutineEvent.MonthIncrease -> {
+        monthIncrease(event.monthNumber, event.yearNumber) { year, month ->
+          getTimesMonth(year, month)
+          updateDialogCurrentTime(year, month)
+          updateDayChecked(year, month)
+          updateIndex(month, year)
+        }
+      }
+
+      is RoutineContract.RoutineEvent.MonthDecrease -> {
+        monthDecrease(event.monthNumber, event.yearNumber) { year, month ->
+          getTimesMonth(year, month)
+          updateDialogCurrentTime(year, month)
+          updateDayChecked(year, month)
+          updateIndex(month, year)
+        }
+      }
+
+      is RoutineContract.RoutineEvent.JustMonthDecrease -> {
+        monthDecrease(event.monthNumber, event.yearNumber) { year, month ->
+          getTimesMonth(year, month)
+          updateDialogCurrentTime(year, month)
+        }
+      }
+
+      is RoutineContract.RoutineEvent.JustMonthIncrease -> {
+        monthIncrease(event.monthNumber, event.yearNumber) { year, month ->
+          getTimesMonth(year, month)
+          updateDialogCurrentTime(year, month)
+        }
+      }
+
       RoutineContract.RoutineEvent.WeekDecrease -> weekDecrease()
       RoutineContract.RoutineEvent.WeekIncrease -> weekIncrease()
+    }
+  }
+
+  private fun updateDialogCurrentTime(year: Int, month: Int, day: Int = DAY_MIN) {
+    mutableState.update {
+      it.copy(
+        currentMonthDialog = month,
+        currentYearDialog = year,
+        currentDayDialog = day,
+      )
     }
   }
 
@@ -104,39 +144,36 @@ class RoutineScreenViewModel @Inject constructor(
     }
   }
 
-  private fun monthDecrease() {
+  private fun monthDecrease(month: Int, year: Int, time: (year: Int, month: Int) -> Unit) {
     viewModelScope.launch(ioDispatcher) {
-      var month = state.value.currentMonth.minus(1)
-      var year = state.value.currentYear
-      if (month < 1) {
-        month = 12
-        year = state.value.currentYear.minus(1)
+      var month = month.minus(MONTH_MIN)
+      var year = year
+      if (month < MONTH_MIN) {
+        month = MONTH_MAX
+        year = year.minus(MONTH_MIN)
       }
-      val time =
-        state.value.times.find { it.monthNumber == month && it.yearNumber == year && it.dayNumber == 1 }
-      if (time != null) {
-        val index = state.value.times.indexOf(time)
-        mutableState.update {
-          it.copy(index = calculateIndexDay(index), currentMonth = month, currentYear = year)
-        }
-      }
+      time(year, month)
     }
   }
 
-  private fun monthIncrease() {
+  private fun monthIncrease(month: Int, year: Int, time: (year: Int, month: Int) -> Unit) {
     viewModelScope.launch(ioDispatcher) {
-      var month = state.value.currentMonth.plus(1)
-      var year = state.value.currentYear
-      if (month > 12) {
-        month = 1
-        year = state.value.currentYear.plus(1)
+      var month = month.plus(MONTH_MIN)
+      var year = year
+      if (month > MONTH_MAX) {
+        month = MONTH_MIN
+        year = year.plus(MONTH_MIN)
       }
-      val time =
-        state.value.times.find { it.monthNumber == month && it.yearNumber == year && it.dayNumber == 1 }
-      if (time != null) {
-        val index = state.value.times.indexOf(time)
+      time(year, month)
+    }
+  }
+
+  private fun updateIndex(month: Int, year: Int, day: Int = DAY_MIN) {
+    viewModelScope.launch(ioDispatcher) {
+      val times = ArrayList(state.value.times)
+      times.indexOfFirst { it.monthNumber == month && it.yearNumber == year && it.dayNumber == day }.let { index ->
         mutableState.update {
-          it.copy(index = calculateIndexDay(index), currentMonth = month, currentYear = year)
+          it.copy(index = calculateIndexDay(index))
         }
       }
     }
@@ -148,6 +185,9 @@ class RoutineScreenViewModel @Inject constructor(
         currentDay = dateTimeRepository.currentTimeDay,
         currentMonth = dateTimeRepository.currentTimeMonth,
         currentYear = dateTimeRepository.currentTimeYear,
+        currentDayDialog = dateTimeRepository.currentTimeDay,
+        currentMonthDialog = dateTimeRepository.currentTimeMonth,
+        currentYearDialog = dateTimeRepository.currentTimeYear,
       )
     }
   }
@@ -174,18 +214,6 @@ class RoutineScreenViewModel @Inject constructor(
             )
           }
         }
-    }
-  }
-
-  private fun calculateCurrentIndexDay(currentIndex: Int, previousIndex: Int): Int {
-    return if (currentIndex > previousIndex) {
-      previousIndex + 7
-    } else {
-      if (previousIndex - 7 < 0) {
-        previousIndex
-      } else {
-        previousIndex - 7
-      }
     }
   }
 
@@ -243,48 +271,34 @@ class RoutineScreenViewModel @Inject constructor(
             times = times, errorMessage = null,
           )
         }
+        times.find { it.isChecked }?.let { currentTime ->
+          updateIndex(currentTime.monthNumber, currentTime.yearNumber, currentTime.dayNumber)
+        }
       }
     }
   }
 
   private fun getTimesMonth(yearNumber: Int = dateTimeRepository.currentTimeYear, monthNumber: Int = dateTimeRepository.currentTimeMonth) {
-    viewModelScope.launch {
-      dateTimeRepository.getTimesMonth(yearNumber, monthNumber).catch {}.collectLatest { times ->
-        mutableState.update {
-          it.copy(timesMonth = times, errorMessage = null)
-        }
-      }
-    }
-  }
-
-  private fun calculateCurrentIndexDay() {
     viewModelScope.launch(ioDispatcher) {
-      var timesSize = 0
-      dateTimeRepository.getTimes().distinctUntilChanged().catch {}.collectLatest { times ->
-        if (timesSize != times.size) {
-          timesSize = times.size
-          val currentTime = times.find { it.isToday }
-          val indexCurrentDay = times.indexOf(currentTime)
-          mutableState.update {
-            it.copy(index = calculateIndexDay(indexCurrentDay), errorMessage = null)
-          }
-        }
+      val times = dateTimeRepository.getTimesMonth(yearNumber, monthNumber).toCollection(ArrayList())
+      val isCheckedTime = times.find { it.isChecked || it.isToday }
+      if (isCheckedTime == null) {
+        val time = times.indexOfFirst { it.dayNumber == DAY_MIN }
+        times[time] = times.first { it.dayNumber == DAY_MIN }.copy(isChecked = true)
+      }
+      mutableState.update {
+        it.copy(timesMonth = times, errorMessage = null)
       }
     }
   }
 
   private fun calculateIndexDay(index: Int) = index.minus(index % 7)
 
-  private fun updateDayChecked(timeDate: TimeDate) {
-    viewModelScope.launch(ioDispatcher) {
-      val times = ArrayList(state.value.times)
-      val time = times.find { it.isChecked }
-      val indexPreviousTime = times.indexOf(time)
-      val indexNewTime = times.indexOf(timeDate)
-      times[indexPreviousTime] = time?.copy(isChecked = false)
-      times[indexNewTime] = timeDate.copy(isChecked = true)
+  private fun updateDayChecked(yearNumber: Int, monthNumber: Int, day: Int = DAY_MIN) {
+    viewModelScope.launch {
+      dateTimeRepository.updateDayToToday(day, yearNumber, monthNumber)
       mutableState.update {
-        it.copy(times = times)
+        it.copy(currentMonth = monthNumber, currentYear = yearNumber, currentDay = day)
       }
     }
   }

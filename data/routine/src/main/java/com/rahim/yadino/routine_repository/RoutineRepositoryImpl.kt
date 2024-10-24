@@ -209,7 +209,7 @@ class RoutineRepositoryImpl @Inject constructor(
         val firstRoutine = it.first()
         (firstRoutine.monthNumber == lastMonthNumber && firstRoutine.dayNumber == lastDayNumber && firstRoutine.yearNumber == lastYearNumber)
       }
-    }.collectLatest {
+    }.collect {
       emit(it)
     }
   }

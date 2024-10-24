@@ -6,7 +6,7 @@ import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.model.RoutineModel
 import com.rahim.yadino.model.TimeDate
 
- interface RoutineContract : UnidirectionalViewModel<RoutineContract.RoutineEvent, RoutineContract.RoutineState> {
+interface RoutineContract : UnidirectionalViewModel<RoutineContract.RoutineEvent, RoutineContract.RoutineState> {
   @Immutable
   sealed class RoutineEvent {
     data class AddRoutine(val routine: RoutineModel) : RoutineEvent()
@@ -14,11 +14,12 @@ import com.rahim.yadino.model.TimeDate
     data class UpdateRoutine(val routine: RoutineModel) : RoutineEvent()
     data class DeleteRoutine(val routine: RoutineModel) : RoutineEvent()
     data class SearchRoutine(val routineName: String) : RoutineEvent()
-    data class GetTimesMonth(val yearNumber: Int,val monthNumber: Int) : RoutineEvent()
-    data object GetAllTimes : RoutineEvent()
     data class GetRoutines(val timeDate: TimeDate) : RoutineEvent()
-    data object MonthIncrease : RoutineEvent()
-    data object MonthDecrease : RoutineEvent()
+    data class MonthIncrease(val yearNumber: Int, val monthNumber: Int) : RoutineEvent()
+    data class MonthDecrease(val yearNumber: Int, val monthNumber: Int) : RoutineEvent()
+    data class JustMonthIncrease(val yearNumber: Int, val monthNumber: Int) : RoutineEvent()
+    data class JustMonthDecrease(val yearNumber: Int, val monthNumber: Int) : RoutineEvent()
+    data object GetAllTimes : RoutineEvent()
     data object WeekIncrease : RoutineEvent()
     data object WeekDecrease : RoutineEvent()
   }
@@ -36,6 +37,9 @@ import com.rahim.yadino.model.TimeDate
     val currentYear: Int = 0,
     val currentMonth: Int = 0,
     val currentDay: Int = 0,
+    val currentYearDialog: Int = 0,
+    val currentMonthDialog: Int = 0,
+    val currentDayDialog: Int = 0,
     val times: List<TimeDate> = emptyList(),
     val timesMonth: List<TimeDate> = emptyList(),
     val errorMessage: ErrorMessageCode? = null,

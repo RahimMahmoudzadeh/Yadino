@@ -6,6 +6,7 @@ import com.rahim.yadino.base.BaseViewModel
 import com.rahim.yadino.routine.useCase.AddReminderUseCase
 import com.rahim.yadino.model.RoutineModel
 import com.rahim.yadino.dateTime.DateTimeRepository
+import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.useCase.CancelReminderUseCase
 import com.rahim.yadino.routine.useCase.DeleteReminderUseCase
 import com.rahim.yadino.routine.useCase.GetRemindersUseCase
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -82,8 +84,13 @@ class HomeViewModel @Inject constructor(
   private fun getCurrentRoutines() {
     viewModelScope.launch {
       getRemindersUseCase(dateTimeRepository.currentTimeMonth, dateTimeRepository.currentTimeDay, dateTimeRepository.currentTimeYear).catch {
-
-      }.collect { routines ->
+        Timber.tag("exception").d("exception:$it")
+        mutableState.update {
+          it.copy(
+            errorMessage = ErrorMessageCode.ERROR_GET_PROCESS,
+          )
+        }
+      }.collectLatest { routines ->
         mutableState.update {
           it.copy(
             routines = routines.sortedBy {

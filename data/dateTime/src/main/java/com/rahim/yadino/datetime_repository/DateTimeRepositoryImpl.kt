@@ -25,9 +25,9 @@ import kotlin.collections.ArrayList
 
 
 class DateTimeRepositoryImpl @Inject constructor(
-    @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
-    @IODispatcher val ioDispatcher: CoroutineDispatcher,
-    private val timeDao: TimeDao,
+  @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
+  @IODispatcher val ioDispatcher: CoroutineDispatcher,
+  private val timeDao: TimeDao,
 ) :
   DateTimeRepository {
   private val persianData = PersianDate()
@@ -50,41 +50,38 @@ class DateTimeRepositoryImpl @Inject constructor(
   override suspend fun calculateToday() {
     val today = timeDao.getToday()
     today?.let {
-      if (checkDayIsToday(today.yearNumber, today.monthNumber, today.dayNumber))
-        return
-      timeDao.updateDayToNotToday(today.dayNumber, today.yearNumber, today.monthNumber)
+      timeDao.updateDayToNotToday()
       timeDao.updateDayToToday(currentTimeDay, currentTimeYear, currentTimeMonth)
     } ?: run {
       timeDao.updateDayToToday(currentTimeDay, currentTimeYear, currentTimeMonth)
     }
   }
 
-  override fun getTimes(): Flow<List<TimeDate>> = timeDao.getAllTimeFlow().distinctUntilChanged()
-    .map { items -> items.map { it } }
+  override suspend fun updateDayToToday(day: Int, year: Int, month: Int) {
+    timeDao.updateNotIsChecked()
+    timeDao.updateIsChecked(day, year, month)
+  }
 
-  override fun getTimesMonth(yearNumber: Int, monthNumber: Int): Flow<List<TimeDate>> =
-    flow {
-      if (yearNumber != FIRST_YEAR || yearNumber != END_YEAR) {
-        timeDao.getSpecificMonthFromYear(monthNumber, yearNumber).distinctUntilChanged()
-          .catch {}
-          .map { items -> items.map { it } }.collect {
-            if (it.isNotEmpty()) {
-              val times = ArrayList<TimeDate>()
-              val spaceStart = calculateDaySpaceStartMonth(it.first())
-              val spaceEnd = calculateDaySpaceEndMonth(it.last())
-              times.addAll(spaceStart)
-              times.addAll(it)
-              times.addAll(spaceEnd)
-              emit(times)
-            }
-          }
+  override fun getTimes(): Flow<List<TimeDate>> = timeDao.getAllTimeFlow()
+
+  override suspend fun getTimesMonth(yearNumber: Int, monthNumber: Int): List<TimeDate> {
+    val timesDb = timeDao.getSpecificMonthFromYear(monthNumber, yearNumber)
+    return if (yearNumber != FIRST_YEAR || yearNumber != END_YEAR) {
+      if (timesDb.isNotEmpty()) {
+        val times = ArrayList<TimeDate>()
+        val spaceStart = calculateDaySpaceStartMonth(timesDb.first())
+        val spaceEnd = calculateDaySpaceEndMonth(timesDb.last())
+        times.addAll(spaceStart)
+        times.addAll(timesDb)
+        times.addAll(spaceEnd)
+        times
       } else {
-        emitAll(
-          timeDao.getSpecificMonthFromYear(monthNumber, yearNumber).distinctUntilChanged()
-            .map { it.map { it } },
-        )
+        emptyList()
       }
+    } else {
+      timesDb
     }
+  }
 
 
   private fun calculateDaySpaceStartMonth(timeDate: TimeDate): List<TimeDate> {
@@ -370,8 +367,8 @@ class DateTimeRepositoryImpl @Inject constructor(
     }
   }
 
-  private fun checkDayIsToday(yer: Int, month: Int, day: Int): Boolean {
-    if (yer != currentTimeYear)
+  private fun checkDayIsToday(year: Int, month: Int, day: Int): Boolean {
+    if (year != currentTimeYear)
       return false
     if (month != currentTimeMonth)
       return false

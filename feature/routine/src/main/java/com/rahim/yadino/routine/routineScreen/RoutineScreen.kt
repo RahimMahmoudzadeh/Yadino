@@ -91,14 +91,17 @@ fun RoutineRoute(
     dayCheckedNumber = { timeDate ->
       event.invoke(RoutineContract.RoutineEvent.GetRoutines(timeDate))
     },
-    onMonthChecked = { year, month ->
-      event.invoke(RoutineContract.RoutineEvent.GetTimesMonth(year, month))
+    dialogMonthIncrease = { year, month ->
+      event.invoke(RoutineContract.RoutineEvent.JustMonthIncrease(year, month))
     },
-    monthIncrease = {
-      event.invoke(RoutineContract.RoutineEvent.MonthIncrease)
+    dialogMonthDecrease = { year, month ->
+      event.invoke(RoutineContract.RoutineEvent.JustMonthDecrease(year, month))
     },
-    monthDecrease = {
-      event.invoke(RoutineContract.RoutineEvent.MonthDecrease)
+    monthIncrease = { year, month ->
+      event.invoke(RoutineContract.RoutineEvent.MonthIncrease(year, month))
+    },
+    monthDecrease = { year, month ->
+      event.invoke(RoutineContract.RoutineEvent.MonthDecrease(year, month))
     },
     weekIncrease = {
       event.invoke(RoutineContract.RoutineEvent.WeekIncrease)
@@ -122,9 +125,10 @@ private fun RoutineScreen(
   onAddRoutine: (RoutineModel) -> Unit,
   onDeleteRoutine: (RoutineModel) -> Unit,
   onSearchText: (String) -> Unit,
-  onMonthChecked: (Int, Int) -> Unit,
-  monthIncrease: () -> Unit,
-  monthDecrease: () -> Unit,
+  monthIncrease: (year: Int, month: Int) -> Unit,
+  monthDecrease: (year: Int, month: Int) -> Unit,
+  dialogMonthIncrease: (year: Int, month: Int) -> Unit,
+  dialogMonthDecrease: (year: Int, month: Int) -> Unit,
   weekIncrease: () -> Unit,
   weekDecrease: () -> Unit,
 ) {
@@ -159,8 +163,12 @@ private fun RoutineScreen(
       indexDay = state.index,
       dayCheckedNumber = dayCheckedNumber,
       screenWidth = screenWidth,
-      monthIncrease = monthIncrease,
-      monthDecrease = monthDecrease,
+      monthIncrease = {
+        monthIncrease(state.currentYear, state.currentMonth)
+      },
+      monthDecrease = {
+        monthDecrease(state.currentYear, state.currentMonth)
+      },
       weekDecrease = weekDecrease,
       weekIncrease = weekIncrease,
     )
@@ -212,28 +220,30 @@ private fun RoutineScreen(
       id = R.string.ok,
     ),
   )
-  DialogAddRoutine(
-    isShowDay = false,
-    isOpen = openDialog,
-    openDialog = {
-      onOpenDialog(false)
-      routineModelUpdateDialog.value = null
-    },
-    updateRoutine = routineModelUpdateDialog.value,
-    routineItems = { routine ->
-      if (routineModelUpdateDialog.value != null) {
-        onUpdateRoutine(routine)
-      } else {
-        onAddRoutine(routine)
-      }
-      onOpenDialog(false)
-    },
-    currentNumberDay = state.currentDay,
-    currentNumberMonth = state.currentMonth,
-    currentNumberYear = state.currentYear,
-    timesMonth = state.timesMonth,
-    monthChange = onMonthChecked,
-  )
+  if (openDialog) {
+    DialogAddRoutine(
+      openDialog = {
+        onOpenDialog(false)
+        routineModelUpdateDialog.value = null
+      },
+      updateRoutine = routineModelUpdateDialog.value,
+      routineItems = { routine ->
+        if (routineModelUpdateDialog.value != null) {
+          onUpdateRoutine(routine)
+        } else {
+          onAddRoutine(routine)
+        }
+        onOpenDialog(false)
+      },
+      currentNumberDay = state.currentDayDialog,
+      currentNumberMonth = state.currentMonthDialog,
+      currentNumberYear = state.currentYearDialog,
+      timesMonth = state.timesMonth,
+      monthDecrease = dialogMonthDecrease,
+      monthIncrease = dialogMonthIncrease,
+    )
+  }
+
   ErrorDialog(
     isOpen = errorClick,
     message = stringResource(id = R.string.better_performance_access),
@@ -270,8 +280,8 @@ private fun GetRoutines(
   } else {
     ListRoutines(
       modifier = Modifier
-          .fillMaxWidth()
-          .padding(top = 16.dp),
+        .fillMaxWidth()
+        .padding(top = 16.dp),
       routines = routines,
       checkedRoutine = {
         Timber.tag("routineGetNameDay")
@@ -320,8 +330,8 @@ private fun ItemTimeDate(
     }
     Text(
       modifier = Modifier
-          .padding(top = 12.dp)
-          .fillMaxWidth(0.3f),
+        .padding(top = 12.dp)
+        .fillMaxWidth(0.3f),
       text = "${yearChecked.toString().persianLocate()} ${monthChecked.calculateMonthName()}",
       color = MaterialTheme.colorScheme.primary,
       textAlign = TextAlign.Center,
@@ -341,8 +351,8 @@ private fun ItemTimeDate(
 
   Row(
     modifier = Modifier
-        .padding(top = 18.dp, end = 50.dp, start = 50.dp)
-        .fillMaxWidth(),
+      .padding(top = 18.dp, end = 50.dp, start = 50.dp)
+      .fillMaxWidth(),
     horizontalArrangement = Arrangement.SpaceBetween,
   ) {
     arrayString.reversed().forEachIndexed { index, nameDay ->
@@ -362,8 +372,8 @@ private fun ItemTimeDate(
   Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
     IconButton(
       modifier = Modifier
-          .weight(1f)
-          .padding(top = 10.dp),
+        .weight(1f)
+        .padding(top = 10.dp),
       onClick = {
         weekIncrease()
       },
@@ -376,8 +386,8 @@ private fun ItemTimeDate(
     }
     ListTimes(
       modifier = Modifier
-          .weight(8f)
-          .padding(top = 6.dp),
+        .weight(8f)
+        .padding(top = 6.dp),
       times = times,
       screenWidth = screenWidth,
       dayCheckedNumber = dayCheckedNumber,
@@ -385,8 +395,8 @@ private fun ItemTimeDate(
     )
     IconButton(
       modifier = Modifier
-          .weight(1f)
-          .padding(top = 10.dp),
+        .weight(1f)
+        .padding(top = 10.dp),
       onClick = {
         weekDecrease()
       },
@@ -454,26 +464,26 @@ private fun DayItems(
 ) {
   ClickableText(
     modifier = Modifier
-        .padding(
-            top = 4.dp,
-            start = if (timeDate.isChecked) if (screenWidth <= 420) 5.dp else 7.dp else 6.dp,
-        )
-        .size(if (screenWidth <= 400) 36.dp else if (screenWidth in 400..420) 39.dp else 43.dp)
-        .clip(CircleShape)
-        .background(
-            brush = if (timeDate.isChecked) {
-                Brush.verticalGradient(
-                    gradientColors,
-                )
-            } else Brush.horizontalGradient(
-                listOf(
-                    MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.background,
-                ),
-            ),
-        )
-        .padding(
-            top = if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp,
+      .padding(
+        top = 4.dp,
+        start = if (timeDate.isChecked) if (screenWidth <= 420) 5.dp else 7.dp else 6.dp,
+      )
+      .size(if (screenWidth <= 400) 36.dp else if (screenWidth in 400..420) 39.dp else 43.dp)
+      .clip(CircleShape)
+      .background(
+        brush = if (timeDate.isChecked) {
+          Brush.verticalGradient(
+            gradientColors,
+          )
+        } else Brush.horizontalGradient(
+          listOf(
+            MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.background,
+          ),
         ),
+      )
+      .padding(
+        top = if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp,
+      ),
     onClick = {
       if (timeDate.dayNumber > 0)
         dayCheckedNumber(
