@@ -3,8 +3,8 @@ package com.rahim.ui.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
-import com.rahim.yadino.base.di.IODispatcher
 import com.rahim.yadino.dateTime.DateTimeRepository
+import com.rahim.yadino.di.IODispatcher
 import com.rahim.yadino.note.NoteRepository
 import com.rahim.yadino.routine.RepositoryRoutine
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -59,10 +59,4 @@ class MainViewModel @Inject constructor(
   fun isDarkTheme() = sharedPreferencesRepository.isDarkTheme()
 
   fun isShowWelcomeScreen() = sharedPreferencesRepository.isShowWelcomeScreen()
-
-  fun showSampleRoutine(isShow: Boolean = true) {
-    viewModelScope.launch {
-      sharedPreferencesRepository.isShowSampleRoutine(isShow)
-    }
-  }
 }
