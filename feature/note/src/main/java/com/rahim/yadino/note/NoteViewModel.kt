@@ -25,7 +25,6 @@ import javax.inject.Inject
 class NoteViewModel @Inject constructor(
   private val noteRepository: NoteRepository,
   private val timeRepository: DateTimeRepository,
-  private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) :
   BaseViewModel(), NoteContract {
   private val currentYear = timeRepository.currentTimeYear
@@ -45,7 +44,6 @@ class NoteViewModel @Inject constructor(
     is NoteContract.NoteEvent.DeleteNote -> delete(event.deleteNote)
     is NoteContract.NoteEvent.UpdateNote -> updateNote(event.updateNote)
     is NoteContract.NoteEvent.AddNote -> addNote(event.addNote)
-    is NoteContract.NoteEvent.ShowSampleNote -> showSampleNote(event.isShowSampleNote)
   }
 
   private fun addNote(noteModel: NoteModel) {
@@ -113,12 +111,6 @@ class NoteViewModel @Inject constructor(
             it.copy(notes = notes, errorMessage = null, isLoading = false)
           }
         }
-    }
-  }
-
-  private fun showSampleNote(isShow: Boolean) {
-    viewModelScope.launch {
-      sharedPreferencesRepository.isShowSampleNote(isShow)
     }
   }
 }

@@ -8,15 +8,15 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class NoteModel(
     @PrimaryKey(autoGenerate = true)
-    var id: Int? = null,
-    var name: String,
-    var description: String,
-    var isChecked: Boolean = false,
-    var state: Int = 0,
-    var dayName: String,
-    var dayNumber: Int?=null,
-    var monthNumber: Int?=null,
-    var yearNumber: Int?=null,
-    var isSample: Boolean = false,
-    var timeInMileSecond:Long?=null
+    val id: Int? = null,
+    val name: String,
+    val description: String,
+    val isChecked: Boolean = false,
+    val state: Int = 0,
+    val dayName: String,
+    val dayNumber: Int?=null,
+    val monthNumber: Int?=null,
+    val yearNumber: Int?=null,
+    val isSample: Boolean = false,
+    val timeInMileSecond:Long?=null
 ) : Parcelable

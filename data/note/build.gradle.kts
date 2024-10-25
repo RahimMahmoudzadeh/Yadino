@@ -10,5 +10,6 @@ android {
 }
 dependencies {
     api(project(":domain:note"))
+    api(project(":domain:sharedPreferences"))
     implementation(project(":core:base"))
 }

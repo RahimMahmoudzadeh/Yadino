@@ -43,9 +43,6 @@ internal fun NoteRoute(
     onUpdateNote = {
       event(NoteContract.NoteEvent.UpdateNote(it))
     },
-    showSampleNote = {
-      event(NoteContract.NoteEvent.ShowSampleNote(it))
-    },
     onAddNote = {
       event(NoteContract.NoteEvent.AddNote(it))
     },
@@ -69,7 +66,6 @@ private fun NoteScreen(
   clickSearch: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,
   onUpdateNote: (NoteModel) -> Unit,
-  showSampleNote: (Boolean) -> Unit,
   onAddNote: (NoteModel) -> Unit,
   onDelete: (NoteModel) -> Unit,
   onSearchText: (String) -> Unit,
@@ -120,8 +116,6 @@ private fun NoteScreen(
             ).show()
             return@ItemsNote
           }
-          showSampleNote(true)
-
           noteUpdateDialog.value = it
           onOpenDialog(true)
         },
@@ -134,45 +128,35 @@ private fun NoteScreen(
             ).show()
             return@ItemsNote
           }
-          showSampleNote(true)
           noteDeleteDialog.value = it
         },
       )
     }
 
   }
-  DialogAddNote(
-    updateNoteState = noteUpdateDialog.value?.state ?: 0,
-    updateNoteName = noteUpdateDialog.value?.name ?: "",
-    updateNoteDescription = noteUpdateDialog.value?.description ?: "",
-    isOpen = openDialog,
-    note = { noteName, description, stateNote, timeInMileSecond ->
-      if (noteUpdateDialog.value != null) {
-        onUpdateNote(
-          noteUpdateDialog.value!!.apply {
-            name = noteName
-            this.description = description
-            this.state = stateNote
-            this.timeInMileSecond = timeInMileSecond
-          },
-        )
-      } else {
-        val noteModel = NoteModel(
-          name = noteName,
-          description = description,
-          state = stateNote,
-          timeInMileSecond = timeInMileSecond,
-          dayName = state.nameDay ?: "",
-        )
-        onAddNote(noteModel)
-      }
-    },
 
-    openDialog = {
-      noteUpdateDialog.value = null
-      onOpenDialog(it)
-    },
-  )
+  if (openDialog) {
+    DialogAddNote(
+      updateNote = noteUpdateDialog.value,
+      note = { noteModel ->
+        if (noteUpdateDialog.value != null) {
+          val note = noteUpdateDialog.value?.copy(
+            name = noteModel.dayName,
+            description = noteModel.description,
+            state = noteModel.state,
+            timeInMileSecond = noteModel.timeInMileSecond,
+          )
+          note?.let { onUpdateNote(note) }
+        } else {
+          onAddNote(noteModel)
+        }
+      },
+      openDialog = {
+        noteUpdateDialog.value = null
+        onOpenDialog(it)
+      },
+    )
+  }
 
   noteDeleteDialog.value?.let { noteDelete ->
     ShowDialogDelete(
@@ -196,11 +180,11 @@ fun ItemsNote(
 ) {
   LazyColumn(
     modifier = Modifier
-      .fillMaxWidth()
-      .padding(
-        end = 16.dp,
-        start = 16.dp,
-      ),
+        .fillMaxWidth()
+        .padding(
+            end = 16.dp,
+            start = 16.dp,
+        ),
     contentPadding = PaddingValues(top = 25.dp),
   ) {
     items(
@@ -215,7 +199,7 @@ fun ItemsNote(
           yearNumber = it.yearNumber ?: 0,
           dayNumber = it.dayNumber ?: 0,
           onChecked = { checked ->
-            checkedNote(it.apply { isChecked = checked })
+            checkedNote(it.copy(isChecked = checked))
           },
           openDialogDelete = {
             deleteNote(it)

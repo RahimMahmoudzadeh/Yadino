@@ -5,9 +5,10 @@ interface SharedPreferencesRepository {
 
   fun isShowWelcomeScreen(): Boolean
 
-  fun setShowSampleRoutine(isShow: Boolean)
+  fun setShowSampleRoutine(isShow: Boolean = true)
   fun isShowSampleRoutine(): Boolean
-  fun isShowSampleNote(isShow: Boolean)
+  fun isShowSampleNote(): Boolean
+  fun setShowSampleNote(isShow: Boolean = true)
   fun changeTheme(isDarkTheme: String)
   fun isDarkTheme(): String?
 }

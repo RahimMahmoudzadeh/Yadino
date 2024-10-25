@@ -13,7 +13,6 @@ interface NoteContract : UnidirectionalViewModel<NoteContract.NoteEvent, NoteCon
     data class DeleteNote(val deleteNote: NoteModel) : NoteEvent()
     data class UpdateNote(val updateNote: NoteModel) : NoteEvent()
     data class AddNote(val addNote: NoteModel) : NoteEvent()
-    data class ShowSampleNote(val isShowSampleNote: Boolean) : NoteEvent()
     data object GetNotes : NoteEvent()
   }
 
