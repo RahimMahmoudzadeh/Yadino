@@ -42,9 +42,6 @@ interface RoutineDao {
   @Delete
   suspend fun removeRoutine(routineModel: RoutineModel): Int
 
-  @Update
-  suspend fun updateRoutine(routineModel: RoutineModel)
-
   @Query("Update tbl_routine SET isChecked=1 WHERE idAlarm=:id")
   suspend fun updateCheckedByAlarmId(id: Long)
 

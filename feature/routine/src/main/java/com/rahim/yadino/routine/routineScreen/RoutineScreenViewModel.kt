@@ -5,6 +5,7 @@ import com.rahim.yadino.Resource
 import com.rahim.yadino.base.BaseViewModel
 import com.rahim.yadino.dateTime.DateTimeRepository
 import com.rahim.yadino.di.IODispatcher
+import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.model.RoutineModel
 import com.rahim.yadino.routine.useCase.AddReminderUseCase
 import com.rahim.yadino.routine.useCase.CancelReminderUseCase
@@ -19,8 +20,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -63,6 +69,7 @@ class RoutineScreenViewModel @Inject constructor(
       is RoutineContract.RoutineEvent.CheckedRoutine -> checkedRoutine(event.routine)
       is RoutineContract.RoutineEvent.DeleteRoutine -> deleteRoutine(event.routine)
       is RoutineContract.RoutineEvent.GetRoutines -> {
+        Timber.tag("routineViewModel").d("GetRoutines")
         updateDayChecked(event.timeDate.yearNumber, event.timeDate.monthNumber, event.timeDate.dayNumber)
         getRoutines(event.timeDate.yearNumber, event.timeDate.monthNumber, event.timeDate.dayNumber)
       }
@@ -201,8 +208,7 @@ class RoutineScreenViewModel @Inject constructor(
       lastYearNumber = yearNumber
       lastMonthNumber = monthNumber
       lastDayNumber = numberDay
-      getRemindersUseCase.invoke(lastMonthNumber, lastDayNumber, lastYearNumber)
-        .catch {}.collectLatest { routines ->
+      getRemindersUseCase.invoke(lastMonthNumber, lastDayNumber, lastYearNumber,this).collectLatest { routines ->
           mutableState.update {
             it.copy(
               routines =
@@ -216,7 +222,6 @@ class RoutineScreenViewModel @Inject constructor(
         }
     }
   }
-
   private fun deleteRoutine(routineModel: RoutineModel) {
     viewModelScope.launch {
       deleteReminderUseCase(routineModel)
@@ -225,6 +230,7 @@ class RoutineScreenViewModel @Inject constructor(
 
   private fun updateRoutine(routineModel: RoutineModel) {
     viewModelScope.launch {
+      Timber.tag("routineViewModel").d("GetRoutines")
       val response = updateReminderUseCase(routineModel)
       when (response) {
         is Resource.Error -> {

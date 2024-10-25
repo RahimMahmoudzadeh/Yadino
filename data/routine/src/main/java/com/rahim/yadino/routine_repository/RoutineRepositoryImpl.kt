@@ -10,12 +10,16 @@ import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.withContext
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -69,7 +73,7 @@ class RoutineRepositoryImpl @Inject constructor(
           idRandom = Random.nextInt(0, 10000000)
           equalIdAlarm = getIdAlarmsNotNull().find { it == idRandom.toLong() }
         }
-        routineDao.updateRoutine(it.copy(idAlarm = idRandom.toLong()))
+        routineDao.addRoutine(it.copy(idAlarm = idRandom.toLong()))
       }
     }
   }
@@ -154,6 +158,8 @@ class RoutineRepositoryImpl @Inject constructor(
 
   override fun updateRoutine(routineModel: RoutineModel): Flow<Resource<RoutineModel?>> =
     flow {
+      Timber.tag("routineViewModel").d("updateRoutine")
+
       sharedPreferencesRepository.setShowSampleRoutine(true)
       val updateRoutine = routineModel.copy(
         timeInMillisecond = convertDateToMilSecond(
@@ -177,7 +183,7 @@ class RoutineRepositoryImpl @Inject constructor(
           emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
         } else {
           runCatching {
-            routineDao.updateRoutine(this)
+            routineDao.addRoutine(this)
           }.onSuccess {
             emit(Resource.Success(this))
           }.onFailure {
@@ -189,30 +195,14 @@ class RoutineRepositoryImpl @Inject constructor(
 
   override suspend fun getRoutine(id: Int): RoutineModel = routineDao.getRoutine(id)
   override suspend fun checkedRoutine(routineModel: RoutineModel) {
+    Timber.tag("routineViewModel").d("checkedRoutine")
     sharedPreferencesRepository.setShowSampleRoutine(true)
-    routineDao.updateRoutine(routineModel)
+    routineDao.addRoutine(routineModel)
   }
 
-  private var lastYearNumber = 0
-  private var lastMonthNumber = 0
-  private var lastDayNumber = 0
   override fun getRoutines(
     monthNumber: Int, numberDay: Int, yearNumber: Int,
-  ): Flow<List<RoutineModel>> = flow {
-    lastYearNumber = yearNumber
-    lastMonthNumber = monthNumber
-    lastDayNumber = numberDay
-    routineDao.getRoutines(monthNumber, numberDay, yearNumber).takeWhile {
-      if (it.isEmpty()) {
-        true
-      } else {
-        val firstRoutine = it.first()
-        (firstRoutine.monthNumber == lastMonthNumber && firstRoutine.dayNumber == lastDayNumber && firstRoutine.yearNumber == lastYearNumber)
-      }
-    }.collect {
-      emit(it)
-    }
-  }
+  ): Flow<List<RoutineModel>>  = routineDao.getRoutines(monthNumber, numberDay, yearNumber)
 
 
   override suspend fun searchRoutine(

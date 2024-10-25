@@ -83,10 +83,11 @@ class HomeViewModel @Inject constructor(
 
   private fun getCurrentRoutines() {
     viewModelScope.launch {
-      getRemindersUseCase(dateTimeRepository.currentTimeMonth, dateTimeRepository.currentTimeDay, dateTimeRepository.currentTimeYear).catch {
+      getRemindersUseCase(dateTimeRepository.currentTimeMonth, dateTimeRepository.currentTimeDay, dateTimeRepository.currentTimeYear,this).catch {
         Timber.tag("exception").d("exception:$it")
         mutableState.update {
           it.copy(
+            routineLoading = false,
             errorMessage = ErrorMessageCode.ERROR_GET_PROCESS,
           )
         }
@@ -97,6 +98,7 @@ class HomeViewModel @Inject constructor(
               it.timeHours?.replace(":", "")?.toInt()
             },
             errorMessage = null,
+            routineLoading = false,
           )
         }
       }
