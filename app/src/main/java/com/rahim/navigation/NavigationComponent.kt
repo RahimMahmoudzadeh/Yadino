@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navOptions
 import com.rahim.yadino.routine.alarmScreen.navigation.historyScreen
 import com.rahim.yadino.calender.navigation.calenderScreen
 import com.rahim.yadino.routine.homeScreen.navigation.homeScreen
@@ -25,7 +28,7 @@ fun NavigationComponent(
 ) {
     NavHost(navController, startDestination = startDestination, Modifier.padding(innerPadding)) {
         welcomeScreen {
-            navController.navigateToHome()
+            navController.navigateToHome(navOptions = navOptions { popUpTo(0) })
         }
         homeScreen(openDialog = openDialog, onOpenDialog = onOpenDialog, clickSearch = clickSearch)
         routineScreen(

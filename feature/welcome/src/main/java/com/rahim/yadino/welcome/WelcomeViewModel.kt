@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WelcomeViewModel @Inject constructor(
   private val sharedPreferencesRepository: SharedPreferencesRepository,
-) : BaseViewModel(), WelcomeContract {
+) : ViewModel(), WelcomeContract {
 
   private val mutableState = MutableStateFlow<WelcomeContract.WelcomeState>(WelcomeContract.WelcomeState())
   override val state: StateFlow<WelcomeContract.WelcomeState> = mutableState.onStart {

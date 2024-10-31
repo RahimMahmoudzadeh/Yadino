@@ -1,5 +1,6 @@
 package com.rahim.yadino.routine.routineScreen
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.Resource
 import com.rahim.yadino.base.BaseViewModel
@@ -49,7 +50,7 @@ class RoutineScreenViewModel @Inject constructor(
   @IODispatcher
   private val ioDispatcher: CoroutineDispatcher,
 ) :
-  BaseViewModel(), RoutineContract {
+  ViewModel(), RoutineContract {
 
   private var lastYearNumber = dateTimeRepository.currentTimeYear
   private var lastMonthNumber = dateTimeRepository.currentTimeMonth
@@ -80,7 +81,6 @@ class RoutineScreenViewModel @Inject constructor(
       is RoutineContract.RoutineEvent.MonthIncrease -> {
         monthIncrease(event.monthNumber, event.yearNumber) { year, month ->
           getTimesMonth(year, month)
-          updateDialogCurrentTime(year, month)
           updateDayChecked(year, month)
           updateIndex(month, year)
         }
@@ -89,7 +89,6 @@ class RoutineScreenViewModel @Inject constructor(
       is RoutineContract.RoutineEvent.MonthDecrease -> {
         monthDecrease(event.monthNumber, event.yearNumber) { year, month ->
           getTimesMonth(year, month)
-          updateDialogCurrentTime(year, month)
           updateDayChecked(year, month)
           updateIndex(month, year)
         }
@@ -98,29 +97,17 @@ class RoutineScreenViewModel @Inject constructor(
       is RoutineContract.RoutineEvent.JustMonthDecrease -> {
         monthDecrease(event.monthNumber, event.yearNumber) { year, month ->
           getTimesMonth(year, month)
-          updateDialogCurrentTime(year, month)
         }
       }
 
       is RoutineContract.RoutineEvent.JustMonthIncrease -> {
         monthIncrease(event.monthNumber, event.yearNumber) { year, month ->
           getTimesMonth(year, month)
-          updateDialogCurrentTime(year, month)
         }
       }
 
       RoutineContract.RoutineEvent.WeekDecrease -> weekDecrease()
       RoutineContract.RoutineEvent.WeekIncrease -> weekIncrease()
-    }
-  }
-
-  private fun updateDialogCurrentTime(year: Int, month: Int, day: Int = DAY_MIN) {
-    mutableState.update {
-      it.copy(
-        currentMonthDialog = month,
-        currentYearDialog = year,
-        currentDayDialog = day,
-      )
     }
   }
 
@@ -192,9 +179,6 @@ class RoutineScreenViewModel @Inject constructor(
         currentDay = dateTimeRepository.currentTimeDay,
         currentMonth = dateTimeRepository.currentTimeMonth,
         currentYear = dateTimeRepository.currentTimeYear,
-        currentDayDialog = dateTimeRepository.currentTimeDay,
-        currentMonthDialog = dateTimeRepository.currentTimeMonth,
-        currentYearDialog = dateTimeRepository.currentTimeYear,
       )
     }
   }

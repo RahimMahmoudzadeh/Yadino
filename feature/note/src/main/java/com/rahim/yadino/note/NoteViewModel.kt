@@ -1,5 +1,6 @@
 package com.rahim.yadino.note
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.Constants
 import com.rahim.yadino.base.BaseViewModel
@@ -26,7 +27,7 @@ class NoteViewModel @Inject constructor(
   private val noteRepository: NoteRepository,
   private val timeRepository: DateTimeRepository,
 ) :
-  BaseViewModel(), NoteContract {
+  ViewModel(), NoteContract {
   private val currentYear = timeRepository.currentTimeYear
   private val currentMonth = timeRepository.currentTimeMonth
   private val currentDay = timeRepository.currentTimeDay

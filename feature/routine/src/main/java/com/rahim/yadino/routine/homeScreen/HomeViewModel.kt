@@ -1,5 +1,6 @@
 package com.rahim.yadino.routine.homeScreen
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.Resource
 import com.rahim.yadino.base.BaseViewModel
@@ -35,7 +36,7 @@ class HomeViewModel @Inject constructor(
   private val getRemindersUseCase: GetRemindersUseCase,
   private val searchRoutineUseCase: SearchRoutineUseCase,
   private val dateTimeRepository: DateTimeRepository,
-) : BaseViewModel(), HomeContract {
+) : ViewModel(), HomeContract {
 
   private val mutableState = MutableStateFlow(HomeContract.HomeState())
   override val state: StateFlow<HomeContract.HomeState> = mutableState.onStart {

@@ -67,13 +67,13 @@ fun DialogAddRoutine(
   monthIncrease: ((year: Int, month: Int) -> Unit)? = null,
   monthDecrease: ((year: Int, month: Int) -> Unit)? = null,
 ) {
-  var monthChecked by rememberSaveable { mutableIntStateOf(0) }
-  var yearChecked by rememberSaveable { mutableIntStateOf(0) }
-  var dayChecked by rememberSaveable { mutableIntStateOf(0) }
+  var monthChecked by rememberSaveable { mutableIntStateOf(currentNumberMonth) }
+  var yearChecked by rememberSaveable { mutableIntStateOf(currentNumberYear) }
+  var dayChecked by rememberSaveable { mutableIntStateOf(currentNumberDay) }
 
-  monthChecked = currentNumberMonth
-  yearChecked = currentNumberYear
-  dayChecked = currentNumberDay
+//  monthChecked = currentNumberMonth
+//  yearChecked = currentNumberYear
+//  dayChecked = currentNumberDay
 
   var routineName by rememberSaveable { mutableStateOf(if (updateRoutine?.name.isNullOrBlank()) "" else updateRoutine.name) }
   var routineExplanation by rememberSaveable { mutableStateOf(if (updateRoutine?.explanation.isNullOrBlank()) "" else updateRoutine.explanation) }
@@ -86,9 +86,9 @@ fun DialogAddRoutine(
 
   val persianData = PersianDate()
   val date = persianData.initJalaliDate(
-    updateRoutine?.yearNumber ?: currentNumberYear,
-    updateRoutine?.monthNumber ?: currentNumberMonth,
-    updateRoutine?.dayNumber ?: currentNumberDay,
+    updateRoutine?.yearNumber ?: yearChecked,
+    updateRoutine?.monthNumber ?: monthChecked,
+    updateRoutine?.dayNumber ?: dayChecked,
   )
 
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -134,7 +134,7 @@ fun DialogAddRoutine(
               .background(MaterialTheme.colorScheme.background)
               .fillMaxWidth()
               .padding(top = 18.dp)
-              .height(52.dp)
+              .height(60.dp)
               .border(
                 width = 1.dp,
                 brush = Brush.verticalGradient(gradientColors),
@@ -305,9 +305,9 @@ fun DialogAddRoutine(
                     name = routineName,
                     explanation = routineExplanation,
                     timeHours = time,
-                    dayNumber = currentNumberDay,
-                    monthNumber = currentNumberMonth,
-                    yearNumber = currentNumberYear,
+                    dayNumber = dayChecked,
+                    monthNumber = monthChecked,
+                    yearNumber = yearChecked,
                     dayName = persianData.dayName(date),
                     colorTask = null,
                   )

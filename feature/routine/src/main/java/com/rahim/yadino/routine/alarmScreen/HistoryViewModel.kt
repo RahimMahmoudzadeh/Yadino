@@ -23,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
   private val getRoutineUseCase: GetAllRoutineUseCase,
-) : BaseViewModel(), RoutineHistoryContract {
+) : ViewModel(), RoutineHistoryContract {
 
   private val mutableState = MutableStateFlow<RoutineHistoryContract.HistoryState>(RoutineHistoryContract.HistoryState())
   override val state: StateFlow<RoutineHistoryContract.HistoryState> = mutableState.onStart {

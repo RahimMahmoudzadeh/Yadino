@@ -235,9 +235,9 @@ private fun RoutineScreen(
         }
         onOpenDialog(false)
       },
-      currentNumberDay = state.currentDayDialog,
-      currentNumberMonth = state.currentMonthDialog,
-      currentNumberYear = state.currentYearDialog,
+      currentNumberDay = state.currentDay,
+      currentNumberMonth = state.currentMonth,
+      currentNumberYear = state.currentYear,
       timesMonth = state.timesMonth,
       monthDecrease = dialogMonthDecrease,
       monthIncrease = dialogMonthIncrease,
