@@ -19,6 +19,7 @@ object Constants {
     const val UPDATE = "update"
     const val CAFE_BAZAAR = "cafeBazaar"
     const val CAFE_BAZZAR_LINK="https://cafebazaar.ir/app/com.rahim.yadino"
+    const val GOOGLE_PLAY_LINK="https://play.google.com/store/apps/details?id=com.rahim.yadino&hl=en"
     const val MY_KET_LINK="https://myket.ir/app/com.rahim.yadino"
     const val CAFE_BAZAAR_PACKAGE_NAME="com.farsitel.bazaar"
     const val MY_KET_PACKAGE_NAME="ir.mservices.market"

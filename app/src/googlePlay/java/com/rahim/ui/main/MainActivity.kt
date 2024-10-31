@@ -2,6 +2,7 @@ package com.rahim.ui.main
 
 import android.Manifest
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
@@ -56,11 +57,9 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.navigation.NavigationComponent
-import com.rahim.yadino.base.Constants.CAFE_BAZAAR_PACKAGE_NAME
-import com.rahim.yadino.base.Constants.CAFE_BAZZAR_LINK
-import com.rahim.yadino.base.Constants.DARK
-import com.rahim.yadino.base.Constants.LIGHT
-import com.rahim.yadino.base.isPackageInstalled
+import com.rahim.yadino.Constants.DARK
+import com.rahim.yadino.Constants.GOOGLE_PLAY_LINK
+import com.rahim.yadino.Constants.LIGHT
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
 import com.rahim.yadino.designsystem.component.goSettingPermission
 import com.rahim.yadino.designsystem.component.requestPermissionNotification
@@ -75,6 +74,7 @@ import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.or
 
 
 @AndroidEntryPoint
@@ -153,8 +153,8 @@ fun YadinoApp(
     YadinoTheme(darkTheme = isDarkAppTheme) {
       Surface(
         modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+          .fillMaxSize()
+          .background(MaterialTheme.colorScheme.background),
       ) {
         YadinoNavigationDrawer(
           modifier = Modifier.width(240.dp),
@@ -163,31 +163,25 @@ fun YadinoApp(
           onItemClick = {
             when (it) {
               is DrawerItemType.ShareWithFriends -> {
-//                val sendIntent: Intent = Intent().apply {
-//                  action = Intent.ACTION_SEND
-//                  putExtra(Intent.EXTRA_TEXT, CAFE_BAZZAR_LINK)
-//                  type = "text/plain"
-//                }
-//                val shareIntent = Intent.createChooser(sendIntent, null)
-//                startActivity(context, shareIntent, null)
+                val sendIntent: Intent = Intent().apply {
+                  action = Intent.ACTION_SEND
+                  putExtra(Intent.EXTRA_TEXT, GOOGLE_PLAY_LINK)
+                  type = "text/plain"
+                }
+                val shareIntent = Intent.createChooser(sendIntent, null)
+                startActivity(context, shareIntent, null)
               }
 
               is DrawerItemType.RateToApp -> {
-//                if (!CAFE_BAZAAR_PACKAGE_NAME.isPackageInstalled(
-//                    context.packageManager,
-//                  )
-//                ) {
-//                  Toast.makeText(
-//                    context,
-//                    context.resources.getString(com.rahim.yadino.R.string.install_cafeBazaar),
-//                    Toast.LENGTH_SHORT,
-//                  ).show()
-//                  return@YadinoNavigationDrawer
-//                }
-//                val intent = Intent(Intent.ACTION_EDIT)
-//                intent.setData(Uri.parse("bazaar://details?id=${context.packageName}"))
-//                intent.setPackage(CAFE_BAZAAR_PACKAGE_NAME)
-//                startActivity(context, intent, null)
+                try {
+                  val uri = Uri.parse("market://details?id=${context.packageName}")
+                  val intent = Intent(Intent.ACTION_VIEW, uri)
+                  context.startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                  val webUri = Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}")
+                  val webIntent = Intent(Intent.ACTION_VIEW, webUri)
+                  context.startActivity(webIntent)
+                }
               }
 
               is DrawerItemType.Theme -> {
