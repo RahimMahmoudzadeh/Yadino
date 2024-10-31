@@ -33,6 +33,7 @@ interface RoutineContract : UnidirectionalViewModel<RoutineContract.RoutineEvent
   data class RoutineState(
     val routineLoading: Boolean = true,
     val routines: List<RoutineModel> = emptyList(),
+    val searchRoutines: List<RoutineModel> = emptyList(),
     val index: Int = 0,
     val currentYear: Int = 0,
     val currentMonth: Int = 0,

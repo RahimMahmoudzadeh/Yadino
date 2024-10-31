@@ -102,7 +102,7 @@ private fun HomeScreen(
     } else {
       ItemsHome(
         homeState.currentYear, homeState.currentMonth, homeState.currentDay,
-        homeState.routines,
+        if (searchText.isNotBlank()) homeState.searchRoutines else homeState.routines,
         { checkedRoutine ->
           onCheckedRoutine(checkedRoutine)
         },

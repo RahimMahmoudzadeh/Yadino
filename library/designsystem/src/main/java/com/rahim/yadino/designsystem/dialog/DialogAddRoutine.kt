@@ -276,7 +276,11 @@ fun DialogAddRoutine(
               ) {
                 Text(
                   text = stringResource(id = R.string.data_change),
-                  style = TextStyle(brush = Brush.verticalGradient(gradientColors)),
+                  style = MaterialTheme.typography.bodyMedium.copy(
+                    brush = Brush.verticalGradient(
+                      gradientColors,
+                    ),
+                  )
                 )
               }
             }

@@ -16,6 +16,7 @@ import com.rahim.yadino.routine.useCase.SearchRoutineUseCase
 import com.rahim.yadino.routine.useCase.UpdateReminderUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -64,6 +65,8 @@ class RoutineScreenViewModel @Inject constructor(
     getTimes()
   }.stateIn(viewModelScope, SharingStarted.Lazily, RoutineContract.RoutineState())
 
+
+  private var searchNameRoutine = ""
   override fun event(event: RoutineContract.RoutineEvent) {
     when (event) {
       is RoutineContract.RoutineEvent.AddRoutine -> addRoutine(event.routine)
@@ -71,11 +74,17 @@ class RoutineScreenViewModel @Inject constructor(
       is RoutineContract.RoutineEvent.DeleteRoutine -> deleteRoutine(event.routine)
       is RoutineContract.RoutineEvent.GetRoutines -> {
         Timber.tag("routineViewModel").d("GetRoutines")
-        updateDayChecked(event.timeDate.yearNumber, event.timeDate.monthNumber, event.timeDate.dayNumber)
-        getRoutines(event.timeDate.yearNumber, event.timeDate.monthNumber, event.timeDate.dayNumber)
+        event.run {
+          updateLastTime(timeDate.yearNumber, timeDate.monthNumber, timeDate.dayNumber)
+          updateDayChecked(timeDate.yearNumber, timeDate.monthNumber, timeDate.dayNumber)
+          getRoutines(timeDate.yearNumber, timeDate.monthNumber, timeDate.dayNumber, searchText = searchNameRoutine)
+        }
       }
 
-      is RoutineContract.RoutineEvent.SearchRoutine -> searchRoutine(event.routineName)
+      is RoutineContract.RoutineEvent.SearchRoutine -> {
+        getRoutines(searchText = event.routineName)
+      }
+
       is RoutineContract.RoutineEvent.UpdateRoutine -> updateRoutine(event.routine)
       is RoutineContract.RoutineEvent.GetAllTimes -> getTimes()
       is RoutineContract.RoutineEvent.MonthIncrease -> {
@@ -109,6 +118,12 @@ class RoutineScreenViewModel @Inject constructor(
       RoutineContract.RoutineEvent.WeekDecrease -> weekDecrease()
       RoutineContract.RoutineEvent.WeekIncrease -> weekIncrease()
     }
+  }
+
+  private fun updateLastTime(yearNumber: Int, monthNumber: Int, dayNumber: Int) {
+    lastYearNumber = yearNumber
+    lastMonthNumber = monthNumber
+    lastDayNumber = dayNumber
   }
 
   private fun weekIncrease() {
@@ -184,28 +199,54 @@ class RoutineScreenViewModel @Inject constructor(
   }
 
   private fun getRoutines(
-    yearNumber: Int = dateTimeRepository.currentTimeYear,
-    monthNumber: Int = dateTimeRepository.currentTimeMonth,
-    numberDay: Int = dateTimeRepository.currentTimeDay,
+    yearNumber: Int = lastYearNumber,
+    monthNumber: Int = lastMonthNumber,
+    numberDay: Int = lastDayNumber,
+    searchText: String = "",
   ) {
     viewModelScope.launch {
-      lastYearNumber = yearNumber
-      lastMonthNumber = monthNumber
-      lastDayNumber = numberDay
-      getRemindersUseCase.invoke(lastMonthNumber, lastDayNumber, lastYearNumber,this).collectLatest { routines ->
-          mutableState.update {
-            it.copy(
-              routines =
-              routines.sortedBy {
-                it.timeHours?.replace(":", "")?.toInt()
-              },
-              routineLoading = false,
-              errorMessage = null,
-            )
-          }
-        }
+      searchNameRoutine = searchText
+      if (searchText.isNotBlank()) {
+        Timber.tag("routineSearch").d("getRoutines->$searchNameRoutine")
+        searchRoutine(searchNameRoutine, this, yearNumber, monthNumber, numberDay)
+      } else {
+        getNormalRoutines(this, yearNumber, monthNumber, numberDay)
+      }
     }
   }
+
+  private suspend fun getNormalRoutines(scope: CoroutineScope, yearNumber: Int, monthNumber: Int, numberDay: Int) {
+    getRemindersUseCase.invoke(monthNumber, numberDay, yearNumber, scope).collectLatest { routines ->
+      Timber.tag("routineSearch").d("getNormalRoutines")
+      mutableState.update {
+        it.copy(
+          routines =
+          routines.sortedBy {
+            it.timeHours?.replace(":", "")?.toInt()
+          },
+          routineLoading = false,
+          errorMessage = null,
+        )
+      }
+    }
+  }
+
+  private suspend fun searchRoutine(searchText: String, scope: CoroutineScope, yearNumber: Int, monthNumber: Int, numberDay: Int) {
+    searchRoutineUseCase.invoke(searchText, yearNumber, monthNumber, numberDay, scope).collectLatest { searchItems ->
+      Timber.tag("routineSearch").d("searchRoutine->$searchText")
+      Timber.tag("routineSearch").d("searchItems->$searchItems")
+      mutableState.update {
+        it.copy(
+          searchRoutines = searchItems.sortedBy {
+            it.timeHours?.replace(":", "")?.toInt()
+          },
+          routineLoading = false,
+          errorMessage = null,
+        )
+      }
+    }
+  }
+
   private fun deleteRoutine(routineModel: RoutineModel) {
     viewModelScope.launch {
       deleteReminderUseCase(routineModel)
@@ -289,25 +330,6 @@ class RoutineScreenViewModel @Inject constructor(
       dateTimeRepository.updateDayToToday(day, yearNumber, monthNumber)
       mutableState.update {
         it.copy(currentMonth = monthNumber, currentYear = yearNumber, currentDay = day)
-      }
-    }
-  }
-
-  private fun searchRoutine(searchText: String) {
-    viewModelScope.launch {
-      if (searchText.isNotEmpty()) {
-        Timber.tag("searchRoutine").d("searchText:$searchText")
-        val searchItems = searchRoutineUseCase(searchText, lastYearNumber, lastMonthNumber, lastDayNumber)
-        mutableState.update {
-          it.copy(
-            routines = searchItems.sortedBy {
-              it.timeHours?.replace(":", "")?.toInt()
-            },
-            errorMessage = null,
-          )
-        }
-      } else {
-        getRoutines()
       }
     }
   }

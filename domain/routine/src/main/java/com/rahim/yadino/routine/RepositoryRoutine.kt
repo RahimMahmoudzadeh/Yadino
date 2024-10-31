@@ -13,7 +13,7 @@ interface RepositoryRoutine {
     suspend fun checkedRoutine(routineModel: RoutineModel)
     suspend fun getRoutine(id: Int): RoutineModel
     fun getRoutines(monthNumber: Int, numberDay: Int, yearNumber: Int): Flow<List<RoutineModel>>
-    suspend fun searchRoutine(name: String, yearNumber: Int?,monthNumber: Int?, dayNumber: Int?): List<RoutineModel>
+    fun searchRoutine(name: String, yearNumber: Int?,monthNumber: Int?, dayNumber: Int?): Flow<List<RoutineModel>>
     suspend fun changeRoutineId()
     suspend fun checkedAllRoutinePastTime()
     suspend fun getAllRoutine(): List<RoutineModel>

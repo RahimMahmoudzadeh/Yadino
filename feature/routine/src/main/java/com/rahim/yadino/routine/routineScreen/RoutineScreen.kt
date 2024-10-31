@@ -173,7 +173,7 @@ private fun RoutineScreen(
       weekIncrease = weekIncrease,
     )
     GetRoutines(
-      state.routines,
+      if (searchText.isNotBlank()) state.searchRoutines else state.routines,
       searchText,
       routineUpdateDialog = {
         if (it.isChecked) {

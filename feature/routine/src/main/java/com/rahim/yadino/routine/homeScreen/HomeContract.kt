@@ -25,6 +25,7 @@ interface HomeContract : UnidirectionalViewModel<HomeContract.HomeEvent, HomeCon
   data class HomeState(
     val routineLoading: Boolean = true,
     val routines: List<RoutineModel> = emptyList(),
+    val searchRoutines: List<RoutineModel> = emptyList(),
     val currentYear: Int = 0,
     val currentMonth: Int = 0,
     val currentDay: Int = 0,

@@ -202,12 +202,12 @@ class RoutineRepositoryImpl @Inject constructor(
 
   override fun getRoutines(
     monthNumber: Int, numberDay: Int, yearNumber: Int,
-  ): Flow<List<RoutineModel>>  = routineDao.getRoutines(monthNumber, numberDay, yearNumber)
+  ): Flow<List<RoutineModel>> = routineDao.getRoutines(monthNumber, numberDay, yearNumber)
 
 
-  override suspend fun searchRoutine(
+  override fun searchRoutine(
     name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?,
-  ): List<RoutineModel> = routineDao.searchRoutine(name, monthNumber, dayNumber)
+  ): Flow<List<RoutineModel>> = routineDao.searchRoutine(nameRoutine = name, monthNumber = monthNumber, dayNumber = dayNumber, yearNumber = yearNumber)
 
   override fun haveAlarm(): Flow<Boolean> = routineDao.haveAlarm()
 }

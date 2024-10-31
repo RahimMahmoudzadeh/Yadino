@@ -45,12 +45,13 @@ interface RoutineDao {
   @Query("Update tbl_routine SET isChecked=1 WHERE idAlarm=:id")
   suspend fun updateCheckedByAlarmId(id: Long)
 
-  @Query("SELECT * FROM tbl_routine WHERE monthNumber=:monthNumber AND dayNumber=:dayNumber AND name LIKE '%'||:nameRoutine|| '%'")
-  suspend fun searchRoutine(
+  @Query("SELECT * FROM tbl_routine WHERE yearNumber =:yearNumber AND monthNumber=:monthNumber AND dayNumber=:dayNumber AND name LIKE '%'||:nameRoutine|| '%'")
+  fun searchRoutine(
     nameRoutine: String,
     monthNumber: Int?,
     dayNumber: Int?,
-  ): List<RoutineModel>
+    yearNumber: Int?,
+  ): Flow<List<RoutineModel>>
 
   @Query("SELECT * FROM tbl_routine WHERE isSample=1")
   suspend fun getSampleRoutines(): List<RoutineModel>

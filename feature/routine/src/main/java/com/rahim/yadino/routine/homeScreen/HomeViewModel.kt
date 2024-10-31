@@ -15,6 +15,7 @@ import com.rahim.yadino.routine.useCase.SearchRoutineUseCase
 import com.rahim.yadino.routine.useCase.UpdateReminderUseCase
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -41,13 +42,17 @@ class HomeViewModel @Inject constructor(
   private val mutableState = MutableStateFlow(HomeContract.HomeState())
   override val state: StateFlow<HomeContract.HomeState> = mutableState.onStart {
     setCurrentTime()
-    getCurrentRoutines()
+    getRoutines(
+      yearNumber = dateTimeRepository.currentTimeYear,
+      monthNumber = dateTimeRepository.currentTimeMonth,
+      numberDay = dateTimeRepository.currentTimeDay,
+    )
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeContract.HomeState())
 
   override fun event(event: HomeContract.HomeEvent) {
     when (event) {
       HomeContract.HomeEvent.GetRoutines -> {
-        getCurrentRoutines()
+        getRoutines()
       }
 
       is HomeContract.HomeEvent.AddRoutine -> {
@@ -67,7 +72,7 @@ class HomeViewModel @Inject constructor(
       }
 
       is HomeContract.HomeEvent.SearchRoutine -> {
-        searchItems(event.routineName)
+        getRoutines(searchText = event.routineName)
       }
     }
   }
@@ -81,27 +86,52 @@ class HomeViewModel @Inject constructor(
       )
     }
   }
-
-  private fun getCurrentRoutines() {
+  private var searchNameRoutine = ""
+  private fun getRoutines(
+    yearNumber: Int = dateTimeRepository.currentTimeYear,
+    monthNumber: Int = dateTimeRepository.currentTimeMonth,
+    numberDay: Int = dateTimeRepository.currentTimeDay,
+    searchText: String = "",
+  ) {
     viewModelScope.launch {
-      getRemindersUseCase(dateTimeRepository.currentTimeMonth, dateTimeRepository.currentTimeDay, dateTimeRepository.currentTimeYear,this).catch {
-        Timber.tag("exception").d("exception:$it")
-        mutableState.update {
-          it.copy(
-            routineLoading = false,
-            errorMessage = ErrorMessageCode.ERROR_GET_PROCESS,
-          )
-        }
-      }.collectLatest { routines ->
-        mutableState.update {
-          it.copy(
-            routines = routines.sortedBy {
-              it.timeHours?.replace(":", "")?.toInt()
-            },
-            errorMessage = null,
-            routineLoading = false,
-          )
-        }
+      searchNameRoutine = searchText
+      if (searchText.isNotBlank()) {
+        Timber.tag("routineSearch").d("getRoutines->$searchNameRoutine")
+        searchRoutine(searchNameRoutine, this, yearNumber, monthNumber, numberDay)
+      } else {
+        getNormalRoutines(this, yearNumber, monthNumber, numberDay)
+      }
+    }
+  }
+
+  private suspend fun getNormalRoutines(scope: CoroutineScope, yearNumber: Int, monthNumber: Int, numberDay: Int) {
+    getRemindersUseCase.invoke(monthNumber, numberDay, yearNumber, scope).collectLatest { routines ->
+      Timber.tag("routineSearch").d("getNormalRoutines")
+      mutableState.update {
+        it.copy(
+          routines =
+          routines.sortedBy {
+            it.timeHours?.replace(":", "")?.toInt()
+          },
+          routineLoading = false,
+          errorMessage = null,
+        )
+      }
+    }
+  }
+
+  private suspend fun searchRoutine(searchText: String, scope: CoroutineScope, yearNumber: Int, monthNumber: Int, numberDay: Int) {
+    searchRoutineUseCase.invoke(searchText, yearNumber, monthNumber, numberDay, scope).collectLatest { searchItems ->
+      Timber.tag("routineSearch").d("searchRoutine->$searchText")
+      Timber.tag("routineSearch").d("searchItems->$searchItems")
+      mutableState.update {
+        it.copy(
+          searchRoutines = searchItems.sortedBy {
+            it.timeHours?.replace(":", "")?.toInt()
+          },
+          routineLoading = false,
+          errorMessage = null,
+        )
       }
     }
   }
@@ -153,24 +183,4 @@ class HomeViewModel @Inject constructor(
       }
     }
   }
-
-  private fun searchItems(searchText: String) {
-    viewModelScope.launch {
-      if (searchText.isNotEmpty()) {
-        Timber.tag("searchRoutine").d("searchText:$searchText")
-        val searchItems = searchRoutineUseCase(searchText, dateTimeRepository.currentTimeYear, dateTimeRepository.currentTimeMonth, dateTimeRepository.currentTimeDay)
-        mutableState.update {
-          it.copy(
-            routines = searchItems.sortedBy {
-              it.timeHours?.replace(":", "")?.toInt()
-            },
-            errorMessage = null,
-          )
-        }
-      } else {
-        getCurrentRoutines()
-      }
-    }
-  }
-
 }

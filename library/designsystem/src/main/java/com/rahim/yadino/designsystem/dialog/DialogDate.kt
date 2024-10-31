@@ -85,7 +85,7 @@ fun DialogChoseDate(
       color = MaterialTheme.colorScheme.background,
       shape = RoundedCornerShape(percent = 6),
     ) {
-      Column(modifier = Modifier.padding(bottom = 35.dp)) {
+      Column(modifier = Modifier.padding(bottom = 12.dp)) {
         Row(
           Modifier
             .fillMaxWidth()
@@ -188,7 +188,7 @@ fun DialogChoseDate(
           Row(
             modifier = Modifier
               .fillMaxWidth()
-              .padding(12.dp),
+              .padding(start = 12.dp, top = 12.dp),
           ) {
             DialogButtonBackground(
               text = stringResource(id = R.string.selection),
