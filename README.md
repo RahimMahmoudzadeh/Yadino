@@ -22,7 +22,7 @@ Hi! Yadino is a ToDo app the use of MVI Architecture Pattern And Clean Architect
 <a href='https://myket.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Myket' src="asset/myket.png"/></a>
 
 ## 🛠 Built With  
-|  Architecture   |MVVM Architecture Pattern |  
+|  Architecture   |MVI Architecture Pattern |  
 |----------------   |------------------------------    |  
 | <img height="20" src="https://3.bp.blogspot.com/-VVp3WvJvl84/X0Vu6EjYqDI/AAAAAAAAPjU/ZOMKiUlgfg8ok8DY8Hc-ocOvGdB0z86AgCLcBGAsYHQ/s1600/jetpack%2Bcompose%2Bicon_RGB.png">    UI Framework  | [Jetpack Compose](https://www.jetbrains.com/lp/compose-multiplatform/)         |                        |  
 | 💉 DI                | [Dagger-Hilt](https://developer.android.com/training/dependency-injection/hilt-android)                        |             |  
