@@ -1,14 +1,16 @@
 package com.rahim.yadino.sharedPreferences
 
+import kotlinx.coroutines.flow.Flow
+
 interface SharedPreferencesRepository {
-  fun saveShowWelcome(isShow: Boolean)
+  suspend fun saveShowWelcome(isShow: Boolean)
 
-  fun isShowWelcomeScreen(): Boolean
+  fun isShowWelcomeScreen(): Flow<Boolean>
 
-  fun setShowSampleRoutine(isShow: Boolean = true)
-  fun isShowSampleRoutine(): Boolean
-  fun isShowSampleNote(): Boolean
-  fun setShowSampleNote(isShow: Boolean = true)
-  fun changeTheme(isDarkTheme: String)
-  fun isDarkTheme(): String?
+  suspend fun setShowSampleRoutine(isShow: Boolean = true)
+  fun isShowSampleRoutine(): Flow<Boolean>
+  fun isShowSampleNote(): Flow<Boolean>
+  suspend fun setShowSampleNote(isShow: Boolean = true)
+  suspend fun changeTheme(isDarkTheme: String)
+  fun isDarkTheme(): Flow<String?>
 }

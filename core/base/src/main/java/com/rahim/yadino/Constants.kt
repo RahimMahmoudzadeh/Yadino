@@ -1,13 +1,13 @@
 package com.rahim.yadino
 
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+
 object Constants {
     //Static
     const val CHANNEL_ID = "Yadinoo"
     const val CHANNEL_NAME = "Main Channel"
     const val NAME_SHARED_PREFERENCE = "YadinooShared"
-    const val WELCOME_SHARED = "WelcomeShared"
-    const val SAMPLE_ROUTINE = "sampleRoutine"
-    const val SAMPLE_NOTE = "sample note"
     const val UPDATE_VERSION = "update version"
     const val IS_FORCE = "is force"
     const val VERSION = "version"
@@ -23,10 +23,15 @@ object Constants {
     const val MY_KET_LINK="https://myket.ir/app/com.rahim.yadino"
     const val CAFE_BAZAAR_PACKAGE_NAME="com.farsitel.bazaar"
     const val MY_KET_PACKAGE_NAME="ir.mservices.market"
-    const val IS_DARK_THEME="is dark theme"
     const val DARK="dark theme"
     const val LIGHT="light theme"
     const val PATTERN_DATE="yyyy-MM-dd HH:mm:ss a"
+
+    // DataStore keys
+    val WELCOME_SHARED = booleanPreferencesKey("WelcomeShared")
+    val SAMPLE_ROUTINE = booleanPreferencesKey("sampleRoutine")
+    val SAMPLE_NOTE = booleanPreferencesKey("sample note")
+    val IS_DARK_THEME= stringPreferencesKey("is dark theme")
 
     //Action
     const val ACTION_SEND_NOTIFICATION="action send notification"

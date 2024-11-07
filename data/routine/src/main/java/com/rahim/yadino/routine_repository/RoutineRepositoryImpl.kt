@@ -12,6 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
@@ -37,7 +38,7 @@ class RoutineRepositoryImpl @Inject constructor(
 
   override suspend fun addSampleRoutine() {
     delay(500)
-    if (sharedPreferencesRepository.isShowSampleRoutine()) {
+    if (sharedPreferencesRepository.isShowSampleRoutine().first()) {
       routineDao.removeSampleRoutine()
       return
     }
