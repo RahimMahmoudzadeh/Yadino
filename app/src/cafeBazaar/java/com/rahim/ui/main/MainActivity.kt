@@ -146,11 +146,8 @@ fun YadinoApp(
   val destinationNavBackStackEntry = navBackStackEntry?.destination?.route
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val coroutineScope = rememberCoroutineScope()
-  var isDarkAppTheme by remember {
-    mutableStateOf(isDarkTheme)
-  }
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-    YadinoTheme(darkTheme = isDarkAppTheme) {
+    YadinoTheme(darkTheme = isDarkTheme) {
       Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -159,7 +156,7 @@ fun YadinoApp(
         YadinoNavigationDrawer(
           modifier = Modifier.width(240.dp),
           drawerState = drawerState,
-          isDarkTheme = isDarkAppTheme,
+          isDarkTheme = isDarkTheme,
           onItemClick = {
             when (it) {
               is DrawerItemType.ShareWithFriends -> {
@@ -191,8 +188,7 @@ fun YadinoApp(
               }
 
               is DrawerItemType.Theme -> {
-                isDarkAppTheme = !isDarkAppTheme
-                changeTheme(isDarkAppTheme)
+                changeTheme(!isDarkTheme)
               }
 
               else -> {}
