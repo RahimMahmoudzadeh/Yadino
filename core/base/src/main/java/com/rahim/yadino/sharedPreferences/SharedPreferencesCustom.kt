@@ -1,44 +1,52 @@
 package com.rahim.yadino.sharedPreferences
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
 import com.rahim.yadino.Constants.IS_DARK_THEME
 import com.rahim.yadino.Constants.NAME_SHARED_PREFERENCE
 import com.rahim.yadino.Constants.SAMPLE_NOTE
 import com.rahim.yadino.Constants.SAMPLE_ROUTINE
 import com.rahim.yadino.Constants.WELCOME_SHARED
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 
 class SharedPreferencesCustom @Inject constructor(private val context: Context) {
-    private var sharedPreferences =
-        context.getSharedPreferences(NAME_SHARED_PREFERENCE, MODE_PRIVATE)
-    private var edit = sharedPreferences.edit()
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = NAME_SHARED_PREFERENCE)
 
-    fun saveWelcomePage(isShow: Boolean) {
-        edit.putBoolean(WELCOME_SHARED, isShow)
-        edit.apply()
+    suspend fun saveWelcomePage(isShow: Boolean) {
+        context.dataStore.edit { data ->
+            data[WELCOME_SHARED] = isShow
+        }
     }
 
-    fun isShowWelcome() = sharedPreferences.getBoolean(WELCOME_SHARED, false)
+    fun isShowWelcome() = context.dataStore.data.map { data -> data[WELCOME_SHARED] ?: false }
 
-    fun showSampleRoutine(isShow: Boolean) {
-        edit.putBoolean(SAMPLE_ROUTINE, isShow)
-        edit.apply()
+    suspend fun showSampleRoutine(isShow: Boolean) {
+        context.dataStore.edit { data ->
+            data[SAMPLE_ROUTINE] = isShow
+        }
     }
 
-    fun isShowSampleRoutine() = sharedPreferences.getBoolean(SAMPLE_ROUTINE, false)
-    fun showSampleNote(isShow: Boolean) {
-        edit.putBoolean(SAMPLE_NOTE, isShow)
-        edit.apply()
+    fun isShowSampleRoutine() = context.dataStore.data.map { data -> data[SAMPLE_ROUTINE] ?: false }
+
+    suspend fun showSampleNote(isShow: Boolean) {
+        context.dataStore.edit { data ->
+            data[SAMPLE_NOTE] = isShow
+        }
     }
 
-    fun isSampleNote() = sharedPreferences.getBoolean(SAMPLE_NOTE, false)
+    fun isSampleNote() = context.dataStore.data.map { data -> data[SAMPLE_NOTE] ?: false }
 
-    fun setDarkTheme(isDarkTheme: String) {
-        edit.putString(IS_DARK_THEME, isDarkTheme)
-        edit.apply()
+    suspend fun setDarkTheme(isDarkTheme: String) {
+        context.dataStore.edit { data ->
+            data[IS_DARK_THEME] = isDarkTheme
+        }
     }
-    fun isDarkTheme() = sharedPreferences.getString(IS_DARK_THEME,null)
+
+    fun isDarkTheme() = context.dataStore.data.map { data -> data[IS_DARK_THEME] }
 
 }

@@ -91,9 +91,11 @@ class MainActivity : ComponentActivity() {
       val context = LocalContext.current
       (context as? Activity)?.requestedOrientation =
         ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+      val isShowWelcomeScreen by mainViewModel.isShowWelcomeScreen().collectAsStateWithLifecycle(true)
+      val themeState by mainViewModel.isDarkTheme().collectAsStateWithLifecycle(null)
       YadinoApp(
-        isShowWelcomeScreen = mainViewModel.isShowWelcomeScreen(),
-        isDarkTheme = if (mainViewModel.isDarkTheme() == DARK) true else if (mainViewModel.isDarkTheme() == LIGHT) false else isSystemInDarkTheme(),
+        isShowWelcomeScreen = isShowWelcomeScreen,
+        isDarkTheme = if (themeState == DARK) true else if (themeState == LIGHT) false else isSystemInDarkTheme(),
         haveAlarm = mainViewModel.haveAlarm.collectAsStateWithLifecycle(initialValue = false).value,
         changeTheme = {
           if (it) {

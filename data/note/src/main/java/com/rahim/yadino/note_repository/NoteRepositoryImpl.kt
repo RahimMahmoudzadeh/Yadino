@@ -6,6 +6,7 @@ import com.rahim.yadino.model.NoteModel
 import com.rahim.yadino.db.dao.NoteDao
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import saman.zamani.persiandate.PersianDate
 import javax.inject.Inject
@@ -22,7 +23,7 @@ class NoteRepositoryImpl @Inject constructor(
   private val currentTimeMonth = persianData.shMonth
   private val currentTimeYear = persianData.shYear
   override suspend fun addSampleNote() {
-    if (sharedPreferencesRepository.isShowSampleNote()) {
+    if (sharedPreferencesRepository.isShowSampleNote().first()) {
       noteDao.removeSampleNote()
       return
     }

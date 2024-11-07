@@ -54,7 +54,9 @@ class MainViewModel @Inject constructor(
     }
 
     fun setDarkTheme(isDarkTheme: String) {
+      viewModelScope.launch {
         sharedPreferencesRepository.changeTheme(isDarkTheme)
+      }
     }
 
     fun isDarkTheme() = sharedPreferencesRepository.isDarkTheme()

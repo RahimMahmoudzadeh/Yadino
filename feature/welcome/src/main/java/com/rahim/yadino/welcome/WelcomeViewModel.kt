@@ -30,7 +30,9 @@ class WelcomeViewModel @Inject constructor(
   }
 
   private fun saveShowWelcome(isShow: Boolean) {
-    sharedPreferencesRepository.saveShowWelcome(isShow)
+    viewModelScope.launch {
+      sharedPreferencesRepository.saveShowWelcome(isShow)
+    }
   }
 
   private fun isShowWelcomeScreen() = sharedPreferencesRepository.isShowWelcomeScreen()
