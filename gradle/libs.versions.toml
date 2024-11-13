@@ -4,7 +4,7 @@ kotlin = "2.0.21"
 kotlinxImmutableCollection = "0.3.8"
 
 #compose
-compose-bom = "2024.10.01"
+compose-bom = "2024.11.00"
 activity-compose = "1.9.3"
 
 #navigation
