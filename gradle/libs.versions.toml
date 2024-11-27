@@ -1,6 +1,6 @@
 [versions]
 ksp = "2.0.21-1.0.27"
-kotlin = "2.0.21"
+kotlin = "2.1.0"
 kotlinxImmutableCollection = "0.3.8"
 
 #compose
