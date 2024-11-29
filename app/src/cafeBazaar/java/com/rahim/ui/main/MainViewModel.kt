@@ -62,10 +62,4 @@ class MainViewModel @Inject constructor(
     fun isDarkTheme() = sharedPreferencesRepository.isDarkTheme()
 
     fun isShowWelcomeScreen() = sharedPreferencesRepository.isShowWelcomeScreen()
-
-    fun showSampleRoutine(isShow: Boolean = true) {
-        viewModelScope.launch {
-            sharedPreferencesRepository.setShowSampleRoutine(isShow)
-        }
-    }
 }

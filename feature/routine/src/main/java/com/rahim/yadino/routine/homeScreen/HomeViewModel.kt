@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.Resource
 import com.rahim.yadino.base.BaseViewModel
 import com.rahim.yadino.routine.useCase.AddReminderUseCase
-import com.rahim.yadino.model.RoutineModel
+import com.rahim.yadino.routine.model.RoutineModel
 import com.rahim.yadino.dateTime.DateTimeRepository
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.useCase.CancelReminderUseCase

@@ -1,4 +1,4 @@
-package com.rahim.yadino.designsystem.dialog
+package com.rahim.yadino.routine.component
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -44,9 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.yadino.calculateMonthName
+import com.rahim.yadino.dateTime.model.TimeDate
 import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.designsystem.theme.YadinoTheme
-import com.rahim.yadino.model.TimeDate
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.TimeItems
@@ -175,10 +175,12 @@ fun DialogChoseDate(
             horizontalArrangement = Arrangement.SpaceBetween,
             userScrollEnabled = false,
           ) {
-            items(times) {
+            items(times) {time->
               TimeItems(
-                it,
-                dayClicked,
+                dayNumber = time.dayNumber,
+                nameDay = time.nameDay,
+                isToday = time.isToday,
+                dayNumberChecked = dayClicked,
                 dayCheckedNumber = { day ->
                   dayClicked = day
                 },

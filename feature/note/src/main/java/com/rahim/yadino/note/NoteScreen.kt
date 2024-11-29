@@ -15,16 +15,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.rahim.yadino.Resource
 import com.rahim.yadino.base.use
-import com.rahim.yadino.base.useBase
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ItemListNote
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.dialog.DialogAddNote
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
-import com.rahim.yadino.model.NoteModel
+import com.rahim.yadino.note.model.NoteModel
 
 @Composable
 internal fun NoteRoute(
@@ -137,18 +134,28 @@ private fun NoteScreen(
 
   if (openDialog) {
     DialogAddNote(
-      updateNote = noteUpdateDialog.value,
-      note = { noteModel ->
+      updateNoteDayName = noteUpdateDialog.value?.dayName,
+      updateNoteState = noteUpdateDialog.value?.state,
+      updateNoteName = noteUpdateDialog.value?.name,
+      updateNoteDescription = noteUpdateDialog.value?.description,
+      note = { name, state, description, dayName, timeInMileSecond ->
         if (noteUpdateDialog.value != null) {
           val note = noteUpdateDialog.value?.copy(
-            name = noteModel.dayName,
-            description = noteModel.description,
-            state = noteModel.state,
-            timeInMileSecond = noteModel.timeInMileSecond,
+            name = name,
+            description = description,
+            state = state,
+            timeInMileSecond = timeInMileSecond,
           )
           note?.let { onUpdateNote(note) }
         } else {
-          onAddNote(noteModel)
+          val note = NoteModel(
+            name = dayName,
+            description = description,
+            state = state,
+            timeInMileSecond = timeInMileSecond,
+            dayName = dayName,
+          )
+          onAddNote(note)
         }
       },
       openDialog = {
@@ -180,11 +187,11 @@ fun ItemsNote(
 ) {
   LazyColumn(
     modifier = Modifier
-        .fillMaxWidth()
-        .padding(
-            end = 16.dp,
-            start = 16.dp,
-        ),
+      .fillMaxWidth()
+      .padding(
+        end = 16.dp,
+        start = 16.dp,
+      ),
     contentPadding = PaddingValues(top = 25.dp),
   ) {
     items(

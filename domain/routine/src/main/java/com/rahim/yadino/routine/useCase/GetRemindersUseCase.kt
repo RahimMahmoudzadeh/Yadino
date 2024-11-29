@@ -1,6 +1,6 @@
 package com.rahim.yadino.routine.useCase
 
-import com.rahim.yadino.model.RoutineModel
+import com.rahim.yadino.routine.model.RoutineModel
 import com.rahim.yadino.routine.RepositoryRoutine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

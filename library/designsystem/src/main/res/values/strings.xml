@@ -7,7 +7,7 @@
     <string name="not_work_for_day">!شماهنوز کاری برای امروز ثبت نکردید</string>
     <string name="search_hint">دنبال چی می گردی؟</string>
     <string name="remmeber">: یادآوری</string>
-    <string name="explanation">: توضیحات</string>
+    <string name="explanation">توضیحات</string>
     <string name="length_textFiled_name_routine">نام انتخابی باید حداکثر 22 کاراکتر باشد!</string>
     <string name="issue">موضوع یادداشت خود را بنویسید</string>
     <string name="emptyField">فیلد خالی است !!!</string>
@@ -62,4 +62,7 @@
         <item>پ</item>
         <item>ج</item>
     </string-array>
+
+    <string name="routine_left_sample">من یک روتین تستی هستم لطفا من را به چپ بکشید</string>
+    <string name="routine_right_sample">من یک روتین تستی هستم لطفا من را به راست بکشید</string>
 </resources>

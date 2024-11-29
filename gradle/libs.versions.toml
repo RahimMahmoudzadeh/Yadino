@@ -57,6 +57,7 @@ androidxJunit = "1.2.1"
 firebasePerfPlugin = "1.4.2"
 firebaseCrashlyticsPlugin = "3.0.2"
 constraintlayout = "2.2.0"
+jetbrainsKotlinJvm = "1.9.24"
 
 
 
@@ -190,3 +191,4 @@ yadino-android-library = { id = "yadino.android.library", version = "unspecified
 yadino-android-library-compose = { id = "yadino.android.library.compose", version = "unspecified" }
 yadino-android-room = { id = "yadino.android.room", version = "unspecified" }
 yadino-android-navigation = { id = "yadino.android.navigation", version = "unspecified" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }

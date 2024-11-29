@@ -4,28 +4,21 @@ import com.rahim.yadino.Constants.PATTERN_DATE
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.Resource
-import com.rahim.yadino.model.RoutineModel
-import com.rahim.yadino.db.dao.RoutineDao
+import com.rahim.yadino.enums.RoutineExplanation
+import com.rahim.yadino.routine.model.RoutineModel
+import com.rahim.yadino.routine.dao.RoutineDao
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.withContext
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
-
-private const val ROUTINE_LEFT_SAMPLE = "من یک روتین تستی هستم لطفا من را به چپ بکشید"
-private const val ROUTINE_RIGHT_SAMPLE = "من یک روتین تستی هستم لطفا من را به راست بکشید"
 
 class RoutineRepositoryImpl @Inject constructor(
   private val routineDao: RoutineDao,
@@ -53,7 +46,7 @@ class RoutineRepositoryImpl @Inject constructor(
         currentTimeYear,
         "12:00",
         false,
-        explanation = if (index == 1) ROUTINE_LEFT_SAMPLE else ROUTINE_RIGHT_SAMPLE,
+        explanation = if (index == 1) RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation else RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation,
         isSample = true,
         idAlarm = index.plus(1).toLong(),
         timeInMillisecond = persianData.time,

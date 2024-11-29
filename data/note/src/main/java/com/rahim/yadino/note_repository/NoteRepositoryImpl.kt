@@ -1,9 +1,8 @@
 package com.rahim.yadino.note_repository
 
-import com.rahim.yadino.sharedPreferences.SharedPreferencesCustom
 import com.rahim.yadino.note.NoteRepository
-import com.rahim.yadino.model.NoteModel
-import com.rahim.yadino.db.dao.NoteDao
+import com.rahim.yadino.note.model.NoteModel
+import com.rahim.yadino.note.dao.NoteDao
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first

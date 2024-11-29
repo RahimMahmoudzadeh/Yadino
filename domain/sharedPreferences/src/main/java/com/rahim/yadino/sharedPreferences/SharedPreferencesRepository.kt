@@ -4,9 +4,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface SharedPreferencesRepository {
   suspend fun saveShowWelcome(isShow: Boolean)
-
   fun isShowWelcomeScreen(): Flow<Boolean>
-
   suspend fun setShowSampleRoutine(isShow: Boolean = true)
   fun isShowSampleRoutine(): Flow<Boolean>
   fun isShowSampleNote(): Flow<Boolean>

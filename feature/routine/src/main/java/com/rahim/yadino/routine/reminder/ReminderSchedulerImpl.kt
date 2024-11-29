@@ -13,7 +13,7 @@ import com.rahim.yadino.Constants.KEY_LAUNCH_ID
 import com.rahim.yadino.Constants.KEY_LAUNCH_NAME
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.ReminderScheduler
-import com.rahim.yadino.routine.modle.ReminderState
+import com.rahim.yadino.routine.model.ReminderState
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject

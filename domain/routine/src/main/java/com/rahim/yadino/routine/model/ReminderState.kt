@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.modle
+package com.rahim.yadino.routine.model
 
 import com.rahim.yadino.enums.error.ErrorMessageCode
 

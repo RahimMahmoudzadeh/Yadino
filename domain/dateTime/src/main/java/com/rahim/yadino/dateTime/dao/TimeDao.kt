@@ -1,11 +1,11 @@
-package com.rahim.yadino.db.dao
+package com.rahim.yadino.dateTime.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Update
-import com.rahim.yadino.model.TimeDate
+import com.rahim.yadino.dateTime.model.TimeDate
 import kotlinx.coroutines.flow.Flow
 
 @Dao

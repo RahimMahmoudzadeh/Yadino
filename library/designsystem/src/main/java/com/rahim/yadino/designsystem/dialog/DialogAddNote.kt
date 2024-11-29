@@ -30,7 +30,6 @@ import com.rahim.yadino.designsystem.theme.Punch
 import com.rahim.yadino.designsystem.theme.Purple
 import com.rahim.yadino.designsystem.theme.PurpleGrey
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.model.NoteModel
 
 const val maxName = 22
 const val maxExplanation = 40
@@ -39,15 +38,18 @@ const val maxExplanation = 40
 @Composable
 fun DialogAddNote(
   modifier: Modifier = Modifier,
-  updateNote: NoteModel? = null,
+  updateNoteState: Int? = null,
+  updateNoteName: String? = null,
+  updateNoteDescription: String? = null,
+  updateNoteDayName: String? = null,
   openDialog: (Boolean) -> Unit,
-  note: (noteModel: NoteModel) -> Unit,
+  note: (name: String, state: Int, description: String, dayName: String, timeInMileSecond: Long) -> Unit,
 ) {
 
-  var state by remember { mutableStateOf(updateNote?.state ?: 0) }
-  var nameNote by rememberSaveable { mutableStateOf(updateNote?.name ?: "") }
-  var description by rememberSaveable { mutableStateOf(updateNote?.description ?: "") }
-  var dayName by rememberSaveable { mutableStateOf(updateNote?.dayName ?: "") }
+  var state by remember { mutableIntStateOf(updateNoteState ?: 0) }
+  var nameNote by rememberSaveable { mutableStateOf(updateNoteName ?: "") }
+  var description by rememberSaveable { mutableStateOf(updateNoteDescription ?: "") }
+  var dayName by rememberSaveable { mutableStateOf(updateNoteDayName ?: "") }
 
   var isErrorName by remember { mutableStateOf(false) }
   var isErrorExplanation by remember { mutableStateOf(false) }
@@ -261,14 +263,7 @@ fun DialogAddNote(
                 if (nameNote.isEmpty()) {
                   isErrorName = true
                 } else {
-                  val noteModel =
-                    NoteModel(
-                      name = nameNote,
-                      description = description, state = state,
-                      timeInMileSecond = System.currentTimeMillis(),
-                      dayName = dayName,
-                    )
-                  note(noteModel)
+                  note(nameNote, state, description, dayName, System.currentTimeMillis())
                   openDialog(false)
                   nameNote = ""
                   description = ""
@@ -312,6 +307,6 @@ fun DialogAddNote(
 fun DialogAddNoteWrapper() {
   DialogAddNote(
     openDialog = {},
-    note = { noteModel -> },
+    note = { name: String, state: Int, description: String, dayName: String, timeInMileSecond: Long -> },
   )
 }

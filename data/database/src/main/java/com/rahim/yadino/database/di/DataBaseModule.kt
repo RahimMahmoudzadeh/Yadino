@@ -1,8 +1,8 @@
-package com.rahim.yadino.di
+package com.rahim.yadino.database.di
 
 import android.app.Application
 import androidx.room.Room
-import com.rahim.yadino.db.AppDatabase
+import com.rahim.yadino.database.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

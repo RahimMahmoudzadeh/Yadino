@@ -34,3 +34,5 @@ include(
     ":domain:note",
     ":data:note",
 )
+include(":data:lib")
+include(":data:database")

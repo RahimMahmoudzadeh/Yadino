@@ -3,7 +3,6 @@ plugins {
         alias(android.library)
         alias(android.hilt)
         alias(android.library.compose)
-        alias(android.room)
     }
 }
 

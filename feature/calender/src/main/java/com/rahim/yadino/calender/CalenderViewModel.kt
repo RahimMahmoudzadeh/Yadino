@@ -1,8 +1,8 @@
 package com.rahim.yadino.calender
 
 import androidx.lifecycle.ViewModel
-import com.rahim.yadino.model.TimeDate
 import com.rahim.yadino.dateTime.DateTimeRepository
+import com.rahim.yadino.dateTime.model.TimeDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

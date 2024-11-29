@@ -1,4 +1,4 @@
-package com.rahim.yadino.model
+package com.rahim.yadino.dateTime.model
 
 import androidx.room.Entity
 

@@ -11,4 +11,5 @@ android {
 dependencies {
     api(project(":domain:dateTime"))
     implementation(project(":core:base"))
+    implementation(project(":data:database"))
 }

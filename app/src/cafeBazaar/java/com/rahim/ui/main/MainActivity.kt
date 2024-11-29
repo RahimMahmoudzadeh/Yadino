@@ -91,26 +91,28 @@ class MainActivity : ComponentActivity() {
       val context = LocalContext.current
       (context as? Activity)?.requestedOrientation =
         ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-      val isShowWelcomeScreen by mainViewModel.isShowWelcomeScreen().collectAsStateWithLifecycle(true)
+      val isShowWelcomeScreen by mainViewModel.isShowWelcomeScreen().collectAsStateWithLifecycle(null)
       val themeState by mainViewModel.isDarkTheme().collectAsStateWithLifecycle(null)
-      YadinoApp(
-        isShowWelcomeScreen = isShowWelcomeScreen,
-        isDarkTheme = if (themeState == DARK) true else if (themeState == LIGHT) false else isSystemInDarkTheme(),
-        haveAlarm = mainViewModel.haveAlarm.collectAsStateWithLifecycle(initialValue = false).value,
-        changeTheme = {
-          if (it) {
-            mainViewModel.setDarkTheme(DARK)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-              this@MainActivity.splashScreen.setSplashScreenTheme(com.rahim.R.style.Theme_dark)
+      isShowWelcomeScreen?.let {isShowWelcomeScreen->
+        YadinoApp(
+          isShowWelcomeScreen = isShowWelcomeScreen,
+          isDarkTheme = if (themeState == DARK) true else if (themeState == LIGHT) false else isSystemInDarkTheme(),
+          haveAlarm = mainViewModel.haveAlarm.collectAsStateWithLifecycle(initialValue = false).value,
+          changeTheme = {
+            if (it) {
+              mainViewModel.setDarkTheme(DARK)
+              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                this@MainActivity.splashScreen.setSplashScreenTheme(com.rahim.R.style.Theme_dark)
+              }
+            } else {
+              mainViewModel.setDarkTheme(LIGHT)
+              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                this@MainActivity.splashScreen.setSplashScreenTheme(com.rahim.R.style.Theme_Light)
+              }
             }
-          } else {
-            mainViewModel.setDarkTheme(LIGHT)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-              this@MainActivity.splashScreen.setSplashScreenTheme(com.rahim.R.style.Theme_Light)
-            }
-          }
-        },
-      )
+          },
+        )
+      }
     }
   }
 
@@ -166,7 +168,7 @@ fun YadinoApp(
                   type = "text/plain"
                 }
                 val shareIntent = Intent.createChooser(sendIntent, null)
-                startActivity(context, shareIntent, null)
+                context.startActivity(shareIntent, null)
               }
 
               is DrawerItemType.RateToApp -> {
@@ -184,7 +186,7 @@ fun YadinoApp(
                 val intent = Intent(Intent.ACTION_EDIT)
                 intent.setData(Uri.parse("bazaar://details?id=${context.packageName}"))
                 intent.setPackage(CAFE_BAZAAR_PACKAGE_NAME)
-                startActivity(context, intent, null)
+                context.startActivity(intent, null)
               }
 
               is DrawerItemType.Theme -> {

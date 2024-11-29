@@ -1,25 +1,20 @@
-package com.rahim.yadino.designsystem.dialog
+package com.rahim.yadino.routine.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Text
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -28,25 +23,19 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.rahim.yadino.model.TimeDate
+import com.rahim.yadino.dateTime.model.TimeDate
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
-import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.theme.Onahau
 import com.rahim.yadino.designsystem.theme.Purple
 import com.rahim.yadino.designsystem.theme.PurpleGrey
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.model.RoutineModel
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.MaterialDialogState
-import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
+import com.rahim.yadino.routine.model.RoutineModel
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
-import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.time.LocalTime
-import kotlin.math.exp
 
 const val MAX_NAME_LENGTH = 22
 const val MAX_EXPLANATION_LENGTH = 40
@@ -71,10 +60,6 @@ fun DialogAddRoutine(
   var yearChecked by rememberSaveable { mutableIntStateOf(currentNumberYear) }
   var dayChecked by rememberSaveable { mutableIntStateOf(currentNumberDay) }
 
-//  monthChecked = currentNumberMonth
-//  yearChecked = currentNumberYear
-//  dayChecked = currentNumberDay
-
   var routineName by rememberSaveable { mutableStateOf(if (updateRoutine?.name.isNullOrBlank()) "" else updateRoutine.name) }
   var routineExplanation by rememberSaveable { mutableStateOf(if (updateRoutine?.explanation.isNullOrBlank()) "" else updateRoutine.explanation) }
   var time by rememberSaveable { mutableStateOf(if (updateRoutine?.timeHours.isNullOrBlank()) "12:00" else updateRoutine.timeHours) }
@@ -82,7 +67,7 @@ fun DialogAddRoutine(
   var isErrorName by remember { mutableStateOf(false) }
   var isShowDateDialog by remember { mutableStateOf(false) }
   var isErrorExplanation by remember { mutableStateOf(false) }
-  val alarmDialogState = rememberMaterialDialogState()
+  val alarmDialogState = com.vanpra.composematerialdialogs.rememberMaterialDialogState()
 
   val persianData = PersianDate()
   val date = persianData.initJalaliDate(
@@ -374,9 +359,9 @@ fun DialogAddRoutine(
 @OptIn(ExperimentalTextApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ShowTimePicker(
-  currentTime: String, dialogState: MaterialDialogState, time: (LocalTime) -> Unit,
+  currentTime: String, dialogState: com.vanpra.composematerialdialogs.MaterialDialogState, time: (LocalTime) -> Unit,
 ) {
-  MaterialDialog(
+  com.vanpra.composematerialdialogs.MaterialDialog(
     properties = DialogProperties(dismissOnClickOutside = false),
     border = BorderStroke(2.dp, Brush.horizontalGradient(gradientColors)),
     backgroundColor = MaterialTheme.colorScheme.background,
@@ -400,7 +385,7 @@ fun ShowTimePicker(
     },
   ) {
     timepicker(
-      colors = TimePickerDefaults.colors(
+      colors = com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults.colors(
         activeBackgroundColor = Onahau,
         inactiveBackgroundColor = Onahau,
         activeTextColor = Color.Black,

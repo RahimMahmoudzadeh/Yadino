@@ -70,17 +70,13 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.shouldShowRationale
-import com.rahim.yadino.Resource
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.theme.Periwinkle
 import com.rahim.yadino.designsystem.theme.Purple
 import com.rahim.yadino.designsystem.theme.PurpleGrey
 import com.rahim.yadino.enums.HalfWeekName
-import com.rahim.yadino.errorMessage
-import com.rahim.yadino.model.TimeDate
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.library.designsystem.R
-import timber.log.Timber
 
 val gradientColors = listOf(Purple, PurpleGrey)
 
@@ -401,12 +397,14 @@ fun EmptyMessage(
 
 @Composable
 fun TimeItems(
-  timeDate: TimeDate,
+  dayNumber: Int,
+  nameDay: String,
+  isToday: Boolean,
   dayNumberChecked: Int,
   dayCheckedNumber: (day: Int) -> Unit,
 ) {
-  if (timeDate.dayNumber <= 0 || timeDate.nameDay.isNullOrEmpty()) return
-  if (timeDate.isToday && timeDate.dayNumber != dayNumberChecked) {
+  if (dayNumber <= 0 || nameDay.isNullOrEmpty()) return
+  if (isToday && dayNumber != dayNumberChecked) {
     Box(
       modifier = Modifier
         .size(46.dp)
@@ -421,10 +419,10 @@ fun TimeItems(
       Text(
         modifier = Modifier.clickable {
           dayCheckedNumber(
-            timeDate.dayNumber,
+            dayNumber,
           )
         },
-        text = timeDate.dayNumber.toString().persianLocate(),
+        text = dayNumber.toString().persianLocate(),
         textAlign = TextAlign.Center,
         fontSize = 16.sp,
         style = TextStyle(
@@ -434,7 +432,7 @@ fun TimeItems(
         ),
       )
     }
-  } else if (timeDate.nameDay == HalfWeekName.FRIDAY.nameDay && timeDate.dayNumber != dayNumberChecked) {
+  } else if (nameDay == HalfWeekName.FRIDAY.nameDay && dayNumber != dayNumberChecked) {
     Box(
       modifier = Modifier
         .size(46.dp)
@@ -448,16 +446,16 @@ fun TimeItems(
       Text(
         modifier = Modifier.clickable {
           dayCheckedNumber(
-            timeDate.dayNumber,
+            dayNumber,
           )
         },
-        text = timeDate.dayNumber.toString().persianLocate(),
+        text = dayNumber.toString().persianLocate(),
         textAlign = TextAlign.Center,
         fontSize = 16.sp,
         color = MaterialTheme.colorScheme.surface,
       )
     }
-  } else if (dayNumberChecked==timeDate.dayNumber) {
+  } else if (dayNumberChecked==dayNumber) {
     Box(
       modifier = Modifier
         .size(46.dp)
@@ -469,7 +467,7 @@ fun TimeItems(
       contentAlignment = Alignment.Center,
     ) {
       Text(
-        text = timeDate.dayNumber.toString().persianLocate(),
+        text = dayNumber.toString().persianLocate(),
         textAlign = TextAlign.Center,
         fontSize = 16.sp,
         color = Color.White,
@@ -489,10 +487,10 @@ fun TimeItems(
       Text(
         modifier = Modifier.clickable {
           dayCheckedNumber(
-            timeDate.dayNumber,
+            dayNumber,
           )
         },
-        text = timeDate.dayNumber.toString().persianLocate(),
+        text = dayNumber.toString().persianLocate(),
         textAlign = TextAlign.Center,
         fontSize = 16.sp,
         color = MaterialTheme.colorScheme.surface,

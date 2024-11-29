@@ -17,15 +17,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rahim.yadino.base.use
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.EmptyMessage
-import com.rahim.yadino.designsystem.component.ListRoutines
+import com.rahim.yadino.routine.component.ListRoutines
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.component.ShowToastShort
-import com.rahim.yadino.designsystem.dialog.DialogAddRoutine
+import com.rahim.yadino.routine.component.DialogAddRoutine
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.errorMessage
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.model.RoutineModel
+import com.rahim.yadino.routine.model.RoutineModel
 
 @Composable
 internal fun HomeRoute(

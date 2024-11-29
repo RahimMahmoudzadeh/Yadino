@@ -1,11 +1,10 @@
-package com.rahim.yadino.db.dao
+package com.rahim.yadino.routine.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
-import androidx.room.Update
 import androidx.room.Upsert
-import com.rahim.yadino.model.RoutineModel
+import com.rahim.yadino.routine.model.RoutineModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao

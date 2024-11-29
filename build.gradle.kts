@@ -1,5 +1,6 @@
 plugins {
-  libs.plugins.run {
+  alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+    libs.plugins.run {
     alias(androidApplication) apply false
     alias(com.android.library) apply false
     alias(kotlinAndroid) apply false

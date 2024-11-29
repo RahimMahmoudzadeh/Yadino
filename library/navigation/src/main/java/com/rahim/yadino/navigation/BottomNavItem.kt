@@ -29,23 +29,8 @@ sealed class BottomNavItem(
         R.drawable.routine_selected,
         R.drawable.routine_dark
     )
-
-    data object Calender : BottomNavItem(
-        Destinations.Calender.route,
-        R.drawable.calendar,
-        R.drawable.calendar_selected,
-        R.drawable.calendar_dark
-    )
-
     data object Empty : BottomNavItem(
         Destinations.Empty.route,
         null, null, null
-    )
-
-    data object Welcome : BottomNavItem(
-        Destinations.Welcome.route,
-        null,
-        null,
-        null,
     )
 }

@@ -4,8 +4,8 @@ import com.rahim.yadino.Resource
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.ReminderScheduler
 import com.rahim.yadino.routine.RepositoryRoutine
-import com.rahim.yadino.routine.modle.ReminderState
-import com.rahim.yadino.model.RoutineModel
+import com.rahim.yadino.routine.model.ReminderState
+import com.rahim.yadino.routine.model.RoutineModel
 import javax.inject.Inject
 
 class AddReminderUseCase @Inject constructor(

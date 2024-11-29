@@ -3,7 +3,7 @@ package com.rahim.yadino.note
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.rahim.yadino.model.NoteModel
+import com.rahim.yadino.note.model.NoteModel
 
 interface NoteContract : UnidirectionalViewModel<NoteContract.NoteEvent, NoteContract.NoteState> {
 

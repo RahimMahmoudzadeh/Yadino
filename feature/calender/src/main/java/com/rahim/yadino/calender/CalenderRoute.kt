@@ -33,9 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.yadino.calculateMonthName
+import com.rahim.yadino.dateTime.model.TimeDate
 import com.rahim.yadino.enums.HalfWeekName
-import com.rahim.yadino.model.TimeDate
-import com.rahim.yadino.designsystem.component.TimeItems
 import com.rahim.yadino.designsystem.component.gradientColors
 
 @Composable

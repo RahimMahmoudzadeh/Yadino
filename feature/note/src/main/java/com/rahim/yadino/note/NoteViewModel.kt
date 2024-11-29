@@ -3,12 +3,10 @@ package com.rahim.yadino.note
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.Constants
-import com.rahim.yadino.base.BaseViewModel
 import com.rahim.yadino.calculateTimeFormat
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.dateTime.DateTimeRepository
-import com.rahim.yadino.model.NoteModel
-import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
+import com.rahim.yadino.note.model.NoteModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

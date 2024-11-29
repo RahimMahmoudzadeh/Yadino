@@ -1,20 +1,19 @@
-package com.rahim.yadino.db
+package com.rahim.yadino.database
 
 import androidx.room.AutoMigration
-import androidx.room.Database
 import androidx.room.DeleteColumn
 import androidx.room.RenameColumn
 import androidx.room.RenameTable
 import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
-import com.rahim.yadino.db.dao.NoteDao
-import com.rahim.yadino.db.dao.RoutineDao
-import com.rahim.yadino.db.dao.TimeDao
-import com.rahim.yadino.model.NoteModel
-import com.rahim.yadino.model.RoutineModel
-import com.rahim.yadino.model.TimeDate
+import com.rahim.yadino.dateTime.dao.TimeDao
+import com.rahim.yadino.dateTime.model.TimeDate
+import com.rahim.yadino.note.dao.NoteDao
+import com.rahim.yadino.note.model.NoteModel
+import com.rahim.yadino.routine.dao.RoutineDao
+import com.rahim.yadino.routine.model.RoutineModel
 
-@Database(
+@androidx.room.Database(
   entities = [NoteModel::class, TimeDate::class, RoutineModel::class],
   //2024/18/10
   version = 6,

@@ -13,6 +13,5 @@ dependencies{
     libs.run {
         implementation(accompanist.permissions)
         implementation(swipe)
-        implementation(datetime)
     }
 }
