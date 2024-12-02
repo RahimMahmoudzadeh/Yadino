@@ -51,7 +51,7 @@ project-min-sdk-version = "26"
 version-code = "127"
 version-name = "1.5.1"
 
-androidTools = "31.7.2"
+androidTools = "31.7.3"
 androidxJunit = "1.2.1"
 #firebase
 firebasePerfPlugin = "1.4.2"
