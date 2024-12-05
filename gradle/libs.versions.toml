@@ -57,7 +57,7 @@ androidxJunit = "1.2.1"
 firebasePerfPlugin = "1.4.2"
 firebaseCrashlyticsPlugin = "3.0.2"
 constraintlayout = "2.2.0"
-jetbrainsKotlinJvm = "1.9.24"
+jetbrainsKotlinJvm = "1.9.25"
 
 
 
