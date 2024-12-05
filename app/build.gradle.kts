@@ -6,6 +6,7 @@ plugins {
     alias(android.application.compose)
     alias(android.hilt)
     alias(android.application.firebase)
+    alias(android.room)
   }
 }
 android {
@@ -46,5 +47,11 @@ dependencies {
     implementation(project(":domain:dateTime"))
     implementation(project(":domain:routine"))
     implementation(project(":domain:note"))
+
+    implementation(project(":data:note"))
+    implementation(project(":data:database"))
+    implementation(project(":data:dateTime"))
+    implementation(project(":data:routine"))
+    implementation(project(":data:sharedPreferences"))
   }
 }

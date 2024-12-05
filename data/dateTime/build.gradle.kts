@@ -1,15 +1,15 @@
 plugins {
-    libs.plugins.yadino.run{
-        alias(android.library)
-        alias(android.hilt)
-    }
+  libs.plugins.yadino.run {
+    alias(android.library)
+    alias(android.hilt)
+  }
 }
 
 android {
-    namespace = "com.rahim.yadino.dateTime"
+  namespace = "com.rahim.yadino.dateTime"
 }
 dependencies {
-    api(project(":domain:dateTime"))
-    implementation(project(":core:base"))
-    implementation(project(":data:database"))
+  implementation(project(":domain:dateTime"))
+  implementation(project(":core:base"))
+  implementation(project(":data:database"))
 }

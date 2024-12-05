@@ -1,7 +1,6 @@
-package com.rahim.yadino.database.di
+package com.rahim.di
 
 import android.app.Application
-import androidx.room.Room
 import com.rahim.yadino.database.AppDatabase
 import dagger.Module
 import dagger.Provides
@@ -16,7 +15,7 @@ object DataBaseModule {
     @Singleton
     @Provides
     fun providesMainDatabase(application: Application): AppDatabase {
-        return Room.databaseBuilder(
+        return androidx.room.Room.databaseBuilder(
             application,
             AppDatabase::class.java,
             DATABASE_NAME

@@ -9,8 +9,8 @@ android {
   namespace = "com.rahim.yadino.routine"
 }
 dependencies {
-  api(project(":domain:routine"))
-  api(project(":domain:sharedPreferences"))
+  implementation(project(":domain:routine"))
+  implementation(project(":domain:sharedPreferences"))
   implementation(project(":data:database"))
   implementation(project(":core:base"))
 }

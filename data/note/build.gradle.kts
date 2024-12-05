@@ -9,8 +9,7 @@ android {
   namespace = "com.rahim.yadino.note"
 }
 dependencies {
-  api(project(":domain:note"))
-  api(project(":domain:sharedPreferences"))
+  implementation(project(":domain:note"))
+  implementation(project(":domain:sharedPreferences"))
   implementation(project(":data:database"))
-  implementation(project(":core:base"))
 }

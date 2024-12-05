@@ -1,22 +1,26 @@
-package com.rahim.yadino.database.di
+package com.rahim.di
 
 import com.rahim.yadino.database.AppDatabase
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-@dagger.hilt.InstallIn(SingletonComponent::class)
-@dagger.Module
+@InstallIn(SingletonComponent::class)
+@Module
 object DaoModule {
-  @javax.inject.Singleton
-  @dagger.Provides
+  @Singleton
+  @Provides
   fun providesRoutineDao(appDatabase: AppDatabase) =
     appDatabase.routineDao()
 
-  @javax.inject.Singleton
-  @dagger.Provides
+  @Singleton
+  @Provides
   fun providesNoteDao(appDatabase: AppDatabase) = appDatabase.noteDao()
 
-  @javax.inject.Singleton
-  @dagger.Provides
+  @Singleton
+  @Provides
   fun providesTimeDao(appDatabase: AppDatabase) =
     appDatabase.timeDataDao()
 }

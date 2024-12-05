@@ -10,7 +10,7 @@ android {
     namespace = "com.rahim.yadino.feature.welcome"
 }
 dependencies{
-    implementation(project(":data:sharedPreferences"))
+    implementation(project(":domain:sharedPreferences"))
     libs.run {
         implementation(bundles.accompanist)
     }

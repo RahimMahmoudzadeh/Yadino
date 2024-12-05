@@ -16,23 +16,21 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Yadino"
+
+private fun subprojects(path: String) =
+  file(path)
+    .listFiles()
+    .filter {
+      it.isDirectory && it.listFiles().any { file -> file.name == "build.gradle.kts" }
+    }.map {
+      "${path.replace('/', ':')}:${it.name}"
+    }
+//enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(
     ":app",
-    ":core:base",
-    ":library:designsystem",
-    ":library:navigation",
-    ":feature:routine",
-    ":feature:note",
-    ":feature:welcome",
-    ":feature:calender",
-    ":data:routine",
-    ":domain:routine",
-    ":domain:sharedPreferences",
-    ":data:sharedPreferences",
-    ":domain:dateTime",
-    ":data:dateTime",
-    ":domain:note",
-    ":data:note",
 )
-include(":data:lib")
-include(":data:database")
+include(subprojects("data"))
+include(subprojects("domain"))
+include(subprojects("feature"))
+include(subprojects("library"))
+include(subprojects("core"))

@@ -9,9 +9,9 @@ android {
   namespace = "com.rahim.yadino.feature.routine"
 }
 dependencies {
-  implementation(project(":data:routine"))
-  implementation(project(":data:dateTime"))
-  implementation(project(":data:sharedPreferences"))
+  implementation(project(":domain:routine"))
+  implementation(project(":domain:dateTime"))
+  implementation(project(":domain:sharedPreferences"))
 
   libs.run {
     implementation(bundles.accompanist)
