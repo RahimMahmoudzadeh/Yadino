@@ -1,13 +1,13 @@
 plugins {
-    libs.plugins.yadino.run {
-        alias(android.library)
-        alias(android.library.compose)
-    }
+  libs.plugins.yadino.run {
+    alias(android.library)
+    alias(android.library.compose)
+  }
 }
 
 android {
-    namespace = "com.rahim.yadino.library.navigation"
+  namespace = "com.rahim.yadino.library.navigation"
 }
-dependencies{
-    implementation(project(":library:designsystem"))
+dependencies {
+  implementation(projects.library.designsystem)
 }

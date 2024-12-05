@@ -12,6 +12,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import versionCatalog
+import java.util.regex.Pattern.compile
 
 class AndroidApplicationConventionPlugin : Plugin<Project> {
   override fun apply(target: Project) {
@@ -35,8 +36,19 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
           "implementation",
           versionCatalog.findLibrary("hilt.navigation.compose").get(),
         )
+        val subprojects = project
+          .rootProject
+          .subprojects
+
+        subprojects.filter { it.path.startsWith(":domain:", false) }
+          .forEach { add("implementation", project(it.path)) }
+
+        subprojects.filter { it.path.startsWith(":data:", false) }
+          .forEach { add("implementation", project(it.path)) }
+
+        subprojects.filter { it.path.startsWith(":feature:", false) }
+          .forEach { add("implementation", project(it.path)) }
       }
     }
   }
-
 }

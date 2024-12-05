@@ -10,5 +10,5 @@ android {
 }
 
 dependencies{
-    implementation(project(":core:base"))
+  implementation(projects.core.base)
 }

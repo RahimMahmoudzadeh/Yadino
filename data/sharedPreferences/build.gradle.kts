@@ -9,7 +9,9 @@ android {
   namespace = "com.rahim.yadino.data.sharedPreferences"
 }
 dependencies {
-  implementation(project(":domain:sharedPreferences"))
-  implementation(project(":core:base"))
-  implementation(project(":data:database"))
+  projects.run {
+    implementation(domain.sharedPreferences)
+    implementation(core.base)
+    implementation(data.database)
+  }
 }

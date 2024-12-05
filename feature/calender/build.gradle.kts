@@ -12,6 +12,8 @@ dependencies {
   libs.run {
     implementation(bundles.vico)
   }
-  implementation(project(":domain:sharedPreferences"))
-  implementation(project(":domain:dateTime"))
+  projects.run{
+    implementation(domain.sharedPreferences)
+    implementation(domain.dateTime)
+  }
 }

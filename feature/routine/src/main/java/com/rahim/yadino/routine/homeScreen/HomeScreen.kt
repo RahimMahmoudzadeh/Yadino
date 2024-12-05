@@ -23,6 +23,7 @@ import com.rahim.yadino.designsystem.component.ShowToastShort
 import com.rahim.yadino.routine.component.DialogAddRoutine
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.YadinoTheme
+import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.errorMessage
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.routine.model.RoutineModel
@@ -139,7 +140,7 @@ private fun HomeScreen(
       id = R.string.ok,
     ),
   )
-  if (openDialog){
+  if (openDialog) {
     DialogAddRoutine(
       openDialog = {
         onOpenDialog(false)
@@ -153,7 +154,16 @@ private fun HomeScreen(
         }
         onOpenDialog(false)
       },
-      updateRoutine = routineModelUpdateDialog.value,
+      updateRoutine = routineModelUpdateDialog.value?.copy(
+        explanation = routineModelUpdateDialog.value?.explanation?.let {
+          if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation)
+            stringResource(id = R.string.routine_right_sample)
+          else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation)
+            stringResource(id = R.string.routine_left_sample) else it
+        } ?: run {
+          routineModelUpdateDialog.value?.explanation ?: ""
+        },
+      ),
       currentNumberDay = homeState.currentDay,
       currentNumberMonth = homeState.currentMonth,
       currentNumberYear = homeState.currentYear,

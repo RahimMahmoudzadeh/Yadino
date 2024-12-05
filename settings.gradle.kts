@@ -25,7 +25,7 @@ private fun subprojects(path: String) =
     }.map {
       "${path.replace('/', ':')}:${it.name}"
     }
-//enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(
     ":app",
 )

@@ -9,7 +9,9 @@ android {
   namespace = "com.rahim.yadino.dateTime"
 }
 dependencies {
-  implementation(project(":domain:dateTime"))
-  implementation(project(":core:base"))
-  implementation(project(":data:database"))
+  projects.run {
+    implementation(domain.dateTime)
+    implementation(core.base)
+    implementation(data.database)
+  }
 }

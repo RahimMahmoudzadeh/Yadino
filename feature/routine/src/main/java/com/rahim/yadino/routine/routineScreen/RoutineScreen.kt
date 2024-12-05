@@ -48,6 +48,7 @@ import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.routine.component.DialogAddRoutine
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.font_medium
+import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.errorMessage
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.routine.model.RoutineModel
@@ -225,7 +226,16 @@ private fun RoutineScreen(
         onOpenDialog(false)
         routineModelUpdateDialog.value = null
       },
-      updateRoutine = routineModelUpdateDialog.value,
+      updateRoutine = routineModelUpdateDialog.value?.copy(
+        explanation = routineModelUpdateDialog.value?.explanation?.let {
+          if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation)
+            stringResource(id = R.string.routine_right_sample)
+          else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation)
+            stringResource(id = R.string.routine_left_sample) else it
+        } ?: run {
+          routineModelUpdateDialog.value?.explanation ?: ""
+        },
+      ),
       routineItems = { routine ->
         if (routineModelUpdateDialog.value != null) {
           onUpdateRoutine(routine)

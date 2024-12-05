@@ -33,25 +33,8 @@ dependencies {
   libs.run {
     implementation(androidx.core.splashscreen)
     implementation(androidx.constraintlayout)
-//        implementation(androidx.tracing.ktx)
     implementation(timber)
     implementation(kotlinx.collections.immutable)
     implementation(accompanist.permissions)
-
-    implementation(project(":feature:welcome"))
-    implementation(project(":feature:note"))
-    implementation(project(":feature:routine"))
-    implementation(project(":feature:calender"))
-
-    implementation(project(":domain:sharedPreferences"))
-    implementation(project(":domain:dateTime"))
-    implementation(project(":domain:routine"))
-    implementation(project(":domain:note"))
-
-    implementation(project(":data:note"))
-    implementation(project(":data:database"))
-    implementation(project(":data:dateTime"))
-    implementation(project(":data:routine"))
-    implementation(project(":data:sharedPreferences"))
   }
 }

@@ -33,6 +33,7 @@ import com.rahim.yadino.designsystem.theme.PurpleGrey
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.routine.model.RoutineModel
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.time.LocalTime
@@ -67,7 +68,7 @@ fun DialogAddRoutine(
   var isErrorName by remember { mutableStateOf(false) }
   var isShowDateDialog by remember { mutableStateOf(false) }
   var isErrorExplanation by remember { mutableStateOf(false) }
-  val alarmDialogState = com.vanpra.composematerialdialogs.rememberMaterialDialogState()
+  val alarmDialogState = rememberMaterialDialogState()
 
   val persianData = PersianDate()
   val date = persianData.initJalaliDate(
