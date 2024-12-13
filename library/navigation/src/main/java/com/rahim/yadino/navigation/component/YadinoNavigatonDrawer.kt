@@ -41,11 +41,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.rahim.yadino.designsystem.component.gradientColors
-import com.rahim.yadino.navigation.component.DrawerItemType.AboutUs
-import com.rahim.yadino.navigation.component.DrawerItemType.Guide
 import com.rahim.yadino.navigation.component.DrawerItemType.RateToApp
 import com.rahim.yadino.navigation.component.DrawerItemType.ShareWithFriends
 import com.rahim.yadino.navigation.component.DrawerItemType.Theme
@@ -58,19 +57,11 @@ sealed interface DrawerItemType {
   val title: Int
   val iconRes: Int
 
-  data class AboutUs(
-    @StringRes override val title: Int, @DrawableRes override val iconRes: Int,
-  ) : DrawerItemType
-
   data class Theme(
     @StringRes override val title: Int, @DrawableRes override val iconRes: Int,
   ) : DrawerItemType
 
   data class ShareWithFriends(
-    @StringRes override val title: Int, @DrawableRes override val iconRes: Int,
-  ) : DrawerItemType
-
-  data class Guide(
     @StringRes override val title: Int, @DrawableRes override val iconRes: Int,
   ) : DrawerItemType
 
@@ -82,9 +73,7 @@ sealed interface DrawerItemType {
 val yadinoDrawerItems = listOf(
   ShareWithFriends(R.string.drawer_item_share_with_ferinds, R.drawable.share),
   RateToApp(R.string.drawer_item_rate_to_app, R.drawable.star),
-//    AboutUs(R.string.drawer_item_about_us, R.drawable.info_square),
   Theme(R.string.drawer_item_theme, R.drawable.color_lens),
-//    Guide(R.string.drawer_item_guide, R.drawable.guide)
 )
 
 @Composable
@@ -241,6 +230,7 @@ private fun YadinoDrawerItem(
 
 
 @Composable
+@Preview
 private fun YadinoNavDrawerPreview() {
   YadinoTheme {
     YadinoNavigationDrawer(

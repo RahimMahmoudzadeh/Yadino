@@ -31,7 +31,7 @@ object Constants {
     val WELCOME_SHARED = booleanPreferencesKey("WelcomeShared")
     val SAMPLE_ROUTINE = booleanPreferencesKey("sampleRoutine")
     val SAMPLE_NOTE = booleanPreferencesKey("sample note")
-    val IS_DARK_THEME= stringPreferencesKey("is dark theme")
+    val IS_DARK_THEME= booleanPreferencesKey("is dark theme")
 
     //Action
     const val ACTION_SEND_NOTIFICATION="action send notification"

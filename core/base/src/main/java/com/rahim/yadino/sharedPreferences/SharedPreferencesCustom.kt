@@ -41,7 +41,7 @@ class SharedPreferencesCustom @Inject constructor(private val context: Context) 
 
     fun isSampleNote() = context.dataStore.data.map { data -> data[SAMPLE_NOTE] ?: false }
 
-    suspend fun setDarkTheme(isDarkTheme: String) {
+    suspend fun setDarkTheme(isDarkTheme: Boolean) {
         context.dataStore.edit { data ->
             data[IS_DARK_THEME] = isDarkTheme
         }

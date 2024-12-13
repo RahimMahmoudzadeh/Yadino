@@ -35,7 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -46,7 +45,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -55,10 +53,12 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.navigation.NavigationComponent
+import com.rahim.utils.MainContract
 import com.rahim.yadino.Constants.CAFE_BAZAAR_PACKAGE_NAME
 import com.rahim.yadino.Constants.CAFE_BAZZAR_LINK
 import com.rahim.yadino.Constants.DARK
 import com.rahim.yadino.Constants.LIGHT
+import com.rahim.yadino.base.use
 import com.rahim.yadino.isPackageInstalled
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
 import com.rahim.yadino.designsystem.component.goSettingPermission
@@ -86,39 +86,41 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
     getTokenFirebase()
-    Timber.tag("packageName").d("packageName: $packageName")
+
     setContent {
       val context = LocalContext.current
       (context as? Activity)?.requestedOrientation =
         ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-      val isShowWelcomeScreen by mainViewModel.isShowWelcomeScreen().collectAsStateWithLifecycle(null)
-      val themeState by mainViewModel.isDarkTheme().collectAsStateWithLifecycle(null)
-      isShowWelcomeScreen?.let {isShowWelcomeScreen->
-        YadinoApp(
-          isShowWelcomeScreen = isShowWelcomeScreen,
-          isDarkTheme = if (themeState == DARK) true else if (themeState == LIGHT) false else isSystemInDarkTheme(),
-          haveAlarm = mainViewModel.haveAlarm.collectAsStateWithLifecycle(initialValue = false).value,
-          changeTheme = {
-            if (it) {
-              mainViewModel.setDarkTheme(DARK)
-              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                this@MainActivity.splashScreen.setSplashScreenTheme(com.rahim.R.style.Theme_dark)
-              }
-            } else {
-              mainViewModel.setDarkTheme(LIGHT)
-              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                this@MainActivity.splashScreen.setSplashScreenTheme(com.rahim.R.style.Theme_Light)
-              }
-            }
-          },
-        )
+
+      val (state, event) = use(viewModel = mainViewModel)
+
+      changeTheme(state.isDarkTheme)
+
+      YadinoApp(
+        isShowWelcomeScreen = state.isShowWelcomeScreen,
+        isDarkTheme = state.isDarkTheme ?: isSystemInDarkTheme(),
+        haveAlarm = state.haveAlarm,
+        drawerItemClicked = {
+          event.invoke(MainContract.MainEvent.ClickDrawer(it))
+        },
+      )
+    }
+  }
+
+  private fun changeTheme(theme: Boolean?) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
+    theme?.let {
+      if (theme) {
+        this@MainActivity.splashScreen.setSplashScreenTheme(com.rahim.R.style.Theme_dark)
+      } else {
+        this@MainActivity.splashScreen.setSplashScreenTheme(com.rahim.R.style.Theme_Light)
       }
     }
   }
 
   override fun onResume() {
     super.onResume()
-    mainViewModel.checkedAllRoutinePastTime()
+    mainViewModel.event(MainContract.MainEvent.CheckedAllRoutinePastTime)
   }
 
   private fun getTokenFirebase() {
@@ -133,11 +135,12 @@ fun YadinoApp(
   isShowWelcomeScreen: Boolean,
   isDarkTheme: Boolean = isSystemInDarkTheme(),
   haveAlarm: Boolean,
-  changeTheme: (Boolean) -> Unit,
+  drawerItemClicked: (DrawerItemType) -> Unit,
 ) {
   val context = LocalContext.current
   val notificationPermissionState =
     rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
+
   var openDialog by rememberSaveable { mutableStateOf(false) }
   var errorClick by rememberSaveable { mutableStateOf(false) }
   val navController = rememberNavController()
@@ -148,54 +151,19 @@ fun YadinoApp(
   val destinationNavBackStackEntry = navBackStackEntry?.destination?.route
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val coroutineScope = rememberCoroutineScope()
+
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
     YadinoTheme(darkTheme = isDarkTheme) {
       Surface(
         modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+          .fillMaxSize()
+          .background(MaterialTheme.colorScheme.background),
       ) {
         YadinoNavigationDrawer(
           modifier = Modifier.width(240.dp),
           drawerState = drawerState,
           isDarkTheme = isDarkTheme,
-          onItemClick = {
-            when (it) {
-              is DrawerItemType.ShareWithFriends -> {
-                val sendIntent: Intent = Intent().apply {
-                  action = Intent.ACTION_SEND
-                  putExtra(Intent.EXTRA_TEXT, CAFE_BAZZAR_LINK)
-                  type = "text/plain"
-                }
-                val shareIntent = Intent.createChooser(sendIntent, null)
-                context.startActivity(shareIntent, null)
-              }
-
-              is DrawerItemType.RateToApp -> {
-                if (!CAFE_BAZAAR_PACKAGE_NAME.isPackageInstalled(
-                    context.packageManager,
-                  )
-                ) {
-                  Toast.makeText(
-                    context,
-                    context.resources.getString(com.rahim.R.string.install_cafeBazaar),
-                    Toast.LENGTH_SHORT,
-                  ).show()
-                  return@YadinoNavigationDrawer
-                }
-                val intent = Intent(Intent.ACTION_EDIT)
-                intent.setData(Uri.parse("bazaar://details?id=${context.packageName}"))
-                intent.setPackage(CAFE_BAZAAR_PACKAGE_NAME)
-                context.startActivity(intent, null)
-              }
-
-              is DrawerItemType.Theme -> {
-                changeTheme(!isDarkTheme)
-              }
-
-              else -> {}
-            }
-          },
+          onItemClick = drawerItemClicked,
         ) {
           Scaffold(
             topBar = {
@@ -205,26 +173,14 @@ fun YadinoApp(
                 exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
               ) {
                 TopBarCenterAlign(
-                  title = when (destinationNavBackStackEntry) {
-                    Destinations.Home.route -> stringResource(
-                      id = R.string.my_firend,
-                    )
-
-                    Destinations.Routine.route -> stringResource(
-                      id = com.rahim.R.string.list_routine,
-                    )
-
-                    Destinations.AlarmHistory.route -> stringResource(id = com.rahim.R.string.historyAlarm)
-
-                    else -> stringResource(id = com.rahim.R.string.notes)
-                  },
+                  title = checkNavBackStackEntry(destinationNavBackStackEntry),
                   openHistory = {
                     navController.navigate(Destinations.AlarmHistory.route)
                   },
                   isShowSearchIcon = destinationNavBackStackEntry != Destinations.Calender.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route,
                   isShowBackIcon = destinationNavBackStackEntry == Destinations.AlarmHistory.route,
                   onClickBack = {
-                    navController.popBackStack()
+                    navController.navigateUp()
                   },
                   onClickSearch = {
                     clickSearch = !clickSearch
@@ -312,4 +268,19 @@ fun YadinoApp(
       },
     )
   }
+}
+
+@Composable
+private fun checkNavBackStackEntry(destinationNavBackStackEntry: String?) = when (destinationNavBackStackEntry) {
+  Destinations.Home.route -> stringResource(
+    id = R.string.my_firend,
+  )
+
+  Destinations.Routine.route -> stringResource(
+    id = com.rahim.R.string.list_routine,
+  )
+
+  Destinations.AlarmHistory.route -> stringResource(id = com.rahim.R.string.historyAlarm)
+
+  else -> stringResource(id = com.rahim.R.string.notes)
 }

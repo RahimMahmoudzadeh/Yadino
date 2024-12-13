@@ -9,6 +9,6 @@ interface SharedPreferencesRepository {
   fun isShowSampleRoutine(): Flow<Boolean>
   fun isShowSampleNote(): Flow<Boolean>
   suspend fun setShowSampleNote(isShow: Boolean = true)
-  suspend fun changeTheme(isDarkTheme: String)
-  fun isDarkTheme(): Flow<String?>
+  suspend fun changeTheme(isDarkTheme: Boolean)
+  fun isDarkTheme(): Flow<Boolean?>
 }

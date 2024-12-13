@@ -27,9 +27,9 @@ constructor(private val sharedPreferencesCustom: SharedPreferencesCustom) :
     sharedPreferencesCustom.showSampleNote(isShow)
   }
 
-  override suspend fun changeTheme(isDarkTheme: String) {
+  override suspend fun changeTheme(isDarkTheme: Boolean) {
     sharedPreferencesCustom.setDarkTheme(isDarkTheme)
   }
 
-  override fun isDarkTheme(): Flow<String?> = sharedPreferencesCustom.isDarkTheme()
+  override fun isDarkTheme(): Flow<Boolean?> = sharedPreferencesCustom.isDarkTheme()
 }
