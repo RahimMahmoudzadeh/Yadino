@@ -53,11 +53,7 @@ class MainViewModel @Inject constructor(
       is DrawerItemType.RateToApp -> flavor.drawerItemType(com.rahim.data.flavor.DrawerItemType.RateToApp)
       is DrawerItemType.ShareWithFriends -> flavor.drawerItemType(com.rahim.data.flavor.DrawerItemType.ShareWithFriends)
       is DrawerItemType.Theme -> {
-        state.value.isDarkTheme?.let {
-          setDarkTheme(!it)
-        }.run {
-          setDarkTheme(true)
-        }
+        setDarkTheme(state.value.isDarkTheme != true)
       }
     }
   }

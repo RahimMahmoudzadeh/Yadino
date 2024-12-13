@@ -14,7 +14,6 @@ import javax.inject.Inject
 class FlavorImpl @Inject constructor(private val context: Context): Flavor {
   override fun drawerItemType(drawerItemType: DrawerItemType) {
     when(drawerItemType){
-      DrawerItemType.ChangeTheme -> {}
       DrawerItemType.RateToApp -> {
         if (!CAFE_BAZAAR_PACKAGE_NAME.isPackageInstalled(
             context.packageManager,

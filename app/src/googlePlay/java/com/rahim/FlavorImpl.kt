@@ -1,0 +1,46 @@
+package com.rahim
+
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
+import com.rahim.data.flavor.DrawerItemType
+import com.rahim.data.flavor.Flavor
+import com.rahim.yadino.Constants.CAFE_BAZAAR_PACKAGE_NAME
+import com.rahim.yadino.Constants.CAFE_BAZZAR_LINK
+import com.rahim.yadino.Constants.GOOGLE_PLAY_LINK
+import com.rahim.yadino.isPackageInstalled
+import javax.inject.Inject
+
+class FlavorImpl @Inject constructor(private val context: Context) : Flavor {
+  override fun drawerItemType(drawerItemType: DrawerItemType) {
+    when (drawerItemType) {
+      DrawerItemType.RateToApp -> {
+        try {
+          val uri = Uri.parse("market://details?id=${context.packageName}")
+          val intent = Intent(Intent.ACTION_VIEW, uri)
+          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+          context.startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+          val webUri = Uri.parse("https://play.google.com/store/apps/details?id=${context.packageName}")
+          val webIntent = Intent(Intent.ACTION_VIEW, webUri)
+          webIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+          context.startActivity(webIntent)
+        }
+      }
+
+      DrawerItemType.ShareWithFriends -> {
+        val sendIntent: Intent = Intent().apply {
+          action = Intent.ACTION_SEND
+          putExtra(Intent.EXTRA_TEXT, GOOGLE_PLAY_LINK)
+          type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(shareIntent, null)
+      }
+    }
+  }
+}
