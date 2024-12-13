@@ -4,4 +4,9 @@
     "config:recommended"
   ],
   "prHourlyLimit": 24
+  "labels": [
+    "dependencies",
+    "renovate",
+    "type:dependency-upgrade"
+  ]
 }
