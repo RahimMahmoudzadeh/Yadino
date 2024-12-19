@@ -14,7 +14,6 @@ object Constants {
     const val YYYY_MM_DD = "yyyy-MM-dd"
     const val FIRST_YEAR = 1350
     const val END_YEAR = 1450
-    const val FIRST_KABISE_DATA = 1350
     const val VERSION_TIME_DB = 1L
     const val UPDATE = "update"
     const val CAFE_BAZAAR = "cafeBazaar"

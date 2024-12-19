@@ -50,8 +50,18 @@ class MainViewModel @Inject constructor(
 
   private fun clickDrawerItem(drawerItemType: DrawerItemType) {
     when (drawerItemType) {
-      is DrawerItemType.RateToApp -> flavor.drawerItemType(com.rahim.data.flavor.DrawerItemType.RateToApp)
-      is DrawerItemType.ShareWithFriends -> flavor.drawerItemType(com.rahim.data.flavor.DrawerItemType.ShareWithFriends)
+      is DrawerItemType.RateToApp -> {
+        val state=flavor.drawerItemType(com.rahim.data.flavor.DrawerItemType.RateToApp)
+        mutableState.update {
+          it.copy(stateOfClickItemDrawable = state)
+        }
+      }
+      is DrawerItemType.ShareWithFriends -> {
+        val state=flavor.drawerItemType(com.rahim.data.flavor.DrawerItemType.ShareWithFriends)
+        mutableState.update {
+          it.copy(stateOfClickItemDrawable = state)
+        }
+      }
       is DrawerItemType.Theme -> {
         setDarkTheme(state.value.isDarkTheme != true)
       }

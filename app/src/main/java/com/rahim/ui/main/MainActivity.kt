@@ -2,9 +2,7 @@ package com.rahim.ui.main
 
 import android.Manifest
 import android.app.Activity
-import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -46,20 +44,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.messaging.FirebaseMessaging
+import com.rahim.BuildConfig
+import com.rahim.data.flavor.StateOfClickItemDrawable
 import com.rahim.navigation.NavigationComponent
 import com.rahim.utils.MainContract
-import com.rahim.yadino.Constants.CAFE_BAZAAR_PACKAGE_NAME
-import com.rahim.yadino.Constants.CAFE_BAZZAR_LINK
-import com.rahim.yadino.Constants.DARK
-import com.rahim.yadino.Constants.LIGHT
 import com.rahim.yadino.base.use
-import com.rahim.yadino.isPackageInstalled
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
 import com.rahim.yadino.designsystem.component.goSettingPermission
 import com.rahim.yadino.designsystem.component.requestPermissionNotification
@@ -73,7 +67,6 @@ import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -88,14 +81,14 @@ class MainActivity : ComponentActivity() {
     getTokenFirebase()
 
     setContent {
+      val (state, event) = use(viewModel = mainViewModel)
       val context = LocalContext.current
       (context as? Activity)?.requestedOrientation =
         ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
-      val (state, event) = use(viewModel = mainViewModel)
 
       changeTheme(state.isDarkTheme)
-
+      checkStateOfClickItemDrawable(state.stateOfClickItemDrawable)
       YadinoApp(
         isShowWelcomeScreen = state.isShowWelcomeScreen,
         isDarkTheme = state.isDarkTheme ?: isSystemInDarkTheme(),
@@ -114,6 +107,27 @@ class MainActivity : ComponentActivity() {
         this@MainActivity.splashScreen.setSplashScreenTheme(com.rahim.R.style.Theme_dark)
       } else {
         this@MainActivity.splashScreen.setSplashScreenTheme(com.rahim.R.style.Theme_Light)
+      }
+    }
+  }
+
+  private fun checkStateOfClickItemDrawable(stateOfClickItemDrawable: StateOfClickItemDrawable?) {
+    if (stateOfClickItemDrawable is StateOfClickItemDrawable.InstallApp) {
+      when {
+        BuildConfig.FLAVOR.contains("myket") -> {
+          Toast.makeText(
+            this,
+            resources.getString(com.rahim.R.string.install_myket),
+            Toast.LENGTH_SHORT
+          ).show()
+        }
+        BuildConfig.FLAVOR.contains("cafeBazaar") -> {
+          Toast.makeText(
+            this,
+            resources.getString(com.rahim.R.string.install_cafeBazaar),
+            Toast.LENGTH_SHORT
+          ).show()
+        }
       }
     }
   }

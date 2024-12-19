@@ -1,10 +1,9 @@
 package com.rahim.utils
 
 import androidx.compose.runtime.Immutable
+import com.rahim.data.flavor.StateOfClickItemDrawable
 import com.rahim.yadino.base.UnidirectionalViewModel
-import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.navigation.component.DrawerItemType
-import com.rahim.yadino.note.model.NoteModel
 
 interface MainContract : UnidirectionalViewModel<MainContract.MainEvent, MainContract.MainState> {
 
@@ -20,5 +19,6 @@ interface MainContract : UnidirectionalViewModel<MainContract.MainEvent, MainCon
     val isDarkTheme: Boolean? = false,
     val haveAlarm: Boolean = false,
     val isShowWelcomeScreen: Boolean = true,
+    val stateOfClickItemDrawable: StateOfClickItemDrawable? = null,
   )
 }

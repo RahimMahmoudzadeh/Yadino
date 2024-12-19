@@ -1,7 +1,6 @@
 package com.rahim.yadino.datetime_repository
 
 import com.rahim.yadino.Constants.END_YEAR
-import com.rahim.yadino.Constants.FIRST_KABISE_DATA
 import com.rahim.yadino.Constants.FIRST_YEAR
 import com.rahim.yadino.Constants.VERSION_TIME_DB
 import com.rahim.yadino.enums.HalfWeekName
@@ -270,10 +269,10 @@ class DateTimeRepositoryImpl @Inject constructor(
       var index = 4
       var differentBetweenYerKabesi = 7
       for (year in FIRST_YEAR..END_YEAR) {
-        if (year >= FIRST_KABISE_DATA) {
+        if (year >= FIRST_YEAR) {
           differentBetweenYerKabesi += 1
         }
-        if ((((index % 4 == 0 && year != 1374) || year == FIRST_KABISE_DATA) && differentBetweenYerKabesi !in 29..32) || differentBetweenYerKabesi == 33) {
+        if ((((index % 4 == 0 && year != 1374) || year == FIRST_YEAR) && differentBetweenYerKabesi !in 29..32) || differentBetweenYerKabesi == 33) {
           if (differentBetweenYerKabesi == 33) {
             differentBetweenYerKabesi = 0
             index = 0
