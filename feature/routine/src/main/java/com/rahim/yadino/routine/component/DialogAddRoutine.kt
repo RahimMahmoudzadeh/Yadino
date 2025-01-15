@@ -3,12 +3,32 @@ package com.rahim.yadino.routine.component
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -24,13 +44,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.yadino.dateTime.model.TimeDate
-import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.Onahau
 import com.rahim.yadino.designsystem.theme.Purple
 import com.rahim.yadino.designsystem.theme.PurpleGrey
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.persianLocate
 import com.rahim.yadino.routine.model.RoutineModel
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
@@ -52,8 +72,8 @@ fun DialogAddRoutine(
   currentNumberYear: Int,
   updateRoutine: RoutineModel? = null,
   timesMonth: List<TimeDate> = emptyList(),
-  openDialog: () -> Unit,
-  routineItems: (routine: RoutineModel) -> Unit,
+  onCloseDialog: () -> Unit,
+  onRoutineCreated: (routine: RoutineModel) -> Unit,
   monthIncrease: ((year: Int, month: Int) -> Unit)? = null,
   monthDecrease: ((year: Int, month: Int) -> Unit)? = null,
 ) {
@@ -91,7 +111,7 @@ fun DialogAddRoutine(
           shape = RoundedCornerShape(8.dp),
         ),
       onDismissRequest = {
-        openDialog()
+        onCloseDialog()
       },
     ) {
       Surface(
@@ -292,6 +312,7 @@ fun DialogAddRoutine(
                   isErrorName = true
                 } else {
                   val routine = RoutineModel(
+                    id = updateRoutine?.id,
                     name = routineName,
                     explanation = routineExplanation,
                     timeHours = time,
@@ -301,14 +322,14 @@ fun DialogAddRoutine(
                     dayName = persianData.dayName(date),
                     colorTask = null,
                   )
-                  routineItems(routine)
+                  onRoutineCreated(routine)
                 }
               },
             )
             Spacer(modifier = Modifier.width(10.dp))
             TextButton(
               onClick = {
-                openDialog()
+                onCloseDialog()
               },
             ) {
               Text(

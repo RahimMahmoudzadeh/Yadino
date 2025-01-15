@@ -1,11 +1,19 @@
 package com.rahim.yadino.routine.homeScreen
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -15,17 +23,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rahim.yadino.base.use
-import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.EmptyMessage
-import com.rahim.yadino.routine.component.ListRoutines
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.component.ShowToastShort
-import com.rahim.yadino.routine.component.DialogAddRoutine
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.errorMessage
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.persianLocate
+import com.rahim.yadino.routine.component.DialogAddRoutine
+import com.rahim.yadino.routine.component.ListRoutines
 import com.rahim.yadino.routine.model.RoutineModel
 
 @Composable
@@ -142,11 +150,11 @@ private fun HomeScreen(
   )
   if (openDialog) {
     DialogAddRoutine(
-      openDialog = {
+      onCloseDialog = {
         onOpenDialog(false)
         routineModelUpdateDialog.value = null
       },
-      routineItems = { routine ->
+      onRoutineCreated = { routine ->
         if (routineModelUpdateDialog.value != null) {
           onUpdateRoutine(routine)
         } else {
