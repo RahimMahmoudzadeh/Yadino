@@ -22,6 +22,7 @@ import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.dialog.DialogAddNote
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.note.model.NoteModel
+import timber.log.Timber
 
 @Composable
 internal fun NoteRoute(
@@ -149,7 +150,7 @@ private fun NoteScreen(
           note?.let { onUpdateNote(note) }
         } else {
           val note = NoteModel(
-            name = dayName,
+            name = name,
             description = description,
             state = state,
             timeInMileSecond = timeInMileSecond,
