@@ -8,7 +8,7 @@ compose-bom = "2025.01.01"
 activity-compose = "1.10.0"
 
 #navigation
-hilt = "2.53.1"
+hilt = "2.55"
 hilt_navigation_compose = "1.2.0"
 
 #core
