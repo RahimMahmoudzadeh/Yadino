@@ -13,13 +13,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             applyPlugins {
                 listOf("yadino.android.library", "yadino.android.hilt")
             }
-            androidGradle {
-                defaultConfig {
-                    testInstrumentationRunner =
-                        "com.fanimo.convention.core.testing.EleTestRunner"
-                }
-            }
-
             dependencies {
                 add("implementation", versionCatalog.findLibrary("androidx.tracing.ktx").get())
                 add(

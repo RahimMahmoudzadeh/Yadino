@@ -27,8 +27,6 @@ import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.CornflowerBlueDark
 import com.rahim.yadino.designsystem.theme.Mantis
 import com.rahim.yadino.designsystem.theme.Punch
-import com.rahim.yadino.designsystem.theme.Purple
-import com.rahim.yadino.designsystem.theme.PurpleGrey
 import com.rahim.yadino.library.designsystem.R
 
 const val maxName = 22
