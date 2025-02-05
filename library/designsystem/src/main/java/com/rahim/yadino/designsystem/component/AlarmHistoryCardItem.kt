@@ -20,63 +20,59 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.rahim.yadino.persianLocate
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.persianLocate
 
 @Composable
 fun AlarmHistoryCardItem(
-    routineIsChecked: Boolean,
-    routineName: String,
-    routineTimeHours: String,
-    routineYearNumber: Int,
-    routineMonthNumber: Int,
-    routineDayNumber: Int,
+  routineIsChecked: Boolean,
+  routineName: String,
+  routineTimeHours: String,
+  routineYearNumber: Int,
+  routineMonthNumber: Int,
+  routineDayNumber: Int,
 ) {
+  val textUnderLine = if (routineIsChecked) TextDecoration.LineThrough else TextDecoration.None
+  val textAlpha = if (routineIsChecked) 0.6f else 1f
+  val date = "$routineYearNumber/$routineMonthNumber/$routineDayNumber".persianLocate()
+  Card(
+    elevation = CardDefaults.elevatedCardElevation(4.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(horizontal = 6.dp, vertical = 4.dp),
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+    border = BorderStroke(
+      1.dp,
+      Brush.verticalGradient(gradientColors),
+    ),
+  ) {
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 15.dp, vertical = 18.dp),
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+      Text(
+        text = routineName,
+        color = MaterialTheme.colorScheme.primary.copy(textAlpha),
+        style = MaterialTheme.typography.bodyLarge,
+        fontWeight = FontWeight.SemiBold,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        textDecoration = textUnderLine,
+      )
+      Spacer(modifier = Modifier.width(8.dp))
 
-    val textUnderLine = if (routineIsChecked) TextDecoration.LineThrough else TextDecoration.None
-    val textAlpha = if (routineIsChecked) 0.6f else 1f
-    val date ="${routineYearNumber}/${routineMonthNumber}/${routineDayNumber}".persianLocate()
-    Card(
-        elevation = CardDefaults.elevatedCardElevation(4.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 6.dp, vertical = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-        border = BorderStroke(
-            1.dp,
-            Brush.verticalGradient(gradientColors)
-        ),
-    )
-    {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 15.dp, vertical = 18.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = routineName,
-                color = MaterialTheme.colorScheme.primary.copy(textAlpha),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textDecoration = textUnderLine
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Text(
-                text = "${stringResource(id = R.string.time)}: ${
-                    routineTimeHours.persianLocate()
-                }  ${stringResource(id = R.string.date)}: $date",
-                color = MaterialTheme.colorScheme.secondaryContainer.copy(textAlpha),
-                style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.SemiBold,
-                textDecoration = textUnderLine
-            )
-
-        }
-
+      Text(
+        text = "${stringResource(id = R.string.time)}: ${
+          routineTimeHours.persianLocate()
+        }  ${stringResource(id = R.string.date)}: $date",
+        color = MaterialTheme.colorScheme.secondaryContainer.copy(textAlpha),
+        style = MaterialTheme.typography.bodySmall,
+        fontWeight = FontWeight.SemiBold,
+        textDecoration = textUnderLine,
+      )
     }
+  }
 }

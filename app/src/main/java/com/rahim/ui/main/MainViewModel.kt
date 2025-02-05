@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.data.flavor.Flavor
 import com.rahim.utils.MainContract
-import com.rahim.yadino.di.IODispatcher
 import com.rahim.yadino.dateTime.DateTimeRepository
+import com.rahim.yadino.di.IODispatcher
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.note.NoteRepository
 import com.rahim.yadino.routine.RepositoryRoutine
@@ -39,25 +39,24 @@ class MainViewModel @Inject constructor(
     initialize()
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), MainContract.MainState())
 
-  override fun event(event: MainContract.MainEvent) =
-    when (event) {
-      is MainContract.MainEvent.CheckedAllRoutinePastTime -> {
-        checkedAllRoutinePastTime()
-      }
-
-      is MainContract.MainEvent.ClickDrawer -> clickDrawerItem(event.drawerItemType)
+  override fun event(event: MainContract.MainEvent) = when (event) {
+    is MainContract.MainEvent.CheckedAllRoutinePastTime -> {
+      checkedAllRoutinePastTime()
     }
+
+    is MainContract.MainEvent.ClickDrawer -> clickDrawerItem(event.drawerItemType)
+  }
 
   private fun clickDrawerItem(drawerItemType: DrawerItemType) {
     when (drawerItemType) {
       is DrawerItemType.RateToApp -> {
-        val state=flavor.drawerItemType(com.rahim.data.flavor.DrawerItemType.RateToApp)
+        val state = flavor.drawerItemType(com.rahim.data.flavor.DrawerItemType.RateToApp)
         mutableState.update {
           it.copy(stateOfClickItemDrawable = state)
         }
       }
       is DrawerItemType.ShareWithFriends -> {
-        val state=flavor.drawerItemType(com.rahim.data.flavor.DrawerItemType.ShareWithFriends)
+        val state = flavor.drawerItemType(com.rahim.data.flavor.DrawerItemType.ShareWithFriends)
         mutableState.update {
           it.copy(stateOfClickItemDrawable = state)
         }
@@ -67,7 +66,6 @@ class MainViewModel @Inject constructor(
       }
     }
   }
-
 
   private fun initialize() {
     viewModelScope.launch(ioDispatcher) {

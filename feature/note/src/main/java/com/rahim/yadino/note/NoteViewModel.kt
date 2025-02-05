@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.Constants
 import com.rahim.yadino.calculateTimeFormat
-import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.dateTime.DateTimeRepository
+import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.note.model.NoteModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +30,6 @@ class NoteViewModel @Inject constructor(
   private val currentMonth = timeRepository.currentTimeMonth
   private val currentDay = timeRepository.currentTimeDay
 
-
   private var mutableState = MutableStateFlow<NoteContract.NoteState>(NoteContract.NoteState())
   override val state: StateFlow<NoteContract.NoteState> = mutableState.onStart {
     getCurrentNameDay()
@@ -47,7 +46,7 @@ class NoteViewModel @Inject constructor(
 
   private fun addNote(noteModel: NoteModel) {
     viewModelScope.launch {
-      val updateNote=noteModel.copy(dayNumber = currentDay, monthNumber = currentMonth, yearNumber = currentYear)
+      val updateNote = noteModel.copy(dayNumber = currentDay, monthNumber = currentMonth, yearNumber = currentYear)
       noteRepository.addNote(updateNote)
     }
   }
@@ -70,7 +69,6 @@ class NoteViewModel @Inject constructor(
       it.copy(nameDay = timeRepository.getCurrentNameDay(date, format))
     }
   }
-
 
   private fun delete(noteModel: NoteModel) {
     viewModelScope.launch {

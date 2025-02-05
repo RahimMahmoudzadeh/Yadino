@@ -1,7 +1,9 @@
 package com.rahim.yadino.welcome
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,8 +31,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.rahim.yadino.base.use
@@ -38,7 +38,6 @@ import com.rahim.yadino.designsystem.component.GradientButton
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.feature.welcome.R
-import com.rahim.yadino.navigation.Destinations
 import com.rahim.yadino.welcome.model.WelcomeScreenModel
 import kotlinx.coroutines.launch
 
@@ -48,7 +47,6 @@ internal fun WelcomeRoute(
   viewModel: WelcomeViewModel = hiltViewModel(),
   navigateToHome: () -> Unit,
 ) {
-
   val (state, event) = use(viewModel)
 
   WelcomeScreens(
@@ -167,7 +165,8 @@ fun WelcomePage(
           ),
           fontWeight = FontWeight.Bold,
         ),
-        fontSize = 26.sp, modifier = Modifier.padding(top = 6.dp),
+        fontSize = 26.sp,
+        modifier = Modifier.padding(top = 6.dp),
       )
       Text(
         text = textWelcomeBottom,
@@ -180,7 +179,6 @@ fun WelcomePage(
           color = MaterialTheme.colorScheme.primary,
         ),
       )
-
     }
   }
 }

@@ -58,7 +58,6 @@ class RoutineScreenViewModel @Inject constructor(
     getTimes()
   }.stateIn(viewModelScope, SharingStarted.Lazily, RoutineContract.RoutineState())
 
-
   private var searchNameRoutine = ""
   override fun event(event: RoutineContract.RoutineEvent) {
     when (event) {
@@ -191,12 +190,7 @@ class RoutineScreenViewModel @Inject constructor(
     }
   }
 
-  private fun getRoutines(
-    yearNumber: Int = lastYearNumber,
-    monthNumber: Int = lastMonthNumber,
-    numberDay: Int = lastDayNumber,
-    searchText: String = "",
-  ) {
+  private fun getRoutines(yearNumber: Int = lastYearNumber, monthNumber: Int = lastMonthNumber, numberDay: Int = lastDayNumber, searchText: String = "") {
     viewModelScope.launch {
       searchNameRoutine = searchText
       if (searchText.isNotBlank()) {
@@ -292,7 +286,8 @@ class RoutineScreenViewModel @Inject constructor(
       dateTimeRepository.getTimes().catch {}.collect { times ->
         mutableState.update {
           it.copy(
-            times = times, errorMessage = null,
+            times = times,
+            errorMessage = null,
           )
         }
         times.find { it.isChecked }?.let { currentTime ->

@@ -75,8 +75,8 @@ import com.rahim.yadino.designsystem.theme.Periwinkle
 import com.rahim.yadino.designsystem.theme.Purple
 import com.rahim.yadino.designsystem.theme.PurpleGrey
 import com.rahim.yadino.enums.HalfWeekName
-import com.rahim.yadino.persianLocate
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.persianLocate
 
 val gradientColors = listOf(Purple, PurpleGrey)
 
@@ -116,7 +116,6 @@ fun DialogButtonBackground(
   textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
   onClick: () -> Unit = { },
 ) {
-
   Button(
     colors = ButtonDefaults.buttonColors(Color.Transparent),
     contentPadding = PaddingValues(),
@@ -209,7 +208,6 @@ fun TopBarCenterAlign(
   onDrawerClick: () -> Unit,
   haveAlarm: Boolean,
 ) {
-
   CenterAlignedTopAppBar(
     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.onBackground),
     modifier = modifier.shadow(elevation = 8.dp),
@@ -249,7 +247,6 @@ fun TopBarCenterAlign(
               tint = CornflowerBlueLight,
             )
           }
-
         }
       }
     },
@@ -277,11 +274,9 @@ fun TopBarCenterAlign(
           )
         }
       }
-
     },
   )
 }
-
 
 @Preview
 @Composable
@@ -317,7 +312,6 @@ fun requestPermissionNotification(
   isGranted: (Boolean) -> Unit,
   permissionState: (PermissionState) -> Unit,
 ) {
-
   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
     if (notificationPermission.status.isGranted) {
       isGranted(true)
@@ -394,7 +388,6 @@ fun EmptyMessage(
   )
 }
 
-
 @Composable
 fun TimeItems(
   dayNumber: Int,
@@ -455,7 +448,7 @@ fun TimeItems(
         color = MaterialTheme.colorScheme.surface,
       )
     }
-  } else if (dayNumberChecked==dayNumber) {
+  } else if (dayNumberChecked == dayNumber) {
     Box(
       modifier = Modifier
         .size(46.dp)
@@ -498,5 +491,3 @@ fun TimeItems(
     }
   }
 }
-
-

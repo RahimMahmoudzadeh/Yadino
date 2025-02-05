@@ -100,7 +100,8 @@ fun DialogAddRoutine(
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
     BasicAlertDialog(
       properties = DialogProperties(
-        usePlatformDefaultWidth = false, dismissOnClickOutside = false,
+        usePlatformDefaultWidth = false,
+        dismissOnClickOutside = false,
       ),
       modifier = modifier
         .fillMaxWidth()
@@ -170,9 +171,13 @@ fun DialogAddRoutine(
           if (isErrorName) {
             Text(
               modifier = Modifier.padding(start = 16.dp),
-              text = if (routineName.isEmpty()) stringResource(id = R.string.emptyField) else stringResource(
-                id = R.string.length_textFiled_name_routine,
-              ),
+              text = if (routineName.isEmpty()) {
+                stringResource(id = R.string.emptyField)
+              } else {
+                stringResource(
+                  id = R.string.length_textFiled_name_routine,
+                )
+              },
               color = MaterialTheme.colorScheme.error,
             )
           }
@@ -243,7 +248,8 @@ fun DialogAddRoutine(
             }
             OutlinedButton(
               border = BorderStroke(
-                1.dp, Brush.horizontalGradient(gradientColors),
+                1.dp,
+                Brush.horizontalGradient(gradientColors),
               ),
               onClick = {
                 alarmDialogState.show()
@@ -276,7 +282,8 @@ fun DialogAddRoutine(
               )
               OutlinedButton(
                 border = BorderStroke(
-                  1.dp, Brush.horizontalGradient(gradientColors),
+                  1.dp,
+                  Brush.horizontalGradient(gradientColors),
                 ),
                 onClick = { isShowDateDialog = true },
               ) {
@@ -286,7 +293,7 @@ fun DialogAddRoutine(
                     brush = Brush.verticalGradient(
                       gradientColors,
                     ),
-                  )
+                  ),
                 )
               }
             }
@@ -377,11 +384,12 @@ fun DialogAddRoutine(
   }
 }
 
-
 @OptIn(ExperimentalTextApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ShowTimePicker(
-  currentTime: String, dialogState: com.vanpra.composematerialdialogs.MaterialDialogState, time: (LocalTime) -> Unit,
+  currentTime: String,
+  dialogState: com.vanpra.composematerialdialogs.MaterialDialogState,
+  time: (LocalTime) -> Unit,
 ) {
   com.vanpra.composematerialdialogs.MaterialDialog(
     properties = DialogProperties(dismissOnClickOutside = false),
@@ -400,7 +408,8 @@ fun ShowTimePicker(
       )
       negativeButton(
         textStyle = TextStyle(
-          color = MaterialTheme.colorScheme.primary, fontSize = 14.sp,
+          color = MaterialTheme.colorScheme.primary,
+          fontSize = 14.sp,
         ),
         text = stringResource(id = R.string.cancel),
       )

@@ -1,8 +1,7 @@
 package com.rahim.yadino.routine.useCase
 
-import com.rahim.yadino.routine.model.RoutineModel
 import com.rahim.yadino.routine.RepositoryRoutine
-import kotlinx.coroutines.flow.Flow
+import com.rahim.yadino.routine.model.RoutineModel
 import javax.inject.Inject
 
 class GetAllRoutineUseCase @Inject constructor(

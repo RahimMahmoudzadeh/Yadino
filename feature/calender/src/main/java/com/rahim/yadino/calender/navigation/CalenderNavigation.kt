@@ -8,11 +8,11 @@ import com.rahim.yadino.calender.CalenderRoute
 import com.rahim.yadino.navigation.Destinations
 
 fun NavController.navigateToCalender(navOptions: NavOptions? = null) {
-    this.navigate(Destinations.Calender.route, navOptions)
+  this.navigate(Destinations.Calender.route, navOptions)
 }
 
 fun NavGraphBuilder.calenderScreen() {
-    composable(Destinations.Calender.route) {
-        CalenderRoute()
-    }
+  composable(Destinations.Calender.route) {
+    CalenderRoute()
+  }
 }

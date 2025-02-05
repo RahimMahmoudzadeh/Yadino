@@ -11,71 +11,69 @@ import com.rahim.yadino.library.designsystem.R
 // Set of Material typography styles to start with
 
 val font_medium = FontFamily(
-    Font(R.font.vazirmatnmedium)
+  Font(R.font.vazirmatnmedium),
 )
 val font_bold = FontFamily(
-    Font(R.font.vazirmatnbold)
+  Font(R.font.vazirmatnbold),
 )
 val font_standard = FontFamily(
-    Font(R.font.vazirmatnlight)
+  Font(R.font.vazirmatnlight),
 )
 
-
-
 val Typography = Typography(
-    bodySmall = TextStyle(
-        fontFamily = font_standard,
-        fontWeight = FontWeight.Light,
-        fontSize = 12.sp,
-        lineHeight = 25.sp
-    ),
-    bodyMedium =TextStyle(
-        fontFamily = font_medium,
-        fontWeight = FontWeight.Light,
-        fontSize = 14.sp,
-        lineHeight = 25.sp
-    ),
-    bodyLarge = TextStyle(
-        fontFamily = font_medium,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 25.sp
-    ),
-    titleSmall = TextStyle(
-        fontFamily = font_standard,
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 25.sp
-    ),
-    titleMedium = TextStyle(
-        fontFamily = font_standard,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 25.sp
-    ),
-    titleLarge = TextStyle(
-        fontFamily = font_standard,
-        fontWeight = FontWeight.Medium,
-        fontSize = 15.sp,
-        lineHeight = 25.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = font_medium,
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 25.sp
-    ),
-    labelMedium = TextStyle(
-        fontFamily = font_medium,
-        fontWeight = FontWeight.Medium,
-        fontSize = 18.sp,
-        lineHeight = 25.sp
-    ),
-    labelLarge = TextStyle(
-        fontFamily = font_bold,
-        fontWeight = FontWeight.Medium,
-        fontSize = 20.sp,
-        lineHeight = 25.sp
-    )
+  bodySmall = TextStyle(
+    fontFamily = font_standard,
+    fontWeight = FontWeight.Light,
+    fontSize = 12.sp,
+    lineHeight = 25.sp,
+  ),
+  bodyMedium = TextStyle(
+    fontFamily = font_medium,
+    fontWeight = FontWeight.Light,
+    fontSize = 14.sp,
+    lineHeight = 25.sp,
+  ),
+  bodyLarge = TextStyle(
+    fontFamily = font_medium,
+    fontWeight = FontWeight.Normal,
+    fontSize = 16.sp,
+    lineHeight = 25.sp,
+  ),
+  titleSmall = TextStyle(
+    fontFamily = font_standard,
+    fontWeight = FontWeight.Medium,
+    fontSize = 12.sp,
+    lineHeight = 25.sp,
+  ),
+  titleMedium = TextStyle(
+    fontFamily = font_standard,
+    fontWeight = FontWeight.Medium,
+    fontSize = 14.sp,
+    lineHeight = 25.sp,
+  ),
+  titleLarge = TextStyle(
+    fontFamily = font_standard,
+    fontWeight = FontWeight.Medium,
+    fontSize = 15.sp,
+    lineHeight = 25.sp,
+  ),
+  labelSmall = TextStyle(
+    fontFamily = font_medium,
+    fontWeight = FontWeight.Medium,
+    fontSize = 16.sp,
+    lineHeight = 25.sp,
+  ),
+  labelMedium = TextStyle(
+    fontFamily = font_medium,
+    fontWeight = FontWeight.Medium,
+    fontSize = 18.sp,
+    lineHeight = 25.sp,
+  ),
+  labelLarge = TextStyle(
+    fontFamily = font_bold,
+    fontWeight = FontWeight.Medium,
+    fontSize = 20.sp,
+    lineHeight = 25.sp,
+  ),
 
 )

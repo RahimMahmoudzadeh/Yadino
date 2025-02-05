@@ -16,12 +16,11 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.rahim.yadino.Constants.CHANNEL_ID
 import com.rahim.yadino.Constants.KEY_LAUNCH_NAME
-import com.rahim.yadino.routine.wekeup.WakeupActivity
 import com.rahim.yadino.routine.reminder.alarm.Alarm
 import com.rahim.yadino.routine.reminder.alarm.AlarmSong
+import com.rahim.yadino.routine.wekeup.WakeupActivity
 import java.util.Random
 import javax.inject.Inject
-
 
 class NotificationManager @Inject constructor() : AlarmSong, Alarm {
 //    fun createNotification(textTitle: String, textContent: String, context: Context) {
@@ -53,69 +52,65 @@ class NotificationManager @Inject constructor() : AlarmSong, Alarm {
 //        }
 //    }
 
-    fun createFullNotification(
-        context: Context,
-        routineName: String,
-        routineIdAlarm: Long,
-        routineExplanation: String,
-    ) {
-        val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {
-            addFlags(FLAG_ACTIVITY_MULTIPLE_TASK)
-            putExtra(KEY_LAUNCH_NAME, routineName)
-        }
-        val fullScreenPendingIntent = PendingIntent.getActivity(
-            context, 0,
-            fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        playRingtone(context, routineIdAlarm)
-        val notificationBuilder =
-            NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(com.rahim.yadino.library.designsystem.R.drawable.ic_round_notifications_24)
-                .setContentTitle(routineName)
-                .setContentText(routineExplanation)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_ALARM)
-                .setFullScreenIntent(fullScreenPendingIntent, true)
-
-        with(NotificationManagerCompat.from(context)) {
-            if (ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                return
-            }
-            notify(Random().nextInt(),notificationBuilder.build())
-        }
-
+  fun createFullNotification(context: Context, routineName: String, routineIdAlarm: Long, routineExplanation: String) {
+    val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {
+      addFlags(FLAG_ACTIVITY_MULTIPLE_TASK)
+      putExtra(KEY_LAUNCH_NAME, routineName)
     }
+    val fullScreenPendingIntent = PendingIntent.getActivity(
+      context,
+      0,
+      fullScreenIntent,
+      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+    playRingtone(context, routineIdAlarm)
+    val notificationBuilder =
+      NotificationCompat.Builder(context, CHANNEL_ID)
+        .setSmallIcon(com.rahim.yadino.library.designsystem.R.drawable.ic_round_notifications_24)
+        .setContentTitle(routineName)
+        .setContentText(routineExplanation)
+        .setPriority(NotificationCompat.PRIORITY_HIGH)
+        .setCategory(NotificationCompat.CATEGORY_ALARM)
+        .setFullScreenIntent(fullScreenPendingIntent, true)
 
-    override fun playRingtone(context: Context, alarmId: Long?) {
-        val notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        val ringtone = RingtoneManager.getRingtone(context, notification)
-        ringtone.play()
-        stopRingtone(ringtone, context, alarmId)
+    with(NotificationManagerCompat.from(context)) {
+      if (ActivityCompat.checkSelfPermission(
+          context,
+          Manifest.permission.POST_NOTIFICATIONS,
+        ) != PackageManager.PERMISSION_GRANTED
+      ) {
+        return
+      }
+      notify(Random().nextInt(), notificationBuilder.build())
     }
+  }
 
-    override fun stopRingtone(ringtone: Ringtone?, context: Context, alarmId: Long?) {
-        object : CountDownTimer(6000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {}
-            override fun onFinish() {
-                ringtone?.stop()
-                cancelAlarm(context, alarmId)
-            }
-        }.start()
-    }
+  override fun playRingtone(context: Context, alarmId: Long?) {
+    val notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+    val ringtone = RingtoneManager.getRingtone(context, notification)
+    ringtone.play()
+    stopRingtone(ringtone, context, alarmId)
+  }
 
-    override fun cancelAlarm(context: Context, idAlarm: Long?) {
-        val intent = Intent(context, YadinoBroadCastReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            idAlarm?.toInt() ?: 0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager?
-        alarmManager!!.cancel(pendingIntent)
-    }
+  override fun stopRingtone(ringtone: Ringtone?, context: Context, alarmId: Long?) {
+    object : CountDownTimer(6000, 1000) {
+      override fun onTick(millisUntilFinished: Long) {}
+      override fun onFinish() {
+        ringtone?.stop()
+        cancelAlarm(context, alarmId)
+      }
+    }.start()
+  }
+
+  override fun cancelAlarm(context: Context, idAlarm: Long?) {
+    val intent = Intent(context, YadinoBroadCastReceiver::class.java)
+    val pendingIntent = PendingIntent.getBroadcast(
+      context,
+      idAlarm?.toInt() ?: 0,
+      intent,
+      PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+    val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager?
+    alarmManager!!.cancel(pendingIntent)
+  }
 }

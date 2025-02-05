@@ -1,8 +1,6 @@
-package com.rahim.yadino.datetime_repository
-
+package com.rahim.yadino.noteRepository
+import junit.framework.TestCase.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -10,8 +8,8 @@ import org.junit.Assert.*
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
-    @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
-    }
+  @Test
+  fun addition_isCorrect() {
+    assertEquals(4, 2 + 2)
+  }
 }

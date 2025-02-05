@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
@@ -30,7 +28,6 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,17 +37,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.rahim.yadino.designsystem.component.gradientColors
-import com.rahim.yadino.navigation.component.DrawerItemType.RateToApp
-import com.rahim.yadino.navigation.component.DrawerItemType.ShareWithFriends
-import com.rahim.yadino.navigation.component.DrawerItemType.Theme
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.library.navigation.R
+import com.rahim.yadino.navigation.component.DrawerItemType.RateToApp
+import com.rahim.yadino.navigation.component.DrawerItemType.ShareWithFriends
+import com.rahim.yadino.navigation.component.DrawerItemType.Theme
 import kotlinx.coroutines.launch
 
 sealed interface DrawerItemType {
@@ -58,15 +54,18 @@ sealed interface DrawerItemType {
   val iconRes: Int
 
   data class Theme(
-    @StringRes override val title: Int, @DrawableRes override val iconRes: Int,
+    @StringRes override val title: Int,
+    @DrawableRes override val iconRes: Int,
   ) : DrawerItemType
 
   data class ShareWithFriends(
-    @StringRes override val title: Int, @DrawableRes override val iconRes: Int,
+    @StringRes override val title: Int,
+    @DrawableRes override val iconRes: Int,
   ) : DrawerItemType
 
   data class RateToApp(
-    @StringRes override val title: Int, @DrawableRes override val iconRes: Int,
+    @StringRes override val title: Int,
+    @DrawableRes override val iconRes: Int,
   ) : DrawerItemType
 }
 
@@ -96,7 +95,8 @@ fun YadinoNavigationDrawer(
     }
   }
   ModalNavigationDrawer(
-    modifier = modifier, drawerState = drawerState,
+    modifier = modifier,
+    drawerState = drawerState,
     drawerContent = {
       ModalDrawerSheet(
         modifier = Modifier.width(drawerWidth),
@@ -133,17 +133,19 @@ fun YadinoNavigationDrawer(
             rightSlot = if (yadinoDrawerItem is Theme) {
               {
                 ThemeSwitch(
-                  isDark = isDarkTheme, onChange = {onItemClick(yadinoDrawerItem)},
+                  isDark = isDarkTheme,
+                  onChange = { onItemClick(yadinoDrawerItem) },
                 )
               }
-            } else null,
+            } else {
+              null
+            },
           )
         }
       }
     },
     content = content,
   )
-
 }
 
 @Composable
@@ -151,11 +153,15 @@ private fun ThemeSwitch(
   isDark: Boolean = false,
   onChange: (Boolean) -> Unit,
 ) {
-  val thumbIconRes = if (isDark) R.drawable.brightness_2_24
-  else R.drawable.brightness_high_24
+  val thumbIconRes = if (isDark) {
+    R.drawable.brightness_2_24
+  } else {
+    R.drawable.brightness_high_24
+  }
 
   Switch(
-    checked = isDark, onCheckedChange = onChange,
+    checked = isDark,
+    onCheckedChange = onChange,
     thumbContent = {
       Icon(
         painter = painterResource(id = thumbIconRes),
@@ -211,7 +217,8 @@ private fun YadinoDrawerItem(
   rightSlot: @Composable (() -> Unit)? = null,
 ) {
   Row(
-    modifier = modifier, verticalAlignment = Alignment.CenterVertically,
+    modifier = modifier,
+    verticalAlignment = Alignment.CenterVertically,
   ) {
     Icon(
       painter = painterResource(id = iconRes),
@@ -227,7 +234,6 @@ private fun YadinoDrawerItem(
     }
   }
 }
-
 
 @Composable
 @Preview

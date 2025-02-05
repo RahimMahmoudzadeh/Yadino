@@ -41,10 +41,10 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rahim.yadino.base.use
-import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.feature.routine.R
+import com.rahim.yadino.persianLocate
 import com.rahim.yadino.routine.model.RoutineModel
 
 @Composable
@@ -62,8 +62,8 @@ private fun HistoryScreen(
   state: RoutineHistoryContract.HistoryState,
 ) {
   val (completedTasks, incompleteTasks) = if (state.routines.isNotEmpty()) {
-     state.routines.partition { sort -> sort.isChecked }
-  }else{
+    state.routines.partition { sort -> sort.isChecked }
+  } else {
     emptyList<RoutineModel>() to emptyList()
   }
 
@@ -81,10 +81,13 @@ private fun HistoryScreen(
     ) {
       item {
         val text =
-          if (incompleteTasks.isEmpty()) stringResource(id = R.string.not_alarm) else
+          if (incompleteTasks.isEmpty()) {
+            stringResource(id = R.string.not_alarm)
+          } else {
             "${stringResource(id = R.string.you)} ${
               incompleteTasks.size.toString().persianLocate()
             } ${stringResource(id = R.string.have_alarm)}"
+          }
         Text(
           modifier = Modifier
             .fillMaxWidth()
@@ -129,7 +132,6 @@ private fun HistoryScreen(
           )
         }
       }
-
     }
   }
 }
@@ -140,7 +142,6 @@ private fun RoutineCompleted(
   rotateState: Float,
   onClick: () -> Unit,
 ) {
-
   Row(
     modifier = Modifier
       .background(MaterialTheme.colorScheme.background)
@@ -149,7 +150,6 @@ private fun RoutineCompleted(
     horizontalArrangement = Arrangement.Start,
     verticalAlignment = Alignment.CenterVertically,
   ) {
-
     Row(
       horizontalArrangement = Arrangement.Center,
       verticalAlignment = Alignment.CenterVertically,
@@ -168,9 +168,7 @@ private fun RoutineCompleted(
         color = CornflowerBlueLight,
         fontWeight = FontWeight.SemiBold,
       )
-
     }
-
 
     IconButton(
       onClick = {
@@ -178,7 +176,8 @@ private fun RoutineCompleted(
       },
     ) {
       Icon(
-        imageVector = Icons.Rounded.KeyboardArrowDown, contentDescription = "",
+        imageVector = Icons.Rounded.KeyboardArrowDown,
+        contentDescription = "",
         modifier = Modifier
           .rotate(rotateState),
         tint = MaterialTheme.colorScheme.primary,
@@ -186,4 +185,3 @@ private fun RoutineCompleted(
     }
   }
 }
-

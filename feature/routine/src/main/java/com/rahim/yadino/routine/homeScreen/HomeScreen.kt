@@ -44,7 +44,6 @@ internal fun HomeRoute(
   onOpenDialog: (isOpen: Boolean) -> Unit,
   viewModel: HomeViewModel = hiltViewModel(),
 ) {
-
   val (state, event) = use(viewModel = viewModel)
 
   HomeScreen(
@@ -102,7 +101,6 @@ private fun HomeScreen(
       onSearchText(searchText)
     }
     if (homeState.routineLoading) {
-
     }
     if (homeState.routines.isEmpty()) {
       EmptyMessage(
@@ -110,7 +108,9 @@ private fun HomeScreen(
       )
     } else {
       ItemsHome(
-        homeState.currentYear, homeState.currentMonth, homeState.currentDay,
+        homeState.currentYear,
+        homeState.currentMonth,
+        homeState.currentDay,
         if (searchText.isNotBlank()) homeState.searchRoutines else homeState.routines,
         { checkedRoutine ->
           onCheckedRoutine(checkedRoutine)
@@ -164,10 +164,13 @@ private fun HomeScreen(
       },
       updateRoutine = routineModelUpdateDialog.value?.copy(
         explanation = routineModelUpdateDialog.value?.explanation?.let {
-          if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation)
+          if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
             stringResource(id = R.string.routine_right_sample)
-          else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation)
-            stringResource(id = R.string.routine_left_sample) else it
+          } else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation) {
+            stringResource(id = R.string.routine_left_sample)
+          } else {
+            it
+          }
         } ?: run {
           routineModelUpdateDialog.value?.explanation ?: ""
         },

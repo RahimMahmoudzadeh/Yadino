@@ -1,6 +1,5 @@
 package com.rahim.yadino.routine.routineScreen
 
-
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +23,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -233,16 +231,18 @@ private fun RoutineScreen(
   if (openDialog) {
     DialogAddRoutine(
       onCloseDialog = {
-
         onOpenDialog(false)
         routineModelUpdateDialog.value = null
       },
       updateRoutine = routineModelUpdateDialog.value?.copy(
         explanation = routineModelUpdateDialog.value?.explanation?.let {
-          if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation)
+          if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
             stringResource(id = R.string.routine_right_sample)
-          else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation)
-            stringResource(id = R.string.routine_left_sample) else it
+          } else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation) {
+            stringResource(id = R.string.routine_left_sample)
+          } else {
+            it
+          }
         } ?: run {
           routineModelUpdateDialog.value?.explanation ?: ""
         },
@@ -494,20 +494,24 @@ private fun DayItems(
           Brush.verticalGradient(
             gradientColors,
           )
-        } else Brush.horizontalGradient(
-          listOf(
-            MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.background,
-          ),
-        ),
+        } else {
+          Brush.horizontalGradient(
+            listOf(
+              MaterialTheme.colorScheme.background,
+              MaterialTheme.colorScheme.background,
+            ),
+          )
+        },
       )
       .padding(
         top = if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp,
       ),
     onClick = {
-      if (timeDate.dayNumber > 0)
+      if (timeDate.dayNumber > 0) {
         dayCheckedNumber(
           timeDate,
         )
+      }
     },
     text = AnnotatedString(
       if (timeDate.dayNumber > 0) timeDate.dayNumber.toString().persianLocate() else "",

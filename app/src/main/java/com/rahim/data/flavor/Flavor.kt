@@ -10,7 +10,6 @@ sealed interface StateOfClickItemDrawable {
   data object IntentSuccess : StateOfClickItemDrawable
 }
 
-
 interface Flavor {
-  fun drawerItemType(drawerItemType:DrawerItemType):StateOfClickItemDrawable
+  fun drawerItemType(drawerItemType: DrawerItemType): StateOfClickItemDrawable
 }

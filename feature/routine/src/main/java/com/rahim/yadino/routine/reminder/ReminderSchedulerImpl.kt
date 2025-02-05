@@ -23,12 +23,7 @@ class ReminderSchedulerImpl @Inject constructor(
   private val context: Context,
 ) : ReminderScheduler {
 
-  override fun setReminder(
-    reminderName: String,
-    reminderId: Int,
-    reminderTime: Long,
-    reminderIdAlarm: Long,
-  ): ReminderState {
+  override fun setReminder(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Long): ReminderState {
     if (reminderTime < System.currentTimeMillis()) return ReminderState.NotSet(ErrorMessageCode.ERROR_TIME_PASSED)
 
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -63,12 +58,7 @@ class ReminderSchedulerImpl @Inject constructor(
   }
 
   @SuppressLint("NewApi")
-  private fun checkPermissionAfterApiLevel33(
-    reminderName: String,
-    reminderId: Int,
-    reminderTime: Long,
-    reminderIdAlarm: Long,
-  ): ReminderState {
+  private fun checkPermissionAfterApiLevel33(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Long): ReminderState {
     return when {
       alarmManager.canScheduleExactAlarms() && areNotificationsEnabled(context) -> {
         setAlarm(
@@ -102,18 +92,12 @@ class ReminderSchedulerImpl @Inject constructor(
     }
   }
 
-
-  private fun setAlarm(
-    reminderName: String,
-    reminderId: Int,
-    reminderTime: Long,
-    reminderIdAlarm: Long,
-  ) {
+  private fun setAlarm(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Long) {
     val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).apply {
       putExtra(KEY_LAUNCH_NAME, reminderName)
       putExtra(KEY_LAUNCH_ID, reminderId)
     }
-    Timber.tag("intentTitle").d("AndroidReminderScheduler setAlarm-> ${reminderName}")
+    Timber.tag("intentTitle").d("AndroidReminderScheduler setAlarm-> $reminderName")
     val pendingIntent = PendingIntent.getBroadcast(
       context,
       reminderIdAlarm.toInt(),

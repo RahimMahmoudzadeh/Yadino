@@ -9,7 +9,6 @@ import javax.inject.Inject
 class SearchRoutineUseCase @Inject constructor(
   private val routineRepository: RepositoryRoutine,
 ) {
-  operator fun invoke(name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?, coroutineScope: CoroutineScope) =
-    routineRepository.searchRoutine(name, yearNumber, monthNumber, dayNumber)
-      .stateIn(coroutineScope, started = SharingStarted.Eagerly, emptyList())
+  operator fun invoke(name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?, coroutineScope: CoroutineScope) = routineRepository.searchRoutine(name, yearNumber, monthNumber, dayNumber)
+    .stateIn(coroutineScope, started = SharingStarted.Eagerly, emptyList())
 }

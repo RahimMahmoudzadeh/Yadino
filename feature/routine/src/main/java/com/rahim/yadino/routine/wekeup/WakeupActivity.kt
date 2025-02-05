@@ -45,101 +45,100 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class WakeupActivity : ComponentActivity() {
-    private var routineName: String? = null
-    private var routineId: String? = null
-    override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            var isPlaying by remember { mutableStateOf(true) }
-            var speed by remember { mutableFloatStateOf(1f) }
-            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.data))
+  private var routineName: String? = null
+  private var routineId: String? = null
+  override fun onCreate(savedInstanceState: Bundle?) {
+    installSplashScreen()
+    super.onCreate(savedInstanceState)
+    enableEdgeToEdge()
+    setContent {
+      var isPlaying by remember { mutableStateOf(true) }
+      var speed by remember { mutableFloatStateOf(1f) }
+      val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.data))
 
-            YadinoTheme {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Brush.linearGradient(gradientColors)),
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Brush.linearGradient(gradientColors)),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Image(
-                            modifier = Modifier.padding(top = 28.dp),
-                            painter = painterResource(id = com.rahim.yadino.library.designsystem.R.drawable.img_app_wekup),
-                            contentDescription = "empty list home"
-                        )
-                        Text(
-                            fontSize = 32.sp,
-                            modifier = Modifier.padding(top = 34.dp),
-                            text = resources.getString(com.rahim.yadino.library.designsystem.R.string.my_firend),
-                            color = Color.White
-                        )
-                        Text(
-                            textAlign = TextAlign.Center,
-                            fontSize = 32.sp,
-                            modifier = Modifier
-                                .padding(top = 10.dp)
-                                .fillMaxWidth(),
-                            color = Color.White,
-                            text = resources.getString(R.string.forget_work, routineName)
-                        )
-                        Column {
-                            val progress by animateLottieCompositionAsState(
-                                composition,
-                                iterations = LottieConstants.IterateForever,
-                                isPlaying = isPlaying,
-                                speed = speed,
-                                restartOnPlay = false,
-                            )
-                            LottieAnimation(
-                                composition,
-                                {
-                                    progress
-                                },
-                                modifier = Modifier
-                                    .size(300.dp)
-                                    .clickable {
-                                        finish()
-                                    },
-                            )
-
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        setWakeupSetting()
-        getIntentResult()
-    }
-
-    private fun getIntentResult() {
-        routineName = intent.getStringExtra(Constants.KEY_LAUNCH_NAME)
-        routineId = intent.getStringExtra(Constants.KEY_LAUNCH_ID)
-    }
-
-    private fun setWakeupSetting() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            setShowWhenLocked(true)
-            setTurnScreenOn(true)
-        } else {
-            window.addFlags(
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON or
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+      YadinoTheme {
+        Surface(
+          modifier = Modifier
+            .fillMaxSize()
+            .background(Brush.linearGradient(gradientColors)),
+        ) {
+          Column(
+            modifier = Modifier
+              .fillMaxSize()
+              .background(Brush.linearGradient(gradientColors)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
+          ) {
+            Image(
+              modifier = Modifier.padding(top = 28.dp),
+              painter = painterResource(id = com.rahim.yadino.library.designsystem.R.drawable.img_app_wekup),
+              contentDescription = "empty list home",
             )
+            Text(
+              fontSize = 32.sp,
+              modifier = Modifier.padding(top = 34.dp),
+              text = resources.getString(com.rahim.yadino.library.designsystem.R.string.my_firend),
+              color = Color.White,
+            )
+            Text(
+              textAlign = TextAlign.Center,
+              fontSize = 32.sp,
+              modifier = Modifier
+                .padding(top = 10.dp)
+                .fillMaxWidth(),
+              color = Color.White,
+              text = resources.getString(R.string.forget_work, routineName),
+            )
+            Column {
+              val progress by animateLottieCompositionAsState(
+                composition,
+                iterations = LottieConstants.IterateForever,
+                isPlaying = isPlaying,
+                speed = speed,
+                restartOnPlay = false,
+              )
+              LottieAnimation(
+                composition,
+                {
+                  progress
+                },
+                modifier = Modifier
+                  .size(300.dp)
+                  .clickable {
+                    finish()
+                  },
+              )
+            }
+          }
         }
-
-        with(getSystemService(KEYGUARD_SERVICE) as KeyguardManager) {
-            requestDismissKeyguard(this@WakeupActivity, null)
-        }
+      }
     }
+  }
+
+  override fun onResume() {
+    super.onResume()
+    setWakeupSetting()
+    getIntentResult()
+  }
+
+  private fun getIntentResult() {
+    routineName = intent.getStringExtra(Constants.KEY_LAUNCH_NAME)
+    routineId = intent.getStringExtra(Constants.KEY_LAUNCH_ID)
+  }
+
+  private fun setWakeupSetting() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+      setShowWhenLocked(true)
+      setTurnScreenOn(true)
+    } else {
+      window.addFlags(
+        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON or
+          WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+      )
+    }
+
+    with(getSystemService(KEYGUARD_SERVICE) as KeyguardManager) {
+      requestDismissKeyguard(this@WakeupActivity, null)
+    }
+  }
 }

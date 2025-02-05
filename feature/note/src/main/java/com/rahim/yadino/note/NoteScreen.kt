@@ -1,7 +1,12 @@
 package com.rahim.yadino.note
 
 import android.widget.Toast
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -22,7 +27,6 @@ import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.dialog.DialogAddNote
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.note.model.NoteModel
-import timber.log.Timber
 
 @Composable
 internal fun NoteRoute(
@@ -32,7 +36,6 @@ internal fun NoteRoute(
   clickSearch: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,
 ) {
-
   val (state, event) = use(viewModel = viewModel)
 
   NoteScreen(
@@ -68,12 +71,10 @@ private fun NoteScreen(
   onDelete: (NoteModel) -> Unit,
   onSearchText: (String) -> Unit,
 ) {
-
   val noteDeleteDialog = rememberSaveable { mutableStateOf<NoteModel?>(null) }
   val noteUpdateDialog = rememberSaveable { mutableStateOf<NoteModel?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
   val context = LocalContext.current
-
 
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -81,7 +82,7 @@ private fun NoteScreen(
     modifier = modifier
       .fillMaxSize(),
 
-    ) {
+  ) {
     ShowSearchBar(clickSearch, searchText = searchText) { search ->
       searchText = search
       onSearchText(searchText)
@@ -130,7 +131,6 @@ private fun NoteScreen(
         },
       )
     }
-
   }
 
   if (openDialog) {

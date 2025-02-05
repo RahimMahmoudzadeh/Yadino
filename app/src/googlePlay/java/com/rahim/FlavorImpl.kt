@@ -4,19 +4,15 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import com.rahim.data.flavor.DrawerItemType
 import com.rahim.data.flavor.Flavor
 import com.rahim.data.flavor.StateOfClickItemDrawable
-import com.rahim.yadino.Constants.CAFE_BAZAAR_PACKAGE_NAME
-import com.rahim.yadino.Constants.CAFE_BAZZAR_LINK
 import com.rahim.yadino.Constants.GOOGLE_PLAY_LINK
-import com.rahim.yadino.isPackageInstalled
 import javax.inject.Inject
 
 class FlavorImpl @Inject constructor(private val context: Context) : Flavor {
-  override fun drawerItemType(drawerItemType: DrawerItemType):StateOfClickItemDrawable {
+  override fun drawerItemType(drawerItemType: DrawerItemType): StateOfClickItemDrawable {
     return when (drawerItemType) {
       DrawerItemType.RateToApp -> {
         try {

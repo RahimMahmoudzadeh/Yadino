@@ -2,7 +2,6 @@ package com.rahim.yadino.welcome
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rahim.yadino.base.BaseViewModel
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,5 +35,4 @@ class WelcomeViewModel @Inject constructor(
   }
 
   private fun isShowWelcomeScreen() = sharedPreferencesRepository.isShowWelcomeScreen()
-
 }

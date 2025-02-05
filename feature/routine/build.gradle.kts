@@ -1,3 +1,5 @@
+import config.Config
+
 plugins {
   libs.plugins.yadino.run {
     alias(android.feature)

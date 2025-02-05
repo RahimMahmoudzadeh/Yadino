@@ -1,5 +1,5 @@
 plugins {
-    libs.plugins.run {
+  libs.plugins.run {
     alias(androidApplication) apply false
     alias(com.android.library) apply false
     alias(kotlinAndroid) apply false
@@ -18,31 +18,30 @@ spotless {
   kotlin {
     target("**/*.kt")
     trimTrailingWhitespace()
-    indentWithSpaces()
+    leadingTabsToSpaces()
     endWithNewline()
     ktlint("0.48.0")
-      .setEditorConfigPath("$projectDir/.editorconfig") // sample unusual placement
+      .setEditorConfigPath("$projectDir/.editorconfig")
       .editorConfigOverride(
         mapOf(
           "indent_size" to 2,
-          // intellij_idea is the default style we preset in Spotless, you can override it referring to https://pinterest.github.io/ktlint/latest/rules/code-styles.
           "ktlint_code_style" to "intellij_idea",
         ),
       )
   }
   kotlinGradle {
-    target("*.gradle.kts") // default target for kotlinGradle
-    ktlint() // or ktfmt() or prettier()
+    target("*.gradle.kts")
+    ktlint()
   }
   format("misc") {
     target("**/*.gradle", "**/*.md", "**/.gitignore")
-    indentWithSpaces()
+    leadingTabsToSpaces()
     trimTrailingWhitespace()
     endWithNewline()
   }
   format("xml") {
     target("**/*.xml")
-    indentWithSpaces()
+    leadingTabsToSpaces()
     trimTrailingWhitespace()
     endWithNewline()
   }

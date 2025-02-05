@@ -2,14 +2,7 @@ package com.rahim.yadino.routine.alarmScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rahim.yadino.Resource
-import com.rahim.yadino.base.BaseContract
-import com.rahim.yadino.base.BaseViewModel
-import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.rahim.yadino.routine.RepositoryRoutine
-import com.rahim.yadino.routine.model.RoutineModel
 import com.rahim.yadino.routine.useCase.GetAllRoutineUseCase
-import com.rahim.yadino.routine.useCase.GetRemindersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

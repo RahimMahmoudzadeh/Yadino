@@ -1,13 +1,35 @@
 package com.rahim.yadino.designsystem.dialog
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
-import androidx.compose.material3.*
 import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -43,7 +65,6 @@ fun DialogAddNote(
   openDialog: (Boolean) -> Unit,
   note: (name: String, state: Int, description: String, dayName: String, timeInMileSecond: Long) -> Unit,
 ) {
-
   var state by remember { mutableIntStateOf(updateNoteState ?: 0) }
   var nameNote by rememberSaveable { mutableStateOf(updateNoteName ?: "") }
   var description by rememberSaveable { mutableStateOf(updateNoteDescription ?: "") }
@@ -55,7 +76,8 @@ fun DialogAddNote(
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
     BasicAlertDialog(
       properties = DialogProperties(
-        usePlatformDefaultWidth = false, dismissOnClickOutside = false,
+        usePlatformDefaultWidth = false,
+        dismissOnClickOutside = false,
       ),
       modifier = modifier
         .fillMaxWidth()
@@ -123,9 +145,13 @@ fun DialogAddNote(
           if (isErrorName) {
             Text(
               modifier = Modifier.padding(start = 16.dp),
-              text = if (nameNote.isEmpty()) stringResource(id = R.string.emptyField) else stringResource(
-                id = R.string.length_textFiled_name_routine,
-              ),
+              text = if (nameNote.isEmpty()) {
+                stringResource(id = R.string.emptyField)
+              } else {
+                stringResource(
+                  id = R.string.length_textFiled_name_routine,
+                )
+              },
               color = MaterialTheme.colorScheme.error,
             )
           }
@@ -184,7 +210,8 @@ fun DialogAddNote(
               )
               RadioButton(
                 colors = RadioButtonDefaults.colors(
-                  selectedColor = Punch, unselectedColor = Punch,
+                  selectedColor = Punch,
+                  unselectedColor = Punch,
                 ),
                 selected = state == 2,
                 onClick = { state = 2 },
@@ -203,7 +230,7 @@ fun DialogAddNote(
                 color = CornflowerBlueDark,
                 style = MaterialTheme.typography.bodyMedium,
 
-                )
+              )
               RadioButton(
                 colors = RadioButtonDefaults.colors(
                   selectedColor = CornflowerBlueDark,
@@ -223,13 +250,15 @@ fun DialogAddNote(
               Text(
                 fontSize = 16.sp,
                 modifier = Modifier.padding(start = 24.dp),
-                text = stringResource(id = R.string.low), color = Mantis,
+                text = stringResource(id = R.string.low),
+                color = Mantis,
                 style = MaterialTheme.typography.bodyMedium,
 
-                )
+              )
               RadioButton(
                 colors = RadioButtonDefaults.colors(
-                  selectedColor = Mantis, unselectedColor = Mantis,
+                  selectedColor = Mantis,
+                  unselectedColor = Mantis,
                 ),
                 selected = state == 0,
                 onClick = { state = 0 },

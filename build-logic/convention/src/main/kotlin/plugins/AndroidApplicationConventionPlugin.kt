@@ -2,17 +2,13 @@ package plugins
 
 import applicationGradle
 import applyPlugins
-import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import config.Config
 import configureKotlinAndroid
 import convention.configureFlavors
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import versionCatalog
-import java.util.regex.Pattern.compile
 
 class AndroidApplicationConventionPlugin : Plugin<Project> {
   override fun apply(target: Project) {

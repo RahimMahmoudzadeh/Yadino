@@ -3,7 +3,6 @@ package com.rahim
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.widget.Toast
 import com.rahim.data.flavor.DrawerItemType
 import com.rahim.data.flavor.Flavor
 import com.rahim.data.flavor.StateOfClickItemDrawable
@@ -12,9 +11,9 @@ import com.rahim.yadino.Constants.CAFE_BAZZAR_LINK
 import com.rahim.yadino.isPackageInstalled
 import javax.inject.Inject
 
-class FlavorImpl @Inject constructor(private val context: Context): Flavor {
-  override fun drawerItemType(drawerItemType: DrawerItemType):StateOfClickItemDrawable {
-    return when(drawerItemType){
+class FlavorImpl @Inject constructor(private val context: Context) : Flavor {
+  override fun drawerItemType(drawerItemType: DrawerItemType): StateOfClickItemDrawable {
+    return when (drawerItemType) {
       DrawerItemType.RateToApp -> {
         if (!CAFE_BAZAAR_PACKAGE_NAME.isPackageInstalled(
             context.packageManager,
@@ -29,7 +28,7 @@ class FlavorImpl @Inject constructor(private val context: Context): Flavor {
         context.startActivity(intent, null)
         StateOfClickItemDrawable.IntentSuccess
       }
-      DrawerItemType.ShareWithFriends ->{
+      DrawerItemType.ShareWithFriends -> {
         val sendIntent: Intent = Intent().apply {
           action = Intent.ACTION_SEND
           putExtra(Intent.EXTRA_TEXT, CAFE_BAZZAR_LINK)

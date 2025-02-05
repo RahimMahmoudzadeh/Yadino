@@ -12,8 +12,7 @@ import javax.inject.Singleton
 object DaoModule {
   @Singleton
   @Provides
-  fun providesRoutineDao(appDatabase: AppDatabase) =
-    appDatabase.routineDao()
+  fun providesRoutineDao(appDatabase: AppDatabase) = appDatabase.routineDao()
 
   @Singleton
   @Provides
@@ -21,6 +20,5 @@ object DaoModule {
 
   @Singleton
   @Provides
-  fun providesTimeDao(appDatabase: AppDatabase) =
-    appDatabase.timeDataDao()
+  fun providesTimeDao(appDatabase: AppDatabase) = appDatabase.timeDataDao()
 }

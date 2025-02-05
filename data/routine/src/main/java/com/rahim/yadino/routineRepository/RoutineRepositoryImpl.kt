@@ -1,12 +1,12 @@
-package com.rahim.yadino.routine_repository
+package com.rahim.yadino.routineRepository
 
 import com.rahim.yadino.Constants.PATTERN_DATE
-import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.Resource
 import com.rahim.yadino.enums.RoutineExplanation
-import com.rahim.yadino.routine.model.RoutineModel
+import com.rahim.yadino.enums.error.ErrorMessageCode
+import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.routine.dao.RoutineDao
+import com.rahim.yadino.routine.model.RoutineModel
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -75,12 +75,13 @@ class RoutineRepositoryImpl @Inject constructor(
   private suspend fun getIdAlarmsNotNull(): List<Long> {
     val idAlarms = routineDao.getIdAlarms()
     val idNotNull = ArrayList<Long>()
-    if (idAlarms.isNotEmpty())
+    if (idAlarms.isNotEmpty()) {
       idNotNull.addAll(
         idAlarms.filter {
           it != null
         },
       )
+    }
     return idNotNull
   }
 
@@ -88,8 +89,7 @@ class RoutineRepositoryImpl @Inject constructor(
     routineDao.updateRoutinesPastTime(System.currentTimeMillis())
   }
 
-  override suspend fun getAllRoutine(): List<RoutineModel> =
-    routineDao.getRoutines()
+  override suspend fun getAllRoutine(): List<RoutineModel> = routineDao.getRoutines()
 
   override suspend fun addRoutine(routineModel: RoutineModel) {
     sharedPreferencesRepository.setShowSampleRoutine(true)
@@ -108,21 +108,16 @@ class RoutineRepositoryImpl @Inject constructor(
     )
   }
 
-  override fun convertDateToMilSecond(
-    yearNumber: Int?,
-    monthNumber: Int?,
-    dayNumber: Int?,
-    timeHours: String?,
-  ): Long {
+  override fun convertDateToMilSecond(yearNumber: Int?, monthNumber: Int?, dayNumber: Int?, timeHours: String?): Long {
     val persianDateFormat = PersianDateFormat()
     val monthDate =
-      if (monthNumber.toString().length == 1) "0${monthNumber.toString()}" else monthNumber
+      if (monthNumber.toString().length == 1) "0$monthNumber" else monthNumber
     val dayNumber =
-      if (dayNumber.toString().length == 1) "0${dayNumber.toString()}" else dayNumber
+      if (dayNumber.toString().length == 1) "0$dayNumber" else dayNumber
     val hoursDate =
-      if (timeHours.toString().length == 4) "0${timeHours.toString()}" else timeHours
+      if (timeHours.toString().length == 4) "0$timeHours" else timeHours
     val time =
-      "${yearNumber}-${monthDate}-${dayNumber} ${hoursDate}:00"
+      "$yearNumber-$monthDate-$dayNumber $hoursDate:00"
     val persianDate = persianDateFormat.parse(
       time,
       PATTERN_DATE,
@@ -150,42 +145,41 @@ class RoutineRepositoryImpl @Inject constructor(
     routineDao.removeAllRoutine(nameMonth, dayNumber, yearNumber)
   }
 
-  override fun updateRoutine(routineModel: RoutineModel): Flow<Resource<RoutineModel?>> =
-    flow {
-      Timber.tag("routineViewModel").d("updateRoutine")
+  override fun updateRoutine(routineModel: RoutineModel): Flow<Resource<RoutineModel?>> = flow {
+    Timber.tag("routineViewModel").d("updateRoutine")
 
-      sharedPreferencesRepository.setShowSampleRoutine(true)
-      val updateRoutine = routineModel.copy(
-        timeInMillisecond = convertDateToMilSecond(
-          routineModel.yearNumber,
-          routineModel.monthNumber,
-          routineModel.dayNumber,
-          routineModel.timeHours,
-        ),
+    sharedPreferencesRepository.setShowSampleRoutine(true)
+    val updateRoutine = routineModel.copy(
+      timeInMillisecond = convertDateToMilSecond(
+        routineModel.yearNumber,
+        routineModel.monthNumber,
+        routineModel.dayNumber,
+        routineModel.timeHours,
+      ),
+    )
+    updateRoutine.run {
+      val equalRoutine = routineDao.checkEqualRoutine(
+        routineName = name,
+        routineExplanation = explanation ?: "",
+        routineDayName = dayName,
+        routineDayNumber = dayNumber ?: 0,
+        routineYearNumber = yearNumber ?: 0,
+        routineMonthNumber = monthNumber ?: 0,
+        routineTimeMilSecond = timeInMillisecond ?: 0,
       )
-      updateRoutine.run {
-        val equalRoutine = routineDao.checkEqualRoutine(
-          routineName = name,
-          routineExplanation = explanation ?: "",
-          routineDayName = dayName,
-          routineDayNumber = dayNumber ?: 0,
-          routineYearNumber = yearNumber ?: 0,
-          routineMonthNumber = monthNumber ?: 0,
-          routineTimeMilSecond = timeInMillisecond ?: 0,
-        )
-        if (equalRoutine != null) {
+      if (equalRoutine != null) {
+        emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
+      } else {
+        runCatching {
+          routineDao.addRoutine(this)
+        }.onSuccess {
+          emit(Resource.Success(this))
+        }.onFailure {
           emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
-        } else {
-          runCatching {
-            routineDao.addRoutine(this)
-          }.onSuccess {
-            emit(Resource.Success(this))
-          }.onFailure {
-            emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
-          }
         }
       }
     }
+  }
 
   override suspend fun getRoutine(id: Int): RoutineModel = routineDao.getRoutine(id)
   override suspend fun checkedRoutine(routineModel: RoutineModel) {
@@ -194,14 +188,9 @@ class RoutineRepositoryImpl @Inject constructor(
     routineDao.addRoutine(routineModel)
   }
 
-  override fun getRoutines(
-    monthNumber: Int, numberDay: Int, yearNumber: Int,
-  ): Flow<List<RoutineModel>> = routineDao.getRoutines(monthNumber, numberDay, yearNumber)
+  override fun getRoutines(monthNumber: Int, numberDay: Int, yearNumber: Int): Flow<List<RoutineModel>> = routineDao.getRoutines(monthNumber, numberDay, yearNumber)
 
-
-  override fun searchRoutine(
-    name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?,
-  ): Flow<List<RoutineModel>> = routineDao.searchRoutine(nameRoutine = name, monthNumber = monthNumber, dayNumber = dayNumber, yearNumber = yearNumber)
+  override fun searchRoutine(name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?): Flow<List<RoutineModel>> = routineDao.searchRoutine(nameRoutine = name, monthNumber = monthNumber, dayNumber = dayNumber, yearNumber = yearNumber)
 
   override fun haveAlarm(): Flow<Boolean> = routineDao.haveAlarm()
 }

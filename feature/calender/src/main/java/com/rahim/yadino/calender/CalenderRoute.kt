@@ -34,143 +34,142 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.yadino.calculateMonthName
 import com.rahim.yadino.dateTime.model.TimeDate
-import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.enums.HalfWeekName
 
 @Composable
 internal fun CalenderRoute(
-    modifier: Modifier = Modifier,
-    viewModel: CalenderViewModel = hiltViewModel(),
+  modifier: Modifier = Modifier,
+  viewModel: CalenderViewModel = hiltViewModel(),
 ) {
-    val times by viewModel.times.collectAsStateWithLifecycle()
-    CalenderScreen(
-        modifier,
-        times,
-        viewModel.currentMonth,
-        viewModel.currentYear,
-        viewModel.currentDay,
-        onMonthChecked = viewModel::getTimesMonth
-    )
+  val times by viewModel.times.collectAsStateWithLifecycle()
+  CalenderScreen(
+    modifier,
+    times,
+    viewModel.currentMonth,
+    viewModel.currentYear,
+    viewModel.currentDay,
+    onMonthChecked = viewModel::getTimesMonth,
+  )
 }
 
 @Composable
 private fun CalenderScreen(
-    modifier: Modifier = Modifier,
-    times: List<TimeDate>,
-    currentMonth: Int,
-    currentYear: Int,
-    currentDay: Int,
-    onMonthChecked: (Int, Int) -> Unit,
+  modifier: Modifier = Modifier,
+  times: List<TimeDate>,
+  currentMonth: Int,
+  currentYear: Int,
+  currentDay: Int,
+  onMonthChecked: (Int, Int) -> Unit,
 ) {
-    var monthClicked by rememberSaveable { mutableIntStateOf(currentMonth) }
-    var yearClicked by rememberSaveable { mutableIntStateOf(currentYear) }
-    var dayClicked by rememberSaveable { mutableIntStateOf(currentDay) }
+  var monthClicked by rememberSaveable { mutableIntStateOf(currentMonth) }
+  var yearClicked by rememberSaveable { mutableIntStateOf(currentYear) }
+  var dayClicked by rememberSaveable { mutableIntStateOf(currentDay) }
 
-    Column(modifier = modifier) {
-        Column(
-            modifier = Modifier
-                .padding(top = 12.dp, bottom = 35.dp, start = 40.dp, end = 40.dp)
-                .clip(RoundedCornerShape(percent = 6))
-                .shadow(1.dp)
+  Column(modifier = modifier) {
+    Column(
+      modifier = Modifier
+        .padding(top = 12.dp, bottom = 35.dp, start = 40.dp, end = 40.dp)
+        .clip(RoundedCornerShape(percent = 6))
+        .shadow(1.dp),
+    ) {
+      Row(
+        Modifier
+          .fillMaxWidth()
+          .background(brush = Brush.verticalGradient(gradientColors))
+          .padding(vertical = 10.dp, horizontal = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+      ) {
+        IconButton(onClick = {
+          monthClicked += 1
+          if (monthClicked > 12) {
+            monthClicked = 1
+            yearClicked += 1
+          }
+          dayClicked = if (monthClicked == currentMonth) dayClicked else 1
+          onMonthChecked(yearClicked, monthClicked)
+        }) {
+          Icon(
+            tint = Color.White,
+            painter = painterResource(id = com.rahim.yadino.library.designsystem.R.drawable.less_then),
+            contentDescription = "less then sign",
+          )
+        }
+        Text(
+          modifier = Modifier
+            .padding(top = 12.dp)
+            .fillMaxWidth(0.5f),
+          text = "$yearClicked ${monthClicked.calculateMonthName()}",
+          color = Color.White,
+          textAlign = TextAlign.Center,
+        )
+        IconButton(onClick = {
+          monthClicked -= 1
+          if (monthClicked < 1) {
+            monthClicked = 12
+            yearClicked -= 1
+          }
+          dayClicked = if (monthClicked == currentMonth) dayClicked else 1
+          onMonthChecked(yearClicked, monthClicked)
+        }) {
+          Icon(
+            painterResource(id = com.rahim.yadino.library.designsystem.R.drawable.greater_then),
+            contentDescription = "greater then sign",
+            tint = Color.White,
+          )
+        }
+      }
+      Row(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(vertical = 12.dp, horizontal = 18.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+      ) {
+        val days = listOf(
+          HalfWeekName.SATURDAY.nameDay,
+          HalfWeekName.SUNDAY.nameDay,
+          HalfWeekName.MONDAY.nameDay,
+          HalfWeekName.TUESDAY.nameDay,
+          HalfWeekName.WEDNESDAY.nameDay,
+          HalfWeekName.THURSDAY.nameDay,
+          HalfWeekName.FRIDAY.nameDay,
+        )
+        days.reversed().forEach {
+          when (it) {
+            days.first() -> {
+              Text(
+                text = it,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(end = 12.dp),
+              )
+            }
+
+            days.last() -> {
+              Text(
+                text = it,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(start = 12.dp),
+              )
+            }
+
+            else -> {
+              Text(
+                text = it,
+                color = MaterialTheme.colorScheme.primary,
+              )
+            }
+          }
+        }
+      }
+      CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        LazyVerticalGrid(
+          modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
+          columns = GridCells.Fixed(7),
+          verticalArrangement = Arrangement.SpaceBetween,
+          horizontalArrangement = Arrangement.SpaceBetween,
+          userScrollEnabled = false,
         ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .background(brush = Brush.verticalGradient(gradientColors))
-                    .padding(vertical = 10.dp, horizontal = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                IconButton(onClick = {
-                    monthClicked += 1
-                    if (monthClicked > 12) {
-                        monthClicked = 1
-                        yearClicked += 1
-                    }
-                    dayClicked = if (monthClicked == currentMonth) dayClicked else 1
-                    onMonthChecked(yearClicked, monthClicked)
-                }) {
-                    Icon(
-                        tint = Color.White,
-                        painter = painterResource(id = com.rahim.yadino.library.designsystem.R.drawable.less_then),
-                        contentDescription = "less then sign"
-                    )
-                }
-                Text(
-                    modifier = Modifier
-                        .padding(top = 12.dp)
-                        .fillMaxWidth(0.5f),
-                    text = "$yearClicked ${monthClicked.calculateMonthName()}",
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
-                IconButton(onClick = {
-                    monthClicked -= 1
-                    if (monthClicked < 1) {
-                        monthClicked = 12
-                        yearClicked -= 1
-                    }
-                    dayClicked = if (monthClicked == currentMonth) dayClicked else 1
-                    onMonthChecked(yearClicked, monthClicked)
-                }) {
-                    Icon(
-                        painterResource(id = com.rahim.yadino.library.designsystem.R.drawable.greater_then),
-                        contentDescription = "greater then sign",
-                        tint = Color.White
-                    )
-                }
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp, horizontal = 18.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                val days = listOf(
-                    HalfWeekName.SATURDAY.nameDay,
-                    HalfWeekName.SUNDAY.nameDay,
-                    HalfWeekName.MONDAY.nameDay,
-                    HalfWeekName.TUESDAY.nameDay,
-                    HalfWeekName.WEDNESDAY.nameDay,
-                    HalfWeekName.THURSDAY.nameDay,
-                    HalfWeekName.FRIDAY.nameDay
-                )
-                days.reversed().forEach {
-                    when (it) {
-                        days.first() -> {
-                            Text(
-                                text = it,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.padding(end = 12.dp)
-                            )
-                        }
-
-                        days.last() -> {
-                            Text(
-                                text = it,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.padding(start = 12.dp)
-                            )
-                        }
-
-                        else -> {
-                            Text(
-                                text = it,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                    }
-
-                }
-            }
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                LazyVerticalGrid(
-                    modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
-                    columns = GridCells.Fixed(7),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    userScrollEnabled = false
-                ) {
-                    items(times) {
+          items(times) {
 //                        TimeItems(
 //                            it,
 //                            dayClicked,
@@ -181,10 +180,10 @@ private fun CalenderScreen(
 //                                monthClicked = month
 //                                dayClicked = day
 //                            })
-                    }
-                }
-            }
+          }
         }
+      }
+    }
 //        Column(
 //            modifier = Modifier
 //                .padding(top = 12.dp, bottom = 10.dp, start = 30.dp, end = 40.dp)
@@ -220,5 +219,5 @@ private fun CalenderScreen(
 //                modelProducer,
 //            )
 //        }
-    }
+  }
 }

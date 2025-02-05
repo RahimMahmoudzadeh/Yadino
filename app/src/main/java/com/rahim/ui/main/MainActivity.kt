@@ -68,7 +68,6 @@ import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -85,7 +84,6 @@ class MainActivity : ComponentActivity() {
       val context = LocalContext.current
       (context as? Activity)?.requestedOrientation =
         ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-
 
       changeTheme(state.isDarkTheme)
       checkStateOfClickItemDrawable(state.stateOfClickItemDrawable)
@@ -118,14 +116,14 @@ class MainActivity : ComponentActivity() {
           Toast.makeText(
             this,
             resources.getString(com.rahim.R.string.install_myket),
-            Toast.LENGTH_SHORT
+            Toast.LENGTH_SHORT,
           ).show()
         }
         BuildConfig.FLAVOR.contains("cafeBazaar") -> {
           Toast.makeText(
             this,
             resources.getString(com.rahim.R.string.install_cafeBazaar),
-            Toast.LENGTH_SHORT
+            Toast.LENGTH_SHORT,
           ).show()
         }
       }

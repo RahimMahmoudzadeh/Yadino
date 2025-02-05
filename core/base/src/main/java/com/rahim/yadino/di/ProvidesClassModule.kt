@@ -10,8 +10,8 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 class ProvidesClassModule {
-    @Provides
-    fun provideSharedPreferencesCustom(application: Application): SharedPreferencesCustom {
-        return SharedPreferencesCustom(application)
-    }
+  @Provides
+  fun provideSharedPreferencesCustom(application: Application): SharedPreferencesCustom {
+    return SharedPreferencesCustom(application)
+  }
 }

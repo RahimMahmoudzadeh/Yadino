@@ -1,8 +1,8 @@
 # Welcome to Yadino!
-<div align="center">  
+<div align="center">
   <image height= "100" width ="100" src="asset/logo.png"/></image>
-  <br>  
-  <strong>Yadino</strong>  
+  <br>
+  <strong>Yadino</strong>
 </div>
 <br>
 
@@ -16,20 +16,20 @@
 ## 📜 Description
 Hi! Yadino is a ToDo app the use of MVI Architecture Pattern And Clean Architecture with Jetpack Compose by following Material-3 guidelines along with other MAD libraries such as Dagger-Hilt, Room Database, Coroutines, Navigation etc. for building Android Apps
 
-**You can download the app from Cafe Bazaar or Myket 🚀** <br>  
+**You can download the app from Cafe Bazaar or Myket 🚀** <br>
 <a href='https://play.google.com/store/apps/details?id=com.rahim.yadino&hl=en'><img height=40 alt='Get it on Google Play' src='asset/googleplay.png'/></a>
 <a href='https://cafebazaar.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Bazaar' src="asset/cafebazzar.png"/></a>
 <a href='https://myket.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Myket' src="asset/myket.png"/></a>
 
-## 🛠 Built With  
-|  Architecture   |MVI Architecture Pattern |  
-|----------------   |------------------------------    |  
-| <img height="20" src="https://3.bp.blogspot.com/-VVp3WvJvl84/X0Vu6EjYqDI/AAAAAAAAPjU/ZOMKiUlgfg8ok8DY8Hc-ocOvGdB0z86AgCLcBGAsYHQ/s1600/jetpack%2Bcompose%2Bicon_RGB.png">    UI Framework  | [Jetpack Compose](https://www.jetbrains.com/lp/compose-multiplatform/)         |                        |  
-| 💉 DI                | [Dagger-Hilt](https://developer.android.com/training/dependency-injection/hilt-android)                        |             |  
-| :floppy_disk: Local Database      | [Room Database](https://developer.android.com/topic/libraries/architecture/room)                   |  
-| :compass: Navigation       | [Compose Destinations Navigation](https://developer.android.com/jetpack/compose/navigation) |  
-| :building_construction: Persistent Background Work  | [AlarmManager](https://developer.android.com/reference/android/app/AlarmManager) |  
-| :thread: Asynchronous Work     | [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html)|  
+## 🛠 Built With
+|  Architecture   |MVI Architecture Pattern |
+|----------------   |------------------------------    |
+| <img height="20" src="https://3.bp.blogspot.com/-VVp3WvJvl84/X0Vu6EjYqDI/AAAAAAAAPjU/ZOMKiUlgfg8ok8DY8Hc-ocOvGdB0z86AgCLcBGAsYHQ/s1600/jetpack%2Bcompose%2Bicon_RGB.png">    UI Framework  | [Jetpack Compose](https://www.jetbrains.com/lp/compose-multiplatform/)         |                        |
+| 💉 DI                | [Dagger-Hilt](https://developer.android.com/training/dependency-injection/hilt-android)                        |             |
+| :floppy_disk: Local Database      | [Room Database](https://developer.android.com/topic/libraries/architecture/room)                   |
+| :compass: Navigation       | [Compose Destinations Navigation](https://developer.android.com/jetpack/compose/navigation) |
+| :building_construction: Persistent Background Work  | [AlarmManager](https://developer.android.com/reference/android/app/AlarmManager) |
+| :thread: Asynchronous Work     | [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html)|
 <br>
 
 ## 🚀 Features
@@ -42,21 +42,21 @@ Hi! Yadino is a ToDo app the use of MVI Architecture Pattern And Clean Architect
 <table style="width:100%">
   <tr>
     <th>Home Screen</th>
-    <th>Routine Screen</th> 
-    <th>Note Screen</th> 
+    <th>Routine Screen</th>
+    <th>Note Screen</th>
   </tr>
   <tr>
-    <td><img src = "asset/home_light.png" width=240/></td> 
+    <td><img src = "asset/home_light.png" width=240/></td>
     <td><img src = "asset/routine_light.png" width=240/></td>
     <td><img src = "asset/note_light.png" width=240/></td>
   </tr>
     <tr>
     <th>Home Screen</th>
-    <th>Routine Screen</th> 
-    <th>Note Screen</th> 
+    <th>Routine Screen</th>
+    <th>Note Screen</th>
   </tr>
   <tr>
-    <td><img src = "asset/home_dark.png" width=240/></td> 
+    <td><img src = "asset/home_dark.png" width=240/></td>
     <td><img src = "asset/routine_dark.png" width=240/></td>
     <td><img src = "asset/note_dark.png" width=240/></td>
   </tr>

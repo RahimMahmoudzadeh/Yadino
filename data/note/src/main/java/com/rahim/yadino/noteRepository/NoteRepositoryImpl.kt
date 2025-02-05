@@ -1,8 +1,8 @@
-package com.rahim.yadino.note_repository
+package com.rahim.yadino.noteRepository
 
 import com.rahim.yadino.note.NoteRepository
-import com.rahim.yadino.note.model.NoteModel
 import com.rahim.yadino.note.dao.NoteDao
+import com.rahim.yadino.note.model.NoteModel
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -58,11 +58,7 @@ class NoteRepositoryImpl @Inject constructor(
     noteDao.delete(noteModel)
   }
 
-  override fun getNotes(): Flow<List<NoteModel>> =
-    noteDao.getNotes().map { it.map { it } }
+  override fun getNotes(): Flow<List<NoteModel>> = noteDao.getNotes().map { it.map { it } }
 
-  override fun searchNote(
-    name: String,
-  ): Flow<List<NoteModel>> = noteDao.searchRoutine(name).map { it.map { it } }
-
+  override fun searchNote(name: String): Flow<List<NoteModel>> = noteDao.searchRoutine(name).map { it.map { it } }
 }

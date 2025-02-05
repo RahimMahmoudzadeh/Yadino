@@ -11,9 +11,11 @@ import com.rahim.yadino.routine.model.RoutineModel
 
 @Composable()
 fun ListRoutines(
-    modifier: Modifier = Modifier,
-    routines: List<RoutineModel>, checkedRoutine: (RoutineModel) -> Unit,
-    deleteRoutine: (RoutineModel) -> Unit, updateRoutine: (RoutineModel) -> Unit,
+  modifier: Modifier = Modifier,
+  routines: List<RoutineModel>,
+  checkedRoutine: (RoutineModel) -> Unit,
+  deleteRoutine: (RoutineModel) -> Unit,
+  updateRoutine: (RoutineModel) -> Unit,
 ) {
   LazyColumn(
     modifier = modifier,

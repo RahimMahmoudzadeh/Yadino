@@ -45,13 +45,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.yadino.calculateMonthName
 import com.rahim.yadino.dateTime.model.TimeDate
-import com.rahim.yadino.enums.HalfWeekName
-import com.rahim.yadino.designsystem.theme.YadinoTheme
-import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.TimeItems
 import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.designsystem.theme.YadinoTheme
+import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.persianLocate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,7 +74,8 @@ fun DialogChoseDate(
 
   BasicAlertDialog(
     properties = DialogProperties(
-      usePlatformDefaultWidth = false, dismissOnClickOutside = true,
+      usePlatformDefaultWidth = false,
+      dismissOnClickOutside = true,
     ),
     modifier = modifier
       .fillMaxWidth()
@@ -164,7 +165,6 @@ fun DialogChoseDate(
                 )
               }
             }
-
           }
         }
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -175,7 +175,7 @@ fun DialogChoseDate(
             horizontalArrangement = Arrangement.SpaceBetween,
             userScrollEnabled = false,
           ) {
-            items(times) {time->
+            items(times) { time ->
               TimeItems(
                 dayNumber = time.dayNumber,
                 nameDay = time.nameDay,

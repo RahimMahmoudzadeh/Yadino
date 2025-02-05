@@ -1,21 +1,22 @@
-package com.rahim.yadino.datetime_repository
+package com.rahim.yadino.datetimeRepository
 
 import com.rahim.yadino.Constants.END_YEAR
 import com.rahim.yadino.Constants.FIRST_YEAR
 import com.rahim.yadino.Constants.VERSION_TIME_DB
-import com.rahim.yadino.enums.HalfWeekName
-import com.rahim.yadino.enums.WeekName
 import com.rahim.yadino.dateTime.DateTimeRepository
 import com.rahim.yadino.dateTime.dao.TimeDao
 import com.rahim.yadino.dateTime.model.TimeDate
 import com.rahim.yadino.di.DefaultDispatcher
 import com.rahim.yadino.di.IODispatcher
-import kotlinx.coroutines.*
+import com.rahim.yadino.enums.HalfWeekName
+import com.rahim.yadino.enums.WeekName
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
 import javax.inject.Inject
-
 
 class DateTimeRepositoryImpl @Inject constructor(
   @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
@@ -34,8 +35,9 @@ class DateTimeRepositoryImpl @Inject constructor(
     if (firstTime != null) {
       return
     }
-    if (times.isNotEmpty())
+    if (times.isNotEmpty()) {
       timeDao.deleteAllTimes()
+    }
 
     calculateDate()
   }
@@ -75,7 +77,6 @@ class DateTimeRepositoryImpl @Inject constructor(
       timesDb
     }
   }
-
 
   private fun calculateDaySpaceStartMonth(timeDate: TimeDate): List<TimeDate> {
     val emptyTimes = ArrayList<TimeDate>()
@@ -181,7 +182,6 @@ class DateTimeRepositoryImpl @Inject constructor(
     return emptyTimes
   }
 
-
   private suspend fun calculateDate() {
     withContext(defaultDispatcher) {
       val currentDate = TimeDate(
@@ -206,8 +206,9 @@ class DateTimeRepositoryImpl @Inject constructor(
             val dayNumber = if (month == 12) {
               if (isYearKabisy) {
                 30
-              } else
+              } else {
                 29
+              }
             } else if (month in 7..11) 30 else 31
             for (day in 1..dayNumber) {
               persianData.initJalaliDate(year, month, day)
@@ -237,8 +238,9 @@ class DateTimeRepositoryImpl @Inject constructor(
             val dayNumber = if (month == 12) {
               if (isYearKabisy) {
                 30
-              } else
+              } else {
                 29
+              }
             } else if (month in 7..11) 30 else 31
             for (day in 1..dayNumber) {
               persianData.initJalaliDate(year, month, day)
@@ -361,12 +363,15 @@ class DateTimeRepositoryImpl @Inject constructor(
   }
 
   private fun checkDayIsToday(year: Int, month: Int, day: Int): Boolean {
-    if (year != currentTimeYear)
+    if (year != currentTimeYear) {
       return false
-    if (month != currentTimeMonth)
+    }
+    if (month != currentTimeMonth) {
       return false
-    if (day != currentTimeDay)
+    }
+    if (day != currentTimeDay) {
       return false
+    }
 
     return true
   }

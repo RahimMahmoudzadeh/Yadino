@@ -1,9 +1,21 @@
 package com.rahim.yadino.designsystem.component
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -13,11 +25,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import com.rahim.yadino.persianLocate
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.theme.Porcelain
 import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.persianLocate
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -56,10 +68,14 @@ fun ItemRoutine(
   ) {
     Card(
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-      border = if (isChecked) BorderStroke(1.dp, color = Porcelain) else BorderStroke(
-        1.dp,
-        Brush.verticalGradient(gradientColors),
-      ),
+      border = if (isChecked) {
+        BorderStroke(1.dp, color = Porcelain)
+      } else {
+        BorderStroke(
+          1.dp,
+          Brush.verticalGradient(gradientColors),
+        )
+      },
       onClick = {
         onChecked(!isChecked)
       },
@@ -99,7 +115,7 @@ fun ItemRoutine(
               fontWeight = FontWeight.SemiBold,
               color = MaterialTheme.colorScheme.primary,
 
-              )
+            )
             Spacer(modifier = Modifier.width(3.dp))
             Text(
               text = stringResource(id = R.string.remmeber),
@@ -108,7 +124,7 @@ fun ItemRoutine(
               fontWeight = FontWeight.SemiBold,
               color = MaterialTheme.colorScheme.primary,
 
-              )
+            )
           }
         }
         Column(
@@ -128,19 +144,21 @@ fun ItemRoutine(
             Text(
               modifier = Modifier.padding(top = 12.dp),
               text = "${stringResource(id = R.string.explanation)}: ${
-                if (explanationRoutine == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation)
+                if (explanationRoutine == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
                   stringResource(id = R.string.routine_right_sample)
-                else if (explanationRoutine == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation)
-                  stringResource(id = R.string.routine_left_sample) else explanationRoutine
+                } else if (explanationRoutine == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation) {
+                  stringResource(id = R.string.routine_left_sample)
+                } else {
+                  explanationRoutine
+                }
               }",
               color = MaterialTheme.colorScheme.secondaryContainer,
               textDecoration = textUnderLine,
               textAlign = TextAlign.End,
               style = MaterialTheme.typography.bodyMedium,
 
-              )
+            )
           }
-
         }
       }
     }

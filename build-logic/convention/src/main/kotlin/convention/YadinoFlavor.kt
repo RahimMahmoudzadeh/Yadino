@@ -8,7 +8,7 @@ import config.Config
 
 @Suppress("EnumEntryName")
 enum class FlavorDimension {
-  contentType
+  contentType,
 }
 
 @Suppress("EnumEntryName")
@@ -22,10 +22,7 @@ enum class YadinoFlavor(
   myket(FlavorDimension.contentType, applicationIdSuffix = Config.android.applicationIdSuffix, versionNameSuffix = Config.android.versionNameSuffixMyket),
 }
 
-internal fun configureFlavors(
-  commonExtension: CommonExtension<*, *, *, *, *, *>,
-  flavorConfigurationBlock: ProductFlavor.(flavor: YadinoFlavor) -> Unit = {},
-) {
+internal fun configureFlavors(commonExtension: CommonExtension<*, *, *, *, *, *>, flavorConfigurationBlock: ProductFlavor.(flavor: YadinoFlavor) -> Unit = {}) {
   commonExtension.apply {
     flavorDimensions += FlavorDimension.contentType.name
     productFlavors {
@@ -33,7 +30,7 @@ internal fun configureFlavors(
         create(it.name) {
           manifestPlaceholders += if (it == YadinoFlavor.cafeBazaar || it == YadinoFlavor.myket) {
             mapOf("queryAllPackages" to "android.permission.QUERY_ALL_PACKAGES")
-          }else{
+          } else {
             mapOf("queryAllPackages" to "false")
           }
           dimension = it.dimension.name

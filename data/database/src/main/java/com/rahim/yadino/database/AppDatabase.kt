@@ -15,7 +15,7 @@ import com.rahim.yadino.routine.model.RoutineModel
 
 @androidx.room.Database(
   entities = [NoteModel::class, TimeDate::class, RoutineModel::class],
-  //2024/18/10
+  // 2024/18/10
   version = 6,
   exportSchema = true,
   autoMigrations = [
