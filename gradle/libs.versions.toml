@@ -41,7 +41,7 @@ androidxCoreSplashscreen = "1.0.1"
 vico = "2.0.1"
 androidxTracing = "1.3.0-beta01"
 spotless="7.0.2"
-datastore = "1.1.2"
+datastore = "1.1.3"
 
 #target version
 project-target-sdk-version = "34"
