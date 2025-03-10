@@ -1,38 +1,38 @@
-package com.rahim.yadino.dateTime.dao
+package com.rahim.yadino.datetimeRepository.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Update
-import com.rahim.yadino.dateTime.model.TimeDate
+import com.rahim.yadino.datetimeRepository.model.TimeDateEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TimeDao {
   @Insert(onConflict = REPLACE)
-  suspend fun insertAllTime(timesDate: List<TimeDate>)
+  suspend fun insertAllTime(timesDate: List<TimeDateEntity>)
 
   @Insert(onConflict = REPLACE)
-  suspend fun insertTime(timesDate: TimeDate)
+  suspend fun insertTime(timesDate: TimeDateEntity)
 
   @Query("SELECT * FROM tbl_timeDate Where isToday = 1 ")
-  suspend fun getToday(): TimeDate?
+  suspend fun getToday(): TimeDateEntity?
 
   @Query("SELECT * FROM tbl_timeDate ORDER BY yearNumber ASC , monthNumber ASC , dayNumber ASC")
-  suspend fun getAllTime(): List<TimeDate>
+  suspend fun getAllTime(): List<TimeDateEntity>
 
   @Query("SELECT * FROM tbl_timeDate ORDER BY yearNumber ASC , monthNumber ASC , dayNumber ASC")
-  fun getAllTimeFlow(): Flow<List<TimeDate>>
+  fun getAllTimeFlow(): Flow<List<TimeDateEntity>>
 
   @Query("SELECT * FROM tbl_timeDate WHERE monthNumber=:monthNumber And yearNumber=:yearNumber")
   fun getIsSpecificMonthFromYear(monthNumber: Int, yearNumber: Int?): Boolean
 
   @Query("SELECT * FROM tbl_timeDate WHERE monthNumber=:monthNumber And yearNumber=:yearNumber")
-  suspend fun getSpecificMonthFromYear(monthNumber: Int, yearNumber: Int?): List<TimeDate>
+  suspend fun getSpecificMonthFromYear(monthNumber: Int, yearNumber: Int?): List<TimeDateEntity>
 
   @Update
-  suspend fun updateTimeData(timeDate: TimeDate)
+  suspend fun updateTimeData(timeDateEntity: TimeDateEntity)
 
   @Query("UPDATE tbl_timeDate SET isToday=1 , isChecked=1 WHERE dayNumber=:currentDay AND yearNumber=:currentYear AND monthNumber=:currentMonth")
   suspend fun updateDayToToday(currentDay: Int, currentYear: Int, currentMonth: Int)

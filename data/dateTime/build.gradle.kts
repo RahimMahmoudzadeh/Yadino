@@ -2,6 +2,7 @@ plugins {
   libs.plugins.yadino.run {
     alias(android.library)
     alias(android.hilt)
+    alias (android.room)
   }
 }
 
@@ -12,6 +13,5 @@ dependencies {
   projects.run {
     implementation(domain.dateTime)
     implementation(core.base)
-    implementation(data.database)
   }
 }

@@ -13,6 +13,5 @@ dependencies {
   projects.run{
     implementation(domain.note)
     implementation(domain.sharedPreferences)
-    implementation(data.database)
   }
 }

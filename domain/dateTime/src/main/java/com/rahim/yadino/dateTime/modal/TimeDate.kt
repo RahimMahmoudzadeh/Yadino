@@ -1,8 +1,5 @@
-package com.rahim.yadino.dateTime.model
+package com.rahim.yadino.dateTime.modal
 
-import androidx.room.Entity
-
-@Entity(tableName = "tbl_timeDate", primaryKeys = ["dayNumber", "yearNumber", "monthNumber"])
 data class TimeDate(
   val dayNumber: Int,
   val haveTask: Boolean,

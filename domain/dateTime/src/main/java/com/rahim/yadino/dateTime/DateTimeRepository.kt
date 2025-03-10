@@ -1,6 +1,6 @@
 package com.rahim.yadino.dateTime
 
-import com.rahim.yadino.dateTime.model.TimeDate
+import com.rahim.yadino.dateTime.modal.TimeDate
 import kotlinx.coroutines.flow.Flow
 
 interface DateTimeRepository {
