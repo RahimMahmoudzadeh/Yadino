@@ -5,14 +5,18 @@ import com.rahim.yadino.Resource
 import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.RepositoryRoutine
-import com.rahim.yadino.routine.dao.RoutineDao
 import com.rahim.yadino.routine.model.RoutineModel
+import com.rahim.yadino.routineRepository.dao.RoutineDao
+import com.rahim.yadino.routineRepository.mapper.toRoutineEntity
+import com.rahim.yadino.routineRepository.mapper.toRoutineModel
+import com.rahim.yadino.routineRepository.model.RoutineEntity
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
@@ -37,7 +41,7 @@ class RoutineRepositoryImpl @Inject constructor(
     }
 
     (0..1).forEachIndexed { index, it ->
-      val routineModel = RoutineModel(
+      val routineEntity = RoutineEntity(
         "تست${index.plus(1)}",
         0,
         currentTimeDay.toString(),
@@ -52,7 +56,7 @@ class RoutineRepositoryImpl @Inject constructor(
         timeInMillisecond = persianData.time,
         id = index,
       )
-      routineDao.addRoutine(routineModel)
+      routineDao.addRoutine(routineEntity)
     }
   }
 
@@ -89,11 +93,11 @@ class RoutineRepositoryImpl @Inject constructor(
     routineDao.updateRoutinesPastTime(System.currentTimeMillis())
   }
 
-  override suspend fun getAllRoutine(): List<RoutineModel> = routineDao.getRoutines()
+  override suspend fun getAllRoutine(): List<RoutineModel> = routineDao.getRoutines().map { it.toRoutineModel() }
 
   override suspend fun addRoutine(routineModel: RoutineModel) {
     sharedPreferencesRepository.setShowSampleRoutine(true)
-    routineDao.addRoutine(routineModel)
+    routineDao.addRoutine(routineModel.toRoutineEntity())
   }
 
   override suspend fun checkEqualRoutine(routineModel: RoutineModel): RoutineModel? {
@@ -105,7 +109,7 @@ class RoutineRepositoryImpl @Inject constructor(
       routineYearNumber = routineModel.yearNumber ?: 0,
       routineMonthNumber = routineModel.monthNumber ?: 0,
       routineTimeMilSecond = routineModel.timeInMillisecond ?: 0,
-    )
+    )?.toRoutineModel()
   }
 
   override fun convertDateToMilSecond(yearNumber: Int?, monthNumber: Int?, dayNumber: Int?, timeHours: String?): Long {
@@ -138,7 +142,7 @@ class RoutineRepositoryImpl @Inject constructor(
 
   override suspend fun removeRoutine(routineModel: RoutineModel): Int {
     sharedPreferencesRepository.setShowSampleRoutine(true)
-    return routineDao.removeRoutine(routineModel)
+    return routineDao.removeRoutine(routineModel.toRoutineEntity())
   }
 
   override suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yearNumber: Int?) {
@@ -171,7 +175,7 @@ class RoutineRepositoryImpl @Inject constructor(
         emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
       } else {
         runCatching {
-          routineDao.addRoutine(this)
+          routineDao.addRoutine(this.toRoutineEntity())
         }.onSuccess {
           emit(Resource.Success(this))
         }.onFailure {
@@ -181,16 +185,16 @@ class RoutineRepositoryImpl @Inject constructor(
     }
   }
 
-  override suspend fun getRoutine(id: Int): RoutineModel = routineDao.getRoutine(id)
+  override suspend fun getRoutine(id: Int): RoutineModel = routineDao.getRoutine(id).toRoutineModel()
   override suspend fun checkedRoutine(routineModel: RoutineModel) {
     Timber.tag("routineViewModel").d("checkedRoutine")
     sharedPreferencesRepository.setShowSampleRoutine(true)
-    routineDao.addRoutine(routineModel)
+    routineDao.addRoutine(routineModel.toRoutineEntity())
   }
 
-  override fun getRoutines(monthNumber: Int, numberDay: Int, yearNumber: Int): Flow<List<RoutineModel>> = routineDao.getRoutines(monthNumber, numberDay, yearNumber)
+  override fun getRoutines(monthNumber: Int, numberDay: Int, yearNumber: Int): Flow<List<RoutineModel>> = routineDao.getRoutines(monthNumber, numberDay, yearNumber).map { it.map { it.toRoutineModel() } }
 
-  override fun searchRoutine(name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?): Flow<List<RoutineModel>> = routineDao.searchRoutine(nameRoutine = name, monthNumber = monthNumber, dayNumber = dayNumber, yearNumber = yearNumber)
+  override fun searchRoutine(name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?): Flow<List<RoutineModel>> = routineDao.searchRoutine(nameRoutine = name, monthNumber = monthNumber, dayNumber = dayNumber, yearNumber = yearNumber).map { it.map { it.toRoutineModel() } }
 
   override fun haveAlarm(): Flow<Boolean> = routineDao.haveAlarm()
 }

@@ -11,20 +11,7 @@ android {
 }
 
 dependencies {
-  for (module in projects.data) {
-    if (module != projects.data.database) {
-      implementation(module)
-    }
-  }
+  implementation(projects.data.note)
+  implementation(projects.data.routine)
+  implementation(projects.data.dateTime)
 }
-private operator fun ProjectDependency.iterator() =
-  object : Iterator<ProjectDependency> {
-    var moduleCount = this@iterator::class.java.declaredMethods.size
-
-    override fun hasNext(): Boolean = moduleCount-- != 0
-
-    override fun next(): ProjectDependency =
-      this@iterator::class.java.declaredMethods[moduleCount].invoke(
-        this@iterator,
-      ) as ProjectDependency
-  }

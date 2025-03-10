@@ -10,11 +10,11 @@ import com.rahim.yadino.datetimeRepository.dao.TimeDao
 import com.rahim.yadino.datetimeRepository.model.TimeDateEntity
 import com.rahim.yadino.noteRepository.dao.NoteDao
 import com.rahim.yadino.noteRepository.model.NoteEntity
-import com.rahim.yadino.routine.dao.RoutineDao
-import com.rahim.yadino.routine.model.RoutineModel
+import com.rahim.yadino.routineRepository.dao.RoutineDao
+import com.rahim.yadino.routineRepository.model.RoutineEntity
 
 @androidx.room.Database(
-  entities = [NoteEntity::class, TimeDateEntity::class, RoutineModel::class],
+  entities = [NoteEntity::class, TimeDateEntity::class, RoutineEntity::class],
   // 2024/18/10
   version = 6,
   exportSchema = true,

@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rahim.yadino.base.use
 import com.rahim.yadino.calculateMonthName
-import com.rahim.yadino.dateTime.model.TimeDate
+import com.rahim.yadino.dateTime.modal.TimeDate
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.component.ShowToastShort

@@ -2,7 +2,7 @@ package com.rahim.yadino.routine.routineScreen
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.UnidirectionalViewModel
-import com.rahim.yadino.dateTime.model.TimeDate
+import com.rahim.yadino.dateTime.modal.TimeDate
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.routine.model.RoutineModel
 

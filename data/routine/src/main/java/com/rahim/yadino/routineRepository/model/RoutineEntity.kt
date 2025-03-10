@@ -1,10 +1,10 @@
-package com.rahim.yadino.routine.model
+package com.rahim.yadino.routineRepository.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Parcelize
-data class RoutineModel(
+@Entity("tbl_routine")
+data class RoutineEntity(
   val name: String,
   val colorTask: Int?,
   val dayName: String,
@@ -13,9 +13,10 @@ data class RoutineModel(
   val yearNumber: Int?,
   val timeHours: String?,
   val isChecked: Boolean = false,
+  @PrimaryKey(autoGenerate = true)
   val id: Int? = null,
   val explanation: String? = null,
   val isSample: Boolean = false,
   val idAlarm: Long? = null,
   val timeInMillisecond: Long? = null,
-): Parcelable
+)

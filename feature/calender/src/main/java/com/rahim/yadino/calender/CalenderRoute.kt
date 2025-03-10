@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.yadino.calculateMonthName
-import com.rahim.yadino.dateTime.model.TimeDate
+import com.rahim.yadino.dateTime.modal.TimeDate
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.enums.HalfWeekName
 
@@ -168,7 +168,7 @@ private fun CalenderScreen(
           horizontalArrangement = Arrangement.SpaceBetween,
           userScrollEnabled = false,
         ) {
-          items(times) {
+//          items(times) {
 //                        TimeItems(
 //                            it,
 //                            dayClicked,
@@ -179,7 +179,7 @@ private fun CalenderScreen(
 //                                monthClicked = month
 //                                dayClicked = day
 //                            })
-          }
+//          }
         }
       }
     }
