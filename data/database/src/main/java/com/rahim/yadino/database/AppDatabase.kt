@@ -8,13 +8,13 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
 import com.rahim.yadino.dateTime.dao.TimeDao
 import com.rahim.yadino.dateTime.model.TimeDate
-import com.rahim.yadino.note.dao.NoteDao
-import com.rahim.yadino.note.model.NoteModel
+import com.rahim.yadino.noteRepository.dao.NoteDao
+import com.rahim.yadino.noteRepository.model.NoteEntity
 import com.rahim.yadino.routine.dao.RoutineDao
 import com.rahim.yadino.routine.model.RoutineModel
 
 @androidx.room.Database(
-  entities = [NoteModel::class, TimeDate::class, RoutineModel::class],
+  entities = [NoteEntity::class, TimeDate::class, RoutineModel::class],
   // 2024/18/10
   version = 6,
   exportSchema = true,

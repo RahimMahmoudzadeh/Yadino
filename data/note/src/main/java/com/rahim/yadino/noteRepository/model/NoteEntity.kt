@@ -1,10 +1,12 @@
-package com.rahim.yadino.note.model
+package com.rahim.yadino.noteRepository.model
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
-
-@Parcelize
-data class NoteModel(
+@Entity(tableName = "tbl_note")
+data class NoteEntity(
+  @PrimaryKey(autoGenerate = true)
   val id: Int? = null,
   val name: String,
   val description: String,
@@ -16,4 +18,4 @@ data class NoteModel(
   val yearNumber: Int? = null,
   val isSample: Boolean = false,
   val timeInMileSecond: Long? = null,
-) : Parcelable
+)

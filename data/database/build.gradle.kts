@@ -11,7 +11,11 @@ android {
 }
 
 dependencies {
-  for (module in projects.domain) implementation(module)
+  for (module in projects.data) {
+    if (module != projects.data.database) {
+      implementation(module)
+    }
+  }
 }
 private operator fun ProjectDependency.iterator() =
   object : Iterator<ProjectDependency> {

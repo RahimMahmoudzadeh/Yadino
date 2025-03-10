@@ -1,8 +1,11 @@
 package com.rahim.yadino.noteRepository
 
 import com.rahim.yadino.note.NoteRepository
-import com.rahim.yadino.note.dao.NoteDao
 import com.rahim.yadino.note.model.NoteModel
+import com.rahim.yadino.noteRepository.dao.NoteDao
+import com.rahim.yadino.noteRepository.mapper.toNoteEntity
+import com.rahim.yadino.noteRepository.mapper.toNoteModel
+import com.rahim.yadino.noteRepository.model.NoteEntity
 import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -28,7 +31,7 @@ class NoteRepositoryImpl @Inject constructor(
     }
     (0..1).forEachIndexed { index, it ->
       val note =
-        NoteModel(
+        NoteEntity(
           name = "تست${index.plus(1)}",
           description = if (index == 1) SAMPLE_NOTE_RIGHT else SAMPLE_NOTE_LEFT,
           state = 2,
@@ -39,26 +42,26 @@ class NoteRepositoryImpl @Inject constructor(
           isSample = true,
           id = index,
         )
-      addNote(note)
+      noteDao.insertNote(note)
     }
   }
 
-  override suspend fun addNote(noteModel: NoteModel) {
+  override suspend fun addNote(noteModal: NoteModel) {
     sharedPreferencesRepository.setShowSampleNote()
-    noteDao.insertNote(noteModel)
+    noteDao.insertNote(noteModal.toNoteEntity())
   }
 
-  override suspend fun updateNote(noteModel: NoteModel) {
+  override suspend fun updateNote(noteModal: NoteModel) {
     sharedPreferencesRepository.setShowSampleNote()
-    noteDao.update(noteModel)
+    noteDao.update(noteModal.toNoteEntity())
   }
 
-  override suspend fun deleteNote(noteModel: NoteModel) {
+  override suspend fun deleteNote(noteModal: NoteModel) {
     sharedPreferencesRepository.setShowSampleNote()
-    noteDao.delete(noteModel)
+    noteDao.delete(noteModal.toNoteEntity())
   }
 
-  override fun getNotes(): Flow<List<NoteModel>> = noteDao.getNotes().map { it.map { it } }
+  override fun getNotes(): Flow<List<NoteModel>> = noteDao.getNotes().map { it.map { it.toNoteModel() } }
 
-  override fun searchNote(name: String): Flow<List<NoteModel>> = noteDao.searchRoutine(name).map { it.map { it } }
+  override fun searchNote(name: String): Flow<List<NoteModel>> = noteDao.searchRoutine(name).map { it.map { it.toNoteModel() } }
 }
