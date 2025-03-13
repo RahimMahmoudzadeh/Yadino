@@ -13,7 +13,9 @@ import com.rahim.yadino.routine.alarmScreen.navigation.historyScreen
 import com.rahim.yadino.routine.homeScreen.navigation.homeScreen
 import com.rahim.yadino.routine.homeScreen.navigation.navigateToHome
 import com.rahim.yadino.routine.routineScreen.navigation.routineScreen
-import com.rahim.yadino.welcome.navigation.welcomeScreen
+import com.rahim.yadino.welcome.navigation.onBoardingScreen
+
+//import com.rahim.yadino.welcome.navigation.welcomeScreen
 
 @Composable
 fun NavigationComponent(
@@ -25,7 +27,7 @@ fun NavigationComponent(
   onOpenDialog: (isOpen: Boolean) -> Unit,
 ) {
   NavHost(navController, startDestination = startDestination, Modifier.padding(innerPadding)) {
-    welcomeScreen {
+    onBoardingScreen {
       navController.navigateToHome(navOptions = navOptions { popUpTo(0) })
     }
     homeScreen(openDialog = openDialog, onOpenDialog = onOpenDialog, clickSearch = clickSearch)

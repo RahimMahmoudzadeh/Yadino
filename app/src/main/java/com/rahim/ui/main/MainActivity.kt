@@ -180,7 +180,7 @@ fun YadinoApp(
           Scaffold(
             topBar = {
               AnimatedVisibility(
-                visible = destinationNavBackStackEntry != Destinations.Welcome.route,
+                visible = destinationNavBackStackEntry != Destinations.OnBoarding.route,
                 enter = fadeIn() + expandVertically(animationSpec = tween(800)),
                 exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
               ) {
@@ -205,7 +205,7 @@ fun YadinoApp(
               }
             },
             floatingActionButton = {
-              if (destinationNavBackStackEntry != Destinations.Welcome.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route) {
+              if (destinationNavBackStackEntry != Destinations.OnBoarding.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route) {
                 FloatingActionButton(
                   containerColor = CornflowerBlueLight,
                   contentColor = Color.White,
@@ -231,7 +231,7 @@ fun YadinoApp(
             },
             bottomBar = {
               AnimatedVisibility(
-                visible = destinationNavBackStackEntry != Destinations.Welcome.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route,
+                visible = destinationNavBackStackEntry != Destinations.OnBoarding.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route,
                 enter = fadeIn() + expandVertically(animationSpec = tween(800)),
                 exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
               ) {
@@ -248,7 +248,7 @@ fun YadinoApp(
             NavigationComponent(
               navController,
               innerPadding = innerPadding,
-              startDestination = if (isShowWelcomeScreen) Destinations.Home.route else Destinations.Welcome.route,
+              startDestination = if (isShowWelcomeScreen) Destinations.Home.route else Destinations.OnBoarding.route,
               openDialog = openDialog,
               clickSearch = clickSearch,
               onOpenDialog = { isOpen ->
