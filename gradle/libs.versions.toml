@@ -1,6 +1,6 @@
 [versions]
 ksp = "2.1.10-1.0.31"
-kotlin = "2.1.10"
+kotlin = "2.1.20"
 kotlinxImmutableCollection = "0.3.8"
 
 #compose
@@ -58,7 +58,7 @@ androidxJunit = "1.2.1"
 firebasePerfPlugin = "1.4.2"
 firebaseCrashlyticsPlugin = "3.0.3"
 constraintlayout = "2.2.1"
-jetbrainsKotlinJvm = "2.1.10"
+jetbrainsKotlinJvm = "2.1.20"
 
 
 
