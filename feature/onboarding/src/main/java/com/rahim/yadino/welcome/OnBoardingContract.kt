@@ -1,7 +1,10 @@
 package com.rahim.yadino.welcome
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.res.stringResource
 import com.rahim.yadino.base.UnidirectionalViewModel
+import com.rahim.yadino.feature.onboarding.R
+import com.rahim.yadino.welcome.model.OnBoardingScreenModel
 
 interface OnBoardingContract : UnidirectionalViewModel<OnBoardingContract.WelcomeEvent, OnBoardingContract.WelcomeState> {
 
@@ -11,5 +14,30 @@ interface OnBoardingContract : UnidirectionalViewModel<OnBoardingContract.Welcom
   }
 
   @Immutable
-  data class WelcomeState(val isShowedWelcome: Boolean = false)
+  data class WelcomeState(
+    val isShowedWelcome: Boolean = false,
+    val listItemWelcome: List<OnBoardingScreenModel> = listOf(
+      OnBoardingScreenModel(
+        R.string.hello,
+        R.string.welcome_yadino,
+        R.string.start,
+        R.drawable.welcome1,
+      ),
+      OnBoardingScreenModel(
+        textWelcomeBottom = R.string.welcome_2,
+        textButton = R.string.next,
+        imageRes = R.drawable.welcome2,
+      ),
+      OnBoardingScreenModel(
+        textWelcomeBottom = R.string.yadino_life,
+        textButton = R.string.next,
+        imageRes = R.drawable.welcome3,
+      ),
+      OnBoardingScreenModel(
+        textWelcomeBottom = R.string.pomodoro_way_things_systematically_be_relaxed,
+        textButton = R.string.lets_go,
+        imageRes = R.drawable.welcome4,
+      ),
+    ),
+  )
 }

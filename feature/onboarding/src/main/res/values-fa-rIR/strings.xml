@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">سلااام</string>
-    <string name="welcome_yadino">به خانواده یادینو خوش آمدید!</string>
+    <string name="hello">ســــــلام</string>
+    <string name="welcome_yadino">بـه یــادیـــنو خوش آمــدی</string>
     <string name="next">بعدی</string>
-    <string name="welcome_2">با یادینو دیگه ازکارات عقب نمیفتی!</string>
-    <string name="welcome_help">اینجا ما بهت کمک میکنیم تا به همه هدفگذاری هات برسی!</string>
-    <string name="yadino_life">یادینو اپلیکیشنی برای زندگی بهتر !</string>
+    <string name="skip">رد شو</string>
+    <string name="start">شروع</string>
+    <string name="welcome_2">بـــرنــامــه ریزی آســــان با یــادیـــنو</string>
+    <string name="yadino_life"> تــجربـه ای عالی از انجام وظایف با یــادیـــنو</string>
+    <string name="pomodoro_way_things_systematically_be_relaxed">پومودورو، راهی برای انجام سیستماتیک کارها و آرامش بیشتر</string>
     <string name="energetic_yadino">با یادینو بانشاط تر منظم تر و هوشمندتر باشید !</string>
     <string name="lets_go">بزن بریم</string>
 </resources>

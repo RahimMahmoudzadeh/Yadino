@@ -15,8 +15,6 @@ import com.rahim.yadino.routine.homeScreen.navigation.navigateToHome
 import com.rahim.yadino.routine.routineScreen.navigation.routineScreen
 import com.rahim.yadino.welcome.navigation.onBoardingScreen
 
-//import com.rahim.yadino.welcome.navigation.welcomeScreen
-
 @Composable
 fun NavigationComponent(
   navController: NavHostController,

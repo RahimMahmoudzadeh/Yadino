@@ -25,6 +25,9 @@ private val DarkColorScheme = darkColorScheme(
   onSecondary = BalticSea,
   onTertiaryContainer = BonJour,
   surface = Abbey,
+  onSurface = PaleLavender,
+  onSecondaryContainer = Color.White,
+  onPrimaryContainer = PhilippineSilver,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -40,6 +43,9 @@ private val LightColorScheme = lightColorScheme(
   onSecondary = CornflowerBlueLight,
   onTertiaryContainer = WildSand,
   surface = Color.Black,
+  onSurface = PaleLavender,
+  onSecondaryContainer = TaupeGray,
+  onPrimaryContainer = PhilippineSilver,
 )
 
 @Composable
@@ -58,13 +64,13 @@ fun YadinoTheme(
   }
   val view = LocalView.current
   if (!view.isInEditMode) {
-    SideEffect {
-      val window = (view.context as Activity).window
-      window.statusBarColor = Color.Transparent.toArgb()
-      window.navigationBarColor = Color.Transparent.toArgb()
-      WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
-      WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
-    }
+//    SideEffect {
+//      val window = (view.context as Activity).window
+//      window.statusBarColor = Color.Transparent.toArgb()
+//      window.navigationBarColor = Color.Transparent.toArgb()
+//      WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+//      WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
+//    }
   }
 
   MaterialTheme(

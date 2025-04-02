@@ -226,7 +226,7 @@ private fun YadinoDrawerItem(
       modifier = Modifier.padding(horizontal = 12.dp),
       tint = Color.Unspecified,
     )
-    Text(text = stringResource(id = title))
+    Text(text = stringResource(id = title), color = MaterialTheme.colorScheme.onSecondaryContainer)
     Spacer(modifier = Modifier.weight(1f))
     rightSlot?.run {
       this()

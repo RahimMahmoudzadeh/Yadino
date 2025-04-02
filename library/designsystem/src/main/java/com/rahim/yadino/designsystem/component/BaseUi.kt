@@ -52,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -86,6 +87,7 @@ fun GradientButton(
   gradient: Brush,
   modifier: Modifier = Modifier,
   textSize: TextUnit,
+  shape: Shape = RoundedCornerShape(16.dp),
   onClick: () -> Unit = { },
 ) {
   Button(
@@ -93,7 +95,7 @@ fun GradientButton(
     contentPadding = PaddingValues(),
     modifier = modifier,
     onClick = { onClick() },
-    shape = RoundedCornerShape(16),
+    shape = shape,
   ) {
     Box(
       modifier = Modifier
@@ -230,6 +232,7 @@ fun TopBarCenterAlign(
           Icon(
             imageVector = Icons.Rounded.MoreVert,
             contentDescription = null,
+            tint = MaterialTheme.colorScheme.onPrimary,
           )
         }
         if (!isShowBackIcon) {

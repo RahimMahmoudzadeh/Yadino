@@ -1,6 +1,8 @@
 package com.rahim.yadino
 
 import android.content.pm.PackageManager
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.rahim.yadino.core.base.R
 import com.rahim.yadino.enums.MonthName
 import com.rahim.yadino.enums.error.ErrorMessageCode
@@ -138,4 +140,21 @@ suspend fun <T> Flow<T>.collectWithoutHistory(collector: suspend (T) -> Unit) {
     }
     firstEmission = false
   }
+}
+fun DrawScope.createOvalBottomPath(
+  ovalHeight: Float,
+): Path {
+  val constantOffsetPx = size.width / 12
+  val path = Path()
+  path.moveTo(0f, 0f)
+  path.lineTo(size.width, 0f)
+  path.lineTo(size.width, ovalHeight - constantOffsetPx)
+  path.quadraticTo(
+    x1 = size.width / 2,
+    y1 = ovalHeight + constantOffsetPx,
+    x2 = 0f,
+    y2 = ovalHeight - constantOffsetPx,
+  )
+  path.close()
+  return path
 }

@@ -1,9 +1,18 @@
 package com.rahim.yadino.welcome
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,15 +40,34 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import com.rahim.yadino.Constants.MAX_PAGE_SIZE_ONBOARDING
 import com.rahim.yadino.base.use
+import com.rahim.yadino.createOvalBottomPath
 import com.rahim.yadino.designsystem.component.GradientButton
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.feature.onboarding.R
 import com.rahim.yadino.welcome.model.OnBoardingScreenModel
 import kotlinx.coroutines.launch
+import kotlin.math.max
 
 @Composable
 internal fun OnBoardingRoute(
@@ -51,10 +79,14 @@ internal fun OnBoardingRoute(
 
   OnBoardingScreens(
     modifier = modifier,
-    state = state,
-    navigateToHome = navigateToHome,
-    saveShowWelcome = {
-      event.invoke(OnBoardingContract.WelcomeEvent.SaveShowWelcome(it))
+    listItemWelcome = state.listItemWelcome,
+    navigateToHome = {
+      event.invoke(OnBoardingContract.WelcomeEvent.SaveShowWelcome(true))
+      navigateToHome()
+    },
+    onClickSkip = {
+      event.invoke(OnBoardingContract.WelcomeEvent.SaveShowWelcome(true))
+      navigateToHome()
     },
   )
 }
@@ -62,77 +94,76 @@ internal fun OnBoardingRoute(
 @Composable
 private fun OnBoardingScreens(
   modifier: Modifier = Modifier,
-  state: OnBoardingContract.WelcomeState,
+  listItemWelcome: List<OnBoardingScreenModel>,
   navigateToHome: () -> Unit,
-  saveShowWelcome: (Boolean) -> Unit,
+  onClickSkip: () -> Unit,
 ) {
   val scope = rememberCoroutineScope()
-  val pagerState = rememberPagerState()
-  val clickNext = remember { mutableStateOf(state.isShowedWelcome) }
-  var create by rememberSaveable { mutableStateOf(false) }
+  val pagerState = rememberPagerState { MAX_PAGE_SIZE_ONBOARDING }
 
-  LaunchedEffect(key1 = true) {
-    if (clickNext.value) {
-      navigateToHome()
-      create = false
-      return@LaunchedEffect
-    } else {
-      create = true
-    }
-  }
-  if (create) {
-    val listItemWelcome = listOf(
-      OnBoardingScreenModel(
-        stringResource(id = R.string.hello),
-        stringResource(id = R.string.welcome_yadino),
-        stringResource(id = R.string.next),
-        R.drawable.welcome1,
-      ),
-      OnBoardingScreenModel(
-        stringResource(id = R.string.welcome_2),
-        stringResource(id = R.string.welcome_help),
-        stringResource(
-          id =
-          R.string.next,
-        ),
-        R.drawable.welcome2,
-      ),
-      OnBoardingScreenModel(
-        stringResource(id = R.string.yadino_life),
-        stringResource(id = R.string.energetic_yadino),
-        stringResource(id = R.string.lets_go),
-        R.drawable.welcome3,
-      ),
+  val configuration = LocalConfiguration.current
+  val density = LocalDensity.current
+
+  val screenWidth by remember(configuration) { mutableIntStateOf(configuration.screenWidthDp) }
+  val screenHeight by remember(configuration) { mutableIntStateOf(configuration.screenHeightDp) }
+  val ovalHeight by remember(configuration) {
+    mutableDoubleStateOf(
+      (max(
+        screenHeight,
+        screenWidth,
+      ) * 0.45),
     )
-    Column(modifier = modifier) {
-      HorizontalPager(
-        modifier = Modifier.fillMaxHeight(0.87f),
-        count = 3,
-        state = pagerState,
-      ) { page ->
-        WelcomePage(
-          textWelcomeTop = listItemWelcome[page].textWelcomeTop,
-          textWelcomeBottom = listItemWelcome[page].textWelcomeBottom,
-          imageRes = listItemWelcome[page].imageRes,
-        )
-      }
-      CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        GradientButton(
-          text = listItemWelcome[pagerState.currentPage].textButton,
-          gradient = Brush.horizontalGradient(gradientColors),
-          modifier = Modifier
-            .padding(top = 28.dp, end = 32.dp, start = 32.dp, bottom = 8.dp),
-          textSize = 18.sp,
-          onClick = {
-            scope.launch {
-              if (pagerState.currentPage == 2) {
-                saveShowWelcome(true)
-                clickNext.value = true
-                navigateToHome()
-              }
-              pagerState.scrollToPage(pagerState.currentPage.plus(1))
+  }
+
+  ConstraintLayout(modifier = modifier.fillMaxSize()) {
+    val (horizontalPager, btnColumn) = createRefs()
+    HorizontalPager(
+      modifier = modifier
+        .constrainAs(horizontalPager) {
+          top.linkTo(parent.top)
+        }
+        .fillMaxHeight(0.9f),
+      state = pagerState,
+    ) { page ->
+      WelcomePage(
+        textWelcomeTop = listItemWelcome[page].textWelcomeTop,
+        textWelcomeBottom = listItemWelcome[page].textWelcomeBottom,
+        imageRes = listItemWelcome[page].imageRes,
+        ovalHeight = ovalHeight.dp,
+        density = density,
+      )
+    }
+    Column(
+      modifier = Modifier
+        .constrainAs(btnColumn) {
+          bottom.linkTo(parent.bottom)
+          start.linkTo(parent.start)
+          end.linkTo(parent.end)
+        }
+        .fillMaxWidth(),
+      horizontalAlignment = CenterHorizontally,
+    ) {
+      GradientButton(
+        text = stringResource(id = listItemWelcome[pagerState.currentPage].textButton),
+        gradient = Brush.horizontalGradient(gradientColors),
+        modifier = Modifier
+          .padding(end = 24.dp, start = 24.dp, bottom = 8.dp),
+        textSize = 18.sp,
+        onClick = {
+          scope.launch {
+            if (pagerState.currentPage == MAX_PAGE_SIZE_ONBOARDING.minus(1)) {
+              navigateToHome()
             }
-          },
+            pagerState.scrollToPage(pagerState.currentPage.plus(1))
+          }
+        },
+      )
+      TextButton(
+        onClick = onClickSkip,
+      ) {
+        Text(
+          text = stringResource(R.string.skip),
+          color = MaterialTheme.colorScheme.onPrimaryContainer, fontSize = 14.sp,
         )
       }
     }
@@ -142,44 +173,56 @@ private fun OnBoardingScreens(
 @Composable
 fun WelcomePage(
   modifier: Modifier = Modifier,
-  textWelcomeTop: String,
-  textWelcomeBottom: String,
+  textWelcomeTop: Int?,
+  textWelcomeBottom: Int,
   imageRes: Int,
+  ovalHeight: Dp,
+  density: Density,
 ) {
-  CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-    Column(
-      modifier = modifier,
-      horizontalAlignment = CenterHorizontally,
+  Column(modifier = modifier.fillMaxSize(), horizontalAlignment = CenterHorizontally) {
+    val color = MaterialTheme.colorScheme.onSurface
+    Box(
+      modifier = Modifier
+        .fillMaxWidth()
+        .height(ovalHeight)
+        .drawBehind {
+          drawPath(
+            path = createOvalBottomPath(with(density) { ovalHeight.toPx() }),
+            color = color,
+          )
+        },
+      contentAlignment = Alignment.Center,
     ) {
       Image(
-        modifier = Modifier.weight(1f, fill = false),
-        contentScale = ContentScale.FillWidth,
+        modifier = Modifier
+          .padding(top = 12.dp)
+          .fillMaxSize(0.8f),
         painter = painterResource(id = imageRes),
         contentDescription = "welcomeImage",
       )
-      Text(
-        text = textWelcomeTop,
-        style = TextStyle(
-          brush = Brush.verticalGradient(
-            colors = gradientColors,
-          ),
-          fontWeight = FontWeight.Bold,
-        ),
-        fontSize = 26.sp,
-        modifier = Modifier.padding(top = 6.dp),
-      )
-      Text(
-        text = textWelcomeBottom,
-        fontSize = 23.sp,
-        modifier = Modifier
-          .padding(top = 18.dp, start = 12.dp, end = 12.dp),
-        textAlign = TextAlign.Center,
-        style = TextStyle(
-          fontWeight = FontWeight.Bold,
-          color = MaterialTheme.colorScheme.primary,
-        ),
-      )
     }
+    Text(
+      text = if (textWelcomeTop != null) stringResource(id = textWelcomeTop) else "",
+      style = TextStyle(
+        brush = Brush.verticalGradient(
+          colors = gradientColors,
+        ),
+        fontWeight = FontWeight.Bold,
+      ),
+      fontSize = 40.sp,
+      modifier = Modifier.padding(top = 20.dp),
+    )
+    Text(
+      text = stringResource(id = textWelcomeBottom),
+      fontSize = 24.sp,
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 32.dp, start = 12.dp, end = 12.dp),
+      textAlign = TextAlign.Center,
+      style = TextStyle(
+        color = MaterialTheme.colorScheme.primary,
+      ),
+    )
   }
 }
 
@@ -188,9 +231,11 @@ fun WelcomePage(
 private fun WelcomePreview1() {
   YadinoTheme() {
     WelcomePage(
-      textWelcomeTop = "سلااام",
-      textWelcomeBottom = "!به خانواده یادینو خوش آمدید",
+      textWelcomeTop = R.string.hello,
+      textWelcomeBottom = R.string.welcome_yadino,
       imageRes = R.drawable.welcome1,
+      ovalHeight = 0.dp,
+      density = LocalDensity.current,
     )
   }
 }
@@ -200,9 +245,11 @@ private fun WelcomePreview1() {
 private fun WelcomePreview2() {
   YadinoTheme() {
     WelcomePage(
-      textWelcomeTop = "! با یادینو دیگه ازکارات عقب نمیفتی",
-      textWelcomeBottom = "اینجا ما بهت کمک میکنیم تا به همه هدفگذاری هات برسی",
+      textWelcomeTop = R.string.welcome_2,
+      textWelcomeBottom = 0,
       imageRes = R.drawable.welcome2,
+      ovalHeight = 0.dp,
+      density = LocalDensity.current,
     )
   }
 }
@@ -212,9 +259,11 @@ private fun WelcomePreview2() {
 private fun WelcomePreview3() {
   YadinoTheme() {
     WelcomePage(
-      textWelcomeTop = "!یادینو اپلیکیشنی برای زندگی بهتر",
-      textWelcomeBottom = "با یادینو بانشاط تر منظم تر و هوشمندتر باشید",
+      textWelcomeTop = R.string.yadino_life,
+      textWelcomeBottom = 0,
       imageRes = R.drawable.welcome3,
+      ovalHeight = 0.dp,
+      density = LocalDensity.current,
     )
   }
 }

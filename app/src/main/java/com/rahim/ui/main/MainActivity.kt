@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
+import android.view.Window
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,6 +19,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -41,9 +45,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -97,6 +104,7 @@ class MainActivity : ComponentActivity() {
         drawerItemClicked = {
           event.invoke(MainContract.MainEvent.ClickDrawer(it))
         },
+        window = window,
       )
     }
   }
@@ -122,6 +130,7 @@ class MainActivity : ComponentActivity() {
             Toast.LENGTH_SHORT,
           ).show()
         }
+
         BuildConfig.FLAVOR.contains("cafeBazaar") -> {
           Toast.makeText(
             this,
@@ -150,6 +159,7 @@ fun YadinoApp(
   isShowWelcomeScreen: Boolean,
   isDarkTheme: Boolean = isSystemInDarkTheme(),
   haveAlarm: Boolean,
+  window: Window,
   drawerItemClicked: (DrawerItemType) -> Unit,
 ) {
   val context = LocalContext.current
@@ -166,6 +176,13 @@ fun YadinoApp(
   val destinationNavBackStackEntry = navBackStackEntry?.destination?.route
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val coroutineScope = rememberCoroutineScope()
+  val windowInsetsController =
+    WindowCompat.getInsetsController(window, window.decorView)
+  if (destinationNavBackStackEntry != Destinations.OnBoarding.route) {
+    windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
+  } else {
+    windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
+  }
 
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
     YadinoTheme(darkTheme = isDarkTheme) {
