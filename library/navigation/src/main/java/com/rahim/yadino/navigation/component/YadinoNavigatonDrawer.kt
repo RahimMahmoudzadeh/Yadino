@@ -84,6 +84,7 @@ fun YadinoNavigationDrawer(
   headerHeight: Dp = 150.dp,
   onItemClick: (DrawerItemType) -> Unit = {},
   isDarkTheme: Boolean = false,
+  gesturesEnabled: Boolean = true,
   content: @Composable () -> Unit,
 ) {
   val scope = rememberCoroutineScope()
@@ -106,18 +107,18 @@ fun YadinoNavigationDrawer(
       ) {
         YadinoDrawerHeader(
           modifier = Modifier
-            .height(headerHeight)
-            .fillMaxWidth()
-            .drawBehind {
-              drawRect(
-                brush = Brush.linearGradient(
-                  colors = gradientColors,
-                  start = Offset(0f, size.height),
-                  end = Offset(size.width, 0f),
-                ),
-              )
-            }
-            .statusBarsPadding(),
+              .height(headerHeight)
+              .fillMaxWidth()
+              .drawBehind {
+                  drawRect(
+                      brush = Brush.linearGradient(
+                          colors = gradientColors,
+                          start = Offset(0f, size.height),
+                          end = Offset(size.width, 0f),
+                      ),
+                  )
+              }
+              .statusBarsPadding(),
           greetingTitle = R.string.hello_friend,
           iconRes = com.rahim.yadino.library.designsystem.R.drawable.img_app_wekup,
         )
@@ -125,9 +126,9 @@ fun YadinoNavigationDrawer(
         yadinoDrawerItems.forEach { yadinoDrawerItem ->
           YadinoDrawerItem(
             modifier = Modifier
-              .padding(NavigationDrawerItemDefaults.ItemPadding)
-              .height(itemHeight)
-              .clickable { onItemClick(yadinoDrawerItem) },
+                .padding(NavigationDrawerItemDefaults.ItemPadding)
+                .height(itemHeight)
+                .clickable { onItemClick(yadinoDrawerItem) },
             title = yadinoDrawerItem.title,
             iconRes = yadinoDrawerItem.iconRes,
             rightSlot = if (yadinoDrawerItem is Theme) {
@@ -144,6 +145,7 @@ fun YadinoNavigationDrawer(
         }
       }
     },
+    gesturesEnabled = gesturesEnabled,
     content = content,
   )
 }
@@ -188,17 +190,17 @@ private fun YadinoDrawerHeader(
       painter = painterResource(id = iconRes),
       contentDescription = null,
       modifier = Modifier
-        .align(Alignment.TopEnd)
-        .size(
-          72.dp,
-        ),
+          .align(Alignment.TopEnd)
+          .size(
+              72.dp,
+          ),
     )
 
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier
-        .align(Alignment.Center)
-        .padding(top = 16.dp, end = 16.dp),
+          .align(Alignment.Center)
+          .padding(top = 16.dp, end = 16.dp),
     ) {
       Text(
         text = stringResource(id = greetingTitle),

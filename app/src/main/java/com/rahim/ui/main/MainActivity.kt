@@ -196,6 +196,7 @@ fun YadinoApp(
           drawerState = drawerState,
           isDarkTheme = isDarkTheme,
           onItemClick = drawerItemClicked,
+          gesturesEnabled= destinationNavBackStackEntry != Destinations.OnBoarding.route
         ) {
           Scaffold(
             topBar = {
