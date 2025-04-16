@@ -41,7 +41,7 @@ compose-vewrsion = "1.7.8"
 androidxCoreSplashscreen = "1.0.1"
 vico = "2.1.1"
 androidxTracing = "1.3.0-rc01"
-spotless="7.0.2"
+spotless="7.0.3"
 datastore = "1.1.4"
 
 #target version
