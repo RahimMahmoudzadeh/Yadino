@@ -8,7 +8,7 @@ compose-bom = "2025.04.00"
 activity-compose = "1.10.1"
 
 #navigation
-hilt = "2.56.1"
+hilt = "2.56.2"
 hilt_navigation_compose = "1.2.0"
 
 #core
@@ -29,7 +29,7 @@ accompanist_pager = "0.36.0"
 accompanist_pager_indicators = "0.36.0"
 accompanist_permissions = "0.37.2"
 accompanist_system_ui = "0.36.0"
-lottie_compose = "6.6.4"
+lottie_compose = "6.6.6"
 junit = "4.13.2"
 junit-test = "3.5.1"
 androidx-ext-junit = "1.2.1"
