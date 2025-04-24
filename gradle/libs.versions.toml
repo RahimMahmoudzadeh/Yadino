@@ -20,7 +20,7 @@ androidx-room = "2.7.0"
 
 androidx-navigation = "2.8.9"
 timber = "5.0.1"
-firebaseBom = "33.12.0"
+firebaseBom = "33.13.0"
 samanzamani = "1.7.1"
 nav-version = '2.8.9'
 datetime = "0.9.0"
