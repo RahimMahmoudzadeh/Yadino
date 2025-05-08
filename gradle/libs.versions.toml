@@ -18,7 +18,7 @@ androidx-core = "1.16.0"
 androidx-lifecycle = "2.9.0"
 androidx-room = "2.7.1"
 
-androidx-navigation = "2.8.9"
+androidx-navigation = "2.9.0"
 timber = "5.0.1"
 firebaseBom = "33.13.0"
 samanzamani = "1.7.1"
