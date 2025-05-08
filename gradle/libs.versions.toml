@@ -39,7 +39,7 @@ material3Android = "1.3.2"
 compose-test = "1.8.1"
 androidxCoreSplashscreen = "1.0.1"
 vico = "2.1.2"
-androidxTracing = "1.3.0-rc01"
+androidxTracing = "1.3.0"
 spotless="7.0.3"
 datastore = "1.1.4"
 
