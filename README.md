@@ -1,6 +1,6 @@
 # Welcome to Yadino!
 <div align="center">
-  <image height= "100" width ="100" src="asset/logo.png"/></image>
+  <image height= "300" width ="300" src="asset/logo.png"/></image>
   <br>
   <strong>Yadino</strong>
 </div>
