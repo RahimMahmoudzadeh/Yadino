@@ -16,15 +16,16 @@
 ## 📜 Description
 Hi! Yadino is a ToDo app the use of MVI Architecture Pattern And Clean Architecture with Jetpack Compose by following Material-3 guidelines along with other MAD libraries such as Dagger-Hilt, Room Database, Coroutines, Navigation etc. for building Android Apps
 
-**You can download the app from Cafe Bazaar or Myket 🚀** <br>
-<a href='https://play.google.com/store/apps/details?id=com.rahim.yadino&hl=en'><img height=40 alt='Get it on Google Play' src='asset/googleplay.png'/></a>
-<a href='https://cafebazaar.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Bazaar' src="asset/cafebazzar.png"/></a>
-<a href='https://myket.ir/app/com.rahim.yadino'><img height=40 alt='Get it on Myket' src="asset/myket.png"/></a>
+**You can download the app from Cafe Bazaar,Myket or Google Play 🚀** <br>
+
+<a href='https://play.google.com/store/apps/details?id=com.rahim.yadino&hl=en'><img height="180" width="180" alt='Get it on Google Play' src='asset/googleplay.png'/></a>
+<a href='https://cafebazaar.ir/app/com.rahim.yadino'><img height="180" width="180" alt='Get it on Bazaar' src="asset/cafebazzar.png"/></a>
+<a href='https://myket.ir/app/com.rahim.yadino'><img height="180" width="180" alt='Get it on Myket' src="asset/myket.png"/></a>
 
 ## 🛠 Built With
 |  Architecture   |MVI Architecture Pattern |
 |----------------   |------------------------------    |
-| <img height="20" src="https://3.bp.blogspot.com/-VVp3WvJvl84/X0Vu6EjYqDI/AAAAAAAAPjU/ZOMKiUlgfg8ok8DY8Hc-ocOvGdB0z86AgCLcBGAsYHQ/s1600/jetpack%2Bcompose%2Bicon_RGB.png">    UI Framework  | [Jetpack Compose](https://www.jetbrains.com/lp/compose-multiplatform/)         |                        |
+| <img height="20" width="20" src="https://3.bp.blogspot.com/-VVp3WvJvl84/X0Vu6EjYqDI/AAAAAAAAPjU/ZOMKiUlgfg8ok8DY8Hc-ocOvGdB0z86AgCLcBGAsYHQ/s1600/jetpack%2Bcompose%2Bicon_RGB.png">    UI Framework  | [Jetpack Compose](https://www.jetbrains.com/lp/compose-multiplatform/)         |                        |
 | 💉 DI                | [Dagger-Hilt](https://developer.android.com/training/dependency-injection/hilt-android)                        |             |
 | :floppy_disk: Local Database      | [Room Database](https://developer.android.com/topic/libraries/architecture/room)                   |
 | :compass: Navigation       | [Compose Destinations Navigation](https://developer.android.com/jetpack/compose/navigation) |
