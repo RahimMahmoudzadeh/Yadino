@@ -41,7 +41,7 @@ androidxCoreSplashscreen = "1.0.1"
 vico = "2.1.2"
 androidxTracing = "1.3.0"
 spotless="7.0.3"
-datastore = "1.1.6"
+datastore = "1.1.7"
 
 androidTools = "31.10.0"
 androidxJunit = "1.2.1"
