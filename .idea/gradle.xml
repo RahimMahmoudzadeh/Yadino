@@ -45,6 +45,7 @@
             <option value="$PROJECT_DIR$/feature/routine" />
             <option value="$PROJECT_DIR$/home" />
             <option value="$PROJECT_DIR$/home/data" />
+            <option value="$PROJECT_DIR$/home/domain" />
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/library/designsystem" />
             <option value="$PROJECT_DIR$/library/navigation" />
