@@ -50,6 +50,8 @@
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/library/designsystem" />
             <option value="$PROJECT_DIR$/library/navigation" />
+            <option value="$PROJECT_DIR$/note" />
+            <option value="$PROJECT_DIR$/note/data" />
           </set>
         </option>
       </GradleProjectSettings>
