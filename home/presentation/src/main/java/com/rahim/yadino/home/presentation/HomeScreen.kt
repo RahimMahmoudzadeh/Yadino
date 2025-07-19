@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.homeScreen
+package com.rahim.yadino.home.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement

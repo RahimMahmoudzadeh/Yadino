@@ -1,11 +1,11 @@
-package com.rahim.yadino.routine.homeScreen.navigation
+package com.rahim.yadino.home.presentation.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.rahim.yadino.navigation.Destinations
-import com.rahim.yadino.routine.homeScreen.HomeRoute
+import com.rahim.yadino.home.presentation.HomeRoute
 
 fun NavController.navigateToHome(navOptions: NavOptions? = null) {
   this.navigate(Destinations.Home.route, navOptions)

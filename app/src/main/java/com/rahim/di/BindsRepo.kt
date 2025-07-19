@@ -1,7 +1,7 @@
 package com.rahim.di
 
 import android.content.Context
-import com.example.sharedPreferences.SharedPreferencesRepositoryImpl
+import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepositoryImpl
 import com.rahim.FlavorImpl
 import com.rahim.data.flavor.Flavor
 import com.rahim.yadino.dateTime.DateTimeRepository
@@ -10,7 +10,7 @@ import com.rahim.yadino.note.NoteRepository
 import com.rahim.yadino.noteRepository.NoteRepositoryImpl
 import com.rahim.yadino.routine.RepositoryRoutine
 import com.rahim.yadino.routineRepository.RoutineRepositoryImpl
-import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
+import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

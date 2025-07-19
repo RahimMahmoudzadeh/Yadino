@@ -1,4 +1,3 @@
-
 plugins {
   libs.plugins.yadino.run {
     alias(android.feature)
@@ -11,7 +10,7 @@ android {
 }
 dependencies {
   projects.run{
-
+    implementation(home.domain)
   }
 
   libs.run {

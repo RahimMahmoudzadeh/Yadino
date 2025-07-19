@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.homeScreen
+package com.rahim.yadino.home.presentation
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.UnidirectionalViewModel
