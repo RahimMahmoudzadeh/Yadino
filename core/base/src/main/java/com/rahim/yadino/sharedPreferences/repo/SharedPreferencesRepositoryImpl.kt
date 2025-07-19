@@ -1,7 +1,6 @@
-package com.example.sharedPreferences
+package com.rahim.yadino.sharedPreferences.repo
 
 import com.rahim.yadino.sharedPreferences.SharedPreferencesCustom
-import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject

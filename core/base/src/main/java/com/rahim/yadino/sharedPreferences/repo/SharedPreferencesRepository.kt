@@ -1,4 +1,4 @@
-package com.rahim.yadino.sharedPreferences
+package com.rahim.yadino.sharedPreferences.repo
 
 import kotlinx.coroutines.flow.Flow
 
