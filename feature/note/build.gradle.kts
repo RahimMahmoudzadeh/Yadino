@@ -10,8 +10,6 @@ android {
 }
 dependencies {
   projects.run {
-    implementation(domain.note)
     implementation(domain.dateTime)
-    implementation(domain.sharedPreferences)
   }
 }

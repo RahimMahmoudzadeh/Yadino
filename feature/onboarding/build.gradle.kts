@@ -10,7 +10,6 @@ android {
   namespace = "com.rahim.yadino.feature.onboarding"
 }
 dependencies {
-  implementation(projects.domain.sharedPreferences)
   libs.run {
     implementation(bundles.accompanist)
   }

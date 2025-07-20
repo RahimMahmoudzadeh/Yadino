@@ -13,8 +13,6 @@ android {
 dependencies {
   projects.run{
     implementation(domain.dateTime)
-    implementation(domain.sharedPreferences)
-    implementation(domain.routine)
   }
 
   libs.run {
