@@ -11,7 +11,5 @@ android {
 }
 
 dependencies {
-  implementation(projects.data.note)
-  implementation(projects.data.routine)
   implementation(projects.data.dateTime)
 }

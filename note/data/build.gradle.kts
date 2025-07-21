@@ -12,5 +12,7 @@ android {
 dependencies {
   projects.run {
     implementation(core.base)
+    implementation(core.db)
+    implementation(note.domain)
   }
 }

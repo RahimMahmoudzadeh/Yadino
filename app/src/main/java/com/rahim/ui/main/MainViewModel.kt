@@ -9,7 +9,7 @@ import com.rahim.yadino.di.IODispatcher
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.note.NoteRepository
 import com.rahim.yadino.routine.RepositoryRoutine
-import com.rahim.yadino.sharedPreferences.SharedPreferencesRepository
+import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow

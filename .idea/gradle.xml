@@ -31,14 +31,8 @@
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/data/database" />
             <option value="$PROJECT_DIR$/data/dateTime" />
-            <option value="$PROJECT_DIR$/data/note" />
-            <option value="$PROJECT_DIR$/data/routine" />
-            <option value="$PROJECT_DIR$/data/sharedPreferences" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/domain/dateTime" />
-            <option value="$PROJECT_DIR$/domain/note" />
-            <option value="$PROJECT_DIR$/domain/routine" />
-            <option value="$PROJECT_DIR$/domain/sharedPreferences" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/calender" />
             <option value="$PROJECT_DIR$/feature/note" />
@@ -54,6 +48,7 @@
             <option value="$PROJECT_DIR$/note" />
             <option value="$PROJECT_DIR$/note/data" />
             <option value="$PROJECT_DIR$/note/domain" />
+            <option value="$PROJECT_DIR$/note/presentation" />
           </set>
         </option>
       </GradleProjectSettings>

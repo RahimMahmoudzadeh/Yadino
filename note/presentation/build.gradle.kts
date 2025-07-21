@@ -6,13 +6,13 @@ plugins {
 }
 
 android {
-  namespace = "com.rahim.yadino.feature.calender"
+  namespace = "com.rahim.yadino.note.presentation"
 }
 dependencies {
-  libs.run {
-    implementation(bundles.vico)
-  }
   projects.run{
-    implementation(domain.dateTime)
+    implementation(note.domain)
+  }
+
+  libs.run {
   }
 }
