@@ -35,7 +35,6 @@
             <option value="$PROJECT_DIR$/domain/dateTime" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/calender" />
-            <option value="$PROJECT_DIR$/feature/note" />
             <option value="$PROJECT_DIR$/feature/onboarding" />
             <option value="$PROJECT_DIR$/feature/routine" />
             <option value="$PROJECT_DIR$/home" />
@@ -49,6 +48,8 @@
             <option value="$PROJECT_DIR$/note/data" />
             <option value="$PROJECT_DIR$/note/domain" />
             <option value="$PROJECT_DIR$/note/presentation" />
+            <option value="$PROJECT_DIR$/routine" />
+            <option value="$PROJECT_DIR$/routine/data" />
           </set>
         </option>
       </GradleProjectSettings>
