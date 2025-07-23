@@ -50,6 +50,7 @@
             <option value="$PROJECT_DIR$/note/presentation" />
             <option value="$PROJECT_DIR$/routine" />
             <option value="$PROJECT_DIR$/routine/data" />
+            <option value="$PROJECT_DIR$/routine/domain" />
           </set>
         </option>
       </GradleProjectSettings>
