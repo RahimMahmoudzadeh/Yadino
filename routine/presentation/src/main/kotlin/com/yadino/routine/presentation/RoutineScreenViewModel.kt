@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.routineScreen
+package com.yadino.routine.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
