@@ -48,7 +48,7 @@ androidxJunit = "1.2.1"
 
 #firebase
 firebasePerfPlugin = "1.4.2"
-firebaseCrashlyticsPlugin = "3.0.3"
+firebaseCrashlyticsPlugin = "3.0.6"
 constraintlayout = "2.2.1"
 constraintlayout-compose = "1.1.1"
 jetbrainsKotlinJvm = "2.1.20"
