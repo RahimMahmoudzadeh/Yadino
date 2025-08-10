@@ -1,7 +1,7 @@
 [versions]
 ksp = "2.2.0-2.0.2"
 kotlin = "2.2.0"
-kotlinxImmutableCollection = "0.3.8"
+kotlinxImmutableCollection = "0.4.0"
 
 #compose
 compose-bom = "2025.06.01"
