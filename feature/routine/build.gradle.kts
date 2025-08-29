@@ -11,9 +11,6 @@ android {
   namespace = "com.rahim.yadino.feature.routine"
 }
 dependencies {
-  projects.run{
-    implementation(domain.dateTime)
-  }
 
   libs.run {
     implementation(bundles.accompanist)

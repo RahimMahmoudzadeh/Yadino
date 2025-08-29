@@ -1,7 +1,6 @@
 package com.yadino.routine.domain
 
-import com.rahim.home.domain.model.ReminderState
-
+import com.yadino.routine.domain.model.ReminderState
 
 interface ReminderScheduler {
 

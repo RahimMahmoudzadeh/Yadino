@@ -36,9 +36,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
           .rootProject
           .subprojects
 
-        subprojects.filter { it.path.startsWith(":domain:", false) }
-          .forEach { add("implementation", project(it.path)) }
-
         subprojects.filter { it.path.startsWith(":feature:", false) }
           .forEach { add("implementation", project(it.path)) }
         subprojects.filter { it.path.startsWith(":home:", false) }

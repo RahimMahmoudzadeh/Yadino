@@ -1,16 +1,16 @@
 package com.yadino.routine.domain.useCase
 
-import com.rahim.home.domain.ReminderScheduler
-import com.rahim.home.domain.HomeRepository
 import com.rahim.yadino.Resource
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.rahim.yadino.routine.model.ReminderState
-import com.rahim.yadino.routine.model.RoutineModel
+import com.yadino.routine.domain.ReminderScheduler
+import com.yadino.routine.domain.RoutineRepository
+import com.yadino.routine.domain.model.ReminderState
+import com.yadino.routine.domain.model.RoutineModel
 import javax.inject.Inject
 
 class AddReminderUseCase @Inject constructor(
-    private val routineRepository: HomeRepository,
-    private val reminderScheduler: ReminderScheduler,
+  private val routineRepository: RoutineRepository,
+  private val reminderScheduler: ReminderScheduler,
 ) {
   suspend operator fun invoke(routineModel: RoutineModel): Resource<Nothing?> {
     try {

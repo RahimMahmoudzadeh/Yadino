@@ -2,10 +2,10 @@ package com.rahim.home.domain.useCase
 
 import com.rahim.home.domain.ReminderScheduler
 import com.rahim.home.domain.HomeRepository
+import com.rahim.home.domain.model.ReminderState
+import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.Resource
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.rahim.yadino.routine.model.ReminderState
-import com.rahim.yadino.routine.model.RoutineModel
 import javax.inject.Inject
 
 class AddReminderUseCase @Inject constructor(

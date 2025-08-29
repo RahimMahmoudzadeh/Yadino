@@ -29,12 +29,9 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(
   ":app",
 )
-include(subprojects("data"))
-include(subprojects("domain"))
 include(subprojects("feature"))
 include(subprojects("library"))
 include(subprojects("core"))
 include(subprojects("home"))
 include(subprojects("note"))
 include(subprojects("routine"))
-include(":core:db")

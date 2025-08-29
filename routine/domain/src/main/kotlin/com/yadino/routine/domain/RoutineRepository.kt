@@ -1,7 +1,7 @@
 package com.yadino.routine.domain
 
-import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.Resource
+import com.yadino.routine.domain.model.RoutineModel
 import kotlinx.coroutines.flow.Flow
 
 interface RoutineRepository {

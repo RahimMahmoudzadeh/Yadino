@@ -2,7 +2,7 @@ package com.rahim.home.domain.useCase
 
 import com.rahim.home.domain.ReminderScheduler
 import com.rahim.home.domain.HomeRepository
-import com.rahim.yadino.routine.model.RoutineModel
+import com.rahim.home.domain.model.RoutineModel
 import javax.inject.Inject
 
 class CancelReminderUseCase @Inject constructor(
