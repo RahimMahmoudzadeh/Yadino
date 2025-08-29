@@ -1,8 +1,8 @@
-package com.rahim.yadino.routine.alarmScreen
+package com.yadino.routine.presentation.alarmScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rahim.yadino.routine.useCase.GetAllRoutineUseCase
+import com.rahim.home.domain.useCase.GetAllRoutineUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

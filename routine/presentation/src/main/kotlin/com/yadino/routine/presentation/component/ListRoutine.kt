@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.component
+package com.yadino.routine.presentation.component
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn

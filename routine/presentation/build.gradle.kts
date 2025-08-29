@@ -12,7 +12,4 @@ dependencies {
   projects.run{
     implementation(home.domain)
   }
-
-  libs.run {
-  }
 }

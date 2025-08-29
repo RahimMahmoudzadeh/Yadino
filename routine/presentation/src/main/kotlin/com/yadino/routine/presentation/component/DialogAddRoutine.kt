@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.component
+package com.yadino.routine.presentation.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.dateTime.modal.TimeDate
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
@@ -51,12 +52,12 @@ import com.rahim.yadino.designsystem.theme.Purple
 import com.rahim.yadino.designsystem.theme.PurpleGrey
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
-import com.rahim.yadino.routine.model.RoutineModel
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.time.LocalTime
+import kotlin.collections.isNotEmpty
 
 const val MAX_NAME_LENGTH = 22
 const val MAX_EXPLANATION_LENGTH = 40

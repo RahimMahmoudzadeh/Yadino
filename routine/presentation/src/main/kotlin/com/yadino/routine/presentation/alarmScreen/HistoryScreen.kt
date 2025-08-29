@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.alarmScreen
+package com.yadino.routine.presentation.alarmScreen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material3.Icon
@@ -40,12 +39,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
-import com.rahim.yadino.feature.routine.R
+import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
-import com.rahim.yadino.routine.model.RoutineModel
+import kotlin.collections.isNotEmpty
+import kotlin.collections.partition
 
 @Composable
 internal fun HistoryRoute(
@@ -163,7 +164,7 @@ private fun RoutineCompleted(
       Text(
         text = "( ${
           size.toString().persianLocate()
-        } ${stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine)} )",
+        } ${stringResource(id = R.string.routine)} )",
         style = MaterialTheme.typography.bodyMedium,
         color = CornflowerBlueLight,
         fontWeight = FontWeight.SemiBold,
