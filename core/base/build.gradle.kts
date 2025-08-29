@@ -11,6 +11,9 @@ android {
 }
 
 dependencies {
+  projects.run {
+    implementation(core.db)
+  }
   libs.run {
     implementation(androidx.datastore.preferences)
     implementation(androidx.datastore.preferences.core)

@@ -1,13 +1,12 @@
-package com.rahim.yadino.datetimeRepository
+package com.rahim.yadino.base.dateTime
 
 import com.rahim.yadino.Constants.END_YEAR
 import com.rahim.yadino.Constants.FIRST_YEAR
 import com.rahim.yadino.Constants.VERSION_TIME_DB
-import com.rahim.yadino.dateTime.DateTimeRepository
-import com.rahim.yadino.dateTime.modal.TimeDate
-import com.rahim.yadino.datetimeRepository.dao.TimeDao
-import com.rahim.yadino.datetimeRepository.mapper.toTimeDate
-import com.rahim.yadino.datetimeRepository.model.TimeDateEntity
+import com.rahim.yadino.base.dateTime.mapper.toTimeDate
+import com.rahim.yadino.base.dateTime.modal.TimeDate
+import com.rahim.yadino.db.dao.dateTime.dao.TimeDao
+import com.rahim.yadino.db.dao.dateTime.model.TimeDateEntity
 import com.rahim.yadino.di.DefaultDispatcher
 import com.rahim.yadino.di.IODispatcher
 import com.rahim.yadino.enums.HalfWeekName

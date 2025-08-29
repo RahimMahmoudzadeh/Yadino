@@ -1,4 +1,4 @@
-package com.rahim.yadino.datetimeRepository.mapper
+package com.rahim.yadino.base.dateTime.mapper
 
 import com.rahim.yadino.dateTime.modal.TimeDate
 import com.rahim.yadino.datetimeRepository.model.TimeDateEntity

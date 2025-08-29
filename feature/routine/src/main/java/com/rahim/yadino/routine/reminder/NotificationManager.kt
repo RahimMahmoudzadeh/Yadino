@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 class NotificationManager @Inject constructor() : AlarmSong, Alarm {
 //    fun createNotification(textTitle: String, textContent: String, context: Context) {
-//        val intent = Intent(context, MainActivity::class.java).apply {
+//        val intent = Intent(context, MainActivity::class.kotlin).apply {
 //            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 //        }
 //        val pendingIntent: PendingIntent =

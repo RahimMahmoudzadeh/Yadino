@@ -4,7 +4,7 @@ import android.content.Context
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepositoryImpl
 import com.rahim.FlavorImpl
 import com.rahim.data.flavor.Flavor
-import com.rahim.yadino.dateTime.DateTimeRepository
+import com.rahim.yadino.base.dateTime.DateTimeRepository
 import com.rahim.yadino.datetimeRepository.DateTimeRepositoryImpl
 import com.rahim.yadino.note.NoteRepository
 import com.rahim.yadino.noteRepository.NoteRepositoryImpl

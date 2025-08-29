@@ -1,4 +1,4 @@
-package com.rahim.yadino.dateTime.modal
+package com.rahim.yadino.base.dateTime.modal
 
 data class TimeDate(
   val dayNumber: Int,
