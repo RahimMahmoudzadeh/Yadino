@@ -34,7 +34,6 @@
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/domain/dateTime" />
             <option value="$PROJECT_DIR$/feature" />
-            <option value="$PROJECT_DIR$/feature/calender" />
             <option value="$PROJECT_DIR$/feature/onboarding" />
             <option value="$PROJECT_DIR$/feature/routine" />
             <option value="$PROJECT_DIR$/home" />
