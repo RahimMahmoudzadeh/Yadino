@@ -4,7 +4,7 @@ import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.Resource
 import kotlinx.coroutines.flow.Flow
 
-interface RepositoryRoutine {
+interface HomeRepository {
   suspend fun addSampleRoutine()
   suspend fun addRoutine(routineModel: RoutineModel)
   suspend fun removeRoutine(routineModel: RoutineModel): Int

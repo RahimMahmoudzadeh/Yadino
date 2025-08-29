@@ -1,5 +1,7 @@
 package com.rahim.home.domain
 
+import com.rahim.home.domain.model.ReminderState
+
 
 interface ReminderScheduler {
 
