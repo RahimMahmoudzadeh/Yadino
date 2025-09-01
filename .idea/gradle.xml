@@ -28,9 +28,6 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/base" />
             <option value="$PROJECT_DIR$/core/db" />
-            <option value="$PROJECT_DIR$/feature" />
-            <option value="$PROJECT_DIR$/feature/onboarding" />
-            <option value="$PROJECT_DIR$/feature/routine" />
             <option value="$PROJECT_DIR$/home" />
             <option value="$PROJECT_DIR$/home/data" />
             <option value="$PROJECT_DIR$/home/domain" />
@@ -42,6 +39,8 @@
             <option value="$PROJECT_DIR$/note/data" />
             <option value="$PROJECT_DIR$/note/domain" />
             <option value="$PROJECT_DIR$/note/presentation" />
+            <option value="$PROJECT_DIR$/onboarding" />
+            <option value="$PROJECT_DIR$/onboarding/presentation" />
             <option value="$PROJECT_DIR$/routine" />
             <option value="$PROJECT_DIR$/routine/data" />
             <option value="$PROJECT_DIR$/routine/domain" />

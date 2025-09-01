@@ -13,6 +13,6 @@ dependencies {
   projects.run {
     implementation(core.base)
     implementation(core.db)
-    implementation(home.domain)
+    implementation(routine.domain)
   }
 }

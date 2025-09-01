@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.data
+package com.rahim.yadino.home.presentation
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.rahim.home.domain.ReminderScheduler
 import com.rahim.home.domain.model.ReminderState
@@ -39,6 +40,7 @@ class ReminderSchedulerImpl @Inject constructor(
     }
   }
 
+  @RequiresApi(Build.VERSION_CODES.S)
   private fun checkPermissionAfterApiLevel31(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Long): ReminderState {
     return if (alarmManager.canScheduleExactAlarms()) {
       setAlarm(
@@ -93,8 +95,8 @@ class ReminderSchedulerImpl @Inject constructor(
 
   private fun setAlarm(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Long) {
     val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).apply {
-      Intent.putExtra(Constants.KEY_LAUNCH_NAME, reminderName)
-        Intent.putExtra(Constants.KEY_LAUNCH_ID, reminderId)
+      putExtra(Constants.KEY_LAUNCH_NAME, reminderName)
+      putExtra(Constants.KEY_LAUNCH_ID, reminderId)
     }
     Timber.Forest.tag("intentTitle").d("AndroidReminderScheduler setAlarm-> $reminderName")
     val pendingIntent = PendingIntent.getBroadcast(

@@ -10,7 +10,7 @@ android {
 }
 dependencies {
   projects.run{
-    implementation(home.domain)
+    implementation(routine.domain)
   }
   libs.run {
     implementation(androidx.core.splashscreen)

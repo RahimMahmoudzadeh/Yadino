@@ -1,7 +1,5 @@
 package com.yadino.routine.data
 
-import com.rahim.home.domain.HomeRepository
-import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.Constants
 import com.rahim.yadino.Resource
 import com.rahim.yadino.db.dao.routine.dao.RoutineDao
@@ -11,6 +9,8 @@ import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
 import com.yadino.routine.data.mapper.toRoutineEntity
 import com.yadino.routine.data.mapper.toRoutineModel
+import com.yadino.routine.domain.RoutineRepository
+import com.yadino.routine.domain.model.RoutineModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +27,7 @@ import kotlin.random.Random
 class RoutineRepositoryImpl @Inject constructor(
   private val routineDao: RoutineDao,
   private val sharedPreferencesRepository: SharedPreferencesRepository,
-) : HomeRepository {
+) : RoutineRepository {
   private val persianData = PersianDate()
   private val currentTimeDay = persianData.shDay
   private val currentTimeMonth = persianData.shMonth

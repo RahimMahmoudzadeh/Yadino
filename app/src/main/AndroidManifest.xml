@@ -43,7 +43,7 @@
             android:turnScreenOn="true" />
 
         <receiver
-            android:name=".home.domain.YadinoBroadCastReceiver"
+            android:name=".yadino.home.presentation.YadinoBroadCastReceiver"
             android:enabled="true"
             android:exported="false" />
 

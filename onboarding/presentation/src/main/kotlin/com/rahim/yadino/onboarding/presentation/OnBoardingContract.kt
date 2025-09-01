@@ -3,7 +3,6 @@ package com.rahim.yadino.onboarding.presentation
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.onboarding.presentation.model.OnBoardingScreenModel
-import com.rahim.yadino.presentation.presentation.R
 
 interface OnBoardingContract : UnidirectionalViewModel<OnBoardingContract.WelcomeEvent, OnBoardingContract.WelcomeState> {
 

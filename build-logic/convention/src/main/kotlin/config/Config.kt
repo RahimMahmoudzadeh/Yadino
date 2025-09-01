@@ -5,8 +5,8 @@ import org.gradle.api.JavaVersion
 object Config {
   val android = AndroidConfig(
     minSdkVersion = 26,
-    targetSdkVersion = 35,
-    compileSdkVersion = 35,
+    targetSdkVersion = 36,
+    compileSdkVersion = 36,
     applicationId = "com.rahim",
     versionCode = 135,
     versionName = "1.6.5",

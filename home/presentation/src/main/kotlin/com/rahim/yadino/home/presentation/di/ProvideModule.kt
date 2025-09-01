@@ -1,9 +1,9 @@
-package com.yadino.routine.data.di
+package com.rahim.yadino.home.presentation.di
 
 import android.app.AlarmManager
 import android.content.Context
 import com.rahim.home.domain.ReminderScheduler
-import com.yadino.routine.data.ReminderSchedulerImpl
+import com.rahim.yadino.home.presentation.ReminderSchedulerImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
