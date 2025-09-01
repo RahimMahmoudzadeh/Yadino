@@ -40,6 +40,8 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
           .forEach { add("implementation", project(it.path)) }
         subprojects.filter { it.path.startsWith(":home:", false) }
           .forEach { add("implementation", project(it.path)) }
+        subprojects.filter { it.path.startsWith(":onboarding:", false) }
+          .forEach { add("implementation", project(it.path)) }
         subprojects.filter { it.path.startsWith(":routine:", false) }
           .forEach { add("implementation", project(it.path)) }
         subprojects.filter { it.path.startsWith(":note:", false) }

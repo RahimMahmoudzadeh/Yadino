@@ -1,10 +1,9 @@
-package com.rahim.yadino.welcome
+package com.rahim.yadino.onboarding.presentation
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.ui.res.stringResource
 import com.rahim.yadino.base.UnidirectionalViewModel
-import com.rahim.yadino.feature.onboarding.R
-import com.rahim.yadino.welcome.model.OnBoardingScreenModel
+import com.rahim.yadino.onboarding.presentation.model.OnBoardingScreenModel
+import com.rahim.yadino.presentation.presentation.R
 
 interface OnBoardingContract : UnidirectionalViewModel<OnBoardingContract.WelcomeEvent, OnBoardingContract.WelcomeState> {
 

@@ -1,4 +1,4 @@
-package com.rahim.yadino.welcome.model
+package com.rahim.yadino.onboarding.presentation.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

@@ -1,4 +1,4 @@
-package com.rahim.yadino.welcome
+package com.rahim.yadino.onboarding.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +17,7 @@ class OnBoardingViewModel @Inject constructor(
   private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : ViewModel(), OnBoardingContract {
 
-  private val mutableState = MutableStateFlow<OnBoardingContract.WelcomeState>(OnBoardingContract.WelcomeState())
+  private val mutableState = MutableStateFlow(OnBoardingContract.WelcomeState())
   override val state: StateFlow<OnBoardingContract.WelcomeState> = mutableState.onStart {
     isShowWelcomeScreen()
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), OnBoardingContract.WelcomeState())
