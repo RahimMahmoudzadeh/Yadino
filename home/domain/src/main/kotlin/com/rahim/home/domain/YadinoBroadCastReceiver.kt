@@ -1,15 +1,14 @@
-package com.rahim.yadino.routine.reminder
+package com.rahim.home.domain
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.rahim.yadino.Constants.KEY_LAUNCH_ID
-import com.rahim.yadino.Constants.KEY_LAUNCH_NAME
+import com.rahim.yadino.Constants
 import timber.log.Timber
 
 class YadinoBroadCastReceiver() : BroadcastReceiver() {
   override fun onReceive(context: Context?, intent: Intent?) {
-    Timber.tag("intentTitle").d("YadinoBroadCastReceiver onReceive-> ${intent?.action}")
+    Timber.Forest.tag("intentTitle").d("YadinoBroadCastReceiver onReceive-> ${intent?.action}")
     sendNotificationAlarm(intent, context)
 //        Timber.tag("alarmReceiver").d(intent?.getStringExtra(ALARM_MESSAGE))
   }
@@ -32,11 +31,11 @@ class YadinoBroadCastReceiver() : BroadcastReceiver() {
 //    }
   private fun sendNotificationAlarm(intent: Intent?, context: Context?) {
     intent?.extras?.let { extras ->
-      val reminderName = extras.getString(KEY_LAUNCH_NAME)
-      val reminderId = extras.getInt(KEY_LAUNCH_ID, 0)
+      val reminderName = extras.getString(Constants.KEY_LAUNCH_NAME)
+      val reminderId = extras.getInt(Constants.KEY_LAUNCH_ID, 0)
       val nothing = NotificationManager()
       context?.let {
-        Timber.tag("intentTitle").d("YadinoBroadCastReceiver-> $reminderName")
+        Timber.Forest.tag("intentTitle").d("YadinoBroadCastReceiver-> $reminderName")
         nothing.createFullNotification(
           context,
           reminderName ?: "",

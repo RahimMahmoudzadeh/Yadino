@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.reminder.alarm
+package com.rahim.home.domain.alarm
 
 import android.content.Context
 import android.media.Ringtone

@@ -1,12 +1,10 @@
-package com.rahim.yadino.routine.reminder
+package com.rahim.yadino.home.presentation
 
 import android.Manifest
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Context.ALARM_SERVICE
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_MULTIPLE_TASK
 import android.content.pm.PackageManager
 import android.media.Ringtone
 import android.media.RingtoneManager
@@ -14,11 +12,11 @@ import android.os.CountDownTimer
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.rahim.yadino.Constants.CHANNEL_ID
-import com.rahim.yadino.Constants.KEY_LAUNCH_NAME
-import com.rahim.yadino.routine.reminder.alarm.Alarm
-import com.rahim.yadino.routine.reminder.alarm.AlarmSong
-import com.rahim.yadino.routine.wekeup.WakeupActivity
+import com.rahim.home.domain.YadinoBroadCastReceiver
+import com.rahim.home.domain.alarm.Alarm
+import com.rahim.home.domain.alarm.AlarmSong
+import com.rahim.yadino.Constants
+import com.rahim.yadino.library.designsystem.R
 import java.util.Random
 import javax.inject.Inject
 
@@ -54,8 +52,8 @@ class NotificationManager @Inject constructor() : AlarmSong, Alarm {
 
   fun createFullNotification(context: Context, routineName: String, routineIdAlarm: Long, routineExplanation: String) {
     val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {
-      addFlags(FLAG_ACTIVITY_MULTIPLE_TASK)
-      putExtra(KEY_LAUNCH_NAME, routineName)
+      Intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+        Intent.putExtra(Constants.KEY_LAUNCH_NAME, routineName)
     }
     val fullScreenPendingIntent = PendingIntent.getActivity(
       context,
@@ -65,8 +63,8 @@ class NotificationManager @Inject constructor() : AlarmSong, Alarm {
     )
     playRingtone(context, routineIdAlarm)
     val notificationBuilder =
-      NotificationCompat.Builder(context, CHANNEL_ID)
-        .setSmallIcon(com.rahim.yadino.library.designsystem.R.drawable.ic_round_notifications_24)
+      NotificationCompat.Builder(context, Constants.CHANNEL_ID)
+        .setSmallIcon(R.drawable.ic_round_notifications_24)
         .setContentTitle(routineName)
         .setContentText(routineExplanation)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -110,7 +108,7 @@ class NotificationManager @Inject constructor() : AlarmSong, Alarm {
       intent,
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
-    val alarmManager = context.getSystemService(ALARM_SERVICE) as AlarmManager?
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager?
     alarmManager!!.cancel(pendingIntent)
   }
 }

@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.reminder
+package com.yadino.routine.data
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -9,18 +9,17 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
-import com.rahim.yadino.Constants.KEY_LAUNCH_ID
-import com.rahim.yadino.Constants.KEY_LAUNCH_NAME
+import com.rahim.home.domain.ReminderScheduler
+import com.rahim.home.domain.model.ReminderState
+import com.rahim.yadino.Constants
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.rahim.yadino.routine.ReminderScheduler
-import com.rahim.yadino.routine.model.ReminderState
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
 
 class ReminderSchedulerImpl @Inject constructor(
-  private val alarmManager: AlarmManager,
-  private val context: Context,
+    private val alarmManager: AlarmManager,
+    private val context: Context,
 ) : ReminderScheduler {
 
   override fun setReminder(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Long): ReminderState {
@@ -94,10 +93,10 @@ class ReminderSchedulerImpl @Inject constructor(
 
   private fun setAlarm(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Long) {
     val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).apply {
-      putExtra(KEY_LAUNCH_NAME, reminderName)
-      putExtra(KEY_LAUNCH_ID, reminderId)
+      Intent.putExtra(Constants.KEY_LAUNCH_NAME, reminderName)
+        Intent.putExtra(Constants.KEY_LAUNCH_ID, reminderId)
     }
-    Timber.tag("intentTitle").d("AndroidReminderScheduler setAlarm-> $reminderName")
+    Timber.Forest.tag("intentTitle").d("AndroidReminderScheduler setAlarm-> $reminderName")
     val pendingIntent = PendingIntent.getBroadcast(
       context,
       reminderIdAlarm.toInt(),
@@ -121,7 +120,7 @@ class ReminderSchedulerImpl @Inject constructor(
     alarmManager.cancel(
       pendingIntent,
     )
-    delay(100)
+      delay(100)
   }
 
   @SuppressLint("InlinedApi")

@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.wekeup
+package com.rahim.yadino.home.presentation.wekeup
 
 import android.app.KeyguardManager
 import android.os.Build
@@ -40,7 +40,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.rahim.yadino.Constants
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.YadinoTheme
-import com.rahim.yadino.feature.routine.R
+import com.rahim.yadino.library.designsystem.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -71,13 +71,13 @@ class WakeupActivity : ComponentActivity() {
           ) {
             Image(
               modifier = Modifier.padding(top = 28.dp),
-              painter = painterResource(id = com.rahim.yadino.library.designsystem.R.drawable.img_app_wekup),
+              painter = painterResource(id = R.drawable.img_app_wekup),
               contentDescription = "empty list home",
             )
             Text(
               fontSize = 32.sp,
               modifier = Modifier.padding(top = 34.dp),
-              text = resources.getString(com.rahim.yadino.library.designsystem.R.string.my_firend),
+              text = resources.getString(R.string.my_firend),
               color = Color.White,
             )
             Text(

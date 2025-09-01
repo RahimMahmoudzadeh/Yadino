@@ -62,7 +62,7 @@
         <item>پ</item>
         <item>ج</item>
     </string-array>
-
+    <string name="forget_work"> !! یادت نره %1$s</string>
     <string name="routine_left_sample">من یک روتین تستی هستم لطفا من را به چپ بکشید</string>
     <string name="routine_right_sample">من یک روتین تستی هستم لطفا من را به راست بکشید</string>
 </resources>
