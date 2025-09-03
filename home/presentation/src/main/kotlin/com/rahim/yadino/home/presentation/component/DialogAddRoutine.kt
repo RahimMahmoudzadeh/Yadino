@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.component
+package com.rahim.yadino.home.presentation.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.base.dateTime.modal.TimeDate
-import com.rahim.yadino.dateTime.modal.TimeDate
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.Onahau
@@ -53,9 +52,10 @@ import com.rahim.yadino.designsystem.theme.Purple
 import com.rahim.yadino.designsystem.theme.PurpleGrey
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import com.yadino.routine.domain.model.RoutineModel
 import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.time.LocalTime
@@ -391,10 +391,10 @@ fun DialogAddRoutine(
 @Composable
 fun ShowTimePicker(
   currentTime: String,
-  dialogState: com.vanpra.composematerialdialogs.MaterialDialogState,
+  dialogState: MaterialDialogState,
   time: (LocalTime) -> Unit,
 ) {
-  com.vanpra.composematerialdialogs.MaterialDialog(
+  MaterialDialog(
     properties = DialogProperties(dismissOnClickOutside = false),
     border = BorderStroke(2.dp, Brush.horizontalGradient(gradientColors)),
     backgroundColor = MaterialTheme.colorScheme.background,

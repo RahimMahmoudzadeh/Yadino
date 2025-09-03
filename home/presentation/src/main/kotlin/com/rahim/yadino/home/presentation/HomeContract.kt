@@ -1,10 +1,9 @@
 package com.rahim.yadino.home.presentation
 
 import androidx.compose.runtime.Immutable
+import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.rahim.yadino.routine.model.RoutineModel
-
 interface HomeContract : UnidirectionalViewModel<HomeContract.HomeEvent, HomeContract.HomeState> {
   @Immutable
   sealed class HomeEvent {

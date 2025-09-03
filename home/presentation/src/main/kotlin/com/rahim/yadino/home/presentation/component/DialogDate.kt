@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.component
+package com.rahim.yadino.home.presentation.component
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background

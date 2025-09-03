@@ -1,5 +1,4 @@
 plugins {
-  alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     libs.plugins.run {
     alias(androidApplication) apply false
     alias(com.android.library) apply false
@@ -11,7 +10,7 @@ plugins {
     alias(google.services) apply false
     alias(firebase.crashlytics) apply false
     alias(compose.compiler) apply false
-
+    alias(jetbrains.kotlin.jvm) apply false
     alias(spotless)
   }
 }

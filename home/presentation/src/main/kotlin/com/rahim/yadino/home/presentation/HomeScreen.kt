@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
@@ -30,11 +31,10 @@ import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.errorMessage
+import com.rahim.yadino.home.presentation.component.DialogAddRoutine
+import com.rahim.yadino.home.presentation.component.ListRoutines
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
-import com.rahim.yadino.routine.component.DialogAddRoutine
-import com.rahim.yadino.routine.component.ListRoutines
-import com.rahim.yadino.routine.model.RoutineModel
 
 @Composable
 internal fun HomeRoute(
@@ -205,7 +205,7 @@ fun ItemsHome(
       color = MaterialTheme.colorScheme.primary,
     )
     Text(
-      text = stringResource(id = com.rahim.yadino.feature.routine.R.string.list_work_day),
+      text = stringResource(id = com.rahim.yadino.home.presentation.R.string.list_work_day),
       fontSize = 18.sp,
       color = MaterialTheme.colorScheme.primary,
     )

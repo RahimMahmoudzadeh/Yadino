@@ -1,13 +1,13 @@
 package com.yadino.routine.domain.useCase
 
-import com.rahim.home.domain.HomeRepository
+import com.yadino.routine.domain.RoutineRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 class GetRemindersUseCase @Inject constructor(
-    private val routineRepository: HomeRepository,
+    private val routineRepository: RoutineRepository,
 ) {
   operator fun invoke(monthNumber: Int, numberDay: Int, yearNumber: Int, coroutineScope: CoroutineScope) = routineRepository.getRoutines(monthNumber, numberDay, yearNumber).stateIn(coroutineScope, started = SharingStarted.Eagerly, emptyList())
 }

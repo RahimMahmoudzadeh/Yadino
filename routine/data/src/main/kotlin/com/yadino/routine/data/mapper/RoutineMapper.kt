@@ -1,7 +1,7 @@
 package com.yadino.routine.data.mapper
 
-import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.db.dao.routine.model.RoutineEntity
+import com.yadino.routine.domain.model.RoutineModel
 
 fun RoutineModel.toRoutineEntity(): RoutineEntity = RoutineEntity(
   name = name,

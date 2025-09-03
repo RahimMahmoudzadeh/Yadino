@@ -2,9 +2,9 @@ package com.yadino.routine.presentation
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.UnidirectionalViewModel
-import com.rahim.yadino.dateTime.modal.TimeDate
+import com.rahim.yadino.base.dateTime.modal.TimeDate
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.rahim.yadino.routine.model.RoutineModel
+import com.yadino.routine.domain.model.RoutineModel
 
 interface RoutineContract : UnidirectionalViewModel<RoutineContract.RoutineEvent, RoutineContract.RoutineState> {
   @Immutable

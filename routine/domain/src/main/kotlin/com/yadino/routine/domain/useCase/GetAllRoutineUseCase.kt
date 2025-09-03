@@ -1,11 +1,11 @@
 package com.yadino.routine.domain.useCase
 
-import com.rahim.home.domain.HomeRepository
-import com.rahim.yadino.routine.model.RoutineModel
+import com.yadino.routine.domain.RoutineRepository
+import com.yadino.routine.domain.model.RoutineModel
 import javax.inject.Inject
 
 class GetAllRoutineUseCase @Inject constructor(
-    private val routineRepository: HomeRepository,
+    private val routineRepository: RoutineRepository,
 ) {
   suspend operator fun invoke(): List<RoutineModel> = routineRepository.getAllRoutine()
 }

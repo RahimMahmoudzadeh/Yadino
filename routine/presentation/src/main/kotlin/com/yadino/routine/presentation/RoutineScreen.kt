@@ -2,6 +2,7 @@ package com.yadino.routine.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,9 +45,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rahim.yadino.base.dateTime.modal.TimeDate
 import com.rahim.yadino.base.use
 import com.rahim.yadino.calculateMonthName
-import com.rahim.yadino.dateTime.modal.TimeDate
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.component.ShowToastShort
@@ -56,13 +57,11 @@ import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.font_medium
 import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.errorMessage
-import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
-import com.rahim.yadino.routine.component.DialogAddRoutine
-import com.rahim.yadino.routine.component.ListRoutines
-import com.rahim.yadino.routine.model.RoutineModel
-import dev.chrisbanes.snapper.ExperimentalSnapperApi
-import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
+import com.rahim.yadino.routine.presentation.R
+import com.yadino.routine.domain.model.RoutineModel
+import com.yadino.routine.presentation.component.DialogAddRoutine
+import com.yadino.routine.presentation.component.ListRoutines
 import timber.log.Timber
 
 @Composable
@@ -187,7 +186,7 @@ private fun RoutineScreen(
         if (it.isChecked) {
           Toast.makeText(
             context,
-            R.string.not_update_checked_routine,
+            com.rahim.yadino.library.designsystem.R.string.not_update_checked_routine,
             Toast.LENGTH_SHORT,
           ).show()
           return@GetRoutines
@@ -203,7 +202,7 @@ private fun RoutineScreen(
         if (it.isChecked) {
           Toast.makeText(
             context,
-            com.rahim.yadino.feature.routine.R.string.not_removed_checked_routine,
+            R.string.not_removed_checked_routine,
             Toast.LENGTH_SHORT,
           ).show()
           return@GetRoutines
@@ -223,9 +222,9 @@ private fun RoutineScreen(
       }
       routineModelDeleteDialog.value = null
     },
-    message = stringResource(id = R.string.can_you_delete),
+    message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.can_you_delete),
     okMessage = stringResource(
-      id = R.string.ok,
+      id = com.rahim.yadino.library.designsystem.R.string.ok,
     ),
   )
   if (openDialog) {
@@ -237,9 +236,9 @@ private fun RoutineScreen(
       updateRoutine = routineModelUpdateDialog.value?.copy(
         explanation = routineModelUpdateDialog.value?.explanation?.let {
           if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
-            stringResource(id = R.string.routine_right_sample)
+            stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_right_sample)
           } else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation) {
-            stringResource(id = R.string.routine_left_sample)
+            stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_left_sample)
           } else {
             it
           }
@@ -266,8 +265,8 @@ private fun RoutineScreen(
 
   ErrorDialog(
     isOpen = errorClick,
-    message = stringResource(id = R.string.better_performance_access),
-    okMessage = stringResource(id = R.string.setting),
+    message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.better_performance_access),
+    okMessage = stringResource(id = com.rahim.yadino.library.designsystem.R.string.setting),
     isClickOk = {
       if (it) {
         goSettingPermission(context)
@@ -288,13 +287,13 @@ private fun GetRoutines(
   if (routines.isEmpty()) {
     if (searchText.isNotEmpty()) {
       EmptyMessage(
-        messageEmpty = R.string.search_empty_routine,
-        painter = com.rahim.yadino.feature.routine.R.drawable.routine_empty,
+        messageEmpty = com.rahim.yadino.library.designsystem.R.string.search_empty_routine,
+        painter = R.drawable.routine_empty,
       )
     } else {
       EmptyMessage(
-        messageEmpty = com.rahim.yadino.feature.routine.R.string.not_routine,
-        painter = com.rahim.yadino.feature.routine.R.drawable.routine_empty,
+        messageEmpty = R.string.not_routine,
+        painter = R.drawable.routine_empty,
       )
     }
   } else {
@@ -318,7 +317,6 @@ private fun GetRoutines(
   }
 }
 
-@OptIn(ExperimentalSnapperApi::class)
 @Composable
 private fun ItemTimeDate(
   times: List<TimeDate>,
@@ -332,7 +330,7 @@ private fun ItemTimeDate(
   weekIncrease: () -> Unit,
   weekDecrease: () -> Unit,
 ) {
-  val arrayString = stringArrayResource(id = R.array.half_week_name)
+  val arrayString = stringArrayResource(id = com.rahim.yadino.library.designsystem.R.array.half_week_name)
 
   Row(
     modifier = Modifier.padding(top = 28.dp),
@@ -344,7 +342,7 @@ private fun ItemTimeDate(
     ) {
       Icon(
         tint = MaterialTheme.colorScheme.primary,
-        painter = painterResource(id = R.drawable.less_then),
+        painter = painterResource(id = com.rahim.yadino.library.designsystem.R.drawable.less_then),
         contentDescription = "less then sign",
       )
     }
@@ -362,7 +360,7 @@ private fun ItemTimeDate(
       },
     ) {
       Icon(
-        painterResource(id = R.drawable.greater_then),
+        painterResource(id = com.rahim.yadino.library.designsystem.R.drawable.greater_then),
         contentDescription = "greater then sign",
         tint = MaterialTheme.colorScheme.primary,
       )
@@ -400,7 +398,7 @@ private fun ItemTimeDate(
     ) {
       Icon(
         tint = MaterialTheme.colorScheme.primary,
-        painter = painterResource(id = R.drawable.less_then),
+        painter = painterResource(id = com.rahim.yadino.library.designsystem.R.drawable.less_then),
         contentDescription = "less then sign",
       )
     }
@@ -422,7 +420,7 @@ private fun ItemTimeDate(
       },
     ) {
       Icon(
-        painterResource(id = R.drawable.greater_then),
+        painterResource(id = com.rahim.yadino.library.designsystem.R.drawable.greater_then),
         contentDescription = "greater then sign",
         tint = MaterialTheme.colorScheme.primary,
       )
@@ -430,7 +428,6 @@ private fun ItemTimeDate(
   }
 }
 
-@OptIn(ExperimentalSnapperApi::class)
 @Composable
 fun ListTimes(
   modifier: Modifier = Modifier,

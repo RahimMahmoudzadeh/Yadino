@@ -26,8 +26,7 @@ import com.rahim.yadino.designsystem.component.ItemListNote
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.dialog.DialogAddNote
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
-import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.note.model.NoteModel
+import com.rahim.yadino.note.domain.model.NoteModel
 
 @Composable
 internal fun NoteRoute(
@@ -92,13 +91,13 @@ private fun NoteScreen(
     if (notes.isEmpty()) {
       if (searchText.isNotEmpty()) {
         EmptyMessage(
-          messageEmpty = com.rahim.yadino.feature.note.R.string.search_empty_note,
-          painter = com.rahim.yadino.feature.note.R.drawable.empty_note,
+          messageEmpty = R.string.search_empty_note,
+          painter = R.drawable.empty_note,
         )
       } else {
         EmptyMessage(
-          messageEmpty = com.rahim.yadino.feature.note.R.string.not_note,
-          painter = com.rahim.yadino.feature.note.R.drawable.empty_note,
+          messageEmpty = R.string.not_note,
+          painter = R.drawable.empty_note,
         )
       }
     } else {
@@ -111,7 +110,7 @@ private fun NoteScreen(
           if (it.isChecked) {
             Toast.makeText(
               context,
-              com.rahim.yadino.feature.note.R.string.not_update_checked_note,
+              R.string.not_update_checked_note,
               Toast.LENGTH_SHORT,
             ).show()
             return@ItemsNote
@@ -123,7 +122,7 @@ private fun NoteScreen(
           if (it.isChecked) {
             Toast.makeText(
               context,
-              com.rahim.yadino.feature.note.R.string.not_removed_checked_note,
+              R.string.not_removed_checked_note,
               Toast.LENGTH_SHORT,
             ).show()
             return@ItemsNote
@@ -234,9 +233,9 @@ fun ShowDialogDelete(
     isClickOk = {
       click(it)
     },
-    message = stringResource(id = R.string.can_you_delete),
+    message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.can_you_delete),
     okMessage = stringResource(
-      id = R.string.ok,
+      id = com.rahim.yadino.library.designsystem.R.string.ok,
     ),
   )
 }

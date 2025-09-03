@@ -52,8 +52,8 @@ class NotificationManager @Inject constructor() : AlarmSong, Alarm {
 
   fun createFullNotification(context: Context, routineName: String, routineIdAlarm: Long, routineExplanation: String) {
     val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {
-      Intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-        Intent.putExtra(Constants.KEY_LAUNCH_NAME, routineName)
+      addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+      putExtra(Constants.KEY_LAUNCH_NAME, routineName)
     }
     val fullScreenPendingIntent = PendingIntent.getActivity(
       context,

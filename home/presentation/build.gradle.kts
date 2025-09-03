@@ -15,5 +15,6 @@ dependencies {
 
   libs.run {
     implementation(androidx.core.splashscreen)
+    implementation(datetime)
   }
 }

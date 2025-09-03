@@ -30,8 +30,4 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
       }
     }
   }
-
-  extensions.configure<ComposeCompilerGradlePluginExtension> {
-    featureFlags.add(ComposeFeatureFlag.StrongSkipping)
-  }
 }

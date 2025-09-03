@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="not_removed_checked_routine">روتین پایان یافته را نمی توان حذف کرد!</string>
+    <string name="not_routine">!شما هنوز روتینی ثبت نکردید</string>
+    <string name="list_work_day">لیست کار های امروز</string>
+    <string name="not_alarm">آلارم فعالی ندارید</string>
+    <string name="you">شما</string>
+    <string name="have_alarm">آلارم فعال دارید</string>
+    <string name="completed">تکمیل شده</string>
+</resources>

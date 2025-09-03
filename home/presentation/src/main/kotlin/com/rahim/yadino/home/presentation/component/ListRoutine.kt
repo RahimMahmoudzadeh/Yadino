@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.component
+package com.rahim.yadino.home.presentation.component
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
@@ -6,8 +6,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.designsystem.component.ItemRoutine
-import com.yadino.routine.domain.model.RoutineModel
 
 @Composable()
 fun ListRoutines(
