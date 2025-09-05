@@ -14,13 +14,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 internal class ProvideModule {
-
-  @Provides
-  @Singleton
-  fun provideAlarmManager(@ApplicationContext context: Context): AlarmManager {
-    return context.getSystemService(AlarmManager::class.java)
-  }
-
   @Provides
   @Singleton
   fun provideReminderScheduler(alarmManager: AlarmManager, @ApplicationContext context: Context): ReminderScheduler {

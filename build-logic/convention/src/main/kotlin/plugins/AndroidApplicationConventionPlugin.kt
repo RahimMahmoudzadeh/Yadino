@@ -48,6 +48,8 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
           .forEach { add("implementation", project(it.path)) }
         subprojects.filter { it.path.startsWith(":library:", false) }
           .forEach { add("implementation", project(it.path)) }
+        subprojects.filter { it.path.startsWith(":core:", false) }
+          .forEach { add("implementation", project(it.path)) }
       }
     }
   }

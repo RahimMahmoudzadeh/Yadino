@@ -5,7 +5,7 @@ plugins {
     alias(android.application)
     alias(android.application.compose)
     alias(android.hilt)
-//    alias(android.application.firebase)
+    alias(android.application.firebase)
     alias(android.room)
   }
 }

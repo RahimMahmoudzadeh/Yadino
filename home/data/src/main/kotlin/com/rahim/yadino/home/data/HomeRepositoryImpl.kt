@@ -24,7 +24,7 @@ import timber.log.Timber
 import javax.inject.Inject
 import kotlin.random.Random
 
-class RoutineHomeRepositoryImpl @Inject constructor(
+class HomeRepositoryImpl @Inject constructor(
   private val routineDao: RoutineDao,
   private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : HomeRepository {

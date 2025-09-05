@@ -299,8 +299,8 @@ private fun GetRoutines(
   } else {
     ListRoutines(
       modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 16.dp),
+          .fillMaxWidth()
+          .padding(top = 16.dp),
       routines = routines,
       checkedRoutine = {
         Timber.tag("routineGetNameDay")
@@ -348,8 +348,8 @@ private fun ItemTimeDate(
     }
     Text(
       modifier = Modifier
-        .padding(top = 12.dp)
-        .fillMaxWidth(0.3f),
+          .padding(top = 12.dp)
+          .fillMaxWidth(0.3f),
       text = "${yearChecked.toString().persianLocate()} ${monthChecked.calculateMonthName()}",
       color = MaterialTheme.colorScheme.primary,
       textAlign = TextAlign.Center,
@@ -369,8 +369,8 @@ private fun ItemTimeDate(
 
   Row(
     modifier = Modifier
-      .padding(top = 18.dp, end = 50.dp, start = 50.dp)
-      .fillMaxWidth(),
+        .padding(top = 18.dp, end = 50.dp, start = 50.dp)
+        .fillMaxWidth(),
     horizontalArrangement = Arrangement.SpaceBetween,
   ) {
     arrayString.reversed().forEachIndexed { index, nameDay ->
@@ -390,8 +390,8 @@ private fun ItemTimeDate(
   Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
     IconButton(
       modifier = Modifier
-        .weight(1f)
-        .padding(top = 10.dp),
+          .weight(1f)
+          .padding(top = 10.dp),
       onClick = {
         weekIncrease()
       },
@@ -404,8 +404,8 @@ private fun ItemTimeDate(
     }
     ListTimes(
       modifier = Modifier
-        .weight(8f)
-        .padding(top = 6.dp),
+          .weight(8f)
+          .padding(top = 6.dp),
       times = times,
       screenWidth = screenWidth,
       dayCheckedNumber = dayCheckedNumber,
@@ -413,8 +413,8 @@ private fun ItemTimeDate(
     )
     IconButton(
       modifier = Modifier
-        .weight(1f)
-        .padding(top = 10.dp),
+          .weight(1f)
+          .padding(top = 10.dp),
       onClick = {
         weekDecrease()
       },
@@ -437,6 +437,7 @@ fun ListTimes(
   indexDay: Int,
 ) {
   val listStateDay = rememberLazyListState()
+  val flingBehavior = rememberSnapFlingBehavior(lazyListState = listStateDay)
 
   LaunchedEffect(indexDay) {
     if (indexDay > 0) {
@@ -449,12 +450,7 @@ fun ListTimes(
       userScrollEnabled = false,
       modifier = modifier,
       state = listStateDay,
-      flingBehavior = rememberSnapperFlingBehavior(
-        lazyListState = listStateDay,
-        snapIndex = { _, _, _ ->
-          indexDay
-        },
-      ),
+      flingBehavior = flingBehavior,
     ) {
       items(
         items = times,
@@ -480,29 +476,29 @@ private fun DayItems(
 ) {
   ClickableText(
     modifier = Modifier
-      .padding(
-        top = 4.dp,
-        start = if (timeDate.isChecked) if (screenWidth <= 420) 5.dp else 7.dp else 6.dp,
-      )
-      .size(if (screenWidth <= 400) 36.dp else if (screenWidth in 400..420) 39.dp else 43.dp)
-      .clip(CircleShape)
-      .background(
-        brush = if (timeDate.isChecked) {
-          Brush.verticalGradient(
-            gradientColors,
-          )
-        } else {
-          Brush.horizontalGradient(
-            listOf(
-              MaterialTheme.colorScheme.background,
-              MaterialTheme.colorScheme.background,
-            ),
-          )
-        },
-      )
-      .padding(
-        top = if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp,
-      ),
+        .padding(
+            top = 4.dp,
+            start = if (timeDate.isChecked) if (screenWidth <= 420) 5.dp else 7.dp else 6.dp,
+        )
+        .size(if (screenWidth <= 400) 36.dp else if (screenWidth in 400..420) 39.dp else 43.dp)
+        .clip(CircleShape)
+        .background(
+            brush = if (timeDate.isChecked) {
+                Brush.verticalGradient(
+                    gradientColors,
+                )
+            } else {
+                Brush.horizontalGradient(
+                    listOf(
+                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.background,
+                    ),
+                )
+            },
+        )
+        .padding(
+            top = if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp,
+        ),
     onClick = {
       if (timeDate.dayNumber > 0) {
         dayCheckedNumber(

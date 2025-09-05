@@ -1,16 +1,18 @@
 package com.rahim.di
 
 import android.content.Context
-import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepositoryImpl
 import com.rahim.FlavorImpl
 import com.rahim.data.flavor.Flavor
+import com.rahim.home.domain.HomeRepository
 import com.rahim.yadino.base.dateTime.DateTimeRepository
-import com.rahim.yadino.datetimeRepository.DateTimeRepositoryImpl
-import com.rahim.yadino.note.NoteRepository
-import com.rahim.yadino.noteRepository.NoteRepositoryImpl
-import com.rahim.yadino.routine.RepositoryRoutine
-import com.rahim.yadino.routineRepository.RoutineRepositoryImpl
+import com.rahim.yadino.base.dateTime.DateTimeRepositoryImpl
+import com.rahim.yadino.home.data.HomeRepositoryImpl
+import com.rahim.yadino.note.data.NoteRepositoryImpl
+import com.rahim.yadino.note.domain.NoteRepository
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
+import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepositoryImpl
+import com.yadino.routine.data.RoutineRepositoryImpl
+import com.yadino.routine.domain.RoutineRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -28,7 +30,11 @@ abstract class BindsRepo {
 
   @Binds
   @Singleton
-  abstract fun provideRoutineRepo(routineRepositoryImpl: RoutineRepositoryImpl): RepositoryRoutine
+  abstract fun provideRoutineRepo(routineRepositoryImpl: RoutineRepositoryImpl): RoutineRepository
+
+  @Binds
+  @Singleton
+  abstract fun provideHomeRepo(homeRepositoryImpl: HomeRepositoryImpl): HomeRepository
 
   @Binds
   @Singleton

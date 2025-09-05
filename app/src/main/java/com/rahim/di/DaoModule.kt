@@ -1,6 +1,6 @@
 package com.rahim.di
 
-import com.rahim.yadino.database.AppDatabase
+import com.rahim.yadino.db.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

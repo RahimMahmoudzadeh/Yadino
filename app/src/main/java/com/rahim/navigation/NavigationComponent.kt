@@ -7,13 +7,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
-import com.rahim.yadino.calender.navigation.calenderScreen
-import com.rahim.yadino.note.navigation.noteScreen
-import com.rahim.yadino.routine.alarmScreen.navigation.historyScreen
-import com.rahim.yadino.routine.homeScreen.navigation.homeScreen
-import com.rahim.yadino.routine.homeScreen.navigation.navigateToHome
-import com.rahim.yadino.routine.routineScreen.navigation.routineScreen
-import com.rahim.yadino.welcome.navigation.onBoardingScreen
+import com.rahim.yadino.home.presentation.navigation.homeScreen
+import com.rahim.yadino.home.presentation.navigation.navigateToHome
+import com.rahim.yadino.note.presentation.navigation.noteScreen
+import com.rahim.yadino.onboarding.presentation.navigation.onBoardingScreen
+import com.yadino.routine.presentation.alarmScreen.navigation.historyScreen
+import com.yadino.routine.presentation.navigation.routineScreen
 
 @Composable
 fun NavigationComponent(
@@ -40,6 +39,6 @@ fun NavigationComponent(
       clickSearch = clickSearch,
     )
     historyScreen()
-    calenderScreen()
+//    calenderScreen()
   }
 }
