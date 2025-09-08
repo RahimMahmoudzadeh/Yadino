@@ -1,7 +1,7 @@
 package com.rahim.utils
 
 import androidx.compose.runtime.Immutable
-import com.rahim.data.flavor.StateOfClickItemDrawable
+import com.rahim.data.distributionActions.StateOfClickItemDrawable
 import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.navigation.component.DrawerItemType
 

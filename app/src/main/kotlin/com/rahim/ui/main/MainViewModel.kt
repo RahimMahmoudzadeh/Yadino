@@ -2,7 +2,7 @@ package com.rahim.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rahim.data.flavor.Flavor
+import com.rahim.data.distributionActions.AppDistributionActions
 import com.rahim.utils.MainContract
 import com.rahim.yadino.base.dateTime.DateTimeRepository
 import com.rahim.yadino.di.IODispatcher
@@ -27,7 +27,7 @@ class MainViewModel @Inject constructor(
   private val dateTimeRepository: DateTimeRepository,
   private val repositoryRoutine: RoutineRepository,
   private val noteRepository: NoteRepository,
-  private val flavor: Flavor,
+  private val appDistributionActions: AppDistributionActions,
   @IODispatcher
   private val ioDispatcher: CoroutineDispatcher,
   private val sharedPreferencesRepository: SharedPreferencesRepository,
@@ -50,13 +50,13 @@ class MainViewModel @Inject constructor(
   private fun clickDrawerItem(drawerItemType: DrawerItemType) {
     when (drawerItemType) {
       is DrawerItemType.RateToApp -> {
-        val state = flavor.drawerItemType(com.rahim.data.flavor.DrawerItemType.RateToApp)
+        val state = appDistributionActions.drawerItemType(com.rahim.data.distributionActions.DrawerItemType.RateToApp)
         mutableState.update {
           it.copy(stateOfClickItemDrawable = state)
         }
       }
       is DrawerItemType.ShareWithFriends -> {
-        val state = flavor.drawerItemType(com.rahim.data.flavor.DrawerItemType.ShareWithFriends)
+        val state = appDistributionActions.drawerItemType(com.rahim.data.distributionActions.DrawerItemType.ShareWithFriends)
         mutableState.update {
           it.copy(stateOfClickItemDrawable = state)
         }

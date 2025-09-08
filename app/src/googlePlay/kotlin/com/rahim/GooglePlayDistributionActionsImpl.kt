@@ -4,14 +4,13 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.core.content.ContextCompat.startActivity
+import com.rahim.data.flavor.AppDistributionActions
 import com.rahim.data.flavor.DrawerItemType
-import com.rahim.data.flavor.Flavor
 import com.rahim.data.flavor.StateOfClickItemDrawable
 import com.rahim.yadino.Constants.GOOGLE_PLAY_LINK
 import javax.inject.Inject
 
-class FlavorImpl @Inject constructor(private val context: Context) : Flavor {
+class GooglePlayDistributionActionsImpl @Inject constructor(private val context: Context) : AppDistributionActions {
   override fun drawerItemType(drawerItemType: DrawerItemType): StateOfClickItemDrawable {
     return when (drawerItemType) {
       DrawerItemType.RateToApp -> {

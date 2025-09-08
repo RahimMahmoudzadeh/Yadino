@@ -1,8 +1,5 @@
 package com.rahim.di
 
-import android.content.Context
-import com.rahim.FlavorImpl
-import com.rahim.data.flavor.Flavor
 import com.rahim.home.domain.HomeRepository
 import com.rahim.yadino.base.dateTime.DateTimeRepository
 import com.rahim.yadino.base.dateTime.DateTimeRepositoryImpl
@@ -15,9 +12,7 @@ import com.yadino.routine.data.RoutineRepositoryImpl
 import com.yadino.routine.domain.RoutineRepository
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -43,12 +38,4 @@ abstract class BindsRepo {
   @Binds
   @Singleton
   abstract fun provideSharedRepo(sharedPreferencesRepositoryImpl: SharedPreferencesRepositoryImpl): SharedPreferencesRepository
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object ProvideRepo {
-  @Provides
-  @Singleton
-  fun provideFlavor(@ApplicationContext context: Context): Flavor = FlavorImpl(context)
 }

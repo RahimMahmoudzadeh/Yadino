@@ -1,4 +1,4 @@
-package com.rahim.data.flavor
+package com.rahim.data.distributionActions
 
 sealed interface DrawerItemType {
   data object ShareWithFriends : DrawerItemType
@@ -10,6 +10,6 @@ sealed interface StateOfClickItemDrawable {
   data object IntentSuccess : StateOfClickItemDrawable
 }
 
-interface Flavor {
+interface AppDistributionActions {
   fun drawerItemType(drawerItemType: DrawerItemType): StateOfClickItemDrawable
 }
