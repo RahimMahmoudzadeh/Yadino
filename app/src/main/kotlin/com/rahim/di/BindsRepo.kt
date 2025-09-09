@@ -1,8 +1,8 @@
 package com.rahim.di
 
 import com.rahim.home.domain.HomeRepository
-import com.rahim.yadino.base.dateTime.DateTimeRepository
-import com.rahim.yadino.base.dateTime.DateTimeRepositoryImpl
+import com.rahim.home.domain.dateTime.DateTimeRepository
+import com.rahim.yadino.home.data.dateTime.DateTimeRepositoryImpl
 import com.rahim.yadino.home.data.HomeRepositoryImpl
 import com.rahim.yadino.note.data.NoteRepositoryImpl
 import com.rahim.yadino.note.domain.NoteRepository
