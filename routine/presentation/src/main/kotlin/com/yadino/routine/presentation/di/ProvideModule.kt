@@ -2,7 +2,6 @@ package com.yadino.routine.presentation.di
 
 import android.app.AlarmManager
 import android.content.Context
-import com.yadino.routine.domain.ReminderScheduler
 import com.yadino.routine.presentation.ReminderSchedulerImpl
 import dagger.Module
 import dagger.Provides

@@ -3,13 +3,12 @@ package com.rahim.ui.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.data.distributionActions.AppDistributionActions
-import com.rahim.utils.MainContract
-import com.rahim.home.domain.dateTime.DateTimeRepository
+import com.rahim.home.domain.repo.dateTime.DateTimeRepository
 import com.rahim.yadino.di.IODispatcher
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.note.domain.NoteRepository
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
-import com.yadino.routine.domain.RoutineRepository
+import com.yadino.routine.domain.repo.RoutineRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +33,7 @@ class MainViewModel @Inject constructor(
 ) :
   ViewModel(), MainContract {
 
-  private val mutableState = MutableStateFlow<MainContract.MainState>(MainContract.MainState())
+  private val mutableState = MutableStateFlow(MainContract.MainState())
   override val state: StateFlow<MainContract.MainState> = mutableState.onStart {
     initialize()
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), MainContract.MainState())

@@ -1,4 +1,4 @@
-package com.rahim.utils
+package com.rahim.ui.main
 
 import androidx.compose.runtime.Immutable
 import com.rahim.data.distributionActions.StateOfClickItemDrawable
@@ -15,10 +15,10 @@ interface MainContract : UnidirectionalViewModel<MainContract.MainEvent, MainCon
 
   @Immutable
   data class MainState(
-    val isLoading: Boolean = false,
-    val isDarkTheme: Boolean? = false,
-    val haveAlarm: Boolean = false,
-    val isShowWelcomeScreen: Boolean = true,
-    val stateOfClickItemDrawable: StateOfClickItemDrawable? = null,
+      val isLoading: Boolean = false,
+      val isDarkTheme: Boolean? = false,
+      val haveAlarm: Boolean = false,
+      val isShowWelcomeScreen: Boolean = true,
+      val stateOfClickItemDrawable: StateOfClickItemDrawable? = null,
   )
 }

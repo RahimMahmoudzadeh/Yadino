@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation.wekeup
+package com.rahim.ui.wakeup
 
 import android.app.KeyguardManager
 import android.os.Build
@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,62 +55,62 @@ class WakeupActivity : ComponentActivity() {
       var speed by remember { mutableFloatStateOf(1f) }
       val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.data))
 
-      YadinoTheme {
-        Surface(
-          modifier = Modifier
-            .fillMaxSize()
-            .background(Brush.linearGradient(gradientColors)),
-        ) {
-          Column(
-            modifier = Modifier
-              .fillMaxSize()
-              .background(Brush.linearGradient(gradientColors)),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-          ) {
-            Image(
-              modifier = Modifier.padding(top = 28.dp),
-              painter = painterResource(id = R.drawable.img_app_wekup),
-              contentDescription = "empty list home",
-            )
-            Text(
-              fontSize = 32.sp,
-              modifier = Modifier.padding(top = 34.dp),
-              text = resources.getString(R.string.my_firend),
-              color = Color.White,
-            )
-            Text(
-              textAlign = TextAlign.Center,
-              fontSize = 32.sp,
-              modifier = Modifier
-                .padding(top = 10.dp)
-                .fillMaxWidth(),
-              color = Color.White,
-              text = resources.getString(R.string.forget_work, routineName),
-            )
-            Column {
-              val progress by animateLottieCompositionAsState(
-                composition,
-                iterations = LottieConstants.IterateForever,
-                isPlaying = isPlaying,
-                speed = speed,
-                restartOnPlay = false,
-              )
-              LottieAnimation(
-                composition,
-                {
-                  progress
-                },
-                modifier = Modifier
-                  .size(300.dp)
-                  .clickable {
-                    finish()
-                  },
-              )
+        YadinoTheme {
+            Surface(
+                modifier = Modifier.Companion
+                    .fillMaxSize()
+                    .background(Brush.Companion.linearGradient(gradientColors)),
+            ) {
+                Column(
+                    modifier = Modifier.Companion
+                        .fillMaxSize()
+                        .background(Brush.Companion.linearGradient(gradientColors)),
+                    horizontalAlignment = Alignment.Companion.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Image(
+                        modifier = Modifier.Companion.padding(top = 28.dp),
+                        painter = painterResource(id = R.drawable.img_app_wekup),
+                        contentDescription = "empty list home",
+                    )
+                    Text(
+                        fontSize = 32.sp,
+                        modifier = Modifier.Companion.padding(top = 34.dp),
+                        text = resources.getString(R.string.my_firend),
+                        color = Color.Companion.White,
+                    )
+                    Text(
+                        textAlign = TextAlign.Companion.Center,
+                        fontSize = 32.sp,
+                        modifier = Modifier.Companion
+                            .padding(top = 10.dp)
+                            .fillMaxWidth(),
+                        color = Color.Companion.White,
+                        text = resources.getString(R.string.forget_work, routineName),
+                    )
+                    Column {
+                        val progress by animateLottieCompositionAsState(
+                            composition,
+                            iterations = LottieConstants.IterateForever,
+                            isPlaying = isPlaying,
+                            speed = speed,
+                            restartOnPlay = false,
+                        )
+                        LottieAnimation(
+                            composition,
+                            {
+                                progress
+                            },
+                            modifier = Modifier.Companion
+                                .size(300.dp)
+                                .clickable {
+                                    finish()
+                                },
+                        )
+                    }
+                }
             }
-          }
         }
-      }
     }
   }
 

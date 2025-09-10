@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation
+package com.rahim.data.reminder
 
 import android.content.BroadcastReceiver
 import android.content.Context

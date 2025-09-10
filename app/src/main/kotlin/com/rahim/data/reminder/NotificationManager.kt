@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation
+package com.rahim.data.reminder
 
 import android.Manifest
 import android.app.AlarmManager
@@ -12,11 +12,11 @@ import android.os.CountDownTimer
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.rahim.home.domain.alarm.Alarm
+import com.rahim.home.domain.alarm.AlarmSong
+import com.rahim.ui.wakeup.WakeupActivity
 import com.rahim.yadino.Constants
 import com.rahim.yadino.library.designsystem.R
-import com.yadino.routine.domain.alarm.Alarm
-import com.yadino.routine.domain.alarm.AlarmSong
-import com.yadino.routine.presentation.wekeup.WakeupActivity
 import java.util.Random
 import javax.inject.Inject
 
@@ -53,7 +53,7 @@ class NotificationManager @Inject constructor() : AlarmSong, Alarm {
   fun createFullNotification(context: Context, routineName: String, routineIdAlarm: Long, routineExplanation: String) {
     val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {
       addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-        putExtra(Constants.KEY_LAUNCH_NAME, routineName)
+      putExtra(Constants.KEY_LAUNCH_NAME, routineName)
     }
     val fullScreenPendingIntent = PendingIntent.getActivity(
       context,

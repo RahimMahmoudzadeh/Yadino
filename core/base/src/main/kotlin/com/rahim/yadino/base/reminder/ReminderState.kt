@@ -1,4 +1,4 @@
-package com.rahim.home.domain.model
+package com.rahim.yadino.base.reminder
 
 import com.rahim.yadino.enums.error.ErrorMessageCode
 

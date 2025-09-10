@@ -55,7 +55,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.BuildConfig
 import com.rahim.data.distributionActions.StateOfClickItemDrawable
 import com.rahim.navigation.NavigationComponent
-import com.rahim.utils.MainContract
+import com.rahim.ui.main.MainContract
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
 import com.rahim.yadino.designsystem.component.goSettingPermission

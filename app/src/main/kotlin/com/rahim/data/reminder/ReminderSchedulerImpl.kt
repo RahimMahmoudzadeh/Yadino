@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation
+package com.rahim.data.reminder
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -10,17 +10,17 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.rahim.yadino.base.reminder.ReminderScheduler
+import com.rahim.yadino.base.reminder.ReminderState
 import com.rahim.yadino.Constants
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.yadino.routine.domain.ReminderScheduler
-import com.yadino.routine.domain.model.ReminderState
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
 
 class ReminderSchedulerImpl @Inject constructor(
-  private val alarmManager: AlarmManager,
-  private val context: Context,
+    private val alarmManager: AlarmManager,
+    private val context: Context,
 ) : ReminderScheduler {
 
   override fun setReminder(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Long): ReminderState {
@@ -122,7 +122,7 @@ class ReminderSchedulerImpl @Inject constructor(
     alarmManager.cancel(
       pendingIntent,
     )
-    delay(100)
+      delay(100)
   }
 
   @SuppressLint("InlinedApi")
