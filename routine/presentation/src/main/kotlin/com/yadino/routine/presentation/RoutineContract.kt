@@ -2,9 +2,10 @@ package com.yadino.routine.presentation
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.UnidirectionalViewModel
-import com.rahim.yadino.base.dateTime.modal.TimeDate
+import com.rahim.yadino.core.timeDate.model.TimeDateModel
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.yadino.routine.domain.model.RoutineModel
+import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
 
 interface RoutineContract : UnidirectionalViewModel<RoutineContract.RoutineEvent, RoutineContract.RoutineState> {
   @Immutable
@@ -14,7 +15,7 @@ interface RoutineContract : UnidirectionalViewModel<RoutineContract.RoutineEvent
     data class UpdateRoutine(val routine: RoutineModel) : RoutineEvent()
     data class DeleteRoutine(val routine: RoutineModel) : RoutineEvent()
     data class SearchRoutine(val routineName: String) : RoutineEvent()
-    data class GetRoutines(val timeDate: TimeDate) : RoutineEvent()
+    data class GetRoutines(val timeDate: TimeDateRoutinePresentationLayer) : RoutineEvent()
     data class MonthIncrease(val yearNumber: Int, val monthNumber: Int) : RoutineEvent()
     data class MonthDecrease(val yearNumber: Int, val monthNumber: Int) : RoutineEvent()
     data class JustMonthIncrease(val yearNumber: Int, val monthNumber: Int) : RoutineEvent()
@@ -38,8 +39,8 @@ interface RoutineContract : UnidirectionalViewModel<RoutineContract.RoutineEvent
     val currentYear: Int = 0,
     val currentMonth: Int = 0,
     val currentDay: Int = 0,
-    val times: List<TimeDate> = emptyList(),
-    val timesMonth: List<TimeDate> = emptyList(),
+    val times: List<TimeDateRoutinePresentationLayer> = emptyList(),
+    val timesMonth: List<TimeDateRoutinePresentationLayer> = emptyList(),
     val errorMessage: ErrorMessageCode? = null,
   )
 }

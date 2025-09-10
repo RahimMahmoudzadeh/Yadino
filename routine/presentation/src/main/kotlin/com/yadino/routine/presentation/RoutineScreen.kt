@@ -45,9 +45,9 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.rahim.yadino.base.dateTime.modal.TimeDate
 import com.rahim.yadino.base.use
 import com.rahim.yadino.calculateMonthName
+import com.rahim.yadino.core.timeDate.model.TimeDateModel
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.component.ShowToastShort
@@ -62,6 +62,7 @@ import com.rahim.yadino.routine.presentation.R
 import com.yadino.routine.domain.model.RoutineModel
 import com.yadino.routine.presentation.component.DialogAddRoutine
 import com.yadino.routine.presentation.component.ListRoutines
+import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
 import timber.log.Timber
 
 @Composable
@@ -127,7 +128,7 @@ private fun RoutineScreen(
   onOpenDialog: (isOpen: Boolean) -> Unit,
   clickSearch: Boolean,
   checkedRoutine: (RoutineModel) -> Unit,
-  dayCheckedNumber: (timeDate: TimeDate) -> Unit,
+  dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
   onUpdateRoutine: (RoutineModel) -> Unit,
   onAddRoutine: (RoutineModel) -> Unit,
   onDeleteRoutine: (RoutineModel) -> Unit,
@@ -319,12 +320,12 @@ private fun GetRoutines(
 
 @Composable
 private fun ItemTimeDate(
-  times: List<TimeDate>,
+  times: List<TimeDateRoutinePresentationLayer>,
   yearChecked: Int,
   monthChecked: Int,
   indexDay: Int,
   screenWidth: Int,
-  dayCheckedNumber: (timeDate: TimeDate) -> Unit,
+  dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
   monthIncrease: () -> Unit,
   monthDecrease: () -> Unit,
   weekIncrease: () -> Unit,
@@ -431,9 +432,9 @@ private fun ItemTimeDate(
 @Composable
 fun ListTimes(
   modifier: Modifier = Modifier,
-  times: List<TimeDate>,
+  times: List<TimeDateRoutinePresentationLayer>,
   screenWidth: Int,
-  dayCheckedNumber: (timeDate: TimeDate) -> Unit,
+  dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
   indexDay: Int,
 ) {
   val listStateDay = rememberLazyListState()
@@ -470,9 +471,9 @@ fun ListTimes(
 
 @Composable
 private fun DayItems(
-  timeDate: TimeDate,
+  timeDate: TimeDateRoutinePresentationLayer,
   screenWidth: Int,
-  dayCheckedNumber: (timeDate: TimeDate) -> Unit,
+  dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
 ) {
   ClickableText(
     modifier = Modifier

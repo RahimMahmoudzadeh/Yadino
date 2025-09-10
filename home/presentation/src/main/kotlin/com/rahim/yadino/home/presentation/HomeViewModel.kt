@@ -10,7 +10,6 @@ import com.rahim.home.domain.useCase.GetRemindersUseCase
 import com.rahim.home.domain.useCase.SearchRoutineUseCase
 import com.rahim.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.Resource
-import com.rahim.home.domain.dateTime.DateTimeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,23 +31,22 @@ class HomeViewModel @Inject constructor(
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val getRemindersUseCase: GetRemindersUseCase,
   private val searchRoutineUseCase: SearchRoutineUseCase,
-  private val dateTimeRepository: DateTimeRepository,
 ) : ViewModel(), HomeContract {
 
   private val mutableState = MutableStateFlow(HomeContract.HomeState())
   override val state: StateFlow<HomeContract.HomeState> = mutableState.onStart {
     setCurrentTime()
-    getRoutines(
-      yearNumber = dateTimeRepository.currentTimeYear,
-      monthNumber = dateTimeRepository.currentTimeMonth,
-      numberDay = dateTimeRepository.currentTimeDay,
-    )
+//    getRoutines(
+//      yearNumber = dateTimeRepository.currentTimeYear,
+//      monthNumber = dateTimeRepository.currentTimeMonth,
+//      numberDay = dateTimeRepository.currentTimeDay,
+//    )
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeContract.HomeState())
 
   override fun event(event: HomeContract.HomeEvent) {
     when (event) {
       HomeContract.HomeEvent.GetRoutines -> {
-        getRoutines()
+//        getRoutines()
       }
 
       is HomeContract.HomeEvent.AddRoutine -> {
@@ -68,32 +66,32 @@ class HomeViewModel @Inject constructor(
       }
 
       is HomeContract.HomeEvent.SearchRoutine -> {
-        getRoutines(searchText = event.routineName)
+//        getRoutines(searchText = event.routineName)
       }
     }
   }
 
   private fun setCurrentTime() {
-    mutableState.update {
-      it.copy(
-        currentDay = dateTimeRepository.currentTimeDay,
-        currentMonth = dateTimeRepository.currentTimeMonth,
-        currentYear = dateTimeRepository.currentTimeYear,
-      )
-    }
+//    mutableState.update {
+//      it.copy(
+//        currentDay = dateTimeRepository.currentTimeDay,
+//        currentMonth = dateTimeRepository.currentTimeMonth,
+//        currentYear = dateTimeRepository.currentTimeYear,
+//      )
+//    }
   }
   private var searchNameRoutine = ""
-  private fun getRoutines(yearNumber: Int = dateTimeRepository.currentTimeYear, monthNumber: Int = dateTimeRepository.currentTimeMonth, numberDay: Int = dateTimeRepository.currentTimeDay, searchText: String = "") {
-    viewModelScope.launch {
-      searchNameRoutine = searchText
-      if (searchText.isNotBlank()) {
-        Timber.tag("routineSearch").d("getRoutines->$searchNameRoutine")
-        searchRoutine(searchNameRoutine, this, yearNumber, monthNumber, numberDay)
-      } else {
-        getNormalRoutines(this, yearNumber, monthNumber, numberDay)
-      }
-    }
-  }
+//  private fun getRoutines(yearNumber: Int = dateTimeRepository.currentTimeYear, monthNumber: Int = dateTimeRepository.currentTimeMonth, numberDay: Int = dateTimeRepository.currentTimeDay, searchText: String = "") {
+//    viewModelScope.launch {
+//      searchNameRoutine = searchText
+//      if (searchText.isNotBlank()) {
+//        Timber.tag("routineSearch").d("getRoutines->$searchNameRoutine")
+//        searchRoutine(searchNameRoutine, this, yearNumber, monthNumber, numberDay)
+//      } else {
+//        getNormalRoutines(this, yearNumber, monthNumber, numberDay)
+//      }
+//    }
+//  }
 
   private suspend fun getNormalRoutines(scope: CoroutineScope, yearNumber: Int, monthNumber: Int, numberDay: Int) {
     getRemindersUseCase.invoke(monthNumber, numberDay, yearNumber, scope).collectLatest { routines ->

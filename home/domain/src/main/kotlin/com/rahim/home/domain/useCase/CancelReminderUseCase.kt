@@ -1,7 +1,7 @@
 package com.rahim.home.domain.useCase
 
-import com.rahim.home.domain.ReminderScheduler
-import com.rahim.home.domain.HomeRepository
+import com.rahim.yadino.base.reminder.ReminderScheduler
+import com.rahim.home.domain.repo.HomeRepository
 import com.rahim.home.domain.model.RoutineModel
 import javax.inject.Inject
 

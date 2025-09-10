@@ -3,7 +3,7 @@ package com.yadino.routine.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.Resource
-import com.rahim.yadino.base.dateTime.DateTimeRepository
+import com.rahim.yadino.core.timeDate.repo.DateTimeRepository
 import com.rahim.yadino.di.IODispatcher
 import com.yadino.routine.domain.model.RoutineModel
 import com.yadino.routine.domain.useCase.AddReminderUseCase
@@ -12,6 +12,7 @@ import com.yadino.routine.domain.useCase.DeleteReminderUseCase
 import com.yadino.routine.domain.useCase.GetRemindersUseCase
 import com.yadino.routine.domain.useCase.SearchRoutineUseCase
 import com.yadino.routine.domain.useCase.UpdateReminderUseCase
+import com.yadino.routine.presentation.mapper.toTimeDateRoutinePresentationLayer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -208,9 +209,9 @@ class RoutineScreenViewModel @Inject constructor(
       mutableState.update {
         it.copy(
           routines =
-          routines.sortedBy {
-            it.timeHours?.replace(":", "")?.toInt()
-          },
+            routines.sortedBy {
+              it.timeHours?.replace(":", "")?.toInt()
+            },
           routineLoading = false,
           errorMessage = null,
         )
@@ -286,7 +287,7 @@ class RoutineScreenViewModel @Inject constructor(
       dateTimeRepository.getTimes().catch {}.collect { times ->
         mutableState.update {
           it.copy(
-            times = times,
+            times = times.map { it.toTimeDateRoutinePresentationLayer() },
             errorMessage = null,
           )
         }
@@ -306,7 +307,7 @@ class RoutineScreenViewModel @Inject constructor(
         times[time] = times.first { it.dayNumber == DAY_MIN }.copy(isChecked = true)
       }
       mutableState.update {
-        it.copy(timesMonth = times, errorMessage = null)
+        it.copy(timesMonth = times.map { it.toTimeDateRoutinePresentationLayer() }, errorMessage = null)
       }
     }
   }

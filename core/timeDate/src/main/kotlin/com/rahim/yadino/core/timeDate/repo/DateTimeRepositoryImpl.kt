@@ -1,15 +1,14 @@
-package com.rahim.yadino.home.data.dateTime
+package com.rahim.yadino.core.timeDate.repo
 
 import com.rahim.yadino.Constants
-import com.rahim.home.domain.dateTime.DateTimeRepository
-import com.rahim.home.domain.model.TimeDateDomainLayerHome
+import com.rahim.yadino.core.timeDate.mapper.toTimeDate
+import com.rahim.yadino.core.timeDate.model.TimeDateModel
 import com.rahim.yadino.db.dao.dateTime.dao.TimeDao
 import com.rahim.yadino.db.dao.dateTime.model.TimeDateEntity
 import com.rahim.yadino.di.DefaultDispatcher
 import com.rahim.yadino.di.IODispatcher
 import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.enums.WeekName
-import com.rahim.yadino.home.data.mapper.toTimeDate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -59,9 +58,9 @@ class DateTimeRepositoryImpl @Inject constructor(
     timeDao.updateIsChecked(day, year, month)
   }
 
-  override fun getTimes(): Flow<List<TimeDateDomainLayerHome>> = timeDao.getAllTimeFlow().map { it.map { it.toTimeDate() } }
+  override fun getTimes(): Flow<List<TimeDateModel>> = timeDao.getAllTimeFlow().map { it.map { it.toTimeDate() } }
 
-  override suspend fun getTimesMonth(yearNumber: Int, monthNumber: Int): List<TimeDateDomainLayerHome> {
+  override suspend fun getTimesMonth(yearNumber: Int, monthNumber: Int): List<TimeDateModel> {
     val timesDb = timeDao.getSpecificMonthFromYear(monthNumber, yearNumber)
     return if (yearNumber != Constants.FIRST_YEAR || yearNumber != Constants.END_YEAR) {
       if (timesDb.isNotEmpty()) {
@@ -185,147 +184,147 @@ class DateTimeRepositoryImpl @Inject constructor(
   }
 
   private suspend fun calculateDate() {
-    withContext(defaultDispatcher) {
-      val currentDate = TimeDateEntity(
-        persianData.shDay,
-        false,
-        true,
-        calculateDay(persianData.dayName()),
-        persianData.shYear,
-        persianData.shMonth,
-        monthName = persianData.monthName(),
-        isChecked = true,
-      )
-      timeDao.insertTime(currentDate)
-      var yearKabesi = calculateYearKabesi()
-      calculateEmptyTime(yearKabesi)
-      launch {
-        val persianData = PersianDate()
-        val dates = ArrayList<TimeDateEntity>()
-        for (year in currentDate.yearNumber.minus(2)..Constants.END_YEAR) {
-          val isYearKabisy = yearKabesi.find { it == year } != null
-          for (month in 1..12) {
-            val dayNumber = if (month == 12) {
-              if (isYearKabisy) {
-                30
-              } else {
-                29
+      withContext(defaultDispatcher) {
+          val currentDate = TimeDateEntity(
+              persianData.shDay,
+              false,
+              true,
+              calculateDay(persianData.dayName()),
+              persianData.shYear,
+              persianData.shMonth,
+              monthName = persianData.monthName(),
+              isChecked = true,
+          )
+          timeDao.insertTime(currentDate)
+          var yearKabesi = calculateYearKabesi()
+          calculateEmptyTime(yearKabesi)
+          launch {
+              val persianData = PersianDate()
+              val dates = ArrayList<TimeDateEntity>()
+              for (year in currentDate.yearNumber.minus(2)..Constants.END_YEAR) {
+                  val isYearKabisy = yearKabesi.find { it == year } != null
+                  for (month in 1..12) {
+                      val dayNumber = if (month == 12) {
+                          if (isYearKabisy) {
+                              30
+                          } else {
+                              29
+                          }
+                      } else if (month in 7..11) 30 else 31
+                      for (day in 1..dayNumber) {
+                          persianData.initJalaliDate(year, month, day)
+                          val date = TimeDateEntity(
+                              day,
+                              false,
+                              checkDayIsToday(year, month, day),
+                              calculateDay(persianData.dayName()),
+                              year,
+                              month,
+                              checkDayIsToday(year, month, day),
+                              monthName = persianData.monthName(),
+                          )
+                          dates.add(date)
+                      }
+                  }
+                  timeDao.insertAllTime(dates)
+                  dates.clear()
               }
-            } else if (month in 7..11) 30 else 31
-            for (day in 1..dayNumber) {
-              persianData.initJalaliDate(year, month, day)
-              val date = TimeDateEntity(
-                day,
-                false,
-                checkDayIsToday(year, month, day),
-                calculateDay(persianData.dayName()),
-                year,
-                month,
-                checkDayIsToday(year, month, day),
-                monthName = persianData.monthName(),
-              )
-              dates.add(date)
-            }
           }
-          timeDao.insertAllTime(dates)
-          dates.clear()
-        }
-      }
-      launch {
-        val persianData = PersianDate()
-        val dates = ArrayList<TimeDateEntity>()
-        for (year in currentDate.yearNumber.minus(3) downTo Constants.FIRST_YEAR) {
-          val isYearKabisy = yearKabesi.find { it == year } != null
-          for (month in 1..12) {
-            val dayNumber = if (month == 12) {
-              if (isYearKabisy) {
-                30
-              } else {
-                29
+          launch {
+              val persianData = PersianDate()
+              val dates = ArrayList<TimeDateEntity>()
+              for (year in currentDate.yearNumber.minus(3) downTo Constants.FIRST_YEAR) {
+                  val isYearKabisy = yearKabesi.find { it == year } != null
+                  for (month in 1..12) {
+                      val dayNumber = if (month == 12) {
+                          if (isYearKabisy) {
+                              30
+                          } else {
+                              29
+                          }
+                      } else if (month in 7..11) 30 else 31
+                      for (day in 1..dayNumber) {
+                          persianData.initJalaliDate(year, month, day)
+                          val date = TimeDateEntity(
+                              day,
+                              false,
+                              checkDayIsToday(year, month, day),
+                              calculateDay(persianData.dayName()),
+                              year,
+                              month,
+                              checkDayIsToday(year, month, day),
+                              monthName = persianData.monthName(),
+                              versionNumber = if (year == Constants.FIRST_YEAR) Constants.VERSION_TIME_DB else 0,
+                          )
+                          dates.add(date)
+                      }
+                  }
+                  timeDao.insertAllTime(dates)
+                  dates.clear()
               }
-            } else if (month in 7..11) 30 else 31
-            for (day in 1..dayNumber) {
-              persianData.initJalaliDate(year, month, day)
-              val date = TimeDateEntity(
-                day,
-                false,
-                checkDayIsToday(year, month, day),
-                calculateDay(persianData.dayName()),
-                year,
-                month,
-                checkDayIsToday(year, month, day),
-                monthName = persianData.monthName(),
-                versionNumber = if (year == Constants.FIRST_YEAR) Constants.VERSION_TIME_DB else 0,
-              )
-              dates.add(date)
-            }
           }
-          timeDao.insertAllTime(dates)
-          dates.clear()
-        }
       }
-    }
   }
 
   private suspend fun calculateYearKabesi(): List<Int> {
     return withContext(ioDispatcher) {
-      val yearKabesi = ArrayList<Int>()
-      var index = 4
-      var differentBetweenYerKabesi = 7
-      for (year in Constants.FIRST_YEAR..Constants.END_YEAR) {
-        if (year >= Constants.FIRST_YEAR) {
-          differentBetweenYerKabesi += 1
+        val yearKabesi = ArrayList<Int>()
+        var index = 4
+        var differentBetweenYerKabesi = 7
+        for (year in Constants.FIRST_YEAR..Constants.END_YEAR) {
+            if (year >= Constants.FIRST_YEAR) {
+                differentBetweenYerKabesi += 1
+            }
+            if ((((index % 4 == 0 && year != 1374) || year == Constants.FIRST_YEAR) && differentBetweenYerKabesi !in 29..32) || differentBetweenYerKabesi == 33) {
+                if (differentBetweenYerKabesi == 33) {
+                    differentBetweenYerKabesi = 0
+                    index = 0
+                }
+                yearKabesi.add(year)
+            }
+            index += 1
         }
-        if ((((index % 4 == 0 && year != 1374) || year == Constants.FIRST_YEAR) && differentBetweenYerKabesi !in 29..32) || differentBetweenYerKabesi == 33) {
-          if (differentBetweenYerKabesi == 33) {
-            differentBetweenYerKabesi = 0
-            index = 0
-          }
-          yearKabesi.add(year)
-        }
-        index += 1
-      }
-      yearKabesi
+        yearKabesi
     }
   }
 
   private suspend fun calculateEmptyTime(yearKabesi: List<Int>) {
-    withContext(ioDispatcher) {
-      launch {
-        val persianData = PersianDate()
-        persianData.initJalaliDate(Constants.FIRST_YEAR, 1, 1)
-        val dateStart = TimeDateEntity(
-          1,
-          false,
-          checkDayIsToday(Constants.FIRST_YEAR, 1, 1),
-          calculateDay(persianData.dayName()),
-          Constants.FIRST_YEAR,
-          1,
-          checkDayIsToday(Constants.FIRST_YEAR, 1, 1),
-          monthName = persianData.monthName(),
-        )
-        val spaceStart =
-          calculateDaySpaceStartMonth(dateStart).map { it }
-        timeDao.insertAllTime(spaceStart)
+      withContext(ioDispatcher) {
+          launch {
+              val persianData = PersianDate()
+              persianData.initJalaliDate(Constants.FIRST_YEAR, 1, 1)
+              val dateStart = TimeDateEntity(
+                  1,
+                  false,
+                  checkDayIsToday(Constants.FIRST_YEAR, 1, 1),
+                  calculateDay(persianData.dayName()),
+                  Constants.FIRST_YEAR,
+                  1,
+                  checkDayIsToday(Constants.FIRST_YEAR, 1, 1),
+                  monthName = persianData.monthName(),
+              )
+              val spaceStart =
+                  calculateDaySpaceStartMonth(dateStart).map { it }
+              timeDao.insertAllTime(spaceStart)
+          }
+          launch {
+              val persianData = PersianDate()
+              val day = if (yearKabesi.find { it == Constants.END_YEAR } == null) 29 else 30
+              persianData.initJalaliDate(Constants.END_YEAR, 12, day)
+              val dateEnd = TimeDateEntity(
+                  day,
+                  false,
+                  checkDayIsToday(Constants.END_YEAR, 12, day),
+                  calculateDay(persianData.dayName()),
+                  Constants.END_YEAR,
+                  12,
+                  checkDayIsToday(Constants.END_YEAR, 12, day),
+                  monthName = persianData.monthName(),
+              )
+              val spaceEnd = calculateDaySpaceEndMonth(dateEnd).map { it }
+              timeDao.insertAllTime(spaceEnd)
+          }
       }
-      launch {
-        val persianData = PersianDate()
-        val day = if (yearKabesi.find { it == Constants.END_YEAR } == null) 29 else 30
-        persianData.initJalaliDate(Constants.END_YEAR, 12, day)
-        val dateEnd = TimeDateEntity(
-          day,
-          false,
-          checkDayIsToday(Constants.END_YEAR, 12, day),
-          calculateDay(persianData.dayName()),
-          Constants.END_YEAR,
-          12,
-          checkDayIsToday(Constants.END_YEAR, 12, day),
-          monthName = persianData.monthName(),
-        )
-        val spaceEnd = calculateDaySpaceEndMonth(dateEnd).map { it }
-        timeDao.insertAllTime(spaceEnd)
-      }
-    }
   }
 
   private fun calculateDay(shDay: String): String {

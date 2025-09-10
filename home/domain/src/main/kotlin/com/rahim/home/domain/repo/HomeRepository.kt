@@ -1,10 +1,10 @@
-package com.yadino.routine.domain
+package com.rahim.home.domain.repo
 
+import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.Resource
-import com.yadino.routine.domain.model.RoutineModel
 import kotlinx.coroutines.flow.Flow
 
-interface RoutineRepository {
+interface HomeRepository {
   suspend fun addSampleRoutine()
   suspend fun addRoutine(routineModel: RoutineModel)
   suspend fun removeRoutine(routineModel: RoutineModel): Int

@@ -1,6 +1,6 @@
-package com.rahim.yadino.home.data
+package com.rahim.yadino.home.data.repoImpl
 
-import com.rahim.home.domain.HomeRepository
+import com.rahim.home.domain.repo.HomeRepository
 import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.Constants
 import com.rahim.yadino.Resource
@@ -25,8 +25,8 @@ import javax.inject.Inject
 import kotlin.random.Random
 
 class HomeRepositoryImpl @Inject constructor(
-  private val routineDao: RoutineDao,
-  private val sharedPreferencesRepository: SharedPreferencesRepository,
+    private val routineDao: RoutineDao,
+    private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : HomeRepository {
   private val persianData = PersianDate()
   private val currentTimeDay = persianData.shDay
@@ -42,19 +42,19 @@ class HomeRepositoryImpl @Inject constructor(
 
     (0..1).forEachIndexed { index, it ->
       val routineEntity = RoutineEntity(
-        "تست${index.plus(1)}",
-        0,
-        currentTimeDay.toString(),
-        currentTimeDay,
-        currentTimeMonth,
-        currentTimeYear,
-        "12:00",
-        false,
-        explanation = if (index == 1) RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation else RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation,
-        isSample = true,
-        idAlarm = index.plus(1).toLong(),
-        timeInMillisecond = persianData.time,
-        id = index,
+          "تست${index.plus(1)}",
+          0,
+          currentTimeDay.toString(),
+          currentTimeDay,
+          currentTimeMonth,
+          currentTimeYear,
+          "12:00",
+          false,
+          explanation = if (index == 1) RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation else RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation,
+          isSample = true,
+          idAlarm = index.plus(1).toLong(),
+          timeInMillisecond = persianData.time,
+          id = index,
       )
       routineDao.addRoutine(routineEntity)
     }

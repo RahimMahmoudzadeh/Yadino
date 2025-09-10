@@ -1,4 +1,4 @@
-package com.yadino.routine.data
+package com.yadino.routine.data.repoImpl
 
 import com.rahim.yadino.Constants
 import com.rahim.yadino.Resource
@@ -9,7 +9,7 @@ import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
 import com.yadino.routine.data.mapper.toRoutineEntity
 import com.yadino.routine.data.mapper.toRoutineModel
-import com.yadino.routine.domain.RoutineRepository
+import com.yadino.routine.domain.repo.RoutineRepository
 import com.yadino.routine.domain.model.RoutineModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -25,8 +25,8 @@ import javax.inject.Inject
 import kotlin.random.Random
 
 class RoutineRepositoryImpl @Inject constructor(
-  private val routineDao: RoutineDao,
-  private val sharedPreferencesRepository: SharedPreferencesRepository,
+    private val routineDao: RoutineDao,
+    private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : RoutineRepository {
   private val persianData = PersianDate()
   private val currentTimeDay = persianData.shDay
@@ -42,19 +42,19 @@ class RoutineRepositoryImpl @Inject constructor(
 
     (0..1).forEachIndexed { index, it ->
       val routineEntity = RoutineEntity(
-        "تست${index.plus(1)}",
-        0,
-        currentTimeDay.toString(),
-        currentTimeDay,
-        currentTimeMonth,
-        currentTimeYear,
-        "12:00",
-        false,
-        explanation = if (index == 1) RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation else RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation,
-        isSample = true,
-        idAlarm = index.plus(1).toLong(),
-        timeInMillisecond = persianData.time,
-        id = index,
+          "تست${index.plus(1)}",
+          0,
+          currentTimeDay.toString(),
+          currentTimeDay,
+          currentTimeMonth,
+          currentTimeYear,
+          "12:00",
+          false,
+          explanation = if (index == 1) RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation else RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation,
+          isSample = true,
+          idAlarm = index.plus(1).toLong(),
+          timeInMillisecond = persianData.time,
+          id = index,
       )
       routineDao.addRoutine(routineEntity)
     }

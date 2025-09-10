@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.home.domain.model.RoutineModel
-import com.rahim.yadino.base.dateTime.modal.TimeDate
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.Onahau
@@ -59,7 +58,6 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.time.LocalTime
-import kotlin.collections.isNotEmpty
 
 const val MAX_NAME_LENGTH = 22
 const val MAX_EXPLANATION_LENGTH = 40
@@ -74,7 +72,6 @@ fun DialogAddRoutine(
   currentNumberMonth: Int,
   currentNumberYear: Int,
   updateRoutine: RoutineModel? = null,
-  timesMonth: List<TimeDate> = emptyList(),
   onCloseDialog: () -> Unit,
   onRoutineCreated: (routine: RoutineModel) -> Unit,
   monthIncrease: ((year: Int, month: Int) -> Unit)? = null,
@@ -268,39 +265,6 @@ fun DialogAddRoutine(
               )
             }
           }
-          if (timesMonth.isNotEmpty()) {
-            Row(
-              horizontalArrangement = Arrangement.SpaceBetween,
-              modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                  top = if (timesMonth.isNotEmpty()) 0.dp else 10.dp,
-                  start = 20.dp,
-                ),
-            ) {
-              Text(
-                modifier = Modifier.padding(top = 14.dp),
-                text = stringResource(id = R.string.set_reminder),
-                color = MaterialTheme.colorScheme.primary,
-              )
-              OutlinedButton(
-                border = BorderStroke(
-                  1.dp,
-                  Brush.horizontalGradient(gradientColors),
-                ),
-                onClick = { isShowDateDialog = true },
-              ) {
-                Text(
-                  text = stringResource(id = R.string.data_change),
-                  style = MaterialTheme.typography.bodyMedium.copy(
-                    brush = Brush.verticalGradient(
-                      gradientColors,
-                    ),
-                  ),
-                )
-              }
-            }
-          }
           Spacer(modifier = Modifier.height(22.dp))
           Row(
             modifier = Modifier
@@ -356,7 +320,6 @@ fun DialogAddRoutine(
           if (isShowDateDialog) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
               DialogChoseDate(
-                times = timesMonth,
                 yearNumber = yearChecked,
                 monthNumber = monthChecked,
                 dayNumber = dayChecked,

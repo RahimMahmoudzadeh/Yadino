@@ -11,6 +11,7 @@ android {
 dependencies {
   projects.run{
     implementation(routine.domain)
+    implementation(core.timeDate)
   }
   libs.run {
     implementation(androidx.core.splashscreen)

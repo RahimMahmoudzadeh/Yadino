@@ -1,6 +1,5 @@
 package com.rahim.yadino.home.presentation.component
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,18 +35,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.rahim.yadino.base.dateTime.modal.TimeDate
 import com.rahim.yadino.calculateMonthName
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
-import com.rahim.yadino.designsystem.component.TimeItems
 import com.rahim.yadino.designsystem.component.gradientColors
-import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
@@ -56,7 +50,6 @@ import com.rahim.yadino.persianLocate
 @Composable
 fun DialogChoseDate(
   modifier: Modifier = Modifier,
-  times: List<TimeDate>,
   yearNumber: Int,
   monthNumber: Int,
   dayNumber: Int,
@@ -77,8 +70,8 @@ fun DialogChoseDate(
       dismissOnClickOutside = true,
     ),
     modifier = modifier
-      .fillMaxWidth()
-      .padding(horizontal = 14.dp),
+        .fillMaxWidth()
+        .padding(horizontal = 14.dp),
     onDismissRequest = {},
   ) {
     Surface(
@@ -88,9 +81,9 @@ fun DialogChoseDate(
       Column(modifier = Modifier.padding(bottom = 12.dp)) {
         Row(
           Modifier
-            .fillMaxWidth()
-            .background(brush = Brush.verticalGradient(gradientColors))
-            .padding(vertical = 10.dp, horizontal = 12.dp),
+              .fillMaxWidth()
+              .background(brush = Brush.verticalGradient(gradientColors))
+              .padding(vertical = 10.dp, horizontal = 12.dp),
           horizontalArrangement = Arrangement.SpaceBetween,
         ) {
           IconButton(
@@ -106,8 +99,8 @@ fun DialogChoseDate(
           }
           Text(
             modifier = Modifier
-              .padding(top = 12.dp)
-              .fillMaxWidth(0.5f),
+                .padding(top = 12.dp)
+                .fillMaxWidth(0.5f),
             text = date,
             color = Color.White,
             textAlign = TextAlign.Center,
@@ -126,8 +119,8 @@ fun DialogChoseDate(
         }
         Row(
           modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp, horizontal = 18.dp),
+              .fillMaxWidth()
+              .padding(vertical = 12.dp, horizontal = 18.dp),
           horizontalArrangement = Arrangement.SpaceBetween,
         ) {
           val days = listOf(
@@ -174,29 +167,18 @@ fun DialogChoseDate(
             horizontalArrangement = Arrangement.SpaceBetween,
             userScrollEnabled = false,
           ) {
-            items(times) { time ->
-              TimeItems(
-                dayNumber = time.dayNumber,
-                nameDay = time.nameDay,
-                isToday = time.isToday,
-                dayNumberChecked = dayClicked,
-                dayCheckedNumber = { day ->
-                  dayClicked = day
-                },
-              )
-            }
           }
           Row(
             modifier = Modifier
-              .fillMaxWidth()
-              .padding(start = 12.dp, top = 12.dp),
+                .fillMaxWidth()
+                .padding(start = 12.dp, top = 12.dp),
           ) {
             DialogButtonBackground(
               text = stringResource(id = R.string.selection),
               gradient = Brush.verticalGradient(gradientColors),
               modifier = Modifier
-                .fillMaxWidth(0.25f)
-                .height(40.dp),
+                  .fillMaxWidth(0.25f)
+                  .height(40.dp),
               textSize = 16.sp,
               textStyle = TextStyle(fontWeight = FontWeight.Bold),
               onClick = {
@@ -225,69 +207,5 @@ fun DialogChoseDate(
         }
       }
     }
-  }
-}
-
-@Composable
-@Preview(device = Devices.PIXEL_4)
-fun DialogChoseDateWrapperLight() {
-  val times = ArrayList<TimeDate>()
-  for (i in 1..31) {
-    times.add(
-      TimeDate(
-        dayNumber = i,
-        nameDay = if (i == 7 || i == 14 || i == 21 || i == 28) "ج" else "ش",
-        haveTask = false,
-        yearNumber = 1403,
-        monthNumber = 2,
-        monthName = "اردیبهشت",
-        isChecked = false,
-        isToday = i == 21,
-      ),
-    )
-  }
-  YadinoTheme {
-    DialogChoseDate(
-      times = times,
-      yearNumber = 1403,
-      monthNumber = 2,
-      dayNumber = 21,
-      closeDialog = {},
-      dayCheckedNumber = { year, month, day -> },
-      monthIncrease = { year, month -> },
-      monthDecrease = { year, month -> },
-    )
-  }
-}
-
-@Composable
-@Preview(device = Devices.PIXEL_4, uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun DialogChoseDateWrapperDark() {
-  val times = ArrayList<TimeDate>()
-  for (i in 1..31) {
-    times.add(
-      TimeDate(
-        dayNumber = i,
-        nameDay = if (i == 7 || i == 14 || i == 21 || i == 28) "ج" else "ش",
-        haveTask = false,
-        yearNumber = 1403,
-        monthNumber = 2,
-        monthName = "اردیبهشت",
-        isChecked = false,
-        isToday = i == 28,
-      ),
-    )
-  }
-  YadinoTheme {
-    DialogChoseDate(
-      times = times,
-      yearNumber = 1403,
-      monthNumber = 2,
-      dayNumber = 22,
-      closeDialog = {},
-      dayCheckedNumber = { year, month, day -> },
-      monthIncrease = { year, month -> },
-      monthDecrease = { year, month -> },
-    )
   }
 }

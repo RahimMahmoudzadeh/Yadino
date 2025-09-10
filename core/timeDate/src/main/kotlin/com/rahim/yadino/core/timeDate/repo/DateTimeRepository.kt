@@ -1,6 +1,6 @@
-package com.rahim.home.domain.dateTime
+package com.rahim.yadino.core.timeDate.repo
 
-import com.rahim.home.domain.model.TimeDateDomainLayerHome
+import com.rahim.yadino.core.timeDate.model.TimeDateModel
 import kotlinx.coroutines.flow.Flow
 
 interface DateTimeRepository {
@@ -9,8 +9,8 @@ interface DateTimeRepository {
   val currentTimeYear: Int
   suspend fun addTime()
   suspend fun calculateToday()
-  fun getTimes(): Flow<List<TimeDateDomainLayerHome>>
-  suspend fun getTimesMonth(yearNumber: Int, monthNumber: Int): List<TimeDateDomainLayerHome>
+  fun getTimes(): Flow<List<TimeDateModel>>
+  suspend fun getTimesMonth(yearNumber: Int, monthNumber: Int): List<TimeDateModel>
   fun getCurrentNameDay(date: String, format: String): String
   suspend fun updateDayToToday(day: Int, year: Int, month: Int)
 }

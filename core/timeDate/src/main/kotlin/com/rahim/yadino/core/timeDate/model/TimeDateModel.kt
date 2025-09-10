@@ -1,6 +1,6 @@
-package com.rahim.home.domain.model
+package com.rahim.yadino.core.timeDate.model
 
-data class TimeDateDomainLayerHome(
+data class TimeDateModel(
   val dayNumber: Int,
   val haveTask: Boolean,
   val isToday: Boolean = false,

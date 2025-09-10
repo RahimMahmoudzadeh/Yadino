@@ -1,10 +1,10 @@
 package com.yadino.routine.domain.useCase
 
 import com.rahim.yadino.Resource
+import com.rahim.yadino.base.reminder.ReminderScheduler
+import com.rahim.yadino.base.reminder.ReminderState
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.yadino.routine.domain.ReminderScheduler
-import com.yadino.routine.domain.RoutineRepository
-import com.yadino.routine.domain.model.ReminderState
+import com.yadino.routine.domain.repo.RoutineRepository
 import com.yadino.routine.domain.model.RoutineModel
 import javax.inject.Inject
 

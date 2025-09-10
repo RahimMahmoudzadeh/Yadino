@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.rahim.yadino.base.dateTime.modal.TimeDate
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.Onahau
@@ -54,6 +53,7 @@ import com.rahim.yadino.persianLocate
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.yadino.routine.domain.model.RoutineModel
+import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
 import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.time.LocalTime
@@ -72,7 +72,7 @@ fun DialogAddRoutine(
   currentNumberMonth: Int,
   currentNumberYear: Int,
   updateRoutine: RoutineModel? = null,
-  timesMonth: List<TimeDate> = emptyList(),
+  timesMonth: List<TimeDateRoutinePresentationLayer> = emptyList(),
   onCloseDialog: () -> Unit,
   onRoutineCreated: (routine: RoutineModel) -> Unit,
   monthIncrease: ((year: Int, month: Int) -> Unit)? = null,

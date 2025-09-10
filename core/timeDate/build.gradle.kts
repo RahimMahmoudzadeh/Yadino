@@ -6,10 +6,11 @@ plugins {
   }
 }
 android {
-  namespace = "com.rahim.yadino.core.db"
+  namespace = "com.rahim.yadino.core.timeDate"
 }
 dependencies{
-  libs.run {
-//    implementation(gson)
+  projects.run {
+    implementation(core.db)
+    implementation(core.base)
   }
 }

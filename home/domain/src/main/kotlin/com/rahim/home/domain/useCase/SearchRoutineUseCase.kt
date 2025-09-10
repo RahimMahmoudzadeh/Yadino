@@ -1,6 +1,6 @@
 package com.rahim.home.domain.useCase
 
-import com.rahim.home.domain.HomeRepository
+import com.rahim.home.domain.repo.HomeRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
