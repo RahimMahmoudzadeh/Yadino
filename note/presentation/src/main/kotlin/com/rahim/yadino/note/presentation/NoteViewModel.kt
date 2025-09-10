@@ -2,9 +2,6 @@ package com.rahim.yadino.note.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rahim.yadino.Constants
-import com.rahim.yadino.base.dateTime.DateTimeRepository
-import com.rahim.yadino.calculateTimeFormat
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.note.domain.NoteRepository
 import com.rahim.yadino.note.domain.model.NoteModel
@@ -24,16 +21,12 @@ import javax.inject.Inject
 @HiltViewModel
 class NoteViewModel @Inject constructor(
   private val noteRepository: NoteRepository,
-  private val timeRepository: DateTimeRepository,
 ) :
   ViewModel(), NoteContract {
-  private val currentYear = timeRepository.currentTimeYear
-  private val currentMonth = timeRepository.currentTimeMonth
-  private val currentDay = timeRepository.currentTimeDay
 
   private var mutableState = MutableStateFlow<NoteContract.NoteState>(NoteContract.NoteState())
   override val state: StateFlow<NoteContract.NoteState> = mutableState.onStart {
-    getCurrentNameDay()
+//    getCurrentNameDay()
     getNotes()
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NoteContract.NoteState())
 
@@ -47,8 +40,8 @@ class NoteViewModel @Inject constructor(
 
   private fun addNote(noteModel: NoteModel) {
     viewModelScope.launch {
-      val updateNote = noteModel.copy(dayNumber = currentDay, monthNumber = currentMonth, yearNumber = currentYear)
-      noteRepository.addNote(updateNote)
+//      val updateNote = noteModel.copy(dayNumber = currentDay, monthNumber = currentMonth, yearNumber = currentYear)
+//      noteRepository.addNote(updateNote)
     }
   }
 
@@ -58,18 +51,18 @@ class NoteViewModel @Inject constructor(
     }
   }
 
-  private fun getCurrentNameDay(
-    date: String = String().calculateTimeFormat(
-      timeRepository.currentTimeYear,
-      timeRepository.currentTimeMonth,
-      timeRepository.currentTimeDay.toString(),
-    ),
-    format: String = Constants.YYYY_MM_DD,
-  ) {
-    mutableState.update {
-      it.copy(nameDay = timeRepository.getCurrentNameDay(date, format))
-    }
-  }
+//  private fun getCurrentNameDay(
+//    date: String = String().calculateTimeFormat(
+//      timeRepository.currentTimeYear,
+//      timeRepository.currentTimeMonth,
+//      timeRepository.currentTimeDay.toString(),
+//    ),
+//    format: String = Constants.YYYY_MM_DD,
+//  ) {
+//    mutableState.update {
+//      it.copy(nameDay = timeRepository.getCurrentNameDay(date, format))
+//    }
+//  }
 
   private fun delete(noteModel: NoteModel) {
     viewModelScope.launch {
