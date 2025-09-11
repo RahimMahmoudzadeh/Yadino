@@ -2,16 +2,19 @@ package com.rahim.yadino.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rahim.home.domain.model.RoutineModel
 import com.rahim.home.domain.useCase.AddReminderUseCase
 import com.rahim.home.domain.useCase.CancelReminderUseCase
 import com.rahim.home.domain.useCase.DeleteReminderUseCase
-import com.rahim.home.domain.useCase.GetRemindersUseCase
+import com.rahim.home.domain.useCase.GetCurrentDateUseCase
+import com.rahim.home.domain.useCase.GetTodayRoutinesUseCase
 import com.rahim.home.domain.useCase.SearchRoutineUseCase
 import com.rahim.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.Resource
+import com.rahim.yadino.home.presentation.mapper.toCurrentDatePresentationLayer
+import com.rahim.yadino.home.presentation.mapper.toRoutineHomeDomainLayer
+import com.rahim.yadino.home.presentation.mapper.toRoutineHomePresentationLayer
+import com.rahim.yadino.home.presentation.model.RoutineHomePresentationLayer
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -29,24 +32,21 @@ class HomeViewModel @Inject constructor(
   private val updateReminderUseCase: UpdateReminderUseCase,
   private val cancelReminderUseCase: CancelReminderUseCase,
   private val deleteReminderUseCase: DeleteReminderUseCase,
-  private val getRemindersUseCase: GetRemindersUseCase,
+  private val getTodayRoutinesUseCase: GetTodayRoutinesUseCase,
   private val searchRoutineUseCase: SearchRoutineUseCase,
+  private val getCurrentDateUseCase: GetCurrentDateUseCase,
 ) : ViewModel(), HomeContract {
 
   private val mutableState = MutableStateFlow(HomeContract.HomeState())
   override val state: StateFlow<HomeContract.HomeState> = mutableState.onStart {
     setCurrentTime()
-//    getRoutines(
-//      yearNumber = dateTimeRepository.currentTimeYear,
-//      monthNumber = dateTimeRepository.currentTimeMonth,
-//      numberDay = dateTimeRepository.currentTimeDay,
-//    )
+    getRoutines()
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeContract.HomeState())
 
   override fun event(event: HomeContract.HomeEvent) {
     when (event) {
       HomeContract.HomeEvent.GetRoutines -> {
-//        getRoutines()
+        getRoutines()
       }
 
       is HomeContract.HomeEvent.AddRoutine -> {
@@ -66,57 +66,58 @@ class HomeViewModel @Inject constructor(
       }
 
       is HomeContract.HomeEvent.SearchRoutine -> {
-//        getRoutines(searchText = event.routineName)
+        searchRoutines(searchText = event.routineName)
       }
     }
   }
 
   private fun setCurrentTime() {
-//    mutableState.update {
-//      it.copy(
-//        currentDay = dateTimeRepository.currentTimeDay,
-//        currentMonth = dateTimeRepository.currentTimeMonth,
-//        currentYear = dateTimeRepository.currentTimeYear,
-//      )
-//    }
+    mutableState.update {
+      it.copy(
+        currentDate = getCurrentDateUseCase().toCurrentDatePresentationLayer(),
+      )
+    }
   }
-  private var searchNameRoutine = ""
-//  private fun getRoutines(yearNumber: Int = dateTimeRepository.currentTimeYear, monthNumber: Int = dateTimeRepository.currentTimeMonth, numberDay: Int = dateTimeRepository.currentTimeDay, searchText: String = "") {
-//    viewModelScope.launch {
-//      searchNameRoutine = searchText
-//      if (searchText.isNotBlank()) {
-//        Timber.tag("routineSearch").d("getRoutines->$searchNameRoutine")
-//        searchRoutine(searchNameRoutine, this, yearNumber, monthNumber, numberDay)
-//      } else {
-//        getNormalRoutines(this, yearNumber, monthNumber, numberDay)
-//      }
-//    }
-//  }
 
-  private suspend fun getNormalRoutines(scope: CoroutineScope, yearNumber: Int, monthNumber: Int, numberDay: Int) {
-    getRemindersUseCase.invoke(monthNumber, numberDay, yearNumber, scope).collectLatest { routines ->
-      Timber.tag("routineSearch").d("getNormalRoutines")
-      mutableState.update {
-        it.copy(
-          routines =
-          routines.sortedBy {
-            it.timeHours?.replace(":", "")?.toInt()
-          },
-          routineLoading = false,
-          errorMessage = null,
-        )
+  private fun searchRoutines(searchText: String) {
+    viewModelScope.launch {
+      if (searchText.isBlank()) {
+        Timber.tag("routineSearch").d("getRoutines->$searchText")
+        getRoutines()
+        return@launch
+      }
+      searchRoutine(searchText)
+    }
+  }
+
+  private fun getRoutines() {
+    viewModelScope.launch {
+      getTodayRoutinesUseCase().collectLatest { routines ->
+        Timber.tag("routineSearch").d("getNormalRoutines")
+        mutableState.update {
+          it.copy(
+            routines =
+              routines.map { it.toRoutineHomePresentationLayer() }.sortedBy {
+                it.timeInMillisecond
+              },
+            routineLoading = false,
+            errorMessage = null,
+          )
+        }
       }
     }
   }
 
-  private suspend fun searchRoutine(searchText: String, scope: CoroutineScope, yearNumber: Int, monthNumber: Int, numberDay: Int) {
-    searchRoutineUseCase.invoke(searchText, yearNumber, monthNumber, numberDay, scope).collectLatest { searchItems ->
+  private suspend fun searchRoutine(searchText: String) {
+    searchRoutineUseCase.invoke(searchText).collectLatest { searchItems ->
       Timber.tag("routineSearch").d("searchRoutine->$searchText")
       Timber.tag("routineSearch").d("searchItems->$searchItems")
       mutableState.update {
         it.copy(
-          searchRoutines = searchItems.sortedBy {
-            it.timeHours?.replace(":", "")?.toInt()
+          searchRoutines = searchItems.map {
+            it.toRoutineHomePresentationLayer()
+          }.sortedBy {
+            it.timeInMillisecond
           },
           routineLoading = false,
           errorMessage = null,
@@ -125,16 +126,16 @@ class HomeViewModel @Inject constructor(
     }
   }
 
-  private fun deleteRoutine(routineModel: RoutineModel) {
+  private fun deleteRoutine(routineModel: RoutineHomePresentationLayer) {
     viewModelScope.launch {
-      deleteReminderUseCase(routineModel)
+      deleteReminderUseCase(routineModel.toRoutineHomeDomainLayer())
     }
   }
 
-  private fun updateRoutine(routineModel: RoutineModel) {
+  private fun updateRoutine(routineModel: RoutineHomePresentationLayer) {
     Timber.tag("addRoutine").d("updateRoutine")
     viewModelScope.launch {
-      val response = updateReminderUseCase(routineModel)
+      val response = updateReminderUseCase(routineModel.toRoutineHomeDomainLayer())
       when (response) {
         is Resource.Error -> {
           mutableState.update { state ->
@@ -149,16 +150,16 @@ class HomeViewModel @Inject constructor(
     }
   }
 
-  private fun checkedRoutine(routineModel: RoutineModel) {
+  private fun checkedRoutine(routineModel: RoutineHomePresentationLayer) {
     viewModelScope.launch {
-      cancelReminderUseCase(routineModel)
+      cancelReminderUseCase(routineModel.toRoutineHomeDomainLayer())
     }
   }
 
-  private fun addRoutine(routineModel: RoutineModel) {
+  private fun addRoutine(routineModel: RoutineHomePresentationLayer) {
     viewModelScope.launch {
       Timber.tag("addRoutine").d("addRoutine")
-      val response = addReminderUseCase(routineModel)
+      val response = addReminderUseCase(routineModel.toRoutineHomeDomainLayer())
       when (response) {
         is Resource.Error -> {
           mutableState.update { state ->

@@ -1,24 +1,19 @@
 package com.rahim.home.domain.repo
 
-import com.rahim.home.domain.model.RoutineModel
-import com.rahim.yadino.Resource
+import com.rahim.home.domain.model.CurrentDateDomainLayer
+import com.rahim.home.domain.model.RoutineHomeDomainLayer
 import kotlinx.coroutines.flow.Flow
 
 interface HomeRepository {
-  suspend fun addSampleRoutine()
-  suspend fun addRoutine(routineModel: RoutineModel)
-  suspend fun removeRoutine(routineModel: RoutineModel): Int
-  suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yearNumber: Int?)
-  fun updateRoutine(routineModel: RoutineModel): Flow<Resource<RoutineModel?>>
-  suspend fun checkedRoutine(routineModel: RoutineModel)
-  suspend fun getRoutine(id: Int): RoutineModel
-  fun getRoutines(monthNumber: Int, numberDay: Int, yearNumber: Int): Flow<List<RoutineModel>>
-  fun searchRoutine(name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?): Flow<List<RoutineModel>>
-  suspend fun changeRoutineId()
-  suspend fun checkedAllRoutinePastTime()
-  suspend fun getAllRoutine(): List<RoutineModel>
-  fun haveAlarm(): Flow<Boolean>
+  suspend fun addRoutine(routineModel: RoutineHomeDomainLayer)
+  suspend fun removeRoutine(routineModel: RoutineHomeDomainLayer)
+  suspend fun updateRoutine(routineModel: RoutineHomeDomainLayer)
+  suspend fun checkedRoutine(routineModel: RoutineHomeDomainLayer)
+  suspend fun getRoutine(id: Int): RoutineHomeDomainLayer
+  suspend fun checkEqualRoutine(routineModel: RoutineHomeDomainLayer): RoutineHomeDomainLayer?
   suspend fun getRoutineAlarmId(): Long
+  fun getCurrentDate(): CurrentDateDomainLayer
+  fun getTodayRoutines(): Flow<List<RoutineHomeDomainLayer>>
+  fun searchTodayRoutine(name: String): Flow<List<RoutineHomeDomainLayer>>
   fun convertDateToMilSecond(yearNumber: Int?, monthNumber: Int?, dayNumber: Int?, timeHours: String?): Long
-  suspend fun checkEqualRoutine(routineModel: RoutineModel): RoutineModel?
 }

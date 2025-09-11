@@ -22,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
@@ -33,6 +32,8 @@ import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.errorMessage
 import com.rahim.yadino.home.presentation.component.DialogAddRoutine
 import com.rahim.yadino.home.presentation.component.ListRoutines
+import com.rahim.yadino.home.presentation.model.CurrentDatePresentationLayer
+import com.rahim.yadino.home.presentation.model.RoutineHomePresentationLayer
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
 
@@ -76,16 +77,16 @@ private fun HomeScreen(
   homeState: HomeContract.HomeState,
   openDialog: Boolean,
   clickSearch: Boolean,
-  onCheckedRoutine: (RoutineModel) -> Unit,
-  onDeleteRoutine: (RoutineModel) -> Unit,
-  onUpdateRoutine: (RoutineModel) -> Unit,
-  onAddRoutine: (RoutineModel) -> Unit,
+  onCheckedRoutine: (RoutineHomePresentationLayer) -> Unit,
+  onDeleteRoutine: (RoutineHomePresentationLayer) -> Unit,
+  onUpdateRoutine: (RoutineHomePresentationLayer) -> Unit,
+  onAddRoutine: (RoutineHomePresentationLayer) -> Unit,
   onOpenDialog: (isOpen: Boolean) -> Unit,
   onSearchText: (searchText: String) -> Unit,
 ) {
   val context = LocalContext.current
-  val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineModel?>(null) }
-  val routineModelUpdateDialog = rememberSaveable { mutableStateOf<RoutineModel?>(null) }
+  val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineHomePresentationLayer?>(null) }
+  val routineModelUpdateDialog = rememberSaveable { mutableStateOf<RoutineHomePresentationLayer?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
 
   homeState.errorMessage?.let { errorMessage ->
@@ -108,14 +109,12 @@ private fun HomeScreen(
       )
     } else {
       ItemsHome(
-        homeState.currentYear,
-        homeState.currentMonth,
-        homeState.currentDay,
-        if (searchText.isNotBlank()) homeState.searchRoutines else homeState.routines,
-        { checkedRoutine ->
+        currentTime = homeState.currentDate,
+        routineModels = if (searchText.isNotBlank()) homeState.searchRoutines else homeState.routines,
+        checkedRoutine = { checkedRoutine ->
           onCheckedRoutine(checkedRoutine)
         },
-        { routineUpdate ->
+        updateRoutine = { routineUpdate ->
           if (routineUpdate.isChecked) {
             Toast.makeText(
               context,
@@ -175,24 +174,18 @@ private fun HomeScreen(
           routineModelUpdateDialog.value?.explanation ?: ""
         },
       ),
-      currentNumberDay = homeState.currentDay,
-      currentNumberMonth = homeState.currentMonth,
-      currentNumberYear = homeState.currentYear,
     )
   }
 }
 
 @Composable
 fun ItemsHome(
-  currentDay: Int,
-  currentMonth: Int,
-  currentYear: Int,
-  routineModels: List<RoutineModel>,
-  checkedRoutine: (RoutineModel) -> Unit,
-  updateRoutine: (RoutineModel) -> Unit,
-  deleteRoutine: (RoutineModel) -> Unit,
+  currentTime: CurrentDatePresentationLayer,
+  routineModels: List<RoutineHomePresentationLayer>,
+  checkedRoutine: (RoutineHomePresentationLayer) -> Unit,
+  updateRoutine: (RoutineHomePresentationLayer) -> Unit,
+  deleteRoutine: (RoutineHomePresentationLayer) -> Unit,
 ) {
-  val data = "$currentDay/$currentMonth/$currentYear"
   Row(
     horizontalArrangement = Arrangement.SpaceBetween,
     modifier = Modifier
@@ -200,7 +193,7 @@ fun ItemsHome(
       .fillMaxWidth(),
   ) {
     Text(
-      text = data.persianLocate(),
+      text = currentTime.date.persianLocate(),
       style = MaterialTheme.typography.labelMedium,
       color = MaterialTheme.colorScheme.primary,
     )

@@ -43,12 +43,12 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.Onahau
 import com.rahim.yadino.designsystem.theme.Purple
 import com.rahim.yadino.designsystem.theme.PurpleGrey
+import com.rahim.yadino.home.presentation.model.RoutineHomePresentationLayer
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -68,33 +68,24 @@ const val MAX_EXPLANATION_LENGTH = 40
 @Composable
 fun DialogAddRoutine(
   modifier: Modifier = Modifier,
-  currentNumberDay: Int,
-  currentNumberMonth: Int,
-  currentNumberYear: Int,
-  updateRoutine: RoutineModel? = null,
+  updateRoutine: RoutineHomePresentationLayer? = null,
   onCloseDialog: () -> Unit,
-  onRoutineCreated: (routine: RoutineModel) -> Unit,
-  monthIncrease: ((year: Int, month: Int) -> Unit)? = null,
-  monthDecrease: ((year: Int, month: Int) -> Unit)? = null,
+  onRoutineCreated: (routine: RoutineHomePresentationLayer) -> Unit,
 ) {
-  var monthChecked by rememberSaveable { mutableIntStateOf(currentNumberMonth) }
-  var yearChecked by rememberSaveable { mutableIntStateOf(currentNumberYear) }
-  var dayChecked by rememberSaveable { mutableIntStateOf(currentNumberDay) }
 
   var routineName by rememberSaveable { mutableStateOf(if (updateRoutine?.name.isNullOrBlank()) "" else updateRoutine.name) }
   var routineExplanation by rememberSaveable { mutableStateOf(if (updateRoutine?.explanation.isNullOrBlank()) "" else updateRoutine.explanation) }
   var time by rememberSaveable { mutableStateOf(if (updateRoutine?.timeHours.isNullOrBlank()) "12:00" else updateRoutine.timeHours) }
 
   var isErrorName by remember { mutableStateOf(false) }
-  var isShowDateDialog by remember { mutableStateOf(false) }
   var isErrorExplanation by remember { mutableStateOf(false) }
   val alarmDialogState = rememberMaterialDialogState()
 
   val persianData = PersianDate()
   val date = persianData.initJalaliDate(
-    updateRoutine?.yearNumber ?: yearChecked,
-    updateRoutine?.monthNumber ?: monthChecked,
-    updateRoutine?.dayNumber ?: dayChecked,
+    updateRoutine?.yearNumber ?: persianData.shYear,
+    updateRoutine?.monthNumber ?: persianData.shMonth,
+    updateRoutine?.dayNumber ?: persianData.shDay,
   )
 
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -285,14 +276,14 @@ fun DialogAddRoutine(
                 if (routineName.isEmpty()) {
                   isErrorName = true
                 } else {
-                  val routine = RoutineModel(
+                  val routine = RoutineHomePresentationLayer(
                     id = updateRoutine?.id,
                     name = routineName,
                     explanation = routineExplanation,
                     timeHours = time,
-                    dayNumber = dayChecked,
-                    monthNumber = monthChecked,
-                    yearNumber = yearChecked,
+                    dayNumber = date.dayOfWeek(),
+                    monthNumber = date.monthLength,
+                    yearNumber = date.shYear,
                     dayName = persianData.dayName(date),
                     colorTask = null,
                   )
@@ -314,29 +305,6 @@ fun DialogAddRoutine(
                     gradientColors,
                   ),
                 ),
-              )
-            }
-          }
-          if (isShowDateDialog) {
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-              DialogChoseDate(
-                yearNumber = yearChecked,
-                monthNumber = monthChecked,
-                dayNumber = dayChecked,
-                closeDialog = {
-                  isShowDateDialog = false
-                },
-                dayCheckedNumber = { year, month, day ->
-                  dayChecked = day
-                  monthChecked = month
-                  yearChecked = year
-                },
-                monthIncrease = { year, month ->
-                  monthIncrease?.invoke(year, month)
-                },
-                monthDecrease = { year, month ->
-                  monthDecrease?.invoke(year, month)
-                },
               )
             }
           }
@@ -400,7 +368,7 @@ fun ShowTimePicker(
   }
 }
 
-fun calculateCurrentTime(currentTime: String): LocalTime {
+private fun calculateCurrentTime(currentTime: String): LocalTime {
   val index = currentTime.indexOf(":")
   val hours = currentTime.subSequence(0, index).toString().toInt()
   val minute = currentTime.subSequence(index.plus(1), currentTime.length).toString().toInt()

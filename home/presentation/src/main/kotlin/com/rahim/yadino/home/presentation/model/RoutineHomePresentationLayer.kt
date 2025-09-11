@@ -1,10 +1,6 @@
-package com.rahim.home.domain.model
+package com.rahim.yadino.home.presentation.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
-data class RoutineModel(
+data class RoutineHomePresentationLayer(
   val name: String,
   val colorTask: Int?,
   val dayName: String,
@@ -18,4 +14,4 @@ data class RoutineModel(
   val isSample: Boolean = false,
   val idAlarm: Long? = null,
   val timeInMillisecond: Long? = null,
-): Parcelable
+)

@@ -6,16 +6,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.designsystem.component.ItemRoutine
+import com.rahim.yadino.home.presentation.model.RoutineHomePresentationLayer
 
 @Composable()
 fun ListRoutines(
   modifier: Modifier = Modifier,
-  routines: List<RoutineModel>,
-  checkedRoutine: (RoutineModel) -> Unit,
-  deleteRoutine: (RoutineModel) -> Unit,
-  updateRoutine: (RoutineModel) -> Unit,
+  routines: List<RoutineHomePresentationLayer>,
+  checkedRoutine: (RoutineHomePresentationLayer) -> Unit,
+  deleteRoutine: (RoutineHomePresentationLayer) -> Unit,
+  updateRoutine: (RoutineHomePresentationLayer) -> Unit,
 ) {
   LazyColumn(
     modifier = modifier,

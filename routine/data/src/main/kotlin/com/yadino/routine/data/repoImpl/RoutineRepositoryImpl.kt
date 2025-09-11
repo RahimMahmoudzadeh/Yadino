@@ -61,7 +61,7 @@ class RoutineRepositoryImpl @Inject constructor(
   }
 
   override suspend fun changeRoutineId() = withContext(Dispatchers.IO) {
-      val routines = routineDao.getRoutines()
+      val routines = routineDao.getRoutinesByDate()
 
       routines.forEach {
           if (it.idAlarm == null) {
@@ -93,7 +93,7 @@ class RoutineRepositoryImpl @Inject constructor(
     routineDao.updateRoutinesPastTime(System.currentTimeMillis())
   }
 
-  override suspend fun getAllRoutine(): List<RoutineModel> = routineDao.getRoutines().map { it.toRoutineModel() }
+  override suspend fun getAllRoutine(): List<RoutineModel> = routineDao.getRoutinesByDate().map { it.toRoutineModel() }
 
   override suspend fun addRoutine(routineModel: RoutineModel) {
     sharedPreferencesRepository.setShowSampleRoutine(true)
@@ -192,7 +192,7 @@ class RoutineRepositoryImpl @Inject constructor(
     routineDao.addRoutine(routineModel.toRoutineEntity())
   }
 
-  override fun getRoutines(monthNumber: Int, numberDay: Int, yearNumber: Int): Flow<List<RoutineModel>> = routineDao.getRoutines(monthNumber, numberDay, yearNumber).map { it.map { it.toRoutineModel() } }
+  override fun getRoutines(monthNumber: Int, numberDay: Int, yearNumber: Int): Flow<List<RoutineModel>> = routineDao.getRoutinesByDate(monthNumber, numberDay, yearNumber).map { it.map { it.toRoutineModel() } }
 
   override fun searchRoutine(name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?): Flow<List<RoutineModel>> = routineDao.searchRoutine(nameRoutine = name, monthNumber = monthNumber, dayNumber = dayNumber, yearNumber = yearNumber).map { it.map { it.toRoutineModel() } }
 

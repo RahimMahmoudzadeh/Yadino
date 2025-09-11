@@ -1,10 +1,10 @@
 package com.rahim.home.domain.useCase
 
-import com.rahim.yadino.base.reminder.ReminderScheduler
+import com.rahim.home.domain.model.RoutineHomeDomainLayer
 import com.rahim.home.domain.repo.HomeRepository
-import com.rahim.yadino.base.reminder.ReminderState
-import com.rahim.home.domain.model.RoutineModel
 import com.rahim.yadino.Resource
+import com.rahim.yadino.base.reminder.ReminderScheduler
+import com.rahim.yadino.base.reminder.ReminderState
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import javax.inject.Inject
 
@@ -12,7 +12,7 @@ class AddReminderUseCase @Inject constructor(
     private val routineRepository: HomeRepository,
     private val reminderScheduler: ReminderScheduler,
 ) {
-  suspend operator fun invoke(routineModel: RoutineModel): Resource<Nothing?> {
+  suspend operator fun invoke(routineModel: RoutineHomeDomainLayer): Resource<Nothing?> {
     try {
       val routine = routineModel.copy(
         idAlarm = routineRepository.getRoutineAlarmId(),
