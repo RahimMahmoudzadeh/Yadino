@@ -281,10 +281,10 @@ fun DialogAddRoutine(
                     name = routineName,
                     explanation = routineExplanation,
                     timeHours = time,
-                    dayNumber = date.dayOfWeek(),
-                    monthNumber = date.monthLength,
+                    dayNumber = date.shDay,
+                    monthNumber = date.shMonth,
                     yearNumber = date.shYear,
-                    dayName = persianData.dayName(date),
+                    dayName = date.dayName(),
                     colorTask = null,
                   )
                   onRoutineCreated(routine)

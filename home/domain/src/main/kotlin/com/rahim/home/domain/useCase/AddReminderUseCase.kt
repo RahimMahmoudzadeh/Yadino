@@ -6,6 +6,7 @@ import com.rahim.yadino.Resource
 import com.rahim.yadino.base.reminder.ReminderScheduler
 import com.rahim.yadino.base.reminder.ReminderState
 import com.rahim.yadino.enums.error.ErrorMessageCode
+import timber.log.Timber
 import javax.inject.Inject
 
 class AddReminderUseCase @Inject constructor(
@@ -67,6 +68,7 @@ class AddReminderUseCase @Inject constructor(
         }
       }
     } catch (e: Exception) {
+      Timber.tag("addRoutine").d("error->${e.message}")
       return Resource.Error(message = ErrorMessageCode.ERROR_SAVE_PROSES)
     }
   }

@@ -1,5 +1,7 @@
 package com.rahim.yadino.home.data.repoImpl
 
+import android.util.Log
+import androidx.core.net.ParseException
 import com.rahim.home.domain.model.CurrentDateDomainLayer
 import com.rahim.home.domain.model.RoutineHomeDomainLayer
 import com.rahim.home.domain.repo.HomeRepository
@@ -43,21 +45,34 @@ class HomeRepositoryImpl @Inject constructor(
     )?.toRoutineHomeDomainLayer()
   }
 
-  override fun convertDateToMilSecond(yearNumber: Int?, monthNumber: Int?, dayNumber: Int?, timeHours: String?): Long {
+  override fun convertDateToMilSecond(year: Int?, month: Int?, day: Int?, hours: String?): Long {
+    if (year == null || month == null || day == null || hours == null) {
+      throw IllegalArgumentException("Date components cannot be null")
+    }
     val persianDateFormat = PersianDateFormat()
-    val monthDate =
-      if (monthNumber.toString().length == 1) "0$monthNumber" else monthNumber
-    val dayNumber =
-      if (dayNumber.toString().length == 1) "0$dayNumber" else dayNumber
-    val hoursDate =
-      if (timeHours.toString().length == 4) "0$timeHours" else timeHours
-    val time =
-      "$yearNumber-$monthDate-$dayNumber $hoursDate:00"
-    val persianDate = persianDateFormat.parse(
-      time,
-      Constants.PATTERN_DATE,
-    )
-    return persianDate.time
+    val formattedMonth = String.format("%02d", month)
+    val formattedDay = String.format("%02d", day)
+
+    val formattedHours = if (hours.length == 4) {
+      "0$hours"
+    } else if (hours.length == 5 && hours[2] == ':') {
+      hours
+    } else {
+      throw IllegalArgumentException("Invalid timeHours format: $hours. Expected HHMM or HH:MM")
+    }
+
+    val formattedDateTime = "$year-$formattedMonth-$formattedDay $formattedHours:00"
+
+    return try {
+      val persianDate = persianDateFormat.parse(
+        formattedDateTime,
+        Constants.PATTERN_DATE, // Ensure this pattern matches the timeString format
+      )
+      persianDate.time
+    } catch (e: ParseException) {
+      Timber.tag("HomeRepositoryImpl").d("Failed to parse date string: $formattedDateTime with pattern ${Constants.PATTERN_DATE}. Error: ${e.message}")
+      0L
+    }
   }
 
   override suspend fun getRoutineAlarmId(): Long {

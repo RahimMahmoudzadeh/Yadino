@@ -15,5 +15,5 @@ interface HomeRepository {
   fun getCurrentDate(): CurrentDateDomainLayer
   fun getTodayRoutines(): Flow<List<RoutineHomeDomainLayer>>
   fun searchTodayRoutine(name: String): Flow<List<RoutineHomeDomainLayer>>
-  fun convertDateToMilSecond(yearNumber: Int?, monthNumber: Int?, dayNumber: Int?, timeHours: String?): Long
+  fun convertDateToMilSecond(year: Int?, month: Int?, day: Int?, hours: String?): Long
 }
