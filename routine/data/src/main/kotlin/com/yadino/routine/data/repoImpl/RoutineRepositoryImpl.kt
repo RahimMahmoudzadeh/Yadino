@@ -29,9 +29,6 @@ class RoutineRepositoryImpl @Inject constructor(
     private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : RoutineRepository {
   private val persianData = PersianDate()
-  private val currentTimeDay = persianData.shDay
-  private val currentTimeMonth = persianData.shMonth
-  private val currentTimeYear = persianData.shYear
 
   override suspend fun addSampleRoutine() {
       delay(500)
@@ -42,14 +39,14 @@ class RoutineRepositoryImpl @Inject constructor(
 
     (0..1).forEachIndexed { index, it ->
       val routineEntity = RoutineEntity(
-          "تست${index.plus(1)}",
-          0,
-          currentTimeDay.toString(),
-          currentTimeDay,
-          currentTimeMonth,
-          currentTimeYear,
-          "12:00",
-          false,
+          name = "تست${index.plus(1)}",
+          colorTask = 0,
+          dayName = persianData.dayName(),
+          dayNumber = persianData.shDay,
+          monthNumber = persianData.shMonth,
+          yearNumber = persianData.shYear,
+          timeHours = "12:00",
+          isChecked = false,
           explanation = if (index == 1) RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation else RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation,
           isSample = true,
           idAlarm = index.plus(1).toLong(),
