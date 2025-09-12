@@ -33,9 +33,5 @@ abstract class BindsRepo {
 
   @Binds
   @Singleton
-  abstract fun provideNoteRepo(noteRepositoryImpl: NoteRepositoryImpl): NoteRepository
-
-  @Binds
-  @Singleton
   abstract fun provideSharedRepo(sharedPreferencesRepositoryImpl: SharedPreferencesRepositoryImpl): SharedPreferencesRepository
 }

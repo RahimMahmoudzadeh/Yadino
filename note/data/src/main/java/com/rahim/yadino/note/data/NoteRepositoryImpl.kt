@@ -11,12 +11,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import saman.zamani.persiandate.PersianDate
-import javax.inject.Inject
 
 private const val SAMPLE_NOTE_RIGHT = "من یک یادداشت تستی هستم لطفا من را به راست بکشید"
 private const val SAMPLE_NOTE_LEFT = "من یک یادداشت تستی هستم لطفا من را به چپ بکشید"
 
-class NoteRepositoryImpl @Inject constructor(
+class NoteRepositoryImpl(
   private val noteDao: NoteDao,
   private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : NoteRepository {
