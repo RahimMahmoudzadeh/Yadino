@@ -3,7 +3,7 @@ package com.yadino.routine.presentation.alarmScreen
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.yadino.routine.domain.model.RoutineModel
+import com.yadino.routine.domain.model.RoutineModelDomainLayer
 
 interface RoutineHistoryContract : UnidirectionalViewModel<RoutineHistoryContract.HistoryEvent, RoutineHistoryContract.HistoryState> {
   @Immutable
@@ -13,8 +13,8 @@ interface RoutineHistoryContract : UnidirectionalViewModel<RoutineHistoryContrac
 
   @Immutable
   data class HistoryState(
-    val routineLoading: Boolean = true,
-    val routines: List<RoutineModel> = emptyList(),
-    val errorMessage: ErrorMessageCode? = null,
+      val routineLoading: Boolean = true,
+      val routines: List<RoutineModelDomainLayer> = emptyList(),
+      val errorMessage: ErrorMessageCode? = null,
   )
 }

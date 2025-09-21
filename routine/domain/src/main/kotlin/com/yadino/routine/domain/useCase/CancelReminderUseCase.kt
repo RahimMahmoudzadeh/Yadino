@@ -2,15 +2,15 @@ package com.yadino.routine.domain.useCase
 
 import com.rahim.yadino.base.reminder.ReminderScheduler
 import com.yadino.routine.domain.repo.RoutineRepository
-import com.yadino.routine.domain.model.RoutineModel
+import com.yadino.routine.domain.model.RoutineModelDomainLayer
 import javax.inject.Inject
 
 class CancelReminderUseCase @Inject constructor(
   private val routineRepository: RoutineRepository,
   private val reminderScheduler: ReminderScheduler,
 ) {
-  suspend operator fun invoke(routineModel: RoutineModel) {
-    reminderScheduler.cancelReminder(routineModel.idAlarm ?: 0)
-    routineRepository.checkedRoutine(routineModel)
+  suspend operator fun invoke(routineModelDomainLayer: RoutineModelDomainLayer) {
+    reminderScheduler.cancelReminder(routineModelDomainLayer.idAlarm ?: 0)
+    routineRepository.checkedRoutine(routineModelDomainLayer)
   }
 }

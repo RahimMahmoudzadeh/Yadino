@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.Resource
 import com.rahim.yadino.core.timeDate.repo.DateTimeRepository
 import com.rahim.yadino.di.IODispatcher
-import com.yadino.routine.domain.model.RoutineModel
+import com.yadino.routine.domain.model.RoutineModelDomainLayer
 import com.yadino.routine.domain.useCase.AddReminderUseCase
 import com.yadino.routine.domain.useCase.CancelReminderUseCase
 import com.yadino.routine.domain.useCase.DeleteReminderUseCase
@@ -235,16 +235,16 @@ class RoutineScreenViewModel @Inject constructor(
     }
   }
 
-  private fun deleteRoutine(routineModel: RoutineModel) {
+  private fun deleteRoutine(routineModelDomainLayer: RoutineModelDomainLayer) {
     viewModelScope.launch {
-      deleteReminderUseCase(routineModel)
+      deleteReminderUseCase(routineModelDomainLayer)
     }
   }
 
-  private fun updateRoutine(routineModel: RoutineModel) {
+  private fun updateRoutine(routineModelDomainLayer: RoutineModelDomainLayer) {
     viewModelScope.launch {
       Timber.tag("routineViewModel").d("GetRoutines")
-      val response = updateReminderUseCase(routineModel)
+      val response = updateReminderUseCase(routineModelDomainLayer)
       when (response) {
         is Resource.Error -> {
           mutableState.update { state ->
@@ -259,15 +259,15 @@ class RoutineScreenViewModel @Inject constructor(
     }
   }
 
-  private fun checkedRoutine(routineModel: RoutineModel) {
+  private fun checkedRoutine(routineModelDomainLayer: RoutineModelDomainLayer) {
     viewModelScope.launch {
-      cancelReminderUseCase(routineModel)
+      cancelReminderUseCase(routineModelDomainLayer)
     }
   }
 
-  private fun addRoutine(routineModel: RoutineModel) {
+  private fun addRoutine(routineModelDomainLayer: RoutineModelDomainLayer) {
     viewModelScope.launch {
-      val response = addReminderUseCase(routineModel)
+      val response = addReminderUseCase(routineModelDomainLayer)
       when (response) {
         is Resource.Error -> {
           mutableState.update { state ->

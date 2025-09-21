@@ -47,7 +47,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rahim.yadino.base.use
 import com.rahim.yadino.calculateMonthName
-import com.rahim.yadino.core.timeDate.model.TimeDateModel
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.component.ShowToastShort
@@ -59,7 +58,7 @@ import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.errorMessage
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.routine.presentation.R
-import com.yadino.routine.domain.model.RoutineModel
+import com.yadino.routine.domain.model.RoutineModelDomainLayer
 import com.yadino.routine.presentation.component.DialogAddRoutine
 import com.yadino.routine.presentation.component.ListRoutines
 import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
@@ -127,11 +126,11 @@ private fun RoutineScreen(
   openDialog: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,
   clickSearch: Boolean,
-  checkedRoutine: (RoutineModel) -> Unit,
+  checkedRoutine: (RoutineModelDomainLayer) -> Unit,
   dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
-  onUpdateRoutine: (RoutineModel) -> Unit,
-  onAddRoutine: (RoutineModel) -> Unit,
-  onDeleteRoutine: (RoutineModel) -> Unit,
+  onUpdateRoutine: (RoutineModelDomainLayer) -> Unit,
+  onAddRoutine: (RoutineModelDomainLayer) -> Unit,
+  onDeleteRoutine: (RoutineModelDomainLayer) -> Unit,
   onSearchText: (String) -> Unit,
   monthIncrease: (year: Int, month: Int) -> Unit,
   monthDecrease: (year: Int, month: Int) -> Unit,
@@ -143,8 +142,8 @@ private fun RoutineScreen(
   val context = LocalContext.current
 
   Timber.tag("routineGetNameDay").d("recomposition RoutineScreen")
-  val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineModel?>(null) }
-  val routineModelUpdateDialog = rememberSaveable { mutableStateOf<RoutineModel?>(null) }
+  val routineModelDomainLayerDeleteDialog = rememberSaveable { mutableStateOf<RoutineModelDomainLayer?>(null) }
+  val routineModelDomainLayerUpdateDialog = rememberSaveable { mutableStateOf<RoutineModelDomainLayer?>(null) }
   var errorClick by rememberSaveable { mutableStateOf(false) }
 
   var searchText by rememberSaveable { mutableStateOf("") }
@@ -193,7 +192,7 @@ private fun RoutineScreen(
           return@GetRoutines
         }
         onOpenDialog(true)
-        routineModelUpdateDialog.value = it
+        routineModelDomainLayerUpdateDialog.value = it
       },
       routineChecked = {
         checkedRoutine(it)
@@ -208,20 +207,20 @@ private fun RoutineScreen(
           ).show()
           return@GetRoutines
         }
-        routineModelDeleteDialog.value = it
+        routineModelDomainLayerDeleteDialog.value = it
       },
     )
   }
 
   ErrorDialog(
-    isOpen = routineModelDeleteDialog.value != null,
+    isOpen = routineModelDomainLayerDeleteDialog.value != null,
     isClickOk = {
       if (it) {
-        routineModelDeleteDialog.value?.let {
+        routineModelDomainLayerDeleteDialog.value?.let {
           onDeleteRoutine(it)
         }
       }
-      routineModelDeleteDialog.value = null
+      routineModelDomainLayerDeleteDialog.value = null
     },
     message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.can_you_delete),
     okMessage = stringResource(
@@ -232,10 +231,10 @@ private fun RoutineScreen(
     DialogAddRoutine(
       onCloseDialog = {
         onOpenDialog(false)
-        routineModelUpdateDialog.value = null
+        routineModelDomainLayerUpdateDialog.value = null
       },
-      updateRoutine = routineModelUpdateDialog.value?.copy(
-        explanation = routineModelUpdateDialog.value?.explanation?.let {
+      updateRoutine = routineModelDomainLayerUpdateDialog.value?.copy(
+        explanation = routineModelDomainLayerUpdateDialog.value?.explanation?.let {
           if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
             stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_right_sample)
           } else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation) {
@@ -244,11 +243,11 @@ private fun RoutineScreen(
             it
           }
         } ?: run {
-          routineModelUpdateDialog.value?.explanation ?: ""
+          routineModelDomainLayerUpdateDialog.value?.explanation ?: ""
         },
       ),
       onRoutineCreated = { routine ->
-        if (routineModelUpdateDialog.value != null) {
+        if (routineModelDomainLayerUpdateDialog.value != null) {
           onUpdateRoutine(routine)
         } else {
           onAddRoutine(routine)
@@ -279,11 +278,11 @@ private fun RoutineScreen(
 
 @Composable
 private fun GetRoutines(
-  routines: List<RoutineModel>,
+  routines: List<RoutineModelDomainLayer>,
   searchText: String,
-  routineUpdateDialog: (RoutineModel) -> Unit,
-  routineChecked: (RoutineModel) -> Unit,
-  routineDeleteDialog: (RoutineModel) -> Unit,
+  routineUpdateDialog: (RoutineModelDomainLayer) -> Unit,
+  routineChecked: (RoutineModelDomainLayer) -> Unit,
+  routineDeleteDialog: (RoutineModelDomainLayer) -> Unit,
 ) {
   if (routines.isEmpty()) {
     if (searchText.isNotEmpty()) {

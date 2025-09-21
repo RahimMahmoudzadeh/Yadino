@@ -5,24 +5,24 @@ import com.rahim.yadino.base.reminder.ReminderScheduler
 import com.rahim.yadino.base.reminder.ReminderState
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.yadino.routine.domain.repo.RoutineRepository
-import com.yadino.routine.domain.model.RoutineModel
+import com.yadino.routine.domain.model.RoutineModelDomainLayer
 import javax.inject.Inject
 
 class UpdateReminderUseCase @Inject constructor(
   private val routineRepository: RoutineRepository,
   private val reminderScheduler: ReminderScheduler,
 ) {
-  suspend operator fun invoke(routineModel: RoutineModel): Resource<Nothing?> {
+  suspend operator fun invoke(routineModelDomainLayer: RoutineModelDomainLayer): Resource<Nothing?> {
     try {
-      reminderScheduler.cancelReminder(routineModel.idAlarm ?: 0)
-      val routine = routineModel.copy(
+      reminderScheduler.cancelReminder(routineModelDomainLayer.idAlarm ?: 0)
+      val routine = routineModelDomainLayer.copy(
         idAlarm = routineRepository.getRoutineAlarmId(),
         colorTask = 0,
         timeInMillisecond = routineRepository.convertDateToMilSecond(
-          routineModel.yearNumber,
-          routineModel.monthNumber,
-          routineModel.dayNumber,
-          routineModel.timeHours,
+          routineModelDomainLayer.yearNumber,
+          routineModelDomainLayer.monthNumber,
+          routineModelDomainLayer.dayNumber,
+          routineModelDomainLayer.timeHours,
         ),
       )
       val equalRoutine = routineRepository.checkEqualRoutine(routine)

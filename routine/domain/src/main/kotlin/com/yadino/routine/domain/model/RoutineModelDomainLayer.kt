@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class RoutineModel(
+data class RoutineModelDomainLayer(
   val name: String,
   val colorTask: Int?,
   val dayName: String,
