@@ -1,6 +1,7 @@
 package com.yadino.routine.presentation
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.yadino.routine.domain.model.RoutineModelDomainLayer
@@ -24,12 +25,7 @@ interface RoutineContract : UnidirectionalViewModel<RoutineContract.RoutineEvent
     data object WeekDecrease : RoutineEvent()
   }
 
-//  @Immutable
-//  sealed class HomeEffect {
-//    data class OpenDialog(val isOpen: Boolean) : HomeEffect()
-//  }
-
-  @Immutable
+  @Stable
   data class RoutineState(
       val routineLoading: Boolean = true,
       val routines: List<RoutineModelDomainLayer> = emptyList(),
