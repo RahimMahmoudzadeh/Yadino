@@ -3,7 +3,6 @@ package com.yadino.routine.domain.model
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class RoutineModelDomainLayer(
   val name: String,
   val colorTask: Int?,
@@ -18,4 +17,4 @@ data class RoutineModelDomainLayer(
   val isSample: Boolean = false,
   val idAlarm: Long? = null,
   val timeInMillisecond: Long? = null,
-): Parcelable
+)

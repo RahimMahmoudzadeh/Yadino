@@ -19,7 +19,7 @@ fun RoutineModelDomainLayer.toRoutineEntity(): RoutineEntity = RoutineEntity(
   timeInMillisecond = timeInMillisecond,
 )
 
-fun RoutineEntity.toRoutineModel(): RoutineModelDomainLayer = RoutineModelDomainLayer(
+fun RoutineEntity.toRoutineModelDomainLayer(): RoutineModelDomainLayer = RoutineModelDomainLayer(
   name = name,
   colorTask = colorTask,
   dayName = dayName,
