@@ -18,7 +18,7 @@ androidx-core = "1.17.0"
 androidx-lifecycle = "2.9.3"
 androidx-room = "2.7.2"
 
-androidx-navigation = "2.9.3"
+androidx-navigation = "2.9.5"
 timber = "5.0.1"
 samanzamani = "1.7.1"
 datetime = "0.9.0"
