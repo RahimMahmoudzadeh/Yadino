@@ -16,7 +16,7 @@ androidDesugarJdkLibs = "2.1.5"
 androidx-core = "1.17.0"
 
 androidx-lifecycle = "2.9.3"
-androidx-room = "2.7.2"
+androidx-room = "2.8.1"
 
 androidx-navigation = "2.9.3"
 timber = "5.0.1"
