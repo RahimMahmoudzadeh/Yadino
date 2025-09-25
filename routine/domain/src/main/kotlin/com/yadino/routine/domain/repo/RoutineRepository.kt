@@ -1,24 +1,23 @@
 package com.yadino.routine.domain.repo
 
-import com.rahim.yadino.Resource
-import com.yadino.routine.domain.model.RoutineModelDomainLayer
+import com.yadino.routine.domain.model.RoutineDomainLayer
 import kotlinx.coroutines.flow.Flow
 
 interface RoutineRepository {
   suspend fun addSampleRoutine()
-  suspend fun addRoutine(routineModelDomainLayer: RoutineModelDomainLayer)
-  suspend fun removeRoutine(routineModelDomainLayer: RoutineModelDomainLayer): Int
+  suspend fun addRoutine(routineDomainLayer: RoutineDomainLayer)
+  suspend fun removeRoutine(routineDomainLayer: RoutineDomainLayer): Int
   suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yearNumber: Int?)
-  fun updateRoutine(routineModelDomainLayer: RoutineModelDomainLayer): Flow<Resource<RoutineModelDomainLayer?>>
-  suspend fun checkedRoutine(routineModelDomainLayer: RoutineModelDomainLayer)
-  suspend fun getRoutine(id: Int): RoutineModelDomainLayer
-  fun getRoutines(monthNumber: Int, numberDay: Int, yearNumber: Int): Flow<List<RoutineModelDomainLayer>>
-  fun searchRoutine(name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?): Flow<List<RoutineModelDomainLayer>>
+  fun updateRoutine(routineDomainLayer: RoutineDomainLayer): Flow<Resource<RoutineDomainLayer?>>
+  suspend fun checkedRoutine(routineDomainLayer: RoutineDomainLayer)
+  suspend fun getRoutine(id: Int): RoutineDomainLayer
+  fun getRoutines(monthNumber: Int, numberDay: Int, yearNumber: Int): Flow<List<RoutineDomainLayer>>
+  fun searchRoutine(name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?): Flow<List<RoutineDomainLayer>>
   suspend fun changeRoutineId()
   suspend fun checkedAllRoutinePastTime()
-  suspend fun getAllRoutine(): List<RoutineModelDomainLayer>
+  suspend fun getAllRoutine(): List<RoutineDomainLayer>
   fun haveAlarm(): Flow<Boolean>
   suspend fun getRoutineAlarmId(): Long
   fun convertDateToMilSecond(yearNumber: Int?, monthNumber: Int?, dayNumber: Int?, timeHours: String?): Long
-  suspend fun checkEqualRoutine(routineModelDomainLayer: RoutineModelDomainLayer): RoutineModelDomainLayer?
+  suspend fun checkEqualRoutine(routineDomainLayer: RoutineDomainLayer): RoutineDomainLayer?
 }

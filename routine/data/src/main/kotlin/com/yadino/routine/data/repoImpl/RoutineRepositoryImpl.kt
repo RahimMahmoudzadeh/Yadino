@@ -1,7 +1,6 @@
 package com.yadino.routine.data.repoImpl
 
 import com.rahim.yadino.Constants
-import com.rahim.yadino.Resource
 import com.rahim.yadino.db.dao.routine.dao.RoutineDao
 import com.rahim.yadino.db.dao.routine.model.RoutineEntity
 import com.rahim.yadino.enums.RoutineExplanation
@@ -10,7 +9,7 @@ import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
 import com.yadino.routine.data.mapper.toRoutineEntity
 import com.yadino.routine.data.mapper.toRoutineModelDomainLayer
 import com.yadino.routine.domain.repo.RoutineRepository
-import com.yadino.routine.domain.model.RoutineModelDomainLayer
+import com.yadino.routine.domain.model.RoutineDomainLayer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -90,22 +89,22 @@ class RoutineRepositoryImpl @Inject constructor(
     routineDao.updateRoutinesPastTime(System.currentTimeMillis())
   }
 
-  override suspend fun getAllRoutine(): List<RoutineModelDomainLayer> = routineDao.getRoutinesByDate().map { it.toRoutineModelDomainLayer() }
+  override suspend fun getAllRoutine(): List<RoutineDomainLayer> = routineDao.getRoutinesByDate().map { it.toRoutineModelDomainLayer() }
 
-  override suspend fun addRoutine(routineModelDomainLayer: RoutineModelDomainLayer) {
+  override suspend fun addRoutine(routineDomainLayer: RoutineDomainLayer) {
     sharedPreferencesRepository.setShowSampleRoutine(true)
-    routineDao.addRoutine(routineModelDomainLayer.toRoutineEntity())
+    routineDao.addRoutine(routineDomainLayer.toRoutineEntity())
   }
 
-  override suspend fun checkEqualRoutine(routineModelDomainLayer: RoutineModelDomainLayer): RoutineModelDomainLayer? {
+  override suspend fun checkEqualRoutine(routineDomainLayer: RoutineDomainLayer): RoutineDomainLayer? {
     return routineDao.checkEqualRoutine(
-      routineName = routineModelDomainLayer.name,
-      routineExplanation = routineModelDomainLayer.explanation ?: "",
-      routineDayName = routineModelDomainLayer.dayName,
-      routineDayNumber = routineModelDomainLayer.dayNumber ?: 0,
-      routineYearNumber = routineModelDomainLayer.yearNumber ?: 0,
-      routineMonthNumber = routineModelDomainLayer.monthNumber ?: 0,
-      routineTimeMilSecond = routineModelDomainLayer.timeInMillisecond ?: 0,
+      routineName = routineDomainLayer.name,
+      routineExplanation = routineDomainLayer.explanation ?: "",
+      routineDayName = routineDomainLayer.dayName,
+      routineDayNumber = routineDomainLayer.dayNumber ?: 0,
+      routineYearNumber = routineDomainLayer.yearNumber ?: 0,
+      routineMonthNumber = routineDomainLayer.monthNumber ?: 0,
+      routineTimeMilSecond = routineDomainLayer.timeInMillisecond ?: 0,
     )?.toRoutineModelDomainLayer()
   }
 
@@ -137,25 +136,25 @@ class RoutineRepositoryImpl @Inject constructor(
     return idRandom.toLong()
   }
 
-  override suspend fun removeRoutine(routineModelDomainLayer: RoutineModelDomainLayer): Int {
+  override suspend fun removeRoutine(routineDomainLayer: RoutineDomainLayer): Int {
     sharedPreferencesRepository.setShowSampleRoutine(true)
-    return routineDao.removeRoutine(routineModelDomainLayer.toRoutineEntity())
+    return routineDao.removeRoutine(routineDomainLayer.toRoutineEntity())
   }
 
   override suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yearNumber: Int?) {
     routineDao.removeAllRoutine(nameMonth, dayNumber, yearNumber)
   }
 
-  override fun updateRoutine(routineModelDomainLayer: RoutineModelDomainLayer): Flow<Resource<RoutineModelDomainLayer?>> = flow {
+  override fun updateRoutine(routineDomainLayer: RoutineDomainLayer): Flow<Resource<RoutineDomainLayer?>> = flow {
       Timber.Forest.tag("routineViewModel").d("updateRoutine")
 
       sharedPreferencesRepository.setShowSampleRoutine(true)
-      val updateRoutine = routineModelDomainLayer.copy(
+      val updateRoutine = routineDomainLayer.copy(
           timeInMillisecond = convertDateToMilSecond(
-              routineModelDomainLayer.yearNumber,
-              routineModelDomainLayer.monthNumber,
-              routineModelDomainLayer.dayNumber,
-              routineModelDomainLayer.timeHours,
+              routineDomainLayer.yearNumber,
+              routineDomainLayer.monthNumber,
+              routineDomainLayer.dayNumber,
+              routineDomainLayer.timeHours,
           ),
       )
       updateRoutine.run {
@@ -182,16 +181,16 @@ class RoutineRepositoryImpl @Inject constructor(
       }
   }
 
-  override suspend fun getRoutine(id: Int): RoutineModelDomainLayer = routineDao.getRoutine(id).toRoutineModelDomainLayer()
-  override suspend fun checkedRoutine(routineModelDomainLayer: RoutineModelDomainLayer) {
+  override suspend fun getRoutine(id: Int): RoutineDomainLayer = routineDao.getRoutine(id).toRoutineModelDomainLayer()
+  override suspend fun checkedRoutine(routineDomainLayer: RoutineDomainLayer) {
     Timber.tag("routineViewModel").d("checkedRoutine")
     sharedPreferencesRepository.setShowSampleRoutine(true)
-    routineDao.addRoutine(routineModelDomainLayer.toRoutineEntity())
+    routineDao.addRoutine(routineDomainLayer.toRoutineEntity())
   }
 
-  override fun getRoutines(monthNumber: Int, numberDay: Int, yearNumber: Int): Flow<List<RoutineModelDomainLayer>> = routineDao.getRoutinesByDate(monthNumber, numberDay, yearNumber).map { it.map { it.toRoutineModelDomainLayer() } }
+  override fun getRoutines(monthNumber: Int, numberDay: Int, yearNumber: Int): Flow<List<RoutineDomainLayer>> = routineDao.getRoutinesByDate(monthNumber, numberDay, yearNumber).map { it.map { it.toRoutineModelDomainLayer() } }
 
-  override fun searchRoutine(name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?): Flow<List<RoutineModelDomainLayer>> = routineDao.searchRoutine(nameRoutine = name, monthNumber = monthNumber, dayNumber = dayNumber, yearNumber = yearNumber).map { it.map { it.toRoutineModelDomainLayer() } }
+  override fun searchRoutine(name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?): Flow<List<RoutineDomainLayer>> = routineDao.searchRoutine(nameRoutine = name, monthNumber = monthNumber, dayNumber = dayNumber, yearNumber = yearNumber).map { it.map { it.toRoutineModelDomainLayer() } }
 
   override fun haveAlarm(): Flow<Boolean> = routineDao.haveAlarm()
 }

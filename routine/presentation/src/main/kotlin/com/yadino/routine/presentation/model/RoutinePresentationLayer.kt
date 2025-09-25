@@ -1,9 +1,6 @@
-package com.yadino.routine.domain.model
+package com.yadino.routine.presentation.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-data class RoutineModelDomainLayer(
+data class RoutinePresentationLayer(
   val name: String,
   val colorTask: Int?,
   val dayName: String,
