@@ -13,5 +13,6 @@ dependencies {
   libs.run {
     implementation(accompanist.permissions)
     implementation(swipe)
+    api(kotlinx.collections.immutable)
   }
 }
