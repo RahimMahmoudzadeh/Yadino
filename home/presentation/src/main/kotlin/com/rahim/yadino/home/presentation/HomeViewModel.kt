@@ -9,7 +9,7 @@ import com.rahim.home.domain.useCase.GetCurrentDateUseCase
 import com.rahim.home.domain.useCase.GetTodayRoutinesUseCase
 import com.rahim.home.domain.useCase.SearchRoutineUseCase
 import com.rahim.home.domain.useCase.UpdateReminderUseCase
-import com.rahim.yadino.Resource
+import com.rahim.yadino.base.Resource
 import com.rahim.yadino.home.presentation.mapper.toCurrentDatePresentationLayer
 import com.rahim.yadino.home.presentation.mapper.toRoutineHomeDomainLayer
 import com.rahim.yadino.home.presentation.mapper.toRoutineHomePresentationLayer
@@ -140,7 +140,7 @@ class HomeViewModel @Inject constructor(
         is Resource.Error -> {
           mutableState.update { state ->
             state.copy(
-              errorMessage = response.message,
+              errorMessage = response.error,
             )
           }
         }
@@ -164,7 +164,7 @@ class HomeViewModel @Inject constructor(
         is Resource.Error -> {
           mutableState.update { state ->
             state.copy(
-              errorMessage = response.message,
+              errorMessage = response.error,
             )
           }
         }

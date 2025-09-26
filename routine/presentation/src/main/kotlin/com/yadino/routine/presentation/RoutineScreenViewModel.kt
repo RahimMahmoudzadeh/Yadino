@@ -2,18 +2,22 @@ package com.yadino.routine.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rahim.yadino.Resource
+import com.rahim.yadino.base.LoadableData
+import com.rahim.yadino.base.Resource
 import com.rahim.yadino.core.timeDate.repo.DateTimeRepository
 import com.rahim.yadino.di.IODispatcher
-import com.yadino.routine.domain.model.RoutineModelDomainLayer
 import com.yadino.routine.domain.useCase.AddReminderUseCase
 import com.yadino.routine.domain.useCase.CancelReminderUseCase
 import com.yadino.routine.domain.useCase.DeleteReminderUseCase
 import com.yadino.routine.domain.useCase.GetRemindersUseCase
 import com.yadino.routine.domain.useCase.SearchRoutineUseCase
 import com.yadino.routine.domain.useCase.UpdateReminderUseCase
+import com.yadino.routine.presentation.mapper.toRoutineDomainLayer
+import com.yadino.routine.presentation.mapper.toRoutinePresentationLayer
 import com.yadino.routine.presentation.mapper.toTimeDateRoutinePresentationLayer
+import com.yadino.routine.presentation.model.RoutinePresentationLayer
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,21 +55,21 @@ class RoutineScreenViewModel @Inject constructor(
   private var lastMonthNumber = dateTimeRepository.currentTimeMonth
   private var lastDayNumber = dateTimeRepository.currentTimeDay
 
-  private var mutableState = MutableStateFlow(RoutineContract.RoutineState())
-  override val state: StateFlow<RoutineContract.RoutineState> = mutableState.onStart {
+  private var _state = MutableStateFlow(RoutineContract.State())
+  override val state: StateFlow<RoutineContract.State> = _state.onStart {
     setCurrentTime()
     getTimesMonth()
     getRoutines()
     getTimes()
-  }.stateIn(viewModelScope, SharingStarted.Lazily, RoutineContract.RoutineState())
+  }.stateIn(viewModelScope, SharingStarted.Lazily, RoutineContract.State())
 
   private var searchNameRoutine = ""
-  override fun event(event: RoutineContract.RoutineEvent) {
+  override fun event(event: RoutineContract.Event) {
     when (event) {
-      is RoutineContract.RoutineEvent.AddRoutine -> addRoutine(event.routine)
-      is RoutineContract.RoutineEvent.CheckedRoutine -> checkedRoutine(event.routine)
-      is RoutineContract.RoutineEvent.DeleteRoutine -> deleteRoutine(event.routine)
-      is RoutineContract.RoutineEvent.GetRoutines -> {
+      is RoutineContract.Event.Add -> addRoutine(event.routine)
+      is RoutineContract.Event.Checked -> checkedRoutine(event.routine)
+      is RoutineContract.Event.Delete -> deleteRoutine(event.routine)
+      is RoutineContract.Event.GetRoutines -> {
         Timber.tag("routineViewModel").d("GetRoutines")
         event.run {
           updateLastTime(timeDate.yearNumber, timeDate.monthNumber, timeDate.dayNumber)
@@ -74,13 +78,13 @@ class RoutineScreenViewModel @Inject constructor(
         }
       }
 
-      is RoutineContract.RoutineEvent.SearchRoutine -> {
+      is RoutineContract.Event.Search -> {
         getRoutines(searchText = event.routineName)
       }
 
-      is RoutineContract.RoutineEvent.UpdateRoutine -> updateRoutine(event.routine)
-      is RoutineContract.RoutineEvent.GetAllTimes -> getTimes()
-      is RoutineContract.RoutineEvent.MonthIncrease -> {
+      is RoutineContract.Event.Update -> updateRoutine(event.routine)
+      is RoutineContract.Event.GetAllTimes -> getTimes()
+      is RoutineContract.Event.MonthIncrease -> {
         monthIncrease(event.monthNumber, event.yearNumber) { year, month ->
           getTimesMonth(year, month)
           updateDayChecked(year, month)
@@ -88,7 +92,7 @@ class RoutineScreenViewModel @Inject constructor(
         }
       }
 
-      is RoutineContract.RoutineEvent.MonthDecrease -> {
+      is RoutineContract.Event.MonthDecrease -> {
         monthDecrease(event.monthNumber, event.yearNumber) { year, month ->
           getTimesMonth(year, month)
           updateDayChecked(year, month)
@@ -96,20 +100,20 @@ class RoutineScreenViewModel @Inject constructor(
         }
       }
 
-      is RoutineContract.RoutineEvent.JustMonthDecrease -> {
+      is RoutineContract.Event.JustMonthDecrease -> {
         monthDecrease(event.monthNumber, event.yearNumber) { year, month ->
           getTimesMonth(year, month)
         }
       }
 
-      is RoutineContract.RoutineEvent.JustMonthIncrease -> {
+      is RoutineContract.Event.JustMonthIncrease -> {
         monthIncrease(event.monthNumber, event.yearNumber) { year, month ->
           getTimesMonth(year, month)
         }
       }
 
-      RoutineContract.RoutineEvent.WeekDecrease -> weekDecrease()
-      RoutineContract.RoutineEvent.WeekIncrease -> weekIncrease()
+      RoutineContract.Event.WeekDecrease -> weekDecrease()
+      RoutineContract.Event.WeekIncrease -> weekIncrease()
     }
   }
 
@@ -129,7 +133,7 @@ class RoutineScreenViewModel @Inject constructor(
     } else {
       index + 7
     }
-    mutableState.update {
+    _state.update {
       it.copy(index = updateIndex)
     }
   }
@@ -141,7 +145,7 @@ class RoutineScreenViewModel @Inject constructor(
     } else {
       index - 7
     }
-    mutableState.update {
+    _state.update {
       it.copy(index = updateIndex)
     }
   }
@@ -174,7 +178,7 @@ class RoutineScreenViewModel @Inject constructor(
     viewModelScope.launch(ioDispatcher) {
       val times = ArrayList(state.value.times)
       times.indexOfFirst { it.monthNumber == month && it.yearNumber == year && it.dayNumber == day }.let { index ->
-        mutableState.update {
+        _state.update {
           it.copy(index = calculateIndexDay(index))
         }
       }
@@ -182,7 +186,7 @@ class RoutineScreenViewModel @Inject constructor(
   }
 
   private fun setCurrentTime() {
-    mutableState.update {
+    _state.update {
       it.copy(
         currentDay = dateTimeRepository.currentTimeDay,
         currentMonth = dateTimeRepository.currentTimeMonth,
@@ -204,54 +208,58 @@ class RoutineScreenViewModel @Inject constructor(
   }
 
   private suspend fun getNormalRoutines(scope: CoroutineScope, yearNumber: Int, monthNumber: Int, numberDay: Int) {
+    _state.update {
+      it.copy(routines = LoadableData.Loading)
+    }
     getRemindersUseCase.invoke(monthNumber, numberDay, yearNumber, scope).collectLatest { routines ->
-      Timber.tag("routineSearch").d("getNormalRoutines")
-      mutableState.update {
+      _state.update {
         it.copy(
-          routines =
-            routines.sortedBy {
+          routines = LoadableData.Loaded(
+            routines.map { it.toRoutinePresentationLayer() }.sortedBy {
               it.timeHours?.replace(":", "")?.toInt()
-            },
-          routineLoading = false,
-          errorMessage = null,
+            }.toPersistentList(),
+          ),
         )
       }
     }
   }
 
   private suspend fun searchRoutine(searchText: String, scope: CoroutineScope, yearNumber: Int, monthNumber: Int, numberDay: Int) {
+    _state.update {
+      it.copy(routines = LoadableData.Loading)
+    }
     searchRoutineUseCase.invoke(searchText, yearNumber, monthNumber, numberDay, scope).collectLatest { searchItems ->
       Timber.tag("routineSearch").d("searchRoutine->$searchText")
       Timber.tag("routineSearch").d("searchItems->$searchItems")
-      mutableState.update {
+      _state.update {
         it.copy(
-          searchRoutines = searchItems.sortedBy {
-            it.timeHours?.replace(":", "")?.toInt()
-          },
-          routineLoading = false,
-          errorMessage = null,
+          routines = LoadableData.Loaded(
+            searchItems.map { it.toRoutinePresentationLayer() }.sortedBy {
+              it.timeHours?.replace(":", "")?.toInt()
+            }.toPersistentList(),
+          ),
         )
       }
     }
   }
 
-  private fun deleteRoutine(routineModelDomainLayer: RoutineModelDomainLayer) {
+  private fun deleteRoutine(routine: RoutinePresentationLayer) {
     viewModelScope.launch {
-      deleteReminderUseCase(routineModelDomainLayer)
+      deleteReminderUseCase(routine = routine.toRoutineDomainLayer())
     }
   }
 
-  private fun updateRoutine(routineModelDomainLayer: RoutineModelDomainLayer) {
+  private fun updateRoutine(routine: RoutinePresentationLayer) {
     viewModelScope.launch {
       Timber.tag("routineViewModel").d("GetRoutines")
-      val response = updateReminderUseCase(routineModelDomainLayer)
+      val response = updateReminderUseCase(routine = routine.toRoutineDomainLayer())
       when (response) {
         is Resource.Error -> {
-          mutableState.update { state ->
-            state.copy(
-              errorMessage = response.message,
-            )
-          }
+//          _state.update { state ->
+//            state.copy(
+//              errorMessage = response.message,
+//            )
+//          }
         }
 
         is Resource.Success -> {}
@@ -259,22 +267,22 @@ class RoutineScreenViewModel @Inject constructor(
     }
   }
 
-  private fun checkedRoutine(routineModelDomainLayer: RoutineModelDomainLayer) {
+  private fun checkedRoutine(routine: RoutinePresentationLayer) {
     viewModelScope.launch {
-      cancelReminderUseCase(routineModelDomainLayer)
+      cancelReminderUseCase(routine = routine.toRoutineDomainLayer())
     }
   }
 
-  private fun addRoutine(routineModelDomainLayer: RoutineModelDomainLayer) {
+  private fun addRoutine(routine: RoutinePresentationLayer) {
     viewModelScope.launch {
-      val response = addReminderUseCase(routineModelDomainLayer)
+      val response = addReminderUseCase(routine.toRoutineDomainLayer())
       when (response) {
         is Resource.Error -> {
-          mutableState.update { state ->
-            state.copy(
-              errorMessage = response.message,
-            )
-          }
+//          _state.update { state ->
+//            state.copy(
+//              errorMessage = response.message,
+//            )
+//          }
         }
 
         is Resource.Success -> {}
@@ -285,10 +293,9 @@ class RoutineScreenViewModel @Inject constructor(
   private fun getTimes() {
     viewModelScope.launch {
       dateTimeRepository.getTimes().catch {}.collect { times ->
-        mutableState.update {
+        _state.update {
           it.copy(
-            times = times.map { it.toTimeDateRoutinePresentationLayer() },
-            errorMessage = null,
+            times = times.map { it.toTimeDateRoutinePresentationLayer() }.toPersistentList(),
           )
         }
         times.find { it.isChecked }?.let { currentTime ->
@@ -306,8 +313,8 @@ class RoutineScreenViewModel @Inject constructor(
         val time = times.indexOfFirst { it.dayNumber == DAY_MIN }
         times[time] = times.first { it.dayNumber == DAY_MIN }.copy(isChecked = true)
       }
-      mutableState.update {
-        it.copy(timesMonth = times.map { it.toTimeDateRoutinePresentationLayer() }, errorMessage = null)
+      _state.update {
+        it.copy(timesMonth = times.map { it.toTimeDateRoutinePresentationLayer() }.toPersistentList())
       }
     }
   }
@@ -317,7 +324,7 @@ class RoutineScreenViewModel @Inject constructor(
   private fun updateDayChecked(yearNumber: Int, monthNumber: Int, day: Int = DAY_MIN) {
     viewModelScope.launch {
       dateTimeRepository.updateDayToToday(day, yearNumber, monthNumber)
-      mutableState.update {
+      _state.update {
         it.copy(currentMonth = monthNumber, currentYear = yearNumber, currentDay = day)
       }
     }

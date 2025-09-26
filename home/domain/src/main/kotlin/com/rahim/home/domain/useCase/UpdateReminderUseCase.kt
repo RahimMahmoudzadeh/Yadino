@@ -3,8 +3,9 @@ package com.rahim.home.domain.useCase
 import com.rahim.home.domain.model.RoutineHomeDomainLayer
 import com.rahim.yadino.base.reminder.ReminderScheduler
 import com.rahim.home.domain.repo.HomeRepository
+import com.rahim.yadino.base.Resource
 import com.rahim.yadino.base.reminder.ReminderState
-import com.rahim.yadino.Resource
+import com.rahim.yadino.enums.SuccessMessage
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import javax.inject.Inject
 
@@ -12,7 +13,7 @@ class UpdateReminderUseCase @Inject constructor(
     private val routineRepository: HomeRepository,
     private val reminderScheduler: ReminderScheduler,
 ) {
-  suspend operator fun invoke(routineModel: RoutineHomeDomainLayer): Resource<Nothing?> {
+  suspend operator fun invoke(routineModel: RoutineHomeDomainLayer): Resource<SuccessMessage, ErrorMessageCode> {
     try {
       reminderScheduler.cancelReminder(routineModel.idAlarm ?: 0)
       val routine = routineModel.copy(
@@ -38,37 +39,37 @@ class UpdateReminderUseCase @Inject constructor(
       return when (reminderState) {
         ReminderState.SetSuccessfully -> {
           routineRepository.updateRoutine(routine)
-          Resource.Success(null)
+          Resource.Success(SuccessMessage.UPDATE_REMINDER)
         }
 
         is ReminderState.NotSet -> {
-          Resource.Error(reminderState.errorMessage)
+          Resource.Error(error = reminderState.errorMessage?: ErrorMessageCode.ERROR_SAVE_PROSES)
         }
 
         is ReminderState.PermissionsState -> {
           when {
             reminderState.reminderPermission && !reminderState.notificationPermission -> {
               Resource.Error(
-                message = ErrorMessageCode.ERROR_NOTIFICATION_PERMISSION,
+                error = ErrorMessageCode.ERROR_NOTIFICATION_PERMISSION,
               )
             }
 
             !reminderState.reminderPermission && reminderState.notificationPermission -> {
               Resource.Error(
-                message = ErrorMessageCode.ERROR_REMINDER_PERMISSION,
+                error = ErrorMessageCode.ERROR_REMINDER_PERMISSION,
               )
             }
 
             else -> {
               Resource.Error(
-                message = ErrorMessageCode.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION,
+                error = ErrorMessageCode.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION,
               )
             }
           }
         }
       }
     } catch (e: Exception) {
-      return Resource.Error(message = ErrorMessageCode.ERROR_SAVE_PROSES)
+      return Resource.Error(error = ErrorMessageCode.ERROR_SAVE_PROSES)
     }
   }
 }

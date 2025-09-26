@@ -14,9 +14,9 @@ fun NavController.navigateToRoutine(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.routineScreen(openDialog: Boolean, clickSearch: Boolean, onOpenDialog: (isOpen: Boolean) -> Unit) {
   composable(Destinations.Routine.route) {
       RoutineRoute(
-          openDialog = openDialog,
-          clickSearch = clickSearch,
-          onOpenDialog = onOpenDialog,
+          openDialogAddRoutine = openDialog,
+          showSearchBar = clickSearch,
+          onOpenDialogAddRoutine = onOpenDialog,
       )
   }
 }

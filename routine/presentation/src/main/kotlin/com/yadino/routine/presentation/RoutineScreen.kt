@@ -45,22 +45,21 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.calculateMonthName
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
-import com.rahim.yadino.designsystem.component.ShowToastShort
 import com.rahim.yadino.designsystem.component.goSettingPermission
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.font_medium
 import com.rahim.yadino.enums.RoutineExplanation
-import com.rahim.yadino.errorMessage
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.routine.presentation.R
-import com.yadino.routine.domain.model.RoutineModelDomainLayer
 import com.yadino.routine.presentation.component.DialogAddRoutine
 import com.yadino.routine.presentation.component.ListRoutines
+import com.yadino.routine.presentation.model.RoutinePresentationLayer
 import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
 import timber.log.Timber
 
@@ -68,53 +67,53 @@ import timber.log.Timber
 fun RoutineRoute(
   modifier: Modifier = Modifier,
   viewModel: RoutineScreenViewModel = hiltViewModel(),
-  openDialog: Boolean,
-  clickSearch: Boolean,
-  onOpenDialog: (isOpen: Boolean) -> Unit,
+  openDialogAddRoutine: Boolean,
+  showSearchBar: Boolean,
+  onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,
 ) {
   val (state, event) = use(viewModel)
 
   RoutineScreen(
     modifier = modifier,
     state = state,
-    openDialog = openDialog,
-    clickSearch = clickSearch,
-    onOpenDialog = onOpenDialog,
+    openDialog = openDialogAddRoutine,
+    showSearchBar = showSearchBar,
+    onOpenDialog = onOpenDialogAddRoutine,
     onUpdateRoutine = {
-      event.invoke(RoutineContract.RoutineEvent.UpdateRoutine(it))
+      event.invoke(RoutineContract.Event.Update(it))
     },
     onAddRoutine = {
-      event(RoutineContract.RoutineEvent.AddRoutine(it))
+      event(RoutineContract.Event.Add(it))
     },
     onDeleteRoutine = {
-      event.invoke(RoutineContract.RoutineEvent.DeleteRoutine(it))
+      event.invoke(RoutineContract.Event.Delete(it))
     },
     onSearchText = {
-      event.invoke(RoutineContract.RoutineEvent.SearchRoutine(it))
+      event.invoke(RoutineContract.Event.Search(it))
     },
     checkedRoutine = {
-      event.invoke(RoutineContract.RoutineEvent.CheckedRoutine(it))
+      event.invoke(RoutineContract.Event.Checked(it))
     },
     dayCheckedNumber = { timeDate ->
-      event.invoke(RoutineContract.RoutineEvent.GetRoutines(timeDate))
+      event.invoke(RoutineContract.Event.GetRoutines(timeDate))
     },
     dialogMonthIncrease = { year, month ->
-      event.invoke(RoutineContract.RoutineEvent.JustMonthIncrease(year, month))
+      event.invoke(RoutineContract.Event.JustMonthIncrease(year, month))
     },
     dialogMonthDecrease = { year, month ->
-      event.invoke(RoutineContract.RoutineEvent.JustMonthDecrease(year, month))
+      event.invoke(RoutineContract.Event.JustMonthDecrease(year, month))
     },
     monthIncrease = { year, month ->
-      event.invoke(RoutineContract.RoutineEvent.MonthIncrease(year, month))
+      event.invoke(RoutineContract.Event.MonthIncrease(year, month))
     },
     monthDecrease = { year, month ->
-      event.invoke(RoutineContract.RoutineEvent.MonthDecrease(year, month))
+      event.invoke(RoutineContract.Event.MonthDecrease(year, month))
     },
     weekIncrease = {
-      event.invoke(RoutineContract.RoutineEvent.WeekIncrease)
+      event.invoke(RoutineContract.Event.WeekIncrease)
     },
     weekDecrease = {
-      event.invoke(RoutineContract.RoutineEvent.WeekDecrease)
+      event.invoke(RoutineContract.Event.WeekDecrease)
     },
   )
 }
@@ -122,15 +121,15 @@ fun RoutineRoute(
 @Composable
 private fun RoutineScreen(
   modifier: Modifier,
-  state: RoutineContract.RoutineState,
+  state: RoutineContract.State,
   openDialog: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,
-  clickSearch: Boolean,
-  checkedRoutine: (RoutineModelDomainLayer) -> Unit,
+  showSearchBar: Boolean,
+  checkedRoutine: (RoutinePresentationLayer) -> Unit,
   dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
-  onUpdateRoutine: (RoutineModelDomainLayer) -> Unit,
-  onAddRoutine: (RoutineModelDomainLayer) -> Unit,
-  onDeleteRoutine: (RoutineModelDomainLayer) -> Unit,
+  onUpdateRoutine: (RoutinePresentationLayer) -> Unit,
+  onAddRoutine: (RoutinePresentationLayer) -> Unit,
+  onDeleteRoutine: (RoutinePresentationLayer) -> Unit,
   onSearchText: (String) -> Unit,
   monthIncrease: (year: Int, month: Int) -> Unit,
   monthDecrease: (year: Int, month: Int) -> Unit,
@@ -141,23 +140,19 @@ private fun RoutineScreen(
 ) {
   val context = LocalContext.current
 
-  Timber.tag("routineGetNameDay").d("recomposition RoutineScreen")
-  val routineModelDomainLayerDeleteDialog = rememberSaveable { mutableStateOf<RoutineModelDomainLayer?>(null) }
-  val routineModelDomainLayerUpdateDialog = rememberSaveable { mutableStateOf<RoutineModelDomainLayer?>(null) }
-  var errorClick by rememberSaveable { mutableStateOf(false) }
+  val routineDeleteDialog = rememberSaveable { mutableStateOf<RoutinePresentationLayer?>(null) }
+  val routineUpdateDialog = rememberSaveable { mutableStateOf<RoutinePresentationLayer?>(null) }
 
+  var errorClick by rememberSaveable { mutableStateOf(false) }
   var searchText by rememberSaveable { mutableStateOf("") }
 
-  state.errorMessage?.let { errorMessage ->
-    ShowToastShort(errorMessage.errorMessage(), context)
-  }
   Column(
     modifier = modifier
       .fillMaxSize(),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Top,
   ) {
-    ShowSearchBar(clickSearch, searchText = searchText) { search ->
+    ShowSearchBar(showSearchBar, searchText = searchText) { search ->
       searchText = search
       onSearchText(searchText)
     }
@@ -180,8 +175,8 @@ private fun RoutineScreen(
       weekIncrease = weekIncrease,
     )
     GetRoutines(
-      if (searchText.isNotBlank()) state.searchRoutines else state.routines,
-      searchText,
+      state = state,
+      searchText = searchText,
       routineUpdateDialog = {
         if (it.isChecked) {
           Toast.makeText(
@@ -192,7 +187,7 @@ private fun RoutineScreen(
           return@GetRoutines
         }
         onOpenDialog(true)
-        routineModelDomainLayerUpdateDialog.value = it
+        routineUpdateDialog.value = it
       },
       routineChecked = {
         checkedRoutine(it)
@@ -207,20 +202,20 @@ private fun RoutineScreen(
           ).show()
           return@GetRoutines
         }
-        routineModelDomainLayerDeleteDialog.value = it
+        routineDeleteDialog.value = it
       },
     )
   }
 
   ErrorDialog(
-    isOpen = routineModelDomainLayerDeleteDialog.value != null,
+    isOpen = routineDeleteDialog.value != null,
     isClickOk = {
       if (it) {
-        routineModelDomainLayerDeleteDialog.value?.let {
+        routineDeleteDialog.value?.let {
           onDeleteRoutine(it)
         }
       }
-      routineModelDomainLayerDeleteDialog.value = null
+      routineDeleteDialog.value = null
     },
     message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.can_you_delete),
     okMessage = stringResource(
@@ -231,10 +226,10 @@ private fun RoutineScreen(
     DialogAddRoutine(
       onCloseDialog = {
         onOpenDialog(false)
-        routineModelDomainLayerUpdateDialog.value = null
+        routineUpdateDialog.value = null
       },
-      updateRoutine = routineModelDomainLayerUpdateDialog.value?.copy(
-        explanation = routineModelDomainLayerUpdateDialog.value?.explanation?.let {
+      updateRoutine = routineUpdateDialog.value?.copy(
+        explanation = routineUpdateDialog.value?.explanation?.let {
           if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
             stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_right_sample)
           } else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation) {
@@ -243,11 +238,11 @@ private fun RoutineScreen(
             it
           }
         } ?: run {
-          routineModelDomainLayerUpdateDialog.value?.explanation ?: ""
+          routineUpdateDialog.value?.explanation ?: ""
         },
       ),
       onRoutineCreated = { routine ->
-        if (routineModelDomainLayerUpdateDialog.value != null) {
+        if (routineUpdateDialog.value != null) {
           onUpdateRoutine(routine)
         } else {
           onAddRoutine(routine)
@@ -278,43 +273,54 @@ private fun RoutineScreen(
 
 @Composable
 private fun GetRoutines(
-  routines: List<RoutineModelDomainLayer>,
+  state: RoutineContract.State,
   searchText: String,
-  routineUpdateDialog: (RoutineModelDomainLayer) -> Unit,
-  routineChecked: (RoutineModelDomainLayer) -> Unit,
-  routineDeleteDialog: (RoutineModelDomainLayer) -> Unit,
+  routineUpdateDialog: (RoutinePresentationLayer) -> Unit,
+  routineChecked: (RoutinePresentationLayer) -> Unit,
+  routineDeleteDialog: (RoutinePresentationLayer) -> Unit,
 ) {
-  if (routines.isEmpty()) {
-    if (searchText.isNotEmpty()) {
-      EmptyMessage(
-        messageEmpty = com.rahim.yadino.library.designsystem.R.string.search_empty_routine,
-        painter = R.drawable.routine_empty,
-      )
-    } else {
-      EmptyMessage(
-        messageEmpty = R.string.not_routine,
-        painter = R.drawable.routine_empty,
-      )
-    }
-  } else {
-    ListRoutines(
-      modifier = Modifier
-          .fillMaxWidth()
-          .padding(top = 16.dp),
-      routines = routines,
-      checkedRoutine = {
-        Timber.tag("routineGetNameDay")
-          .d("ItemsRoutine checkedRoutine->$it")
-        routineChecked(it)
-      },
-      updateRoutine = {
-        routineUpdateDialog(it)
-      },
-      deleteRoutine = {
-        routineDeleteDialog(it)
-      },
-    )
-  }
+
+  LoadableComponent(
+    loadableData = state.routines,
+    loaded = { routines ->
+      if (routines.isEmpty()) {
+        if (searchText.isNotEmpty()) {
+          EmptyMessage(
+            messageEmpty = com.rahim.yadino.library.designsystem.R.string.search_empty_routine,
+            painter = R.drawable.routine_empty,
+          )
+        } else {
+          EmptyMessage(
+            messageEmpty = R.string.not_routine,
+            painter = R.drawable.routine_empty,
+          )
+        }
+      } else {
+        ListRoutines(
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+          routines = routines,
+          checkedRoutine = {
+            Timber.tag("routineGetNameDay")
+              .d("ItemsRoutine checkedRoutine->$it")
+            routineChecked(it)
+          },
+          updateRoutine = {
+            routineUpdateDialog(it)
+          },
+          deleteRoutine = {
+            routineDeleteDialog(it)
+          },
+        )
+      }
+
+    },
+    loading = {},
+    error = {
+//      Toast.makeText(context =context, text = it.name, Toast.LENGTH_SHORT).show()
+    },
+  )
 }
 
 @Composable
@@ -348,8 +354,8 @@ private fun ItemTimeDate(
     }
     Text(
       modifier = Modifier
-          .padding(top = 12.dp)
-          .fillMaxWidth(0.3f),
+        .padding(top = 12.dp)
+        .fillMaxWidth(0.3f),
       text = "${yearChecked.toString().persianLocate()} ${monthChecked.calculateMonthName()}",
       color = MaterialTheme.colorScheme.primary,
       textAlign = TextAlign.Center,
@@ -369,8 +375,8 @@ private fun ItemTimeDate(
 
   Row(
     modifier = Modifier
-        .padding(top = 18.dp, end = 50.dp, start = 50.dp)
-        .fillMaxWidth(),
+      .padding(top = 18.dp, end = 50.dp, start = 50.dp)
+      .fillMaxWidth(),
     horizontalArrangement = Arrangement.SpaceBetween,
   ) {
     arrayString.reversed().forEachIndexed { index, nameDay ->
@@ -390,8 +396,8 @@ private fun ItemTimeDate(
   Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
     IconButton(
       modifier = Modifier
-          .weight(1f)
-          .padding(top = 10.dp),
+        .weight(1f)
+        .padding(top = 10.dp),
       onClick = {
         weekIncrease()
       },
@@ -404,8 +410,8 @@ private fun ItemTimeDate(
     }
     ListTimes(
       modifier = Modifier
-          .weight(8f)
-          .padding(top = 6.dp),
+        .weight(8f)
+        .padding(top = 6.dp),
       times = times,
       screenWidth = screenWidth,
       dayCheckedNumber = dayCheckedNumber,
@@ -413,8 +419,8 @@ private fun ItemTimeDate(
     )
     IconButton(
       modifier = Modifier
-          .weight(1f)
-          .padding(top = 10.dp),
+        .weight(1f)
+        .padding(top = 10.dp),
       onClick = {
         weekDecrease()
       },
@@ -476,29 +482,29 @@ private fun DayItems(
 ) {
   ClickableText(
     modifier = Modifier
-        .padding(
-            top = 4.dp,
-            start = if (timeDate.isChecked) if (screenWidth <= 420) 5.dp else 7.dp else 6.dp,
-        )
-        .size(if (screenWidth <= 400) 36.dp else if (screenWidth in 400..420) 39.dp else 43.dp)
-        .clip(CircleShape)
-        .background(
-            brush = if (timeDate.isChecked) {
-                Brush.verticalGradient(
-                    gradientColors,
-                )
-            } else {
-                Brush.horizontalGradient(
-                    listOf(
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.background,
-                    ),
-                )
-            },
-        )
-        .padding(
-            top = if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp,
-        ),
+      .padding(
+        top = 4.dp,
+        start = if (timeDate.isChecked) if (screenWidth <= 420) 5.dp else 7.dp else 6.dp,
+      )
+      .size(if (screenWidth <= 400) 36.dp else if (screenWidth in 400..420) 39.dp else 43.dp)
+      .clip(CircleShape)
+      .background(
+        brush = if (timeDate.isChecked) {
+          Brush.verticalGradient(
+            gradientColors,
+          )
+        } else {
+          Brush.horizontalGradient(
+            listOf(
+              MaterialTheme.colorScheme.background,
+              MaterialTheme.colorScheme.background,
+            ),
+          )
+        },
+      )
+      .padding(
+        top = if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp,
+      ),
     onClick = {
       if (timeDate.dayNumber > 0) {
         dayCheckedNumber(

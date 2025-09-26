@@ -45,7 +45,7 @@ import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.routine.presentation.R
-import com.yadino.routine.domain.model.RoutineModelDomainLayer
+import com.yadino.routine.domain.model.RoutineDomainLayer
 import kotlin.collections.isNotEmpty
 import kotlin.collections.partition
 
@@ -66,7 +66,7 @@ private fun HistoryScreen(
   val (completedTasks, incompleteTasks) = if (state.routines.isNotEmpty()) {
     state.routines.partition { sort -> sort.isChecked }
   } else {
-    emptyList<RoutineModelDomainLayer>() to emptyList()
+    emptyList<RoutineDomainLayer>() to emptyList()
   }
 
   var expanded by rememberSaveable {

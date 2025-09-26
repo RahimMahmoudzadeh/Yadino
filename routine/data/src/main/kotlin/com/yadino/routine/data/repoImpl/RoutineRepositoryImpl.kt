@@ -1,6 +1,7 @@
 package com.yadino.routine.data.repoImpl
 
 import com.rahim.yadino.Constants
+import com.rahim.yadino.base.Resource
 import com.rahim.yadino.db.dao.routine.dao.RoutineDao
 import com.rahim.yadino.db.dao.routine.model.RoutineEntity
 import com.rahim.yadino.enums.RoutineExplanation
@@ -145,9 +146,7 @@ class RoutineRepositoryImpl @Inject constructor(
     routineDao.removeAllRoutine(nameMonth, dayNumber, yearNumber)
   }
 
-  override fun updateRoutine(routineDomainLayer: RoutineDomainLayer): Flow<Resource<RoutineDomainLayer?>> = flow {
-      Timber.Forest.tag("routineViewModel").d("updateRoutine")
-
+  override fun updateRoutine(routineDomainLayer: RoutineDomainLayer): Flow<Resource<RoutineDomainLayer, ErrorMessageCode>> = flow {
       sharedPreferencesRepository.setShowSampleRoutine(true)
       val updateRoutine = routineDomainLayer.copy(
           timeInMillisecond = convertDateToMilSecond(

@@ -17,8 +17,25 @@ fun TimeDateModel.toTimeDateRoutinePresentationLayer(): TimeDateRoutinePresentat
   versionNumber = this.versionNumber,
 )
 
-fun RoutineDomainLayer.toRoutineModelPresentationLayer(): RoutinePresentationLayer =
+fun RoutineDomainLayer.toRoutinePresentationLayer(): RoutinePresentationLayer =
   RoutinePresentationLayer(
+    name = this.name,
+    colorTask = this.colorTask,
+    dayName = this.dayName,
+    dayNumber = this.dayNumber,
+    monthNumber = this.monthNumber,
+    yearNumber = this.yearNumber,
+    timeHours = this.timeHours,
+    isChecked = this.isChecked,
+    id = this.id,
+    explanation = this.explanation,
+    isSample = this.isSample,
+    idAlarm = this.idAlarm,
+    timeInMillisecond = this.timeInMillisecond,
+  )
+
+fun RoutinePresentationLayer.toRoutineDomainLayer(): RoutineDomainLayer =
+  RoutineDomainLayer(
     name = this.name,
     colorTask = this.colorTask,
     dayName = this.dayName,
