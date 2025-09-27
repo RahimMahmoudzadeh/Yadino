@@ -76,9 +76,9 @@ fun RoutineRoute(
   RoutineScreen(
     modifier = modifier,
     state = state,
-    openDialog = openDialogAddRoutine,
+    openDialogAddRoutine = openDialogAddRoutine,
     showSearchBar = showSearchBar,
-    onOpenDialog = onOpenDialogAddRoutine,
+    onOpenDialogAddRoutine = onOpenDialogAddRoutine,
     onUpdateRoutine = {
       event.invoke(RoutineContract.Event.Update(it))
     },
@@ -122,8 +122,8 @@ fun RoutineRoute(
 private fun RoutineScreen(
   modifier: Modifier,
   state: RoutineContract.State,
-  openDialog: Boolean,
-  onOpenDialog: (isOpen: Boolean) -> Unit,
+  openDialogAddRoutine: Boolean,
+  onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,
   showSearchBar: Boolean,
   checkedRoutine: (RoutinePresentationLayer) -> Unit,
   dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
@@ -186,7 +186,7 @@ private fun RoutineScreen(
           ).show()
           return@GetRoutines
         }
-        onOpenDialog(true)
+        onOpenDialogAddRoutine(true)
         routineUpdateDialog.value = it
       },
       routineChecked = {
@@ -222,10 +222,10 @@ private fun RoutineScreen(
       id = com.rahim.yadino.library.designsystem.R.string.ok,
     ),
   )
-  if (openDialog) {
+  if (openDialogAddRoutine) {
     DialogAddRoutine(
       onCloseDialog = {
-        onOpenDialog(false)
+        onOpenDialogAddRoutine(false)
         routineUpdateDialog.value = null
       },
       updateRoutine = routineUpdateDialog.value?.copy(
@@ -247,7 +247,7 @@ private fun RoutineScreen(
         } else {
           onAddRoutine(routine)
         }
-        onOpenDialog(false)
+        onOpenDialogAddRoutine(false)
       },
       currentNumberDay = state.currentDay,
       currentNumberMonth = state.currentMonth,
