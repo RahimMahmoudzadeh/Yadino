@@ -104,7 +104,7 @@ fun RoutineRoute(
       event.invoke(RoutineContract.Event.JustMonthIncrease(year, month))
     },
     dialogMonthDecrease = { year, month ->
-      event.invoke(RoutineContract.Event.JustMonthDecrease(year, month))
+      event.invoke(RoutineContract.Event.MonthBefore(year, month))
     },
     monthChange = { year, month, increaseDecrease ->
       event.invoke(RoutineContract.Event.MonthChange(yearNumber = year, monthNumber = month, increaseDecrease = increaseDecrease))

@@ -85,7 +85,7 @@ class RoutineScreenViewModel @Inject constructor(
       is RoutineContract.Event.GetAllTimes -> getTimes()
       is RoutineContract.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.yearNumber,event.monthNumber,event.increaseDecrease)
       is RoutineContract.Event.WeekChange -> checkWeekIncreaseOrDecrease(event.increaseDecrease)
-      is RoutineContract.Event.JustMonthDecrease -> {
+      is RoutineContract.Event.MonthBefore -> {
         monthDecrease(event.monthNumber, event.yearNumber) { year, month ->
           getTimesMonth(year, month)
         }
