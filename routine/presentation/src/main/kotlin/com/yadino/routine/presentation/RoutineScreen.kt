@@ -81,19 +81,19 @@ fun RoutineRoute(
     showSearchBar = showSearchBar,
     onOpenDialogAddRoutine = onOpenDialogAddRoutine,
     onUpdateRoutine = {
-      event.invoke(RoutineContract.Event.Update(it))
+      event.invoke(RoutineContract.Event.UpdateRoutine(it))
     },
     onAddRoutine = {
-      event(RoutineContract.Event.Add(it))
+      event(RoutineContract.Event.AddRoutine(it))
     },
     onDeleteRoutine = {
-      event.invoke(RoutineContract.Event.Delete(it))
+      event.invoke(RoutineContract.Event.DeleteRoutine(it))
     },
     onSearchText = {
-      event.invoke(RoutineContract.Event.Search(it))
+      event.invoke(RoutineContract.Event.SearchRoutineByName(it))
     },
     checkedRoutine = {
-      event.invoke(RoutineContract.Event.Checked(it))
+      event.invoke(RoutineContract.Event.CheckedRoutine(it))
     },
     dayCheckedNumber = { timeDate ->
       event.invoke(RoutineContract.Event.GetRoutines(timeDate))

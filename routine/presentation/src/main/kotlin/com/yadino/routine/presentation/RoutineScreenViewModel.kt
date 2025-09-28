@@ -65,9 +65,9 @@ class RoutineScreenViewModel @Inject constructor(
   private var searchNameRoutine = ""
   override fun event(event: RoutineContract.Event) {
     when (event) {
-      is RoutineContract.Event.Add -> addRoutine(event.routine)
-      is RoutineContract.Event.Checked -> checkedRoutine(event.routine)
-      is RoutineContract.Event.Delete -> deleteRoutine(event.routine)
+      is RoutineContract.Event.AddRoutine -> addRoutine(event.routine)
+      is RoutineContract.Event.CheckedRoutine -> checkedRoutine(event.routine)
+      is RoutineContract.Event.DeleteRoutine -> deleteRoutine(event.routine)
       is RoutineContract.Event.GetRoutines -> {
         Timber.tag("routineViewModel").d("GetRoutines")
         event.run {
@@ -77,11 +77,11 @@ class RoutineScreenViewModel @Inject constructor(
         }
       }
 
-      is RoutineContract.Event.Search -> {
+      is RoutineContract.Event.SearchRoutineByName -> {
         getRoutines(searchText = event.routineName)
       }
 
-      is RoutineContract.Event.Update -> updateRoutine(event.routine)
+      is RoutineContract.Event.UpdateRoutine -> updateRoutine(event.routine)
       is RoutineContract.Event.GetAllTimes -> getTimes()
       is RoutineContract.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.yearNumber,event.monthNumber,event.increaseDecrease)
       is RoutineContract.Event.WeekChange -> checkWeekIncreaseOrDecrease(event.increaseDecrease)

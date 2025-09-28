@@ -13,11 +13,11 @@ import kotlinx.collections.immutable.persistentListOf
 interface RoutineContract : UnidirectionalViewModel<RoutineContract.Event, RoutineContract.State> {
   @Immutable
   sealed class Event {
-    data class Add(val routine: RoutinePresentationLayer) : Event()
-    data class Checked(val routine: RoutinePresentationLayer) : Event()
-    data class Update(val routine: RoutinePresentationLayer) : Event()
-    data class Delete(val routine: RoutinePresentationLayer) : Event()
-    data class Search(val routineName: String) : Event()
+    data class AddRoutine(val routine: RoutinePresentationLayer) : Event()
+    data class CheckedRoutine(val routine: RoutinePresentationLayer) : Event()
+    data class UpdateRoutine(val routine: RoutinePresentationLayer) : Event()
+    data class DeleteRoutine(val routine: RoutinePresentationLayer) : Event()
+    data class SearchRoutineByName(val routineName: String) : Event()
     data class GetRoutines(val timeDate: TimeDateRoutinePresentationLayer) : Event()
     data class WeekChange(val increaseDecrease: IncreaseDecrease) : Event()
     data class MonthChange(val yearNumber: Int, val monthNumber: Int,val increaseDecrease: IncreaseDecrease) : Event()
