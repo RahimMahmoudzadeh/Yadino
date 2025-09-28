@@ -192,11 +192,6 @@ fun CircularProgressAnimated(isShow: Boolean) {
   }
 }
 
-@Composable
-fun ShowToastShort(message: Int, context: Context) {
-  Toast.makeText(context, stringResource(message), Toast.LENGTH_SHORT).show()
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarCenterAlign(

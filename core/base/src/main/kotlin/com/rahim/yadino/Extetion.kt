@@ -1,6 +1,8 @@
 package com.rahim.yadino
 
+import android.content.Context
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.rahim.yadino.core.base.R
@@ -157,4 +159,7 @@ fun DrawScope.createOvalBottomPath(
   )
   path.close()
   return path
+}
+fun Context.showToastShort(stringId: Int,duration:Int = Toast.LENGTH_SHORT) {
+  Toast.makeText(this, this.resources.getString(stringId), duration).show()
 }
