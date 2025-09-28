@@ -55,8 +55,10 @@ import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.font_medium
 import com.rahim.yadino.enums.RoutineExplanation
+import com.rahim.yadino.errorMessage
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.routine.presentation.R
+import com.rahim.yadino.showToastShort
 import com.yadino.routine.presentation.component.DialogAddRoutine
 import com.yadino.routine.presentation.component.ListRoutines
 import com.yadino.routine.presentation.model.IncreaseDecrease
@@ -139,6 +141,11 @@ private fun RoutineScreen(
   var errorClick by rememberSaveable { mutableStateOf(false) }
   var searchText by rememberSaveable { mutableStateOf("") }
 
+  LaunchedEffect(state.errorMessageCode) {
+    state.errorMessageCode?.let { errorMessageCode ->
+      context.showToastShort(stringId = errorMessageCode.errorMessage())
+    }
+  }
   Column(
     modifier = modifier
       .fillMaxSize(),

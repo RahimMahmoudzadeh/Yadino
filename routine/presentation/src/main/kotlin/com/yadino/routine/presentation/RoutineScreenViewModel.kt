@@ -260,14 +260,13 @@ class RoutineScreenViewModel @Inject constructor(
   private fun updateRoutine(routine: RoutinePresentationLayer) {
     viewModelScope.launch {
       Timber.tag("routineViewModel").d("GetRoutines")
-      val response = updateReminderUseCase(routine = routine.toRoutineDomainLayer())
-      when (response) {
+      when (val response = updateReminderUseCase(routine = routine.toRoutineDomainLayer())) {
         is Resource.Error -> {
-//          _state.update { state ->
-//            state.copy(
-//              errorMessage = response.message,
-//            )
-//          }
+          _state.update { state ->
+            state.copy(
+              errorMessageCode = response.error,
+            )
+          }
         }
 
         is Resource.Success -> {}
@@ -283,14 +282,13 @@ class RoutineScreenViewModel @Inject constructor(
 
   private fun addRoutine(routine: RoutinePresentationLayer) {
     viewModelScope.launch {
-      val response = addReminderUseCase(routine.toRoutineDomainLayer())
-      when (response) {
+      when (val response = addReminderUseCase(routine.toRoutineDomainLayer())) {
         is Resource.Error -> {
-//          _state.update { state ->
-//            state.copy(
-//              errorMessage = response.message,
-//            )
-//          }
+          _state.update { state ->
+            state.copy(
+              errorMessageCode = response.error,
+            )
+          }
         }
 
         is Resource.Success -> {}
