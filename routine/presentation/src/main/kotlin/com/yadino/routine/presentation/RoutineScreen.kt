@@ -59,6 +59,7 @@ import com.rahim.yadino.persianLocate
 import com.rahim.yadino.routine.presentation.R
 import com.yadino.routine.presentation.component.DialogAddRoutine
 import com.yadino.routine.presentation.component.ListRoutines
+import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutinePresentationLayer
 import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
 import timber.log.Timber
@@ -103,17 +104,11 @@ fun RoutineRoute(
     dialogMonthDecrease = { year, month ->
       event.invoke(RoutineContract.Event.JustMonthDecrease(year, month))
     },
-    monthIncrease = { year, month ->
-      event.invoke(RoutineContract.Event.MonthIncrease(year, month))
+    monthChange = { year, month, increaseDecrease ->
+      event.invoke(RoutineContract.Event.MonthChange(yearNumber = year, monthNumber = month, increaseDecrease = increaseDecrease))
     },
-    monthDecrease = { year, month ->
-      event.invoke(RoutineContract.Event.MonthDecrease(year, month))
-    },
-    weekIncrease = {
-      event.invoke(RoutineContract.Event.WeekIncrease)
-    },
-    weekDecrease = {
-      event.invoke(RoutineContract.Event.WeekDecrease)
+    weekChange = { increaseDecrease ->
+      event.invoke(RoutineContract.Event.WeekChange(increaseDecrease = increaseDecrease))
     },
   )
 }
@@ -131,12 +126,10 @@ private fun RoutineScreen(
   onAddRoutine: (RoutinePresentationLayer) -> Unit,
   onDeleteRoutine: (RoutinePresentationLayer) -> Unit,
   onSearchText: (String) -> Unit,
-  monthIncrease: (year: Int, month: Int) -> Unit,
-  monthDecrease: (year: Int, month: Int) -> Unit,
+  monthChange: (year: Int, month: Int, IncreaseDecrease) -> Unit,
   dialogMonthIncrease: (year: Int, month: Int) -> Unit,
   dialogMonthDecrease: (year: Int, month: Int) -> Unit,
-  weekIncrease: () -> Unit,
-  weekDecrease: () -> Unit,
+  weekChange: (IncreaseDecrease) -> Unit,
 ) {
   val context = LocalContext.current
 
@@ -156,6 +149,7 @@ private fun RoutineScreen(
       searchText = search
       onSearchText(searchText)
     }
+
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
     ItemTimeDate(
@@ -165,14 +159,10 @@ private fun RoutineScreen(
       indexDay = state.index,
       dayCheckedNumber = dayCheckedNumber,
       screenWidth = screenWidth,
-      monthIncrease = {
-        monthIncrease(state.currentYear, state.currentMonth)
+      monthChange = { increaseDecrease ->
+        monthChange(state.currentYear, state.currentMonth, increaseDecrease)
       },
-      monthDecrease = {
-        monthDecrease(state.currentYear, state.currentMonth)
-      },
-      weekDecrease = weekDecrease,
-      weekIncrease = weekIncrease,
+      weekChange = weekChange,
     )
     GetRoutines(
       state = state,
@@ -331,10 +321,8 @@ private fun ItemTimeDate(
   indexDay: Int,
   screenWidth: Int,
   dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
-  monthIncrease: () -> Unit,
-  monthDecrease: () -> Unit,
-  weekIncrease: () -> Unit,
-  weekDecrease: () -> Unit,
+  monthChange: (IncreaseDecrease) -> Unit,
+  weekChange: (IncreaseDecrease) -> Unit,
 ) {
   val arrayString = stringArrayResource(id = com.rahim.yadino.library.designsystem.R.array.half_week_name)
 
@@ -343,7 +331,7 @@ private fun ItemTimeDate(
   ) {
     IconButton(
       onClick = {
-        monthIncrease()
+        monthChange(IncreaseDecrease.INCREASE)
       },
     ) {
       Icon(
@@ -362,7 +350,7 @@ private fun ItemTimeDate(
     )
     IconButton(
       onClick = {
-        monthDecrease()
+        monthChange(IncreaseDecrease.DECREASE)
       },
     ) {
       Icon(
@@ -399,7 +387,7 @@ private fun ItemTimeDate(
         .weight(1f)
         .padding(top = 10.dp),
       onClick = {
-        weekIncrease()
+        weekChange(IncreaseDecrease.INCREASE)
       },
     ) {
       Icon(
@@ -422,7 +410,7 @@ private fun ItemTimeDate(
         .weight(1f)
         .padding(top = 10.dp),
       onClick = {
-        weekDecrease()
+        weekChange(IncreaseDecrease.DECREASE)
       },
     ) {
       Icon(

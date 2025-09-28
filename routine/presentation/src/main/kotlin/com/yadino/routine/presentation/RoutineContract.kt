@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalViewModel
+import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutinePresentationLayer
 import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
 import kotlinx.collections.immutable.PersistentList
@@ -18,13 +19,11 @@ interface RoutineContract : UnidirectionalViewModel<RoutineContract.Event, Routi
     data class Delete(val routine: RoutinePresentationLayer) : Event()
     data class Search(val routineName: String) : Event()
     data class GetRoutines(val timeDate: TimeDateRoutinePresentationLayer) : Event()
-    data class MonthIncrease(val yearNumber: Int, val monthNumber: Int) : Event()
-    data class MonthDecrease(val yearNumber: Int, val monthNumber: Int) : Event()
+    data class WeekChange(val increaseDecrease: IncreaseDecrease) : Event()
+    data class MonthChange(val yearNumber: Int, val monthNumber: Int,val increaseDecrease: IncreaseDecrease) : Event()
     data class JustMonthIncrease(val yearNumber: Int, val monthNumber: Int) : Event()
     data class JustMonthDecrease(val yearNumber: Int, val monthNumber: Int) : Event()
     data object GetAllTimes : Event()
-    data object WeekIncrease : Event()
-    data object WeekDecrease : Event()
   }
 
   @Stable

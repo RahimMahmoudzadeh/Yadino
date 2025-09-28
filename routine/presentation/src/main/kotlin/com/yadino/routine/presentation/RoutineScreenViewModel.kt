@@ -15,6 +15,7 @@ import com.yadino.routine.domain.useCase.UpdateReminderUseCase
 import com.yadino.routine.presentation.mapper.toRoutineDomainLayer
 import com.yadino.routine.presentation.mapper.toRoutinePresentationLayer
 import com.yadino.routine.presentation.mapper.toTimeDateRoutinePresentationLayer
+import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutinePresentationLayer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
@@ -84,22 +85,8 @@ class RoutineScreenViewModel @Inject constructor(
 
       is RoutineContract.Event.Update -> updateRoutine(event.routine)
       is RoutineContract.Event.GetAllTimes -> getTimes()
-      is RoutineContract.Event.MonthIncrease -> {
-        monthIncrease(event.monthNumber, event.yearNumber) { year, month ->
-          getTimesMonth(year, month)
-          updateDayChecked(year, month)
-          updateIndex(month, year)
-        }
-      }
-
-      is RoutineContract.Event.MonthDecrease -> {
-        monthDecrease(event.monthNumber, event.yearNumber) { year, month ->
-          getTimesMonth(year, month)
-          updateDayChecked(year, month)
-          updateIndex(month, year)
-        }
-      }
-
+      is RoutineContract.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.yearNumber,event.monthNumber,event.increaseDecrease)
+      is RoutineContract.Event.WeekChange -> checkWeekIncreaseOrDecrease(event.increaseDecrease)
       is RoutineContract.Event.JustMonthDecrease -> {
         monthDecrease(event.monthNumber, event.yearNumber) { year, month ->
           getTimesMonth(year, month)
@@ -111,9 +98,32 @@ class RoutineScreenViewModel @Inject constructor(
           getTimesMonth(year, month)
         }
       }
+    }
+  }
 
-      RoutineContract.Event.WeekDecrease -> weekDecrease()
-      RoutineContract.Event.WeekIncrease -> weekIncrease()
+  private fun checkWeekIncreaseOrDecrease(increaseDecrease: IncreaseDecrease) {
+    when (increaseDecrease) {
+      IncreaseDecrease.INCREASE -> weekIncrease()
+      IncreaseDecrease.DECREASE -> weekDecrease()
+    }
+  }
+
+  private fun checkMonthIncreaseOrDecrease(yearNumber: Int, monthNumber: Int, increaseDecrease: IncreaseDecrease) {
+    when (increaseDecrease) {
+      IncreaseDecrease.INCREASE -> {
+        monthIncrease(month = monthNumber, year = yearNumber) { year, month ->
+          getTimesMonth(year, month)
+          updateDayChecked(year, month)
+          updateIndex(month, year)
+        }
+      }
+      IncreaseDecrease.DECREASE -> {
+        monthDecrease(month = monthNumber, year = yearNumber) { year, month ->
+          getTimesMonth(year, month)
+          updateDayChecked(year, month)
+          updateIndex(month, year)
+        }
+      }
     }
   }
 
