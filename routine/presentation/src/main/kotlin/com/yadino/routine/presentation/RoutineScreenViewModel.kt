@@ -2,6 +2,9 @@ package com.yadino.routine.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rahim.yadino.Constants.DAY_MIN
+import com.rahim.yadino.Constants.MONTH_MAX
+import com.rahim.yadino.Constants.MONTH_MIN
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.core.timeDate.repo.DateTimeRepository
@@ -32,11 +35,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-
-const val MONTH_MAX = 12
-const val MONTH_MIN = 1
-const val DAY_MAX = 31
-const val DAY_MIN = 1
 
 @HiltViewModel
 class RoutineScreenViewModel @Inject constructor(

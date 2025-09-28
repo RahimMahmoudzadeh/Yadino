@@ -25,6 +25,10 @@ object Constants {
   const val LIGHT = "light theme"
   const val PATTERN_DATE = "yyyy-MM-dd HH:mm:ss a"
   const val MAX_PAGE_SIZE_ONBOARDING = 4
+  const val MONTH_MAX = 12
+  const val MONTH_MIN = 1
+  const val DAY_MAX = 31
+  const val DAY_MIN = 1
 
   // DataStore keys
   val WELCOME_SHARED = booleanPreferencesKey("WelcomeShared")
