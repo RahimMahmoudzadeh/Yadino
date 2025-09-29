@@ -28,9 +28,6 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
@@ -53,9 +50,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -225,7 +224,7 @@ fun TopBarCenterAlign(
       ) {
         IconButton(onClick = onDrawerClick) {
           Icon(
-            imageVector = Icons.Rounded.MoreVert,
+            imageVector = ImageVector.vectorResource(R.drawable.ic_more_vert),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onPrimary,
           )
@@ -240,7 +239,7 @@ fun TopBarCenterAlign(
             },
           ) {
             Icon(
-              imageVector = Icons.Rounded.Notifications,
+              imageVector = ImageVector.vectorResource(R.drawable.ic_notifications),
               contentDescription = "",
               tint = CornflowerBlueLight,
             )

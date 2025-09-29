@@ -69,7 +69,6 @@ class RoutineScreenViewModel @Inject constructor(
       is RoutineContract.Event.CheckedRoutine -> checkedRoutine(event.routine)
       is RoutineContract.Event.DeleteRoutine -> deleteRoutine(event.routine)
       is RoutineContract.Event.GetRoutines -> {
-        Timber.tag("routineViewModel").d("GetRoutines")
         event.run {
           updateLastTime(timeDate.yearNumber, timeDate.monthNumber, timeDate.dayNumber)
           updateDayChecked(timeDate.yearNumber, timeDate.monthNumber, timeDate.dayNumber)
@@ -91,7 +90,7 @@ class RoutineScreenViewModel @Inject constructor(
         }
       }
 
-      is RoutineContract.Event.JustMonthIncrease -> {
+      is RoutineContract.Event.NextMonth -> {
         monthIncrease(event.monthNumber, event.yearNumber) { year, month ->
           getTimesMonth(year, month)
         }

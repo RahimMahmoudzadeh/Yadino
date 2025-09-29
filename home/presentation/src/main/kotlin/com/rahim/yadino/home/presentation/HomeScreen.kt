@@ -25,7 +25,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
-import com.rahim.yadino.designsystem.component.ShowToastShort
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.enums.RoutineExplanation
@@ -36,6 +35,7 @@ import com.rahim.yadino.home.presentation.model.CurrentDatePresentationLayer
 import com.rahim.yadino.home.presentation.model.RoutineHomePresentationLayer
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
+import com.rahim.yadino.showToastShort
 
 @Composable
 internal fun HomeRoute(
@@ -90,7 +90,7 @@ private fun HomeScreen(
   var searchText by rememberSaveable { mutableStateOf("") }
 
   homeState.errorMessage?.let { errorMessage ->
-    ShowToastShort(errorMessage.errorMessage(), context)
+    context.showToastShort(errorMessage.errorMessage())
   }
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,

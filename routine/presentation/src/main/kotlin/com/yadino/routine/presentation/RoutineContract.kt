@@ -22,8 +22,7 @@ interface RoutineContract : UnidirectionalViewModel<RoutineContract.Event, Routi
     data class GetRoutines(val timeDate: TimeDateRoutinePresentationLayer) : Event()
     data class WeekChange(val increaseDecrease: IncreaseDecrease) : Event()
     data class MonthChange(val yearNumber: Int, val monthNumber: Int, val increaseDecrease: IncreaseDecrease) : Event()
-    data class JustMonthIncrease(val yearNumber: Int, val monthNumber: Int) : Event()
-    data class MonthBefore(val yearNumber: Int, val monthNumber: Int) : Event()
+    data class DialogMonthChange(val yearNumber: Int, val monthNumber: Int, val increaseDecrease: IncreaseDecrease) : Event()
     data object GetAllTimes : Event()
   }
 

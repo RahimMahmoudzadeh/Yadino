@@ -100,11 +100,8 @@ fun RoutineRoute(
     dayCheckedNumber = { timeDate ->
       event.invoke(RoutineContract.Event.GetRoutines(timeDate))
     },
-    dialogMonthIncrease = { year, month ->
-      event.invoke(RoutineContract.Event.JustMonthIncrease(year, month))
-    },
-    dialogMonthDecrease = { year, month ->
-      event.invoke(RoutineContract.Event.MonthBefore(year, month))
+    dialogMonthChange = { year, month,increaseDecrease ->
+      event.invoke(RoutineContract.Event.DialogMonthChange(yearNumber = year, monthNumber = month, increaseDecrease = increaseDecrease))
     },
     monthChange = { year, month, increaseDecrease ->
       event.invoke(RoutineContract.Event.MonthChange(yearNumber = year, monthNumber = month, increaseDecrease = increaseDecrease))
@@ -128,9 +125,8 @@ private fun RoutineScreen(
   onAddRoutine: (RoutinePresentationLayer) -> Unit,
   onDeleteRoutine: (RoutinePresentationLayer) -> Unit,
   onSearchText: (String) -> Unit,
-  monthChange: (year: Int, month: Int, IncreaseDecrease) -> Unit,
-  dialogMonthIncrease: (year: Int, month: Int) -> Unit,
-  dialogMonthDecrease: (year: Int, month: Int) -> Unit,
+  monthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
+  dialogMonthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
   weekChange: (IncreaseDecrease) -> Unit,
 ) {
   val context = LocalContext.current
@@ -147,8 +143,7 @@ private fun RoutineScreen(
     }
   }
   Column(
-    modifier = modifier
-      .fillMaxSize(),
+    modifier = modifier.fillMaxSize(),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Top,
   ) {
@@ -250,8 +245,12 @@ private fun RoutineScreen(
       currentNumberMonth = state.currentMonth,
       currentNumberYear = state.currentYear,
       timesMonth = state.timesMonth,
-      monthDecrease = dialogMonthDecrease,
-      monthIncrease = dialogMonthIncrease,
+      monthDecrease = { year, month ->
+        dialogMonthChange(year, month, IncreaseDecrease.DECREASE)
+      },
+      monthIncrease = { year, month ->
+        dialogMonthChange(year, month, IncreaseDecrease.INCREASE)
+      },
     )
   }
 
@@ -299,8 +298,7 @@ private fun GetRoutines(
             .padding(top = 16.dp),
           routines = routines,
           checkedRoutine = {
-            Timber.tag("routineGetNameDay")
-              .d("ItemsRoutine checkedRoutine->$it")
+            Timber.tag("routineGetNameDay").d("ItemsRoutine checkedRoutine->$it")
             routineChecked(it)
           },
           updateRoutine = {
