@@ -80,7 +80,7 @@ fun String.calculateTimeFormat(currentYear: Int, currentMonth: Int, currentDay: 
   return "$currentYear-$currentMonth-$currentDay"
 }
 
-fun ErrorMessageCode.errorMessage() = when (this@errorMessage) {
+fun ErrorMessageCode.toStringResource() = when (this@toStringResource) {
   ErrorMessageCode.ERROR_GET_PROCESS -> R.string.errorGetProses
   ErrorMessageCode.EQUAL_ROUTINE_MESSAGE -> R.string.equalRoutineMessage
 

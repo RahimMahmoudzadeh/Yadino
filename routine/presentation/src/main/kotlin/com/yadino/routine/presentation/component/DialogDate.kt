@@ -52,12 +52,13 @@ import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
 import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
+import kotlinx.collections.immutable.PersistentList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialogChoseDate(
   modifier: Modifier = Modifier,
-  times: List<TimeDateRoutinePresentationLayer>,
+  times: PersistentList<TimeDateRoutinePresentationLayer>,
   yearNumber: Int,
   monthNumber: Int,
   dayNumber: Int,

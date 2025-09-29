@@ -2,6 +2,7 @@ package com.yadino.routine.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -55,7 +56,7 @@ import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.font_medium
 import com.rahim.yadino.enums.RoutineExplanation
-import com.rahim.yadino.errorMessage
+import com.rahim.yadino.toStringResource
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.routine.presentation.R
 import com.rahim.yadino.showToastShort
@@ -64,6 +65,7 @@ import com.yadino.routine.presentation.component.ListRoutines
 import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutinePresentationLayer
 import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
+import kotlinx.collections.immutable.PersistentList
 import timber.log.Timber
 
 @Composable
@@ -100,7 +102,7 @@ fun RoutineRoute(
     dayCheckedNumber = { timeDate ->
       event.invoke(RoutineContract.Event.GetRoutines(timeDate))
     },
-    dialogMonthChange = { year, month,increaseDecrease ->
+    dialogMonthChange = { year, month, increaseDecrease ->
       event.invoke(RoutineContract.Event.DialogMonthChange(yearNumber = year, monthNumber = month, increaseDecrease = increaseDecrease))
     },
     monthChange = { year, month, increaseDecrease ->
@@ -139,7 +141,7 @@ private fun RoutineScreen(
 
   LaunchedEffect(state.errorMessageCode) {
     state.errorMessageCode?.let { errorMessageCode ->
-      context.showToastShort(stringId = errorMessageCode.errorMessage())
+      context.showToastShort(stringId = errorMessageCode.toStringResource())
     }
   }
   Column(
@@ -275,7 +277,7 @@ private fun GetRoutines(
   routineChecked: (RoutinePresentationLayer) -> Unit,
   routineDeleteDialog: (RoutinePresentationLayer) -> Unit,
 ) {
-
+  val context = LocalContext.current
   LoadableComponent(
     loadableData = state.routines,
     loaded = { routines ->
@@ -298,7 +300,6 @@ private fun GetRoutines(
             .padding(top = 16.dp),
           routines = routines,
           checkedRoutine = {
-            Timber.tag("routineGetNameDay").d("ItemsRoutine checkedRoutine->$it")
             routineChecked(it)
           },
           updateRoutine = {
@@ -312,15 +313,15 @@ private fun GetRoutines(
 
     },
     loading = {},
-    error = {
-
+    error = { errorCode ->
+      context.showToastShort(stringId = errorCode.toStringResource())
     },
   )
 }
 
 @Composable
 private fun ItemTimeDate(
-  times: List<TimeDateRoutinePresentationLayer>,
+  times: PersistentList<TimeDateRoutinePresentationLayer>,
   yearChecked: Int,
   monthChecked: Int,
   indexDay: Int,
@@ -430,7 +431,7 @@ private fun ItemTimeDate(
 @Composable
 fun ListTimes(
   modifier: Modifier = Modifier,
-  times: List<TimeDateRoutinePresentationLayer>,
+  times: PersistentList<TimeDateRoutinePresentationLayer>,
   screenWidth: Int,
   dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
   indexDay: Int,
@@ -473,11 +474,20 @@ private fun DayItems(
   screenWidth: Int,
   dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
 ) {
-  ClickableText(
+  Text(
     modifier = Modifier
       .padding(
         top = 4.dp,
         start = if (timeDate.isChecked) if (screenWidth <= 420) 5.dp else 7.dp else 6.dp,
+      )
+      .clickable(
+        onClick = {
+          if (timeDate.dayNumber > 0) {
+            dayCheckedNumber(
+              timeDate,
+            )
+          }
+        },
       )
       .size(if (screenWidth <= 400) 36.dp else if (screenWidth in 400..420) 39.dp else 43.dp)
       .clip(CircleShape)
@@ -498,13 +508,6 @@ private fun DayItems(
       .padding(
         top = if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp,
       ),
-    onClick = {
-      if (timeDate.dayNumber > 0) {
-        dayCheckedNumber(
-          timeDate,
-        )
-      }
-    },
     text = AnnotatedString(
       if (timeDate.dayNumber > 0) timeDate.dayNumber.toString().persianLocate() else "",
     ),

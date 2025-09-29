@@ -29,7 +29,7 @@ import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.enums.RoutineExplanation
-import com.rahim.yadino.errorMessage
+import com.rahim.yadino.toStringResource
 import com.rahim.yadino.home.presentation.component.DialogAddRoutine
 import com.rahim.yadino.home.presentation.component.ListRoutines
 import com.rahim.yadino.home.presentation.model.CurrentDatePresentationLayer
@@ -92,7 +92,7 @@ private fun HomeScreen(
   var searchText by rememberSaveable { mutableStateOf("") }
 
   homeState.errorMessage?.let { errorMessage ->
-    context.showToastShort(errorMessage.errorMessage())
+    context.showToastShort(errorMessage.toStringResource())
   }
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -137,7 +137,7 @@ private fun HomeScreen(
         }
       },
       error = { errorMessageCode ->
-        context.showToastShort(errorMessageCode.errorMessage())
+        context.showToastShort(errorMessageCode.toStringResource())
       },
     )
   }
