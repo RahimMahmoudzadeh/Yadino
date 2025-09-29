@@ -87,9 +87,6 @@ class MainActivity : ComponentActivity() {
 
     setContent {
       val (state, event) = use(viewModel = mainViewModel)
-      val context = LocalContext.current
-      (context as? Activity)?.requestedOrientation =
-        ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
       changeTheme(state.isDarkTheme)
       checkStateOfClickItemDrawable(state.stateOfClickItemDrawable)
