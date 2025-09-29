@@ -21,8 +21,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -39,9 +37,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -192,7 +192,7 @@ fun YadinoApp(
           drawerState = drawerState,
           isDarkTheme = isDarkTheme,
           onItemClick = drawerItemClicked,
-          gesturesEnabled= destinationNavBackStackEntry != Destinations.OnBoarding.route
+          gesturesEnabled = destinationNavBackStackEntry != Destinations.OnBoarding.route,
         ) {
           Scaffold(
             topBar = {
@@ -242,7 +242,7 @@ fun YadinoApp(
                     )
                   },
                 ) {
-                  Icon(Icons.Filled.Add, "add item")
+                  Icon(imageVector = ImageVector.vectorResource(com.rahim.R.drawable.ic_add), "add item")
                 }
               }
             },

@@ -82,19 +82,24 @@ class RoutineScreenViewModel @Inject constructor(
 
       is RoutineContract.Event.UpdateRoutine -> updateRoutine(event.routine)
       is RoutineContract.Event.GetAllTimes -> getTimes()
-      is RoutineContract.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.yearNumber,event.monthNumber,event.increaseDecrease)
+      is RoutineContract.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.yearNumber, event.monthNumber, event.increaseDecrease)
       is RoutineContract.Event.WeekChange -> checkWeekIncreaseOrDecrease(event.increaseDecrease)
-      is RoutineContract.Event.MonthBefore -> {
-        monthDecrease(event.monthNumber, event.yearNumber) { year, month ->
-          getTimesMonth(year, month)
-        }
+      is RoutineContract.Event.DialogMonthChange -> {
+        checkDialogMonthChange(event.monthNumber, event.yearNumber, event.increaseDecrease)
+      }
+    }
+  }
+
+  private fun checkDialogMonthChange(monthNumber: Int, yearNumber: Int, increaseDecrease: IncreaseDecrease) {
+    when (increaseDecrease) {
+      IncreaseDecrease.INCREASE -> monthIncrease(monthNumber, yearNumber) { year, month ->
+        getTimesMonth(year, month)
       }
 
-      is RoutineContract.Event.NextMonth -> {
-        monthIncrease(event.monthNumber, event.yearNumber) { year, month ->
+      IncreaseDecrease.DECREASE ->
+        monthDecrease(monthNumber, yearNumber) { year, month ->
           getTimesMonth(year, month)
         }
-      }
     }
   }
 
@@ -114,6 +119,7 @@ class RoutineScreenViewModel @Inject constructor(
           updateIndex(month, year)
         }
       }
+
       IncreaseDecrease.DECREASE -> {
         monthDecrease(month = monthNumber, year = yearNumber) { year, month ->
           getTimesMonth(year, month)
