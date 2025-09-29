@@ -313,7 +313,7 @@ private fun GetRoutines(
     },
     loading = {},
     error = {
-//      Toast.makeText(context =context, text = it.name, Toast.LENGTH_SHORT).show()
+
     },
   )
 }

@@ -9,15 +9,19 @@ import com.rahim.home.domain.useCase.GetCurrentDateUseCase
 import com.rahim.home.domain.useCase.GetTodayRoutinesUseCase
 import com.rahim.home.domain.useCase.SearchRoutineUseCase
 import com.rahim.home.domain.useCase.UpdateReminderUseCase
+import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.Resource
+import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.home.presentation.mapper.toCurrentDatePresentationLayer
 import com.rahim.yadino.home.presentation.mapper.toRoutineHomeDomainLayer
 import com.rahim.yadino.home.presentation.mapper.toRoutineHomePresentationLayer
 import com.rahim.yadino.home.presentation.model.RoutineHomePresentationLayer
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -37,8 +41,8 @@ class HomeViewModel @Inject constructor(
   private val getCurrentDateUseCase: GetCurrentDateUseCase,
 ) : ViewModel(), HomeContract {
 
-  private val mutableState = MutableStateFlow(HomeContract.HomeState())
-  override val state: StateFlow<HomeContract.HomeState> = mutableState.onStart {
+  private val _state = MutableStateFlow(HomeContract.HomeState())
+  override val state: StateFlow<HomeContract.HomeState> = _state.onStart {
     setCurrentTime()
     getRoutines()
   }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeContract.HomeState())
@@ -72,7 +76,7 @@ class HomeViewModel @Inject constructor(
   }
 
   private fun setCurrentTime() {
-    mutableState.update {
+    _state.update {
       it.copy(
         currentDate = getCurrentDateUseCase().toCurrentDatePresentationLayer(),
       )
@@ -92,15 +96,24 @@ class HomeViewModel @Inject constructor(
 
   private fun getRoutines() {
     viewModelScope.launch {
-      getTodayRoutinesUseCase().collectLatest { routines ->
-        Timber.tag("routineSearch").d("getNormalRoutines")
-        mutableState.update {
+      _state.update {
+        it.copy(routines = LoadableData.Loading)
+      }
+      getTodayRoutinesUseCase().catch { exception ->
+        _state.update {
           it.copy(
-            routines =
+            routines = LoadableData.Error(error = ErrorMessageCode.ERROR_GET_PROCESS),
+          )
+        }
+      }.collectLatest { routines ->
+        Timber.tag("routineSearch").d("getNormalRoutines")
+        _state.update {
+          it.copy(
+            routines = LoadableData.Loaded(
               routines.map { it.toRoutineHomePresentationLayer() }.sortedBy {
                 it.timeInMillisecond
-              },
-            routineLoading = false,
+              }.toPersistentList(),
+            ),
             errorMessage = null,
           )
         }
@@ -109,17 +122,27 @@ class HomeViewModel @Inject constructor(
   }
 
   private suspend fun searchRoutine(searchText: String) {
-    searchRoutineUseCase.invoke(searchText).collectLatest { searchItems ->
+    _state.update {
+      it.copy(routines = LoadableData.Loading)
+    }
+    searchRoutineUseCase(searchText).catch {
+      _state.update {
+        it.copy(
+          routines = LoadableData.Error(error = ErrorMessageCode.ERROR_GET_PROCESS),
+        )
+      }
+    }.collectLatest { searchItems ->
       Timber.tag("routineSearch").d("searchRoutine->$searchText")
       Timber.tag("routineSearch").d("searchItems->$searchItems")
-      mutableState.update {
+      _state.update {
         it.copy(
-          searchRoutines = searchItems.map {
-            it.toRoutineHomePresentationLayer()
-          }.sortedBy {
-            it.timeInMillisecond
-          },
-          routineLoading = false,
+          routines = LoadableData.Loaded(
+            searchItems.map {
+              it.toRoutineHomePresentationLayer()
+            }.sortedBy {
+              it.timeInMillisecond
+            }.toPersistentList(),
+          ),
           errorMessage = null,
         )
       }
@@ -138,7 +161,7 @@ class HomeViewModel @Inject constructor(
       val response = updateReminderUseCase(routineModel.toRoutineHomeDomainLayer())
       when (response) {
         is Resource.Error -> {
-          mutableState.update { state ->
+          _state.update { state ->
             state.copy(
               errorMessage = response.error,
             )
@@ -162,7 +185,7 @@ class HomeViewModel @Inject constructor(
       val response = addReminderUseCase(routineModel.toRoutineHomeDomainLayer())
       when (response) {
         is Resource.Error -> {
-          mutableState.update { state ->
+          _state.update { state ->
             state.copy(
               errorMessage = response.error,
             )

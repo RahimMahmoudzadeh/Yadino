@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
@@ -36,6 +37,7 @@ import com.rahim.yadino.home.presentation.model.RoutineHomePresentationLayer
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.showToastShort
+import kotlinx.collections.immutable.PersistentList
 
 @Composable
 internal fun HomeRoute(
@@ -101,36 +103,43 @@ private fun HomeScreen(
       searchText = search
       onSearchText(searchText)
     }
-    if (homeState.routineLoading) {
-    }
-    if (homeState.routines.isEmpty()) {
-      EmptyMessage(
-        messageEmpty = if (searchText.isNotEmpty()) R.string.search_empty_routine else R.string.not_work_for_day,
-      )
-    } else {
-      ItemsHome(
-        currentTime = homeState.currentDate,
-        routineModels = if (searchText.isNotBlank()) homeState.searchRoutines else homeState.routines,
-        checkedRoutine = { checkedRoutine ->
-          onCheckedRoutine(checkedRoutine)
-        },
-        updateRoutine = { routineUpdate ->
-          if (routineUpdate.isChecked) {
-            Toast.makeText(
-              context,
-              R.string.not_update_checked_routine,
-              Toast.LENGTH_SHORT,
-            ).show()
-            return@ItemsHome
-          }
-          routineModelUpdateDialog.value = routineUpdate
-          onOpenDialog(true)
-        },
-        { deleteRoutine ->
-          routineModelDeleteDialog.value = deleteRoutine
-        },
-      )
-    }
+    LoadableComponent(
+      loadableData = homeState.routines,
+      loading = {},
+      loaded = { routines ->
+        if (routines.isEmpty()) {
+          EmptyMessage(
+            messageEmpty = if (searchText.isNotEmpty()) R.string.search_empty_routine else R.string.not_work_for_day,
+          )
+        } else {
+          ItemsHome(
+            currentTime = homeState.currentDate,
+            routineModels = routines,
+            checkedRoutine = { checkedRoutine ->
+              onCheckedRoutine(checkedRoutine)
+            },
+            updateRoutine = { routineUpdate ->
+              if (routineUpdate.isChecked) {
+                Toast.makeText(
+                  context,
+                  R.string.not_update_checked_routine,
+                  Toast.LENGTH_SHORT,
+                ).show()
+                return@ItemsHome
+              }
+              routineModelUpdateDialog.value = routineUpdate
+              onOpenDialog(true)
+            },
+            { deleteRoutine ->
+              routineModelDeleteDialog.value = deleteRoutine
+            },
+          )
+        }
+      },
+      error = { errorMessageCode ->
+        context.showToastShort(errorMessageCode.errorMessage())
+      },
+    )
   }
   ErrorDialog(
     isOpen = routineModelDeleteDialog.value != null,
@@ -180,8 +189,8 @@ private fun HomeScreen(
 
 @Composable
 fun ItemsHome(
-  currentTime: CurrentDatePresentationLayer,
-  routineModels: List<RoutineHomePresentationLayer>,
+  currentTime: CurrentDatePresentationLayer?,
+  routineModels: PersistentList<RoutineHomePresentationLayer>,
   checkedRoutine: (RoutineHomePresentationLayer) -> Unit,
   updateRoutine: (RoutineHomePresentationLayer) -> Unit,
   deleteRoutine: (RoutineHomePresentationLayer) -> Unit,
@@ -192,11 +201,13 @@ fun ItemsHome(
       .padding(horizontal = 28.dp, vertical = 25.dp)
       .fillMaxWidth(),
   ) {
-    Text(
-      text = currentTime.date.persianLocate(),
-      style = MaterialTheme.typography.labelMedium,
-      color = MaterialTheme.colorScheme.primary,
-    )
+    currentTime?.date?.let { currentTime ->
+      Text(
+        text = currentTime.persianLocate(),
+        style = MaterialTheme.typography.labelMedium,
+        color = MaterialTheme.colorScheme.primary,
+      )
+    }
     Text(
       text = stringResource(id = com.rahim.yadino.home.presentation.R.string.list_work_day),
       fontSize = 18.sp,

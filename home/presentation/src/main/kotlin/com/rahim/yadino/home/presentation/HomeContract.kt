@@ -1,10 +1,12 @@
 package com.rahim.yadino.home.presentation
 
 import androidx.compose.runtime.Immutable
+import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.home.presentation.model.CurrentDatePresentationLayer
 import com.rahim.yadino.home.presentation.model.RoutineHomePresentationLayer
+import kotlinx.collections.immutable.PersistentList
 
 interface HomeContract : UnidirectionalViewModel<HomeContract.HomeEvent, HomeContract.HomeState> {
   @Immutable
@@ -24,10 +26,8 @@ interface HomeContract : UnidirectionalViewModel<HomeContract.HomeEvent, HomeCon
 
   @Immutable
   data class HomeState(
-    val routineLoading: Boolean = true,
-    val routines: List<RoutineHomePresentationLayer> = emptyList(),
-    val searchRoutines: List<RoutineHomePresentationLayer> = emptyList(),
-    val currentDate: CurrentDatePresentationLayer = CurrentDatePresentationLayer(""),
+    val routines: LoadableData<PersistentList<RoutineHomePresentationLayer>> = LoadableData.Initial,
+    val currentDate: CurrentDatePresentationLayer? = null,
     val errorMessage: ErrorMessageCode? = null,
   )
 }
