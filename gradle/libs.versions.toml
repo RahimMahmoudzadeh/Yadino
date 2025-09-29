@@ -1,24 +1,24 @@
 [versions]
 ksp = "2.2.10-2.0.2"
-kotlin = "2.2.10"
+kotlin = "2.2.20"
 kotlinxImmutableCollection = "0.4.0"
 
 #compose
-compose-bom = "2025.08.01"
-activity-compose = "1.10.1"
+compose-bom = "2025.09.01"
+activity-compose = "1.11.0"
 
 #navigation
 hilt = "2.57.1"
-hilt_navigation_compose = "1.2.0"
+hilt_navigation_compose = "1.3.0"
 
 #core
 androidDesugarJdkLibs = "2.1.5"
 androidx-core = "1.17.0"
 
-androidx-lifecycle = "2.9.3"
-androidx-room = "2.7.2"
+androidx-lifecycle = "2.9.4"
+androidx-room = "2.8.1"
 
-androidx-navigation = "2.9.3"
+androidx-navigation = "2.9.5"
 timber = "5.0.1"
 samanzamani = "1.7.1"
 datetime = "0.9.0"
@@ -27,19 +27,19 @@ accompanist_pager = "0.36.0"
 accompanist_pager_indicators = "0.36.0"
 accompanist_permissions = "0.37.3"
 accompanist_system_ui = "0.36.0"
-lottie_compose = "6.6.7"
+lottie_compose = "6.6.9"
 junit = "4.13.2"
 junit-test = "3.5.1"
 androidx-ext-junit = "1.3.0"
 espresso_core = "3.7.0"
 agp = "8.13.0"
 google-services = "4.4.3"
-material3Android = "1.3.2"
-compose-test = "1.9.0"
+material3Android = "1.4.0"
+compose-test = "1.9.2"
 androidxCoreSplashscreen = "1.0.1"
-vico = "2.1.3"
+vico = "2.2.0"
 androidxTracing = "1.3.0"
-spotless="7.2.1"
+spotless="8.0.0"
 datastore = "1.1.7"
 
 androidTools = "31.13.0"
@@ -53,7 +53,7 @@ firebaseBom = "33.12.0"
 constraintlayout = "2.2.1"
 constraintlayout-compose = "1.1.1"
 
-jetbrainsKotlinJvm = "2.2.10"
+jetbrainsKotlinJvm = "2.2.20"
 
 [libraries]
 #core
