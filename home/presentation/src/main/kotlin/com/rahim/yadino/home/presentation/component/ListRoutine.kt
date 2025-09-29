@@ -8,11 +8,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rahim.yadino.designsystem.component.ItemRoutine
 import com.rahim.yadino.home.presentation.model.RoutineHomePresentationLayer
+import kotlinx.collections.immutable.PersistentList
 
 @Composable()
 fun ListRoutines(
   modifier: Modifier = Modifier,
-  routines: List<RoutineHomePresentationLayer>,
+  routines: PersistentList<RoutineHomePresentationLayer>,
   checkedRoutine: (RoutineHomePresentationLayer) -> Unit,
   deleteRoutine: (RoutineHomePresentationLayer) -> Unit,
   updateRoutine: (RoutineHomePresentationLayer) -> Unit,

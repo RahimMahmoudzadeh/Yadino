@@ -11,7 +11,7 @@ import com.rahim.yadino.home.presentation.navigation.homeScreen
 import com.rahim.yadino.home.presentation.navigation.navigateToHome
 import com.rahim.yadino.note.presentation.navigation.noteScreen
 import com.rahim.yadino.onboarding.presentation.navigation.onBoardingScreen
-import com.yadino.routine.presentation.alarmScreen.navigation.historyScreen
+import com.yadino.routine.presentation.history.navigation.historyScreen
 import com.yadino.routine.presentation.navigation.routineScreen
 
 @Composable

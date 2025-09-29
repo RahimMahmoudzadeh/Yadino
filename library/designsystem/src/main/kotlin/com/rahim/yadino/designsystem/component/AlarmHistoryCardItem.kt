@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.rahim.yadino.designsystem.theme.Porcelain
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
 
@@ -41,10 +42,14 @@ fun AlarmHistoryCardItem(
       .fillMaxWidth()
       .padding(horizontal = 6.dp, vertical = 4.dp),
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-    border = BorderStroke(
-      1.dp,
-      Brush.verticalGradient(gradientColors),
-    ),
+    border = if (routineIsChecked) {
+      BorderStroke(1.dp, color = Porcelain)
+    } else {
+      BorderStroke(
+        1.dp,
+        Brush.verticalGradient(gradientColors),
+      )
+    },
   ) {
     Row(
       modifier = Modifier
@@ -54,23 +59,22 @@ fun AlarmHistoryCardItem(
       horizontalArrangement = Arrangement.SpaceBetween,
     ) {
       Text(
-        text = routineName,
-        color = MaterialTheme.colorScheme.primary.copy(textAlpha),
-        style = MaterialTheme.typography.bodyLarge,
-        fontWeight = FontWeight.SemiBold,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-        textDecoration = textUnderLine,
-      )
-      Spacer(modifier = Modifier.width(8.dp))
-
-      Text(
         text = "${stringResource(id = R.string.time)}: ${
           routineTimeHours.persianLocate()
         }  ${stringResource(id = R.string.date)}: $date",
         color = MaterialTheme.colorScheme.secondaryContainer.copy(textAlpha),
         style = MaterialTheme.typography.bodySmall,
         fontWeight = FontWeight.SemiBold,
+        textDecoration = textUnderLine,
+      )
+      Spacer(modifier = Modifier.width(8.dp))
+      Text(
+        text = routineName,
+        color = MaterialTheme.colorScheme.primary.copy(textAlpha),
+        style = MaterialTheme.typography.bodyLarge,
+        fontWeight = FontWeight.SemiBold,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
         textDecoration = textUnderLine,
       )
     }

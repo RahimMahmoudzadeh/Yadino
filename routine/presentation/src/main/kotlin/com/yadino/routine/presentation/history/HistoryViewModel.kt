@@ -1,9 +1,15 @@
-package com.yadino.routine.presentation.alarmScreen
+package com.yadino.routine.presentation.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rahim.yadino.base.LoadableData
 import com.yadino.routine.domain.useCase.GetAllRoutineUseCase
+import com.yadino.routine.presentation.mapper.toRoutinePresentationLayer
+import com.yadino.routine.presentation.model.IncompleteOrCompletedRoutines
+import com.yadino.routine.presentation.model.RoutinePresentationLayer
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,7 +36,25 @@ class HistoryViewModel @Inject constructor(
   private fun getAllRoutine() {
     viewModelScope.launch {
       mutableState.update {
-        it.copy(routines = getRoutineUseCase.invoke())
+        it.copy(
+          incompleteOrCompletedRoutines = LoadableData.Loading,
+        )
+      }
+      val routines = getRoutineUseCase().map { it.toRoutinePresentationLayer() }
+      val (completedRoutine, incompleteRoutine) = if (routines.isNotEmpty()) {
+        routines.partition { sort -> sort.isChecked }
+      } else {
+        persistentListOf<RoutinePresentationLayer>() to persistentListOf()
+      }
+      mutableState.update {
+        it.copy(
+          incompleteOrCompletedRoutines = LoadableData.Loaded(
+            IncompleteOrCompletedRoutines(
+              incompleteRoutine = incompleteRoutine.toPersistentList(),
+              completedRoutine = completedRoutine.toPersistentList(),
+            ),
+          ),
+        )
       }
     }
   }

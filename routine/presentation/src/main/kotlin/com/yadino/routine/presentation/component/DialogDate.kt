@@ -53,6 +53,7 @@ import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
 import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
 import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -250,7 +251,7 @@ fun DialogChoseDateWrapperLight() {
   }
   YadinoTheme {
     DialogChoseDate(
-      times = times,
+      times = times.toPersistentList(),
       yearNumber = 1403,
       monthNumber = 2,
       dayNumber = 21,
@@ -282,7 +283,7 @@ fun DialogChoseDateWrapperDark() {
   }
   YadinoTheme {
     DialogChoseDate(
-      times = times,
+      times = times.toPersistentList(),
       yearNumber = 1403,
       monthNumber = 2,
       dayNumber = 22,
