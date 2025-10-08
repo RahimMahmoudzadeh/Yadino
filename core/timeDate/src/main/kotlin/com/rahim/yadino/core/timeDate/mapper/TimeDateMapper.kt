@@ -1,7 +1,7 @@
 package com.rahim.yadino.core.timeDate.mapper
 
 import com.rahim.yadino.core.timeDate.model.TimeDateModel
-import com.rahim.yadino.db.dao.dateTime.model.TimeDateEntity
+import com.rahim.yadino.db.dateTime.model.TimeDateEntity
 
 fun TimeDateModel.toTimeDateEntity(): TimeDateEntity = TimeDateEntity(
   isChecked = isChecked,

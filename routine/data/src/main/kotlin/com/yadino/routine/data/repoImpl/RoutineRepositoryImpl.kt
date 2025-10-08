@@ -2,8 +2,8 @@ package com.yadino.routine.data.repoImpl
 
 import com.rahim.yadino.Constants
 import com.rahim.yadino.base.Resource
-import com.rahim.yadino.db.dao.routine.dao.RoutineDao
-import com.rahim.yadino.db.dao.routine.model.RoutineEntity
+import com.rahim.yadino.db.routine.dao.RoutineDao
+import com.rahim.yadino.db.routine.model.RoutineEntity
 import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository

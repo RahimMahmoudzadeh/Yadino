@@ -1,7 +1,7 @@
 package com.rahim.yadino.note.data
 
-import com.rahim.yadino.db.dao.note.dao.NoteDao
-import com.rahim.yadino.db.dao.note.model.NoteEntity
+import com.rahim.yadino.db.note.dao.NoteDao
+import com.rahim.yadino.db.note.model.NoteEntity
 import com.rahim.yadino.note.data.mapper.toNoteEntity
 import com.rahim.yadino.note.data.mapper.toNoteModel
 import com.rahim.yadino.note.domain.NoteRepository

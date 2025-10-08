@@ -1,4 +1,4 @@
-package com.rahim.yadino.db.dao.routine.model
+package com.rahim.yadino.db.routine.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

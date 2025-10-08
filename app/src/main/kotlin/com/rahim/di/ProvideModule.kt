@@ -6,7 +6,7 @@ import com.rahim.data.reminder.NotificationManager
 import com.rahim.data.reminder.ReminderSchedulerImpl
 import com.rahim.data.reminder.alarm.ControlAlarm
 import com.rahim.yadino.base.reminder.ReminderScheduler
-import com.rahim.yadino.db.dao.note.dao.NoteDao
+import com.rahim.yadino.db.note.dao.NoteDao
 import com.rahim.yadino.note.data.NoteRepositoryImpl
 import com.rahim.yadino.note.domain.NoteRepository
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository

@@ -1,6 +1,6 @@
 package com.rahim.yadino.note.data.mapper
 
-import com.rahim.yadino.db.dao.note.model.NoteEntity
+import com.rahim.yadino.db.note.model.NoteEntity
 import com.rahim.yadino.note.domain.model.NoteModel
 
 

@@ -1,4 +1,4 @@
-package com.rahim.yadino.db.dao.note.model
+package com.rahim.yadino.db.note.model
 
 import android.os.Parcelable
 import androidx.room.Entity

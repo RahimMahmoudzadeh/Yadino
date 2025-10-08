@@ -3,8 +3,8 @@ package com.rahim.yadino.core.timeDate.repo
 import com.rahim.yadino.Constants
 import com.rahim.yadino.core.timeDate.mapper.toTimeDate
 import com.rahim.yadino.core.timeDate.model.TimeDateModel
-import com.rahim.yadino.db.dao.dateTime.dao.TimeDao
-import com.rahim.yadino.db.dao.dateTime.model.TimeDateEntity
+import com.rahim.yadino.db.dateTime.dao.TimeDao
+import com.rahim.yadino.db.dateTime.model.TimeDateEntity
 import com.rahim.yadino.di.DefaultDispatcher
 import com.rahim.yadino.di.IODispatcher
 import com.rahim.yadino.enums.HalfWeekName

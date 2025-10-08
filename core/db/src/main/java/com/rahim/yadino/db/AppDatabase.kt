@@ -7,12 +7,12 @@ import androidx.room.RenameColumn
 import androidx.room.RenameTable
 import androidx.room.RoomDatabase
 import androidx.room.migration.AutoMigrationSpec
-import com.rahim.yadino.db.dao.dateTime.dao.TimeDao
-import com.rahim.yadino.db.dao.dateTime.model.TimeDateEntity
-import com.rahim.yadino.db.dao.note.dao.NoteDao
-import com.rahim.yadino.db.dao.note.model.NoteEntity
-import com.rahim.yadino.db.dao.routine.dao.RoutineDao
-import com.rahim.yadino.db.dao.routine.model.RoutineEntity
+import com.rahim.yadino.db.dateTime.dao.TimeDao
+import com.rahim.yadino.db.dateTime.model.TimeDateEntity
+import com.rahim.yadino.db.note.dao.NoteDao
+import com.rahim.yadino.db.note.model.NoteEntity
+import com.rahim.yadino.db.routine.dao.RoutineDao
+import com.rahim.yadino.db.routine.model.RoutineEntity
 
 @Database(
   entities = [NoteEntity::class, TimeDateEntity::class, RoutineEntity::class],
