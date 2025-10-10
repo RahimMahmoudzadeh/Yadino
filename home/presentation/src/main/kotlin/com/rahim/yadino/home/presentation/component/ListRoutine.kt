@@ -7,16 +7,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rahim.yadino.designsystem.component.ItemRoutine
-import com.rahim.yadino.home.presentation.model.RoutineHomePresentationLayer
+import com.rahim.yadino.home.presentation.model.RoutineHomeModel
 import kotlinx.collections.immutable.PersistentList
 
 @Composable()
 fun ListRoutines(
   modifier: Modifier = Modifier,
-  routines: PersistentList<RoutineHomePresentationLayer>,
-  checkedRoutine: (RoutineHomePresentationLayer) -> Unit,
-  deleteRoutine: (RoutineHomePresentationLayer) -> Unit,
-  updateRoutine: (RoutineHomePresentationLayer) -> Unit,
+  routines: PersistentList<RoutineHomeModel>,
+  checkedRoutine: (RoutineHomeModel) -> Unit,
+  deleteRoutine: (RoutineHomeModel) -> Unit,
+  updateRoutine: (RoutineHomeModel) -> Unit,
 ) {
   LazyColumn(
     modifier = modifier,

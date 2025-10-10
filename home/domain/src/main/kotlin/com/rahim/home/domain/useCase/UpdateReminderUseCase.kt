@@ -1,6 +1,6 @@
 package com.rahim.home.domain.useCase
 
-import com.rahim.home.domain.model.RoutineHomeDomainLayer
+import com.rahim.home.domain.model.RoutineHomeModel
 import com.rahim.yadino.base.reminder.ReminderScheduler
 import com.rahim.home.domain.repo.HomeRepository
 import com.rahim.yadino.base.Resource
@@ -13,7 +13,7 @@ class UpdateReminderUseCase @Inject constructor(
     private val routineRepository: HomeRepository,
     private val reminderScheduler: ReminderScheduler,
 ) {
-  suspend operator fun invoke(routineModel: RoutineHomeDomainLayer): Resource<SuccessMessage, ErrorMessageCode> {
+  suspend operator fun invoke(routineModel: RoutineHomeModel): Resource<SuccessMessage, ErrorMessageCode> {
     try {
       reminderScheduler.cancelReminder(routineModel.idAlarm ?: 0)
       val routine = routineModel.copy(

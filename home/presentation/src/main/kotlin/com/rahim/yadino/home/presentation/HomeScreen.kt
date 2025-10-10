@@ -32,8 +32,8 @@ import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.toStringResource
 import com.rahim.yadino.home.presentation.component.DialogAddRoutine
 import com.rahim.yadino.home.presentation.component.ListRoutines
-import com.rahim.yadino.home.presentation.model.CurrentDatePresentationLayer
-import com.rahim.yadino.home.presentation.model.RoutineHomePresentationLayer
+import com.rahim.yadino.home.presentation.model.CurrentDateModel
+import com.rahim.yadino.home.presentation.model.RoutineHomeModel
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
 import com.rahim.yadino.showToastShort
@@ -79,16 +79,16 @@ private fun HomeScreen(
   homeState: HomeContract.HomeState,
   openDialog: Boolean,
   clickSearch: Boolean,
-  onCheckedRoutine: (RoutineHomePresentationLayer) -> Unit,
-  onDeleteRoutine: (RoutineHomePresentationLayer) -> Unit,
-  onUpdateRoutine: (RoutineHomePresentationLayer) -> Unit,
-  onAddRoutine: (RoutineHomePresentationLayer) -> Unit,
+  onCheckedRoutine: (RoutineHomeModel) -> Unit,
+  onDeleteRoutine: (RoutineHomeModel) -> Unit,
+  onUpdateRoutine: (RoutineHomeModel) -> Unit,
+  onAddRoutine: (RoutineHomeModel) -> Unit,
   onOpenDialog: (isOpen: Boolean) -> Unit,
   onSearchText: (searchText: String) -> Unit,
 ) {
   val context = LocalContext.current
-  val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineHomePresentationLayer?>(null) }
-  val routineModelUpdateDialog = rememberSaveable { mutableStateOf<RoutineHomePresentationLayer?>(null) }
+  val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineHomeModel?>(null) }
+  val routineModelUpdateDialog = rememberSaveable { mutableStateOf<RoutineHomeModel?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
 
   homeState.errorMessage?.let { errorMessage ->
@@ -189,11 +189,11 @@ private fun HomeScreen(
 
 @Composable
 fun ItemsHome(
-  currentTime: CurrentDatePresentationLayer?,
-  routineModels: PersistentList<RoutineHomePresentationLayer>,
-  checkedRoutine: (RoutineHomePresentationLayer) -> Unit,
-  updateRoutine: (RoutineHomePresentationLayer) -> Unit,
-  deleteRoutine: (RoutineHomePresentationLayer) -> Unit,
+  currentTime: CurrentDateModel?,
+  routineModels: PersistentList<RoutineHomeModel>,
+  checkedRoutine: (RoutineHomeModel) -> Unit,
+  updateRoutine: (RoutineHomeModel) -> Unit,
+  deleteRoutine: (RoutineHomeModel) -> Unit,
 ) {
   Row(
     horizontalArrangement = Arrangement.SpaceBetween,

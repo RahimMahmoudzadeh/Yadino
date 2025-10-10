@@ -1,8 +1,8 @@
 package com.rahim.yadino.home.data.repoImpl
 
 import androidx.core.net.ParseException
-import com.rahim.home.domain.model.CurrentDateDomainLayer
-import com.rahim.home.domain.model.RoutineHomeDomainLayer
+import com.rahim.home.domain.model.CurrentDateModel
+import com.rahim.home.domain.model.RoutineHomeModel
 import com.rahim.home.domain.repo.HomeRepository
 import com.rahim.yadino.Constants
 import com.rahim.yadino.db.routine.dao.RoutineDao
@@ -27,12 +27,12 @@ class HomeRepositoryImpl @Inject constructor(
   private val currentTimeMonth = persianData.shMonth
   private val currentTimeYear = persianData.shYear
 
-  override suspend fun addRoutine(routineModel: RoutineHomeDomainLayer) {
+  override suspend fun addRoutine(routineModel: RoutineHomeModel) {
     sharedPreferencesRepository.setShowSampleRoutine(true)
     routineDao.addRoutine(routineModel.toRoutineEntity())
   }
 
-  override suspend fun checkEqualRoutine(routineModel: RoutineHomeDomainLayer): RoutineHomeDomainLayer? {
+  override suspend fun checkEqualRoutine(routineModel: RoutineHomeModel): RoutineHomeModel? {
     return routineDao.checkEqualRoutine(
       routineName = routineModel.name,
       routineExplanation = routineModel.explanation ?: "",
@@ -84,28 +84,28 @@ class HomeRepositoryImpl @Inject constructor(
     return potentialId
   }
 
-  override fun getCurrentDate(): CurrentDateDomainLayer = CurrentDateDomainLayer(date = "$currentTimeYear/$currentTimeMonth/$currentTimeDay")
+  override fun getCurrentDate(): CurrentDateModel = CurrentDateModel(date = "$currentTimeYear/$currentTimeMonth/$currentTimeDay")
 
-  override suspend fun removeRoutine(routineModel: RoutineHomeDomainLayer) {
+  override suspend fun removeRoutine(routineModel: RoutineHomeModel) {
     sharedPreferencesRepository.setShowSampleRoutine(true)
     routineDao.removeRoutine(routineModel.toRoutineEntity())
   }
 
-  override suspend fun updateRoutine(routineModel: RoutineHomeDomainLayer) {
+  override suspend fun updateRoutine(routineModel: RoutineHomeModel) {
     sharedPreferencesRepository.setShowSampleRoutine(true)
     routineDao.addRoutine(routineModel.toRoutineEntity())
   }
 
-  override suspend fun getRoutine(id: Int): RoutineHomeDomainLayer = routineDao.getRoutine(id).toRoutineHomeDomainLayer()
-  override suspend fun checkedRoutine(routineModel: RoutineHomeDomainLayer) {
+  override suspend fun getRoutine(id: Int): RoutineHomeModel = routineDao.getRoutine(id).toRoutineHomeDomainLayer()
+  override suspend fun checkedRoutine(routineModel: RoutineHomeModel) {
     Timber.Forest.tag("routineViewModel").d("checkedRoutine")
     sharedPreferencesRepository.setShowSampleRoutine(true)
     routineDao.addRoutine(routineModel.toRoutineEntity())
   }
 
-  override fun getTodayRoutines(): Flow<List<RoutineHomeDomainLayer>> =
+  override fun getTodayRoutines(): Flow<List<RoutineHomeModel>> =
     routineDao.getRoutinesByDate(monthNumber = currentTimeMonth, dayNumber = currentTimeDay, yearNumber = currentTimeYear).map { it.map { it.toRoutineHomeDomainLayer() } }
 
-  override fun searchTodayRoutine(name: String): Flow<List<RoutineHomeDomainLayer>> =
+  override fun searchTodayRoutine(name: String): Flow<List<RoutineHomeModel>> =
     routineDao.searchRoutine(nameRoutine = name, monthNumber = currentTimeMonth, dayNumber = currentTimeDay, yearNumber = currentTimeYear).map { it.map { it.toRoutineHomeDomainLayer() } }
 }

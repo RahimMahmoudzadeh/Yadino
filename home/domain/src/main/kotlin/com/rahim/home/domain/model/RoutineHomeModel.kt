@@ -1,9 +1,6 @@
 package com.rahim.home.domain.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-data class RoutineHomeDomainLayer(
+data class RoutineHomeModel(
   val name: String,
   val colorTask: Int?,
   val dayName: String,

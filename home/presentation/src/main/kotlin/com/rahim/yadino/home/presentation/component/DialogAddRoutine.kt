@@ -24,7 +24,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -48,7 +47,7 @@ import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.Onahau
 import com.rahim.yadino.designsystem.theme.Purple
 import com.rahim.yadino.designsystem.theme.PurpleGrey
-import com.rahim.yadino.home.presentation.model.RoutineHomePresentationLayer
+import com.rahim.yadino.home.presentation.model.RoutineHomeModel
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -68,9 +67,9 @@ const val MAX_EXPLANATION_LENGTH = 40
 @Composable
 fun DialogAddRoutine(
   modifier: Modifier = Modifier,
-  updateRoutine: RoutineHomePresentationLayer? = null,
+  updateRoutine: RoutineHomeModel? = null,
   onCloseDialog: () -> Unit,
-  onRoutineCreated: (routine: RoutineHomePresentationLayer) -> Unit,
+  onRoutineCreated: (routine: RoutineHomeModel) -> Unit,
 ) {
 
   var routineName by rememberSaveable { mutableStateOf(if (updateRoutine?.name.isNullOrBlank()) "" else updateRoutine.name) }
@@ -276,7 +275,7 @@ fun DialogAddRoutine(
                 if (routineName.isEmpty()) {
                   isErrorName = true
                 } else {
-                  val routine = RoutineHomePresentationLayer(
+                  val routine = RoutineHomeModel(
                     id = updateRoutine?.id,
                     name = routineName,
                     explanation = routineExplanation,

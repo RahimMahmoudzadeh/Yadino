@@ -1,6 +1,6 @@
 package com.rahim.yadino.home.presentation.model
 
-data class RoutineHomePresentationLayer(
+data class RoutineHomeModel(
   val name: String,
   val colorTask: Int?,
   val dayName: String,
