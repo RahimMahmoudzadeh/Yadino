@@ -154,6 +154,8 @@ fun DialogAddRoutine(
               unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
               disabledIndicatorColor = MaterialTheme.colorScheme.background,
               unfocusedContainerColor = MaterialTheme.colorScheme.background,
+              focusedTextColor = MaterialTheme.colorScheme.primary,
+              unfocusedTextColor = MaterialTheme.colorScheme.primary,
             ),
             textStyle = MaterialTheme.typography.bodyLarge,
           )
@@ -201,6 +203,8 @@ fun DialogAddRoutine(
               unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
               disabledIndicatorColor = MaterialTheme.colorScheme.background,
               unfocusedContainerColor = MaterialTheme.colorScheme.background,
+              focusedTextColor = MaterialTheme.colorScheme.primary,
+              unfocusedTextColor = MaterialTheme.colorScheme.primary,
             ),
           )
           if (isErrorExplanation) {

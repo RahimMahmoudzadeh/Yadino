@@ -58,7 +58,6 @@ import kotlinx.collections.immutable.PersistentList
 import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.time.LocalTime
-import kotlin.collections.isNotEmpty
 
 const val MAX_NAME_LENGTH = 22
 const val MAX_EXPLANATION_LENGTH = 40
@@ -166,6 +165,8 @@ fun DialogAddRoutine(
               unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
               disabledIndicatorColor = MaterialTheme.colorScheme.background,
               unfocusedContainerColor = MaterialTheme.colorScheme.background,
+              focusedTextColor = MaterialTheme.colorScheme.primary,
+              unfocusedTextColor = MaterialTheme.colorScheme.primary,
             ),
             textStyle = MaterialTheme.typography.bodyLarge,
           )
@@ -213,6 +214,8 @@ fun DialogAddRoutine(
               unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
               disabledIndicatorColor = MaterialTheme.colorScheme.background,
               unfocusedContainerColor = MaterialTheme.colorScheme.background,
+              focusedTextColor = MaterialTheme.colorScheme.primary,
+              unfocusedTextColor = MaterialTheme.colorScheme.primary,
             ),
           )
           if (isErrorExplanation) {
