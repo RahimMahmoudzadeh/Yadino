@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.note.domain.NoteRepository
-import com.rahim.yadino.note.domain.model.NoteModel
+import com.rahim.yadino.note.domain.model.Note
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,16 +38,16 @@ class NoteViewModel @Inject constructor(
     is NoteContract.NoteEvent.AddNote -> addNote(event.addNote)
   }
 
-  private fun addNote(noteModel: NoteModel) {
+  private fun addNote(note: Note) {
     viewModelScope.launch {
 //      val updateNote = noteModel.copy(dayNumber = currentDay, monthNumber = currentMonth, yearNumber = currentYear)
 //      noteRepository.addNote(updateNote)
     }
   }
 
-  private fun updateNote(noteModel: NoteModel) {
+  private fun updateNote(note: Note) {
     viewModelScope.launch {
-      noteRepository.updateNote(noteModel)
+      noteRepository.updateNote(note)
     }
   }
 
@@ -64,9 +64,9 @@ class NoteViewModel @Inject constructor(
 //    }
 //  }
 
-  private fun delete(noteModel: NoteModel) {
+  private fun delete(note: Note) {
     viewModelScope.launch {
-      noteRepository.deleteNote(noteModel)
+      noteRepository.deleteNote(note)
     }
   }
 

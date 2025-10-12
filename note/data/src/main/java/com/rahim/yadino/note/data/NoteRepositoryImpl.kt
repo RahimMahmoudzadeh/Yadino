@@ -5,7 +5,7 @@ import com.rahim.yadino.db.note.model.NoteEntity
 import com.rahim.yadino.note.data.mapper.toNoteEntity
 import com.rahim.yadino.note.data.mapper.toNoteModel
 import com.rahim.yadino.note.domain.NoteRepository
-import com.rahim.yadino.note.domain.model.NoteModel
+import com.rahim.yadino.note.domain.model.Note
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -45,22 +45,22 @@ class NoteRepositoryImpl(
     }
   }
 
-  override suspend fun addNote(noteModal: NoteModel) {
+  override suspend fun addNote(noteModal: Note) {
     sharedPreferencesRepository.setShowSampleNote()
     noteDao.insertNote(noteModal.toNoteEntity())
   }
 
-  override suspend fun updateNote(noteModal: NoteModel) {
+  override suspend fun updateNote(noteModal: Note) {
     sharedPreferencesRepository.setShowSampleNote()
     noteDao.update(noteModal.toNoteEntity())
   }
 
-  override suspend fun deleteNote(noteModal: NoteModel) {
+  override suspend fun deleteNote(noteModal: Note) {
     sharedPreferencesRepository.setShowSampleNote()
     noteDao.delete(noteModal.toNoteEntity())
   }
 
-  override fun getNotes(): Flow<List<NoteModel>> = noteDao.getNotes().map { it.map { it.toNoteModel() } }
+  override fun getNotes(): Flow<List<Note>> = noteDao.getNotes().map { it.map { it.toNoteModel() } }
 
-  override fun searchNote(name: String): Flow<List<NoteModel>> = noteDao.searchRoutine(name).map { it.map { it.toNoteModel() } }
+  override fun searchNote(name: String): Flow<List<Note>> = noteDao.searchRoutine(name).map { it.map { it.toNoteModel() } }
 }

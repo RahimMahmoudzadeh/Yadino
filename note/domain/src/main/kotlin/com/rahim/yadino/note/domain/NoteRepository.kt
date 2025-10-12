@@ -1,13 +1,13 @@
 package com.rahim.yadino.note.domain
 
-import com.rahim.yadino.note.domain.model.NoteModel
+import com.rahim.yadino.note.domain.model.Note
 import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {
-  suspend fun addNote(noteModel: NoteModel)
-  suspend fun updateNote(noteModel: NoteModel)
-  suspend fun deleteNote(noteModel: NoteModel)
-  fun getNotes(): Flow<List<NoteModel>>
+  suspend fun addNote(note: Note)
+  suspend fun updateNote(note: Note)
+  suspend fun deleteNote(note: Note)
+  fun getNotes(): Flow<List<Note>>
   suspend fun addSampleNote()
-  fun searchNote(name: String): Flow<List<NoteModel>>
+  fun searchNote(name: String): Flow<List<Note>>
 }

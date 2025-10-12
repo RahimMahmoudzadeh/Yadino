@@ -26,7 +26,7 @@ import com.rahim.yadino.designsystem.component.ItemListNote
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.dialog.DialogAddNote
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
-import com.rahim.yadino.note.domain.model.NoteModel
+import com.rahim.yadino.note.domain.model.Note
 
 @Composable
 internal fun NoteRoute(
@@ -66,13 +66,13 @@ private fun NoteScreen(
   openDialog: Boolean,
   clickSearch: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,
-  onUpdateNote: (NoteModel) -> Unit,
-  onAddNote: (NoteModel) -> Unit,
-  onDelete: (NoteModel) -> Unit,
+  onUpdateNote: (Note) -> Unit,
+  onAddNote: (Note) -> Unit,
+  onDelete: (Note) -> Unit,
   onSearchText: (String) -> Unit,
 ) {
-  val noteDeleteDialog = rememberSaveable { mutableStateOf<NoteModel?>(null) }
-  val noteUpdateDialog = rememberSaveable { mutableStateOf<NoteModel?>(null) }
+  val noteDeleteDialog = rememberSaveable { mutableStateOf<Note?>(null) }
+  val noteUpdateDialog = rememberSaveable { mutableStateOf<Note?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
   val context = LocalContext.current
 
@@ -149,7 +149,7 @@ private fun NoteScreen(
           )
           note?.let { onUpdateNote(note) }
         } else {
-          val note = NoteModel(
+          val note = Note(
             name = name,
             description = description,
             state = state,
@@ -181,10 +181,10 @@ private fun NoteScreen(
 
 @Composable
 fun ItemsNote(
-  notes: List<NoteModel>,
-  checkedNote: (NoteModel) -> Unit,
-  updateNote: (NoteModel) -> Unit,
-  deleteNote: (NoteModel) -> Unit,
+  notes: List<Note>,
+  checkedNote: (Note) -> Unit,
+  updateNote: (Note) -> Unit,
+  deleteNote: (Note) -> Unit,
 ) {
   LazyColumn(
     modifier = Modifier
