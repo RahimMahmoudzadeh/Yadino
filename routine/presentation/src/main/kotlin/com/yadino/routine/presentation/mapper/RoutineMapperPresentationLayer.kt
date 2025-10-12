@@ -2,7 +2,7 @@ package com.yadino.routine.presentation.mapper
 
 import com.rahim.yadino.core.timeDate.model.TimeDateModel
 import com.yadino.routine.domain.model.RoutineModel
-import com.yadino.routine.presentation.model.RoutinePresentationLayer
+import com.yadino.routine.presentation.model.RoutineUiModel
 import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
 
 fun TimeDateModel.toTimeDateRoutinePresentationLayer(): TimeDateRoutinePresentationLayer = TimeDateRoutinePresentationLayer(
@@ -17,8 +17,8 @@ fun TimeDateModel.toTimeDateRoutinePresentationLayer(): TimeDateRoutinePresentat
   versionNumber = this.versionNumber,
 )
 
-fun RoutineModel.toRoutinePresentationLayer(): RoutinePresentationLayer =
-  RoutinePresentationLayer(
+fun RoutineModel.toRoutinePresentationLayer(): RoutineUiModel =
+  RoutineUiModel(
     name = this.name,
     colorTask = this.colorTask,
     dayName = this.dayName,
@@ -34,7 +34,7 @@ fun RoutineModel.toRoutinePresentationLayer(): RoutinePresentationLayer =
     timeInMillisecond = this.timeInMillisecond,
   )
 
-fun RoutinePresentationLayer.toRoutineDomainLayer(): RoutineModel =
+fun RoutineUiModel.toRoutineDomainLayer(): RoutineModel =
   RoutineModel(
     name = this.name,
     colorTask = this.colorTask,

@@ -52,7 +52,7 @@ import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import com.yadino.routine.presentation.model.RoutinePresentationLayer
+import com.yadino.routine.presentation.model.RoutineUiModel
 import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
 import kotlinx.collections.immutable.PersistentList
 import saman.zamani.persiandate.PersianDate
@@ -72,10 +72,10 @@ fun DialogAddRoutine(
   currentNumberDay: Int,
   currentNumberMonth: Int,
   currentNumberYear: Int,
-  updateRoutine: RoutinePresentationLayer? = null,
+  updateRoutine: RoutineUiModel? = null,
   timesMonth: PersistentList<TimeDateRoutinePresentationLayer>,
   onCloseDialog: () -> Unit,
-  onRoutineCreated: (routine: RoutinePresentationLayer) -> Unit,
+  onRoutineCreated: (routine: RoutineUiModel) -> Unit,
   monthIncrease: ((year: Int, month: Int) -> Unit)? = null,
   monthDecrease: ((year: Int, month: Int) -> Unit)? = null,
 ) {
@@ -320,7 +320,7 @@ fun DialogAddRoutine(
                 if (routineName.isEmpty()) {
                   isErrorName = true
                 } else {
-                  val routine = RoutinePresentationLayer(
+                  val routine = RoutineUiModel(
                     id = updateRoutine?.id,
                     name = routineName,
                     explanation = routineExplanation,

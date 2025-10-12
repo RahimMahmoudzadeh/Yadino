@@ -6,7 +6,7 @@ import com.rahim.yadino.base.LoadableData
 import com.yadino.routine.domain.useCase.GetAllRoutineUseCase
 import com.yadino.routine.presentation.mapper.toRoutinePresentationLayer
 import com.yadino.routine.presentation.model.IncompleteOrCompletedRoutines
-import com.yadino.routine.presentation.model.RoutinePresentationLayer
+import com.yadino.routine.presentation.model.RoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -44,7 +44,7 @@ class HistoryViewModel @Inject constructor(
       val (completedRoutine, incompleteRoutine) = if (routines.isNotEmpty()) {
         routines.partition { sort -> sort.isChecked }
       } else {
-        persistentListOf<RoutinePresentationLayer>() to persistentListOf()
+        persistentListOf<RoutineUiModel>() to persistentListOf()
       }
       mutableState.update {
         it.copy(

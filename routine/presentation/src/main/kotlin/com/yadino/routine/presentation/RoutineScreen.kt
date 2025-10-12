@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -63,7 +62,7 @@ import com.rahim.yadino.showToastShort
 import com.yadino.routine.presentation.component.DialogAddRoutine
 import com.yadino.routine.presentation.component.ListRoutines
 import com.yadino.routine.presentation.model.IncreaseDecrease
-import com.yadino.routine.presentation.model.RoutinePresentationLayer
+import com.yadino.routine.presentation.model.RoutineUiModel
 import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
 import kotlinx.collections.immutable.PersistentList
 import timber.log.Timber
@@ -121,11 +120,11 @@ private fun RoutineScreen(
   openDialogAddRoutine: Boolean,
   onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,
   showSearchBar: Boolean,
-  checkedRoutine: (RoutinePresentationLayer) -> Unit,
+  checkedRoutine: (RoutineUiModel) -> Unit,
   dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
-  onUpdateRoutine: (RoutinePresentationLayer) -> Unit,
-  onAddRoutine: (RoutinePresentationLayer) -> Unit,
-  onDeleteRoutine: (RoutinePresentationLayer) -> Unit,
+  onUpdateRoutine: (RoutineUiModel) -> Unit,
+  onAddRoutine: (RoutineUiModel) -> Unit,
+  onDeleteRoutine: (RoutineUiModel) -> Unit,
   onSearchText: (String) -> Unit,
   monthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
   dialogMonthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
@@ -133,8 +132,8 @@ private fun RoutineScreen(
 ) {
   val context = LocalContext.current
 
-  val routineDeleteDialog = rememberSaveable { mutableStateOf<RoutinePresentationLayer?>(null) }
-  val routineUpdateDialog = rememberSaveable { mutableStateOf<RoutinePresentationLayer?>(null) }
+  val routineDeleteDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
+  val routineUpdateDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
 
   var errorClick by rememberSaveable { mutableStateOf(false) }
   var searchText by rememberSaveable { mutableStateOf("") }
@@ -273,9 +272,9 @@ private fun RoutineScreen(
 private fun GetRoutines(
   state: RoutineContract.State,
   searchText: String,
-  routineUpdateDialog: (RoutinePresentationLayer) -> Unit,
-  routineChecked: (RoutinePresentationLayer) -> Unit,
-  routineDeleteDialog: (RoutinePresentationLayer) -> Unit,
+  routineUpdateDialog: (RoutineUiModel) -> Unit,
+  routineChecked: (RoutineUiModel) -> Unit,
+  routineDeleteDialog: (RoutineUiModel) -> Unit,
 ) {
   val context = LocalContext.current
   LoadableComponent(

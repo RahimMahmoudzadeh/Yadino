@@ -1,6 +1,6 @@
 package com.yadino.routine.presentation.model
 
-data class RoutinePresentationLayer(
+data class RoutineUiModel(
   val name: String,
   val colorTask: Int?,
   val dayName: String,

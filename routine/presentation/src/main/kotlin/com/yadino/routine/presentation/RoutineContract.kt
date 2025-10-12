@@ -6,7 +6,7 @@ import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.yadino.routine.presentation.model.IncreaseDecrease
-import com.yadino.routine.presentation.model.RoutinePresentationLayer
+import com.yadino.routine.presentation.model.RoutineUiModel
 import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
@@ -14,10 +14,10 @@ import kotlinx.collections.immutable.persistentListOf
 interface RoutineContract : UnidirectionalViewModel<RoutineContract.Event, RoutineContract.State> {
   @Immutable
   sealed class Event {
-    data class AddRoutine(val routine: RoutinePresentationLayer) : Event()
-    data class CheckedRoutine(val routine: RoutinePresentationLayer) : Event()
-    data class UpdateRoutine(val routine: RoutinePresentationLayer) : Event()
-    data class DeleteRoutine(val routine: RoutinePresentationLayer) : Event()
+    data class AddRoutine(val routine: RoutineUiModel) : Event()
+    data class CheckedRoutine(val routine: RoutineUiModel) : Event()
+    data class UpdateRoutine(val routine: RoutineUiModel) : Event()
+    data class DeleteRoutine(val routine: RoutineUiModel) : Event()
     data class SearchRoutineByName(val routineName: String) : Event()
     data class GetRoutines(val timeDate: TimeDateRoutinePresentationLayer) : Event()
     data class WeekChange(val increaseDecrease: IncreaseDecrease) : Event()
@@ -28,7 +28,7 @@ interface RoutineContract : UnidirectionalViewModel<RoutineContract.Event, Routi
 
   @Stable
   data class State(
-    val routines: LoadableData<PersistentList<RoutinePresentationLayer>> = LoadableData.Initial,
+    val routines: LoadableData<PersistentList<RoutineUiModel>> = LoadableData.Initial,
     val index: Int = 0,
     val currentYear: Int = 0,
     val currentMonth: Int = 0,

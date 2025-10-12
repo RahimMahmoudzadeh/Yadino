@@ -19,7 +19,7 @@ import com.yadino.routine.presentation.mapper.toRoutineDomainLayer
 import com.yadino.routine.presentation.mapper.toRoutinePresentationLayer
 import com.yadino.routine.presentation.mapper.toTimeDateRoutinePresentationLayer
 import com.yadino.routine.presentation.model.IncreaseDecrease
-import com.yadino.routine.presentation.model.RoutinePresentationLayer
+import com.yadino.routine.presentation.model.RoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineDispatcher
@@ -256,13 +256,13 @@ class RoutineScreenViewModel @Inject constructor(
     }
   }
 
-  private fun deleteRoutine(routine: RoutinePresentationLayer) {
+  private fun deleteRoutine(routine: RoutineUiModel) {
     viewModelScope.launch {
       deleteReminderUseCase(routine = routine.toRoutineDomainLayer())
     }
   }
 
-  private fun updateRoutine(routine: RoutinePresentationLayer) {
+  private fun updateRoutine(routine: RoutineUiModel) {
     viewModelScope.launch {
       Timber.tag("routineViewModel").d("GetRoutines")
       when (val response = updateReminderUseCase(routine = routine.toRoutineDomainLayer())) {
@@ -279,13 +279,13 @@ class RoutineScreenViewModel @Inject constructor(
     }
   }
 
-  private fun checkedRoutine(routine: RoutinePresentationLayer) {
+  private fun checkedRoutine(routine: RoutineUiModel) {
     viewModelScope.launch {
       cancelReminderUseCase(routine = routine.toRoutineDomainLayer())
     }
   }
 
-  private fun addRoutine(routine: RoutinePresentationLayer) {
+  private fun addRoutine(routine: RoutineUiModel) {
     viewModelScope.launch {
       when (val response = addReminderUseCase(routine.toRoutineDomainLayer())) {
         is Resource.Error -> {
