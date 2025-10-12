@@ -2,10 +2,14 @@ package com.rahim.yadino.note.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.note.domain.NoteRepository
 import com.rahim.yadino.note.domain.model.Note
+import com.rahim.yadino.note.presentation.mapper.toNoteUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toPersistentHashSet
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +28,7 @@ class NoteViewModel @Inject constructor(
 ) :
   ViewModel(), NoteContract {
 
-  private var mutableState = MutableStateFlow<NoteContract.NoteState>(NoteContract.NoteState())
+  private var mutableState = MutableStateFlow(NoteContract.NoteState())
   override val state: StateFlow<NoteContract.NoteState> = mutableState.onStart {
 //    getCurrentNameDay()
     getNotes()
@@ -75,12 +79,12 @@ class NoteViewModel @Inject constructor(
       if (searchText.isNotEmpty()) {
         Timber.tag("searchRoutine").d("searchText:$searchText")
         noteRepository.searchNote(searchText).catch {
-          mutableState.update {
-            it.copy(errorMessage = ErrorMessageCode.ERROR_GET_PROCESS)
-          }
+//          mutableState.update {
+//            it.copy(errorMessage = ErrorMessageCode.ERROR_GET_PROCESS)
+//          }
         }.collectLatest { notes ->
           mutableState.update {
-            it.copy(notes = notes, errorMessage = null, isLoading = false)
+            it.copy(notes = LoadableData.Loaded(notes.map { it.toNoteUiModel() }.toPersistentList()))
           }
         }
       } else {
@@ -93,13 +97,13 @@ class NoteViewModel @Inject constructor(
     viewModelScope.launch {
       noteRepository.getNotes()
         .catch {
-          mutableState.update {
-            it.copy(errorMessage = ErrorMessageCode.ERROR_GET_PROCESS)
-          }
+//          mutableState.update {
+//            it.copy(errorMessage = ErrorMessageCode.ERROR_GET_PROCESS)
+//          }
         }
         .collectLatest { notes ->
           mutableState.update {
-            it.copy(notes = notes, errorMessage = null, isLoading = false)
+            it.copy(notes = LoadableData.Loaded(notes.map { it.toNoteUiModel() }.toPersistentList()))
           }
         }
     }

@@ -1,9 +1,12 @@
 package com.rahim.yadino.note.presentation
 
 import androidx.compose.runtime.Immutable
+import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.note.domain.model.Note
+import com.rahim.yadino.note.presentation.model.NoteUiModel
+import kotlinx.collections.immutable.PersistentList
 
 interface NoteContract : UnidirectionalViewModel<NoteContract.NoteEvent, NoteContract.NoteState> {
 
@@ -18,9 +21,6 @@ interface NoteContract : UnidirectionalViewModel<NoteContract.NoteEvent, NoteCon
 
   @Immutable
   data class NoteState(
-      val isLoading: Boolean = false,
-      val notes: List<Note> = emptyList(),
-      val nameDay: String? = null,
-      val errorMessage: ErrorMessageCode? = null,
+    val notes: LoadableData<PersistentList<NoteUiModel>> = LoadableData.Initial,
   )
 }
