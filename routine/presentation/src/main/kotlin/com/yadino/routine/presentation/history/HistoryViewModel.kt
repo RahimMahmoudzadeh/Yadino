@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.base.LoadableData
 import com.yadino.routine.domain.useCase.GetAllRoutineUseCase
 import com.yadino.routine.presentation.mapper.toRoutinePresentationLayer
-import com.yadino.routine.presentation.model.IncompleteOrCompletedRoutines
+import com.yadino.routine.presentation.model.IncompleteOrCompletedRoutinesUiModel
 import com.yadino.routine.presentation.model.RoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.persistentListOf
@@ -37,7 +37,7 @@ class HistoryViewModel @Inject constructor(
     viewModelScope.launch {
       mutableState.update {
         it.copy(
-          incompleteOrCompletedRoutines = LoadableData.Loading,
+          incompleteOrCompletedRoutinesUiModel = LoadableData.Loading,
         )
       }
       val routines = getRoutineUseCase().map { it.toRoutinePresentationLayer() }
@@ -48,8 +48,8 @@ class HistoryViewModel @Inject constructor(
       }
       mutableState.update {
         it.copy(
-          incompleteOrCompletedRoutines = LoadableData.Loaded(
-            IncompleteOrCompletedRoutines(
+          incompleteOrCompletedRoutinesUiModel = LoadableData.Loaded(
+            IncompleteOrCompletedRoutinesUiModel(
               incompleteRoutine = incompleteRoutine.toPersistentList(),
               completedRoutine = completedRoutine.toPersistentList(),
             ),

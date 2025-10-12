@@ -69,7 +69,7 @@ private fun HistoryScreen(
     label = "",
   )
   LoadableComponent(
-    loadableData = state.incompleteOrCompletedRoutines,
+    loadableData = state.incompleteOrCompletedRoutinesUiModel,
     loaded = { incompleteOrCompletedRoutines ->
       incompleteOrCompletedRoutines.run {
         LazyColumn(

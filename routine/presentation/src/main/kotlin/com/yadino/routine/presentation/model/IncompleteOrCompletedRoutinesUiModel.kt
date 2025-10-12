@@ -2,7 +2,7 @@ package com.yadino.routine.presentation.model
 
 import kotlinx.collections.immutable.PersistentList
 
-data class IncompleteOrCompletedRoutines(
+data class IncompleteOrCompletedRoutinesUiModel(
   val incompleteRoutine: PersistentList<RoutineUiModel>,
   val completedRoutine: PersistentList<RoutineUiModel>,
 )

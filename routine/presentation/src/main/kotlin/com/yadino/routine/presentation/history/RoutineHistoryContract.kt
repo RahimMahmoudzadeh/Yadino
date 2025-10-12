@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.yadino.routine.presentation.model.IncompleteOrCompletedRoutines
+import com.yadino.routine.presentation.model.IncompleteOrCompletedRoutinesUiModel
 
 interface RoutineHistoryContract : UnidirectionalViewModel<RoutineHistoryContract.HistoryEvent, RoutineHistoryContract.HistoryState> {
   @Immutable
@@ -14,7 +14,7 @@ interface RoutineHistoryContract : UnidirectionalViewModel<RoutineHistoryContrac
 
   @Immutable
   data class HistoryState(
-    val incompleteOrCompletedRoutines: LoadableData<IncompleteOrCompletedRoutines> = LoadableData.Initial,
+    val incompleteOrCompletedRoutinesUiModel: LoadableData<IncompleteOrCompletedRoutinesUiModel> = LoadableData.Initial,
     val errorMessage: ErrorMessageCode? = null,
   )
 }
