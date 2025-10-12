@@ -6,14 +6,14 @@ import com.rahim.yadino.base.reminder.ReminderState
 import com.rahim.yadino.enums.SuccessMessage
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.yadino.routine.domain.repo.RoutineRepository
-import com.yadino.routine.domain.model.RoutineModel
+import com.yadino.routine.domain.model.Routine
 import javax.inject.Inject
 
 class AddReminderUseCase @Inject constructor(
   private val routineRepository: RoutineRepository,
   private val reminderScheduler: ReminderScheduler,
 ) {
-  suspend operator fun invoke(routineModel: RoutineModel): Resource<SuccessMessage, ErrorMessageCode> {
+  suspend operator fun invoke(routineModel: Routine): Resource<SuccessMessage, ErrorMessageCode> {
     try {
       val routine = routineModel.copy(
         idAlarm = routineRepository.getRoutineAlarmId(),

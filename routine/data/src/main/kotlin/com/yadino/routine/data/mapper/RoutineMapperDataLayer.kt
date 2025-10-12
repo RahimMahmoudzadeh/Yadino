@@ -1,9 +1,9 @@
 package com.yadino.routine.data.mapper
 
 import com.rahim.yadino.db.routine.model.RoutineEntity
-import com.yadino.routine.domain.model.RoutineModel
+import com.yadino.routine.domain.model.Routine
 
-fun RoutineModel.toRoutineEntity(): RoutineEntity = RoutineEntity(
+fun Routine.toRoutineEntity(): RoutineEntity = RoutineEntity(
   name = name,
   colorTask = colorTask,
   dayName = dayName,
@@ -19,7 +19,7 @@ fun RoutineModel.toRoutineEntity(): RoutineEntity = RoutineEntity(
   timeInMillisecond = timeInMillisecond,
 )
 
-fun RoutineEntity.toRoutineModelDomainLayer(): RoutineModel = RoutineModel(
+fun RoutineEntity.toRoutineModelDomainLayer(): Routine = Routine(
   name = name,
   colorTask = colorTask,
   dayName = dayName,

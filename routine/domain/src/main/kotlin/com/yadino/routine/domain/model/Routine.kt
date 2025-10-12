@@ -1,6 +1,6 @@
 package com.yadino.routine.domain.model
 
-data class RoutineModel(
+data class Routine(
   val name: String,
   val colorTask: Int?,
   val dayName: String,
