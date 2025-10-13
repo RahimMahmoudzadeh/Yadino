@@ -3,12 +3,11 @@ package com.rahim.yadino.note.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.base.LoadableData
-import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.note.domain.NoteRepository
-import com.rahim.yadino.note.domain.model.Note
+import com.rahim.yadino.note.presentation.mapper.toNote
 import com.rahim.yadino.note.presentation.mapper.toNoteUiModel
+import com.rahim.yadino.note.presentation.model.NoteUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.collections.immutable.toPersistentHashSet
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -42,35 +41,21 @@ class NoteViewModel @Inject constructor(
     is NoteContract.NoteEvent.AddNote -> addNote(event.addNote)
   }
 
-  private fun addNote(note: Note) {
+  private fun addNote(note: NoteUiModel) {
     viewModelScope.launch {
-//      val updateNote = noteModel.copy(dayNumber = currentDay, monthNumber = currentMonth, yearNumber = currentYear)
-//      noteRepository.addNote(updateNote)
+      noteRepository.addNote(note.toNote())
     }
   }
 
-  private fun updateNote(note: Note) {
+  private fun updateNote(note: NoteUiModel) {
     viewModelScope.launch {
-      noteRepository.updateNote(note)
+      noteRepository.updateNote(note.toNote())
     }
   }
 
-//  private fun getCurrentNameDay(
-//    date: String = String().calculateTimeFormat(
-//      timeRepository.currentTimeYear,
-//      timeRepository.currentTimeMonth,
-//      timeRepository.currentTimeDay.toString(),
-//    ),
-//    format: String = Constants.YYYY_MM_DD,
-//  ) {
-//    mutableState.update {
-//      it.copy(nameDay = timeRepository.getCurrentNameDay(date, format))
-//    }
-//  }
-
-  private fun delete(note: Note) {
+  private fun delete(note: NoteUiModel) {
     viewModelScope.launch {
-      noteRepository.deleteNote(note)
+      noteRepository.deleteNote(note.toNote())
     }
   }
 

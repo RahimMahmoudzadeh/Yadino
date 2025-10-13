@@ -11,7 +11,21 @@ fun Note.toNoteUiModel(): NoteUiModel =
     description = this.description,
     isChecked = this.isChecked,
     state = checkState(this.state),
-    timeCreate = this.timeInMileSecond.toString(),
+    timeNote = NoteUiModel.TimeNoteUiModel(timeCreateMillSecond = this.timeInMileSecond ?: 0, yearNumber = this.dayNumber ?: 0, monthNumber = this.monthNumber ?: 0, dayNumber = this.yearNumber ?: 0, dayName = this.dayName),
+  )
+
+fun NoteUiModel.toNote(): Note =
+  Note(
+    id = this.id,
+    name = this.name,
+    description = this.description,
+    isChecked = this.isChecked,
+    state = this.state.state,
+    dayName = this.timeNote.dayName,
+    timeInMileSecond = this.timeNote.timeCreateMillSecond,
+    dayNumber = this.timeNote.dayNumber,
+    monthNumber = this.timeNote.monthNumber,
+    yearNumber = this.timeNote.yearNumber,
   )
 
 fun checkState(state: Int): PriorityNote {

@@ -297,12 +297,12 @@ fun DialogAddNote(
                       description = description,
                       state = state,
                       isChecked = updateNote?.isChecked ?: false,
-                      timeCreate = System.currentTimeMillis().toString(),
                       timeNote = updateNote?.timeNote ?: NoteUiModel.TimeNoteUiModel(
                         monthNumber = persianDate.shMonth,
                         dayNumber = persianDate.shDay,
                         yearNumber = persianDate.shYear,
                         dayName = persianDate.dayName(),
+                        timeCreateMillSecond = System.currentTimeMillis(),
                       ),
                     ),
                   )

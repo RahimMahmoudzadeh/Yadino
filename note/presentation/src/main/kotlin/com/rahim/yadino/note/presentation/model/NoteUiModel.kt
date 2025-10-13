@@ -6,7 +6,6 @@ data class NoteUiModel(
   val description: String,
   val isChecked: Boolean = false,
   val state: PriorityNote = PriorityNote.HIGH_PRIORITY,
-  val timeCreate: String,
   val timeNote: TimeNoteUiModel,
 ) {
   data class TimeNoteUiModel(
@@ -14,5 +13,6 @@ data class NoteUiModel(
     val yearNumber: Int,
     val dayNumber: Int,
     val dayName: String,
+    val timeCreateMillSecond: Long,
   )
 }
