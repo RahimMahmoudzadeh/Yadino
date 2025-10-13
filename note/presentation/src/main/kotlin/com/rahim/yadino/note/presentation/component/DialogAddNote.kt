@@ -140,6 +140,8 @@ fun DialogAddNote(
               focusedIndicatorColor = Color.Transparent,
               unfocusedIndicatorColor = Color.Transparent,
               disabledIndicatorColor = Color.Transparent,
+              focusedTextColor = MaterialTheme.colorScheme.primary,
+              unfocusedTextColor = MaterialTheme.colorScheme.primary,
             ),
           )
           if (isErrorName) {
@@ -183,6 +185,8 @@ fun DialogAddNote(
               focusedIndicatorColor = Color.Transparent,
               unfocusedIndicatorColor = Color.Transparent,
               disabledIndicatorColor = Color.Transparent,
+              focusedTextColor = MaterialTheme.colorScheme.primary,
+              unfocusedTextColor = MaterialTheme.colorScheme.primary,
             ),
           )
           if (isErrorExplanation) {
