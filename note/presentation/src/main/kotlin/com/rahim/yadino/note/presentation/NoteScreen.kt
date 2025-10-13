@@ -20,13 +20,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
-import com.rahim.yadino.designsystem.component.ItemListNote
+import com.rahim.yadino.note.presentation.component.ItemListNote
 import com.rahim.yadino.designsystem.component.ShowSearchBar
-import com.rahim.yadino.designsystem.dialog.DialogAddNote
+import com.rahim.yadino.note.presentation.component.DialogAddNote
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
-import com.rahim.yadino.note.domain.model.Note
+import com.rahim.yadino.note.presentation.model.NoteUiModel
+import kotlinx.collections.immutable.PersistentList
 
 @Composable
 internal fun NoteRoute(
@@ -66,13 +68,13 @@ private fun NoteScreen(
   openDialog: Boolean,
   clickSearch: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,
-  onUpdateNote: (Note) -> Unit,
-  onAddNote: (Note) -> Unit,
-  onDelete: (Note) -> Unit,
+  onUpdateNote: (NoteUiModel) -> Unit,
+  onAddNote: (NoteUiModel) -> Unit,
+  onDelete: (NoteUiModel) -> Unit,
   onSearchText: (String) -> Unit,
 ) {
-  val noteDeleteDialog = rememberSaveable { mutableStateOf<Note?>(null) }
-  val noteUpdateDialog = rememberSaveable { mutableStateOf<Note?>(null) }
+  val noteDeleteDialog = rememberSaveable { mutableStateOf<NoteUiModel?>(null) }
+  val noteUpdateDialog = rememberSaveable { mutableStateOf<NoteUiModel?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
   val context = LocalContext.current
 
@@ -82,83 +84,60 @@ private fun NoteScreen(
     modifier = modifier
       .fillMaxSize(),
 
-  ) {
+    ) {
     ShowSearchBar(clickSearch, searchText = searchText) { search ->
       searchText = search
       onSearchText(searchText)
     }
-    val notes = state.notes
-    if (notes.isEmpty()) {
-      if (searchText.isNotEmpty()) {
-        EmptyMessage(
-          messageEmpty = R.string.search_empty_note,
-          painter = R.drawable.empty_note,
-        )
-      } else {
-        EmptyMessage(
-          messageEmpty = R.string.not_note,
-          painter = R.drawable.empty_note,
-        )
-      }
-    } else {
-      ItemsNote(
-        notes,
-        checkedNote = {
-          onUpdateNote(it)
-        },
-        updateNote = {
-          if (it.isChecked) {
-            Toast.makeText(
-              context,
-              R.string.not_update_checked_note,
-              Toast.LENGTH_SHORT,
-            ).show()
-            return@ItemsNote
-          }
-          noteUpdateDialog.value = it
-          onOpenDialog(true)
-        },
-        deleteNote = {
-          if (it.isChecked) {
-            Toast.makeText(
-              context,
-              R.string.not_removed_checked_note,
-              Toast.LENGTH_SHORT,
-            ).show()
-            return@ItemsNote
-          }
-          noteDeleteDialog.value = it
-        },
-      )
-    }
+    LoadableComponent(
+      loadableData = state.notes,
+      loading = {},
+      error = {},
+      loaded = { notes ->
+        if (notes.isEmpty()) {
+          EmptyMessage(
+            messageEmpty = if (searchText.isNotEmpty()) R.string.search_empty_note else R.string.not_note,
+            painter = R.drawable.empty_note,
+          )
+        } else {
+          ItemsNote(
+            notes = notes,
+            checkedNote = {
+              onUpdateNote(it)
+            },
+            updateNote = {
+              if (it.isChecked) {
+                Toast.makeText(
+                  context,
+                  R.string.not_update_checked_note,
+                  Toast.LENGTH_SHORT,
+                ).show()
+                return@ItemsNote
+              }
+              noteUpdateDialog.value = it
+              onOpenDialog(true)
+            },
+            deleteNote = {
+              if (it.isChecked) {
+                Toast.makeText(
+                  context,
+                  R.string.not_removed_checked_note,
+                  Toast.LENGTH_SHORT,
+                ).show()
+                return@ItemsNote
+              }
+              noteDeleteDialog.value = it
+            },
+          )
+        }
+      },
+    )
   }
 
   if (openDialog) {
     DialogAddNote(
-      updateNoteDayName = noteUpdateDialog.value?.dayName,
-      updateNoteState = noteUpdateDialog.value?.state,
-      updateNoteName = noteUpdateDialog.value?.name,
-      updateNoteDescription = noteUpdateDialog.value?.description,
-      note = { name, state, description, dayName, timeInMileSecond ->
-        if (noteUpdateDialog.value != null) {
-          val note = noteUpdateDialog.value?.copy(
-            name = name,
-            description = description,
-            state = state,
-            timeInMileSecond = timeInMileSecond,
-          )
-          note?.let { onUpdateNote(note) }
-        } else {
-          val note = Note(
-            name = name,
-            description = description,
-            state = state,
-            timeInMileSecond = timeInMileSecond,
-            dayName = dayName,
-          )
-          onAddNote(note)
-        }
-      },
+      updateNote = noteUpdateDialog.value,
+      setNote = onAddNote,
       openDialog = {
         noteUpdateDialog.value = null
         onOpenDialog(it)
@@ -181,10 +160,10 @@ private fun NoteScreen(
 
 @Composable
 fun ItemsNote(
-  notes: List<Note>,
-  checkedNote: (Note) -> Unit,
-  updateNote: (Note) -> Unit,
-  deleteNote: (Note) -> Unit,
+  notes: PersistentList<NoteUiModel>,
+  checkedNote: (NoteUiModel) -> Unit,
+  updateNote: (NoteUiModel) -> Unit,
+  deleteNote: (NoteUiModel) -> Unit,
 ) {
   LazyColumn(
     modifier = Modifier
@@ -200,12 +179,10 @@ fun ItemsNote(
       itemContent = {
         ItemListNote(
           isChecked = it.isChecked,
-          stateNote = it.state,
+          priorityNote = it.state,
           descriptionNote = it.description,
           nameNote = it.name,
-          monthNumber = it.monthNumber ?: 0,
-          yearNumber = it.yearNumber ?: 0,
-          dayNumber = it.dayNumber ?: 0,
+          timeNote = it.timeNote ,
           onChecked = { checked ->
             checkedNote(it.copy(isChecked = checked))
           },

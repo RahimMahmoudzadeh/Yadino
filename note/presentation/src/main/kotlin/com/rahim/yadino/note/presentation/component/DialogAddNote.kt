@@ -1,4 +1,4 @@
-package com.rahim.yadino.designsystem.dialog
+package com.rahim.yadino.note.presentation.component
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +25,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -50,6 +49,10 @@ import com.rahim.yadino.designsystem.theme.CornflowerBlueDark
 import com.rahim.yadino.designsystem.theme.Mantis
 import com.rahim.yadino.designsystem.theme.Punch
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.note.presentation.model.NoteUiModel
+import com.rahim.yadino.note.presentation.model.PriorityNote
+import saman.zamani.persiandate.PersianDate
+import kotlin.random.Random
 
 const val maxName = 22
 const val maxExplanation = 40
@@ -58,18 +61,15 @@ const val maxExplanation = 40
 @Composable
 fun DialogAddNote(
   modifier: Modifier = Modifier,
-  updateNoteState: Int? = null,
-  updateNoteName: String? = null,
-  updateNoteDescription: String? = null,
-  updateNoteDayName: String? = null,
+  updateNote: NoteUiModel? = null,
   openDialog: (Boolean) -> Unit,
-  note: (name: String, state: Int, description: String, dayName: String, timeInMileSecond: Long) -> Unit,
+  setNote: (NoteUiModel) -> Unit,
 ) {
-  var state by remember { mutableIntStateOf(updateNoteState ?: 0) }
-  var nameNote by rememberSaveable { mutableStateOf(updateNoteName ?: "") }
-  var description by rememberSaveable { mutableStateOf(updateNoteDescription ?: "") }
-  var dayName by rememberSaveable { mutableStateOf(updateNoteDayName ?: "") }
 
+  var state by remember { mutableStateOf(updateNote?.state ?: PriorityNote.LOW_PRIORITY) }
+  var nameNote by rememberSaveable { mutableStateOf(updateNote?.name ?: "") }
+  var description by rememberSaveable { mutableStateOf(updateNote?.description ?: "") }
+  val persianDate = PersianDate()
   var isErrorName by remember { mutableStateOf(false) }
   var isErrorExplanation by remember { mutableStateOf(false) }
 
@@ -213,8 +213,8 @@ fun DialogAddNote(
                   selectedColor = Punch,
                   unselectedColor = Punch,
                 ),
-                selected = state == 2,
-                onClick = { state = 2 },
+                selected = state == PriorityNote.HIGH_PRIORITY,
+                onClick = { state = PriorityNote.HIGH_PRIORITY },
                 modifier = Modifier
                   .semantics {
                     contentDescription = "Localized Description"
@@ -230,14 +230,14 @@ fun DialogAddNote(
                 color = CornflowerBlueDark,
                 style = MaterialTheme.typography.bodyMedium,
 
-              )
+                )
               RadioButton(
                 colors = RadioButtonDefaults.colors(
                   selectedColor = CornflowerBlueDark,
                   unselectedColor = CornflowerBlueDark,
                 ),
-                selected = state == 1,
-                onClick = { state = 1 },
+                selected = state == PriorityNote.NORMAL,
+                onClick = { state = PriorityNote.NORMAL },
                 modifier = Modifier
                   .semantics {
                     contentDescription = "Localized Description"
@@ -254,14 +254,14 @@ fun DialogAddNote(
                 color = Mantis,
                 style = MaterialTheme.typography.bodyMedium,
 
-              )
+                )
               RadioButton(
                 colors = RadioButtonDefaults.colors(
                   selectedColor = Mantis,
                   unselectedColor = Mantis,
                 ),
-                selected = state == 0,
-                onClick = { state = 0 },
+                selected = state == PriorityNote.LOW_PRIORITY,
+                onClick = { state = PriorityNote.LOW_PRIORITY },
                 modifier = Modifier
                   .semantics {
                     contentDescription = "Localized Description"
@@ -290,13 +290,28 @@ fun DialogAddNote(
                 if (nameNote.isEmpty()) {
                   isErrorName = true
                 } else {
-                  note(nameNote, state, description, dayName, System.currentTimeMillis())
+                  setNote(
+                    NoteUiModel(
+                      id = updateNote?.id ?: Random.nextInt(),
+                      name = nameNote,
+                      description = description,
+                      state = state,
+                      isChecked = updateNote?.isChecked ?: false,
+                      timeCreate = System.currentTimeMillis().toString(),
+                      timeNote = updateNote?.timeNote ?: NoteUiModel.TimeNoteUiModel(
+                        monthNumber = persianDate.shMonth,
+                        dayNumber = persianDate.shDay,
+                        yearNumber = persianDate.shYear,
+                        dayName = persianDate.dayName(),
+                      ),
+                    ),
+                  )
                   openDialog(false)
                   nameNote = ""
                   description = ""
                   isErrorExplanation = false
                   isErrorName = false
-                  state = 0
+                  state = PriorityNote.LOW_PRIORITY
                 }
               },
             )
@@ -306,7 +321,7 @@ fun DialogAddNote(
               onClick = {
                 nameNote = ""
                 description = ""
-                state = 0
+                state = PriorityNote.LOW_PRIORITY
                 isErrorExplanation = false
                 isErrorName = false
                 openDialog(false)
@@ -334,6 +349,6 @@ fun DialogAddNote(
 fun DialogAddNoteWrapper() {
   DialogAddNote(
     openDialog = {},
-    note = { name: String, state: Int, description: String, dayName: String, timeInMileSecond: Long -> },
+    setNote = { note -> },
   )
 }

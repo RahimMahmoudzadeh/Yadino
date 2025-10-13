@@ -2,7 +2,7 @@ package com.rahim.yadino.note.presentation.mapper
 
 import com.rahim.yadino.note.domain.model.Note
 import com.rahim.yadino.note.presentation.model.NoteUiModel
-import com.rahim.yadino.note.presentation.model.StateNote
+import com.rahim.yadino.note.presentation.model.PriorityNote
 
 fun Note.toNoteUiModel(): NoteUiModel =
   NoteUiModel(
@@ -14,10 +14,10 @@ fun Note.toNoteUiModel(): NoteUiModel =
     timeCreate = this.timeInMileSecond.toString(),
   )
 
-fun checkState(state: Int): StateNote {
+fun checkState(state: Int): PriorityNote {
   return when (state) {
-    StateNote.HIGH_PRIORITY.state -> StateNote.HIGH_PRIORITY
-    StateNote.NORMAL.state -> StateNote.NORMAL
-    else -> StateNote.LOW_PRIORITY
+    PriorityNote.HIGH_PRIORITY.state -> PriorityNote.HIGH_PRIORITY
+    PriorityNote.NORMAL.state -> PriorityNote.NORMAL
+    else -> PriorityNote.LOW_PRIORITY
   }
 }

@@ -13,9 +13,9 @@ interface NoteContract : UnidirectionalViewModel<NoteContract.NoteEvent, NoteCon
   @Immutable
   sealed class NoteEvent() {
     data class SearchNote(val searchText: String) : NoteEvent()
-    data class DeleteNote(val deleteNote: Note) : NoteEvent()
-    data class UpdateNote(val updateNote: Note) : NoteEvent()
-    data class AddNote(val addNote: Note) : NoteEvent()
+    data class DeleteNote(val deleteNote: NoteUiModel) : NoteEvent()
+    data class UpdateNote(val updateNote: NoteUiModel) : NoteEvent()
+    data class AddNote(val addNote: NoteUiModel) : NoteEvent()
     data object GetNotes : NoteEvent()
   }
 

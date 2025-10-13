@@ -1,4 +1,4 @@
-package com.rahim.yadino.designsystem.component
+package com.rahim.yadino.note.presentation.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -23,12 +23,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.CornflowerBlueDark
 import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.theme.Mantis
 import com.rahim.yadino.designsystem.theme.Porcelain
 import com.rahim.yadino.designsystem.theme.Punch
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.note.presentation.model.NoteUiModel
+import com.rahim.yadino.note.presentation.model.PriorityNote
 import com.rahim.yadino.persianLocate
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
@@ -39,17 +42,15 @@ fun ItemListNote(
   modifier: Modifier = Modifier,
   onChecked: (Boolean) -> Unit,
   isChecked: Boolean,
-  stateNote: Int,
+  priorityNote: PriorityNote,
   nameNote: String,
   descriptionNote: String,
-  monthNumber: Int,
-  yearNumber: Int,
-  dayNumber: Int,
+  timeNote: NoteUiModel.TimeNoteUiModel,
   openDialogEdit: () -> Unit,
   openDialogDelete: () -> Unit,
 ) {
   val textUnderLine = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
-  val date = "$yearNumber/$monthNumber/$dayNumber"
+  val date = "${timeNote.yearNumber}/${timeNote.monthNumber}/${timeNote.dayNumber}"
   val delete = SwipeAction(
     icon = painterResource(id = R.drawable.delete),
     background = MaterialTheme.colorScheme.background,
@@ -81,7 +82,7 @@ fun ItemListNote(
       } else {
         BorderStroke(
           1.dp,
-          Brush.verticalGradient(gradientColors),
+          Brush.Companion.verticalGradient(gradientColors),
         )
       },
       onClick = {
@@ -111,7 +112,7 @@ fun ItemListNote(
         Column(modifier = Modifier.padding(top = 12.dp)) {
           Text(
             modifier = Modifier.align(Alignment.End),
-            color = if (stateNote == 0) Mantis else if (stateNote == 1) CornflowerBlueDark else Punch,
+            color = if (priorityNote == PriorityNote.HIGH_PRIORITY) Mantis else if (priorityNote == PriorityNote.NORMAL) CornflowerBlueDark else Punch,
             text = nameNote,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
