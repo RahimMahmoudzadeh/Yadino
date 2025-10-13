@@ -3,7 +3,6 @@ package com.rahim.yadino.note.domain.model
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class Note(
   val id: Int? = null,
   val name: String,
@@ -16,4 +15,4 @@ data class Note(
   val yearNumber: Int? = null,
   val isSample: Boolean = false,
   val timeInMileSecond: Long? = null,
-) : Parcelable
+)
