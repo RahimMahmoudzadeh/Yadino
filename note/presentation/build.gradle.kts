@@ -14,5 +14,6 @@ dependencies {
   }
 
   libs.run {
+    implementation(swipe)
   }
 }
