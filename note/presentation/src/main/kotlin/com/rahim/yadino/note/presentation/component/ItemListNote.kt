@@ -112,7 +112,7 @@ fun ItemListNote(
         Column(modifier = Modifier.padding(top = 12.dp)) {
           Text(
             modifier = Modifier.align(Alignment.End),
-            color = if (priorityNote == PriorityNote.HIGH_PRIORITY) Mantis else if (priorityNote == PriorityNote.NORMAL) CornflowerBlueDark else Punch,
+            color = if (priorityNote == PriorityNote.HIGH_PRIORITY) Punch  else if (priorityNote == PriorityNote.NORMAL) CornflowerBlueDark else Mantis,
             text = nameNote,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
