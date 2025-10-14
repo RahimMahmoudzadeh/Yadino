@@ -1,13 +1,13 @@
 package com.rahim.yadino.home.data.repoImpl
 
 import androidx.core.net.ParseException
-import com.rahim.home.domain.model.CurrentDateModel
-import com.rahim.home.domain.model.RoutineHomeModel
+import com.rahim.home.domain.model.CurrentDate
+import com.rahim.home.domain.model.Routine
 import com.rahim.home.domain.repo.HomeRepository
 import com.rahim.yadino.Constants
 import com.rahim.yadino.db.routine.dao.RoutineDao
 import com.rahim.yadino.home.data.mapper.toRoutineEntity
-import com.rahim.yadino.home.data.mapper.toRoutineHomeDomainLayer
+import com.rahim.yadino.home.data.mapper.toRoutine
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -27,12 +27,12 @@ class HomeRepositoryImpl @Inject constructor(
   private val currentTimeMonth = persianData.shMonth
   private val currentTimeYear = persianData.shYear
 
-  override suspend fun addRoutine(routineModel: RoutineHomeModel) {
+  override suspend fun addRoutine(routineModel: Routine) {
     sharedPreferencesRepository.setShowSampleRoutine(true)
     routineDao.addRoutine(routineModel.toRoutineEntity())
   }
 
-  override suspend fun checkEqualRoutine(routineModel: RoutineHomeModel): RoutineHomeModel? {
+  override suspend fun checkEqualRoutine(routineModel: Routine): Routine? {
     return routineDao.checkEqualRoutine(
       routineName = routineModel.name,
       routineExplanation = routineModel.explanation ?: "",
@@ -41,7 +41,7 @@ class HomeRepositoryImpl @Inject constructor(
       routineYearNumber = routineModel.yearNumber ?: 0,
       routineMonthNumber = routineModel.monthNumber ?: 0,
       routineTimeMilSecond = routineModel.timeInMillisecond ?: 0,
-    )?.toRoutineHomeDomainLayer()
+    )?.toRoutine()
   }
 
   override fun convertDateToMilSecond(year: Int?, month: Int?, day: Int?, hours: String?): Long {
@@ -84,28 +84,28 @@ class HomeRepositoryImpl @Inject constructor(
     return potentialId
   }
 
-  override fun getCurrentDate(): CurrentDateModel = CurrentDateModel(date = "$currentTimeYear/$currentTimeMonth/$currentTimeDay")
+  override fun getCurrentDate(): CurrentDate = CurrentDate(date = "$currentTimeYear/$currentTimeMonth/$currentTimeDay")
 
-  override suspend fun removeRoutine(routineModel: RoutineHomeModel) {
+  override suspend fun removeRoutine(routineModel: Routine) {
     sharedPreferencesRepository.setShowSampleRoutine(true)
     routineDao.removeRoutine(routineModel.toRoutineEntity())
   }
 
-  override suspend fun updateRoutine(routineModel: RoutineHomeModel) {
+  override suspend fun updateRoutine(routineModel: Routine) {
     sharedPreferencesRepository.setShowSampleRoutine(true)
     routineDao.addRoutine(routineModel.toRoutineEntity())
   }
 
-  override suspend fun getRoutine(id: Int): RoutineHomeModel = routineDao.getRoutine(id).toRoutineHomeDomainLayer()
-  override suspend fun checkedRoutine(routineModel: RoutineHomeModel) {
+  override suspend fun getRoutine(id: Int): Routine = routineDao.getRoutine(id).toRoutine()
+  override suspend fun checkedRoutine(routineModel: Routine) {
     Timber.Forest.tag("routineViewModel").d("checkedRoutine")
     sharedPreferencesRepository.setShowSampleRoutine(true)
     routineDao.addRoutine(routineModel.toRoutineEntity())
   }
 
-  override fun getTodayRoutines(): Flow<List<RoutineHomeModel>> =
-    routineDao.getRoutinesByDate(monthNumber = currentTimeMonth, dayNumber = currentTimeDay, yearNumber = currentTimeYear).map { it.map { it.toRoutineHomeDomainLayer() } }
+  override fun getTodayRoutines(): Flow<List<Routine>> =
+    routineDao.getRoutinesByDate(monthNumber = currentTimeMonth, dayNumber = currentTimeDay, yearNumber = currentTimeYear).map { it.map { it.toRoutine() } }
 
-  override fun searchTodayRoutine(name: String): Flow<List<RoutineHomeModel>> =
-    routineDao.searchRoutine(nameRoutine = name, monthNumber = currentTimeMonth, dayNumber = currentTimeDay, yearNumber = currentTimeYear).map { it.map { it.toRoutineHomeDomainLayer() } }
+  override fun searchTodayRoutine(name: String): Flow<List<Routine>> =
+    routineDao.searchRoutine(nameRoutine = name, monthNumber = currentTimeMonth, dayNumber = currentTimeDay, yearNumber = currentTimeYear).map { it.map { it.toRoutine() } }
 }

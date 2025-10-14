@@ -1,10 +1,10 @@
 package com.rahim.yadino.home.presentation.mapper
 
-import com.rahim.home.domain.model.CurrentDateModel
-import com.rahim.home.domain.model.RoutineHomeModel
+import com.rahim.home.domain.model.CurrentDate
+import com.rahim.home.domain.model.Routine
 
-fun com.rahim.yadino.home.presentation.model.RoutineHomeModel.toRoutineHomeDomainLayer(): RoutineHomeModel =
-  RoutineHomeModel(
+fun com.rahim.yadino.home.presentation.model.RoutineHomeModel.toRoutineHomeDomainLayer(): Routine =
+  Routine(
     name = this.name,
     colorTask = this.colorTask,
     dayName = this.dayName,
@@ -21,7 +21,7 @@ fun com.rahim.yadino.home.presentation.model.RoutineHomeModel.toRoutineHomeDomai
   )
 
 
-fun RoutineHomeModel.toRoutineHomePresentationLayer(): com.rahim.yadino.home.presentation.model.RoutineHomeModel =
+fun Routine.toRoutineHomePresentationLayer(): com.rahim.yadino.home.presentation.model.RoutineHomeModel =
   com.rahim.yadino.home.presentation.model.RoutineHomeModel(
     name = this.name,
     colorTask = this.colorTask,
@@ -38,4 +38,4 @@ fun RoutineHomeModel.toRoutineHomePresentationLayer(): com.rahim.yadino.home.pre
     timeInMillisecond = this.timeInMillisecond,
   )
 
-fun CurrentDateModel.toCurrentDatePresentationLayer(): com.rahim.yadino.home.presentation.model.CurrentDateModel = com.rahim.yadino.home.presentation.model.CurrentDateModel(date = this.date)
+fun CurrentDate.toCurrentDatePresentationLayer(): com.rahim.yadino.home.presentation.model.CurrentDateModel = com.rahim.yadino.home.presentation.model.CurrentDateModel(date = this.date)

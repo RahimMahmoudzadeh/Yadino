@@ -1,6 +1,6 @@
 package com.rahim.home.domain.model
 
-data class RoutineHomeModel(
+data class Routine(
   val name: String,
   val colorTask: Int?,
   val dayName: String,

@@ -1,19 +1,19 @@
 package com.rahim.home.domain.repo
 
-import com.rahim.home.domain.model.CurrentDateModel
-import com.rahim.home.domain.model.RoutineHomeModel
+import com.rahim.home.domain.model.CurrentDate
+import com.rahim.home.domain.model.Routine
 import kotlinx.coroutines.flow.Flow
 
 interface HomeRepository {
-  suspend fun addRoutine(routineModel: RoutineHomeModel)
-  suspend fun removeRoutine(routineModel: RoutineHomeModel)
-  suspend fun updateRoutine(routineModel: RoutineHomeModel)
-  suspend fun checkedRoutine(routineModel: RoutineHomeModel)
-  suspend fun getRoutine(id: Int): RoutineHomeModel
-  suspend fun checkEqualRoutine(routineModel: RoutineHomeModel): RoutineHomeModel?
+  suspend fun addRoutine(routineModel: Routine)
+  suspend fun removeRoutine(routineModel: Routine)
+  suspend fun updateRoutine(routineModel: Routine)
+  suspend fun checkedRoutine(routineModel: Routine)
+  suspend fun getRoutine(id: Int): Routine
+  suspend fun checkEqualRoutine(routineModel: Routine): Routine?
   suspend fun getRoutineAlarmId(): Long
-  fun getCurrentDate(): CurrentDateModel
-  fun getTodayRoutines(): Flow<List<RoutineHomeModel>>
-  fun searchTodayRoutine(name: String): Flow<List<RoutineHomeModel>>
+  fun getCurrentDate(): CurrentDate
+  fun getTodayRoutines(): Flow<List<Routine>>
+  fun searchTodayRoutine(name: String): Flow<List<Routine>>
   fun convertDateToMilSecond(year: Int?, month: Int?, day: Int?, hours: String?): Long
 }

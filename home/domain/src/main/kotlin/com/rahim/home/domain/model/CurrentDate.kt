@@ -1,4 +1,4 @@
 package com.rahim.home.domain.model
 
 @JvmInline
-value class CurrentDateModel(val date: String)
+value class CurrentDate(val date: String)
