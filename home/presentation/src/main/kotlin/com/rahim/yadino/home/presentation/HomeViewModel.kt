@@ -13,9 +13,9 @@ import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.home.presentation.mapper.toCurrentDatePresentationLayer
-import com.rahim.yadino.home.presentation.mapper.toRoutineHomeDomainLayer
-import com.rahim.yadino.home.presentation.mapper.toRoutineHomePresentationLayer
-import com.rahim.yadino.home.presentation.model.RoutineHomeModel
+import com.rahim.yadino.home.presentation.mapper.toRoutine
+import com.rahim.yadino.home.presentation.mapper.toRoutineUiModel
+import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -110,7 +110,7 @@ class HomeViewModel @Inject constructor(
         _state.update {
           it.copy(
             routines = LoadableData.Loaded(
-              routines.map { it.toRoutineHomePresentationLayer() }.sortedBy {
+              routines.map { it.toRoutineUiModel() }.sortedBy {
                 it.timeInMillisecond
               }.toPersistentList(),
             ),
@@ -138,7 +138,7 @@ class HomeViewModel @Inject constructor(
         it.copy(
           routines = LoadableData.Loaded(
             searchItems.map {
-              it.toRoutineHomePresentationLayer()
+              it.toRoutineUiModel()
             }.sortedBy {
               it.timeInMillisecond
             }.toPersistentList(),
@@ -149,16 +149,16 @@ class HomeViewModel @Inject constructor(
     }
   }
 
-  private fun deleteRoutine(routineModel: RoutineHomeModel) {
+  private fun deleteRoutine(routineModel: RoutineUiModel) {
     viewModelScope.launch {
-      deleteReminderUseCase(routineModel.toRoutineHomeDomainLayer())
+      deleteReminderUseCase(routineModel.toRoutine())
     }
   }
 
-  private fun updateRoutine(routineModel: RoutineHomeModel) {
+  private fun updateRoutine(routineModel: RoutineUiModel) {
     Timber.tag("addRoutine").d("updateRoutine")
     viewModelScope.launch {
-      val response = updateReminderUseCase(routineModel.toRoutineHomeDomainLayer())
+      val response = updateReminderUseCase(routineModel.toRoutine())
       when (response) {
         is Resource.Error -> {
           _state.update { state ->
@@ -173,16 +173,16 @@ class HomeViewModel @Inject constructor(
     }
   }
 
-  private fun checkedRoutine(routineModel: RoutineHomeModel) {
+  private fun checkedRoutine(routineModel: RoutineUiModel) {
     viewModelScope.launch {
-      cancelReminderUseCase(routineModel.toRoutineHomeDomainLayer())
+      cancelReminderUseCase(routineModel.toRoutine())
     }
   }
 
-  private fun addRoutine(routineModel: RoutineHomeModel) {
+  private fun addRoutine(routineModel: RoutineUiModel) {
     viewModelScope.launch {
       Timber.tag("addRoutine").d("addRoutine")
-      val response = addReminderUseCase(routineModel.toRoutineHomeDomainLayer())
+      val response = addReminderUseCase(routineModel.toRoutine())
       when (response) {
         is Resource.Error -> {
           _state.update { state ->

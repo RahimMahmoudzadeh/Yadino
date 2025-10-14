@@ -47,7 +47,7 @@ import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.Onahau
 import com.rahim.yadino.designsystem.theme.Purple
 import com.rahim.yadino.designsystem.theme.PurpleGrey
-import com.rahim.yadino.home.presentation.model.RoutineHomeModel
+import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -67,9 +67,9 @@ const val MAX_EXPLANATION_LENGTH = 40
 @Composable
 fun DialogAddRoutine(
   modifier: Modifier = Modifier,
-  updateRoutine: RoutineHomeModel? = null,
+  updateRoutine: RoutineUiModel? = null,
   onCloseDialog: () -> Unit,
-  onRoutineCreated: (routine: RoutineHomeModel) -> Unit,
+  onRoutineCreated: (routine: RoutineUiModel) -> Unit,
 ) {
 
   var routineName by rememberSaveable { mutableStateOf(if (updateRoutine?.name.isNullOrBlank()) "" else updateRoutine.name) }
@@ -279,7 +279,7 @@ fun DialogAddRoutine(
                 if (routineName.isEmpty()) {
                   isErrorName = true
                 } else {
-                  val routine = RoutineHomeModel(
+                  val routine = RoutineUiModel(
                     id = updateRoutine?.id,
                     name = routineName,
                     explanation = routineExplanation,
