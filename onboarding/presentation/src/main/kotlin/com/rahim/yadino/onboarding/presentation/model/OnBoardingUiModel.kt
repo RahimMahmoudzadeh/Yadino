@@ -3,7 +3,7 @@ package com.rahim.yadino.onboarding.presentation.model
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
-data class OnBoardingScreenModel(
+data class OnBoardingUiModel(
   @StringRes
   val textWelcomeTop: Int?=null,
   @StringRes

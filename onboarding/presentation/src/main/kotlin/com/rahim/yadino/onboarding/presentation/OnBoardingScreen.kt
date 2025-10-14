@@ -45,7 +45,7 @@ import com.rahim.yadino.createOvalBottomPath
 import com.rahim.yadino.designsystem.component.GradientButton
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.theme.YadinoTheme
-import com.rahim.yadino.onboarding.presentation.model.OnBoardingScreenModel
+import com.rahim.yadino.onboarding.presentation.model.OnBoardingUiModel
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
@@ -73,10 +73,10 @@ internal fun OnBoardingRoute(
 
 @Composable
 private fun OnBoardingScreens(
-  modifier: Modifier = Modifier,
-  listItemWelcome: List<OnBoardingScreenModel>,
-  navigateToHome: () -> Unit,
-  onClickSkip: () -> Unit,
+    modifier: Modifier = Modifier,
+    listItemWelcome: List<OnBoardingUiModel>,
+    navigateToHome: () -> Unit,
+    onClickSkip: () -> Unit,
 ) {
   val scope = rememberCoroutineScope()
   val pagerState = rememberPagerState { MAX_PAGE_SIZE_ONBOARDING }
