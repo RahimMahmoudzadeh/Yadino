@@ -15,9 +15,9 @@ import com.yadino.routine.domain.useCase.DeleteReminderUseCase
 import com.yadino.routine.domain.useCase.GetRemindersUseCase
 import com.yadino.routine.domain.useCase.SearchRoutineUseCase
 import com.yadino.routine.domain.useCase.UpdateReminderUseCase
-import com.yadino.routine.presentation.mapper.toRoutineDomainLayer
-import com.yadino.routine.presentation.mapper.toRoutinePresentationLayer
-import com.yadino.routine.presentation.mapper.toTimeDateRoutinePresentationLayer
+import com.yadino.routine.presentation.mapper.toRoutine
+import com.yadino.routine.presentation.mapper.toRoutineUiModel
+import com.yadino.routine.presentation.mapper.toTimeDateUiModel
 import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -228,7 +228,7 @@ class RoutineScreenViewModel @Inject constructor(
       _state.update {
         it.copy(
           routines = LoadableData.Loaded(
-            routines.map { it.toRoutinePresentationLayer() }.sortedBy {
+            routines.map { it.toRoutineUiModel() }.sortedBy {
               it.timeHours?.replace(":", "")?.toInt()
             }.toPersistentList(),
           ),
@@ -247,7 +247,7 @@ class RoutineScreenViewModel @Inject constructor(
       _state.update {
         it.copy(
           routines = LoadableData.Loaded(
-            searchItems.map { it.toRoutinePresentationLayer() }.sortedBy {
+            searchItems.map { it.toRoutineUiModel() }.sortedBy {
               it.timeHours?.replace(":", "")?.toInt()
             }.toPersistentList(),
           ),
@@ -258,14 +258,14 @@ class RoutineScreenViewModel @Inject constructor(
 
   private fun deleteRoutine(routine: RoutineUiModel) {
     viewModelScope.launch {
-      deleteReminderUseCase(routine = routine.toRoutineDomainLayer())
+      deleteReminderUseCase(routine = routine.toRoutine())
     }
   }
 
   private fun updateRoutine(routine: RoutineUiModel) {
     viewModelScope.launch {
       Timber.tag("routineViewModel").d("GetRoutines")
-      when (val response = updateReminderUseCase(routine = routine.toRoutineDomainLayer())) {
+      when (val response = updateReminderUseCase(routine = routine.toRoutine())) {
         is Resource.Error -> {
           _state.update { state ->
             state.copy(
@@ -281,13 +281,13 @@ class RoutineScreenViewModel @Inject constructor(
 
   private fun checkedRoutine(routine: RoutineUiModel) {
     viewModelScope.launch {
-      cancelReminderUseCase(routine = routine.toRoutineDomainLayer())
+      cancelReminderUseCase(routine = routine.toRoutine())
     }
   }
 
   private fun addRoutine(routine: RoutineUiModel) {
     viewModelScope.launch {
-      when (val response = addReminderUseCase(routine.toRoutineDomainLayer())) {
+      when (val response = addReminderUseCase(routine.toRoutine())) {
         is Resource.Error -> {
           _state.update { state ->
             state.copy(
@@ -306,7 +306,7 @@ class RoutineScreenViewModel @Inject constructor(
       dateTimeRepository.getTimes().catch {}.collect { times ->
         _state.update {
           it.copy(
-            times = times.map { it.toTimeDateRoutinePresentationLayer() }.toPersistentList(),
+            times = times.map { it.toTimeDateUiModel() }.toPersistentList(),
           )
         }
         times.find { it.isChecked }?.let { currentTime ->
@@ -325,7 +325,7 @@ class RoutineScreenViewModel @Inject constructor(
         times[time] = times.first { it.dayNumber == DAY_MIN }.copy(isChecked = true)
       }
       _state.update {
-        it.copy(timesMonth = times.map { it.toTimeDateRoutinePresentationLayer() }.toPersistentList())
+        it.copy(timesMonth = times.map { it.toTimeDateUiModel() }.toPersistentList())
       }
     }
   }

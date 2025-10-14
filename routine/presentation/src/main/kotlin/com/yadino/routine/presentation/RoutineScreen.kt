@@ -63,7 +63,7 @@ import com.yadino.routine.presentation.component.DialogAddRoutine
 import com.yadino.routine.presentation.component.ListRoutines
 import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutineUiModel
-import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
+import com.yadino.routine.presentation.model.TimeDateUiModel
 import kotlinx.collections.immutable.PersistentList
 import timber.log.Timber
 
@@ -115,20 +115,20 @@ fun RoutineRoute(
 
 @Composable
 private fun RoutineScreen(
-  modifier: Modifier,
-  state: RoutineContract.State,
-  openDialogAddRoutine: Boolean,
-  onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,
-  showSearchBar: Boolean,
-  checkedRoutine: (RoutineUiModel) -> Unit,
-  dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
-  onUpdateRoutine: (RoutineUiModel) -> Unit,
-  onAddRoutine: (RoutineUiModel) -> Unit,
-  onDeleteRoutine: (RoutineUiModel) -> Unit,
-  onSearchText: (String) -> Unit,
-  monthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
-  dialogMonthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
-  weekChange: (IncreaseDecrease) -> Unit,
+    modifier: Modifier,
+    state: RoutineContract.State,
+    openDialogAddRoutine: Boolean,
+    onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,
+    showSearchBar: Boolean,
+    checkedRoutine: (RoutineUiModel) -> Unit,
+    dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
+    onUpdateRoutine: (RoutineUiModel) -> Unit,
+    onAddRoutine: (RoutineUiModel) -> Unit,
+    onDeleteRoutine: (RoutineUiModel) -> Unit,
+    onSearchText: (String) -> Unit,
+    monthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
+    dialogMonthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
+    weekChange: (IncreaseDecrease) -> Unit,
 ) {
   val context = LocalContext.current
 
@@ -320,14 +320,14 @@ private fun GetRoutines(
 
 @Composable
 private fun ItemTimeDate(
-  times: PersistentList<TimeDateRoutinePresentationLayer>,
-  yearChecked: Int,
-  monthChecked: Int,
-  indexDay: Int,
-  screenWidth: Int,
-  dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
-  monthChange: (IncreaseDecrease) -> Unit,
-  weekChange: (IncreaseDecrease) -> Unit,
+    times: PersistentList<TimeDateUiModel>,
+    yearChecked: Int,
+    monthChecked: Int,
+    indexDay: Int,
+    screenWidth: Int,
+    dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
+    monthChange: (IncreaseDecrease) -> Unit,
+    weekChange: (IncreaseDecrease) -> Unit,
 ) {
   val arrayString = stringArrayResource(id = com.rahim.yadino.library.designsystem.R.array.half_week_name)
 
@@ -429,11 +429,11 @@ private fun ItemTimeDate(
 
 @Composable
 fun ListTimes(
-  modifier: Modifier = Modifier,
-  times: PersistentList<TimeDateRoutinePresentationLayer>,
-  screenWidth: Int,
-  dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
-  indexDay: Int,
+    modifier: Modifier = Modifier,
+    times: PersistentList<TimeDateUiModel>,
+    screenWidth: Int,
+    dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
+    indexDay: Int,
 ) {
   val listStateDay = rememberLazyListState()
   val flingBehavior = rememberSnapFlingBehavior(lazyListState = listStateDay)
@@ -469,9 +469,9 @@ fun ListTimes(
 
 @Composable
 private fun DayItems(
-  timeDate: TimeDateRoutinePresentationLayer,
-  screenWidth: Int,
-  dayCheckedNumber: (timeDate: TimeDateRoutinePresentationLayer) -> Unit,
+    timeDate: TimeDateUiModel,
+    screenWidth: Int,
+    dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
 ) {
   Text(
     modifier = Modifier

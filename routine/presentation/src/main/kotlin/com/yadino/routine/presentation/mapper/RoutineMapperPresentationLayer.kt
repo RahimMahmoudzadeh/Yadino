@@ -3,9 +3,9 @@ package com.yadino.routine.presentation.mapper
 import com.rahim.yadino.core.timeDate.model.TimeDateModel
 import com.yadino.routine.domain.model.Routine
 import com.yadino.routine.presentation.model.RoutineUiModel
-import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
+import com.yadino.routine.presentation.model.TimeDateUiModel
 
-fun TimeDateModel.toTimeDateRoutinePresentationLayer(): TimeDateRoutinePresentationLayer = TimeDateRoutinePresentationLayer(
+fun TimeDateModel.toTimeDateUiModel(): TimeDateUiModel = TimeDateUiModel(
   dayNumber = this.dayNumber,
   haveTask = this.haveTask,
   isToday = this.isToday,
@@ -17,7 +17,7 @@ fun TimeDateModel.toTimeDateRoutinePresentationLayer(): TimeDateRoutinePresentat
   versionNumber = this.versionNumber,
 )
 
-fun Routine.toRoutinePresentationLayer(): RoutineUiModel =
+fun Routine.toRoutineUiModel(): RoutineUiModel =
   RoutineUiModel(
     name = this.name,
     colorTask = this.colorTask,
@@ -34,7 +34,7 @@ fun Routine.toRoutinePresentationLayer(): RoutineUiModel =
     timeInMillisecond = this.timeInMillisecond,
   )
 
-fun RoutineUiModel.toRoutineDomainLayer(): Routine =
+fun RoutineUiModel.toRoutine(): Routine =
   Routine(
     name = this.name,
     colorTask = this.colorTask,

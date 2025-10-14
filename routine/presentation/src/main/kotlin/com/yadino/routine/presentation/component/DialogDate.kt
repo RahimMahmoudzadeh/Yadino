@@ -51,7 +51,7 @@ import com.rahim.yadino.designsystem.theme.YadinoTheme
 import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
-import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
+import com.yadino.routine.presentation.model.TimeDateUiModel
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 
@@ -59,7 +59,7 @@ import kotlinx.collections.immutable.toPersistentList
 @Composable
 fun DialogChoseDate(
   modifier: Modifier = Modifier,
-  times: PersistentList<TimeDateRoutinePresentationLayer>,
+  times: PersistentList<TimeDateUiModel>,
   yearNumber: Int,
   monthNumber: Int,
   dayNumber: Int,
@@ -234,10 +234,10 @@ fun DialogChoseDate(
 @Composable
 @Preview(device = Devices.PIXEL_4)
 fun DialogChoseDateWrapperLight() {
-  val times = ArrayList<TimeDateRoutinePresentationLayer>()
+  val times = ArrayList<TimeDateUiModel>()
   for (i in 1..31) {
     times.add(
-      TimeDateRoutinePresentationLayer(
+      TimeDateUiModel(
         dayNumber = i,
         nameDay = if (i == 7 || i == 14 || i == 21 || i == 28) "ج" else "ش",
         haveTask = false,
@@ -266,10 +266,10 @@ fun DialogChoseDateWrapperLight() {
 @Composable
 @Preview(device = Devices.PIXEL_4, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun DialogChoseDateWrapperDark() {
-  val times = ArrayList<TimeDateRoutinePresentationLayer>()
+  val times = ArrayList<TimeDateUiModel>()
   for (i in 1..31) {
     times.add(
-      TimeDateRoutinePresentationLayer(
+      TimeDateUiModel(
         dayNumber = i,
         nameDay = if (i == 7 || i == 14 || i == 21 || i == 28) "ج" else "ش",
         haveTask = false,

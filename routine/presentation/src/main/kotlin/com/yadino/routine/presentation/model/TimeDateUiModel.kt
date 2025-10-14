@@ -1,6 +1,6 @@
 package com.yadino.routine.presentation.model
 
-data class TimeDateRoutinePresentationLayer(
+data class TimeDateUiModel(
   val dayNumber: Int,
   val haveTask: Boolean,
   val isToday: Boolean = false,

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rahim.yadino.base.LoadableData
 import com.yadino.routine.domain.useCase.GetAllRoutineUseCase
-import com.yadino.routine.presentation.mapper.toRoutinePresentationLayer
+import com.yadino.routine.presentation.mapper.toRoutineUiModel
 import com.yadino.routine.presentation.model.IncompleteOrCompletedRoutinesUiModel
 import com.yadino.routine.presentation.model.RoutineUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,7 +40,7 @@ class HistoryViewModel @Inject constructor(
           incompleteOrCompletedRoutinesUiModel = LoadableData.Loading,
         )
       }
-      val routines = getRoutineUseCase().map { it.toRoutinePresentationLayer() }
+      val routines = getRoutineUseCase().map { it.toRoutineUiModel() }
       val (completedRoutine, incompleteRoutine) = if (routines.isNotEmpty()) {
         routines.partition { sort -> sort.isChecked }
       } else {

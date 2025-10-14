@@ -7,7 +7,7 @@ import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutineUiModel
-import com.yadino.routine.presentation.model.TimeDateRoutinePresentationLayer
+import com.yadino.routine.presentation.model.TimeDateUiModel
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -19,7 +19,7 @@ interface RoutineContract : UnidirectionalViewModel<RoutineContract.Event, Routi
     data class UpdateRoutine(val routine: RoutineUiModel) : Event()
     data class DeleteRoutine(val routine: RoutineUiModel) : Event()
     data class SearchRoutineByName(val routineName: String) : Event()
-    data class GetRoutines(val timeDate: TimeDateRoutinePresentationLayer) : Event()
+    data class GetRoutines(val timeDate: TimeDateUiModel) : Event()
     data class WeekChange(val increaseDecrease: IncreaseDecrease) : Event()
     data class MonthChange(val yearNumber: Int, val monthNumber: Int, val increaseDecrease: IncreaseDecrease) : Event()
     data class DialogMonthChange(val yearNumber: Int, val monthNumber: Int, val increaseDecrease: IncreaseDecrease) : Event()
@@ -28,13 +28,13 @@ interface RoutineContract : UnidirectionalViewModel<RoutineContract.Event, Routi
 
   @Stable
   data class State(
-    val routines: LoadableData<PersistentList<RoutineUiModel>> = LoadableData.Initial,
-    val index: Int = 0,
-    val currentYear: Int = 0,
-    val currentMonth: Int = 0,
-    val currentDay: Int = 0,
-    val errorMessageCode: ErrorMessageCode? = null,
-    val times: PersistentList<TimeDateRoutinePresentationLayer> = persistentListOf(),
-    val timesMonth: PersistentList<TimeDateRoutinePresentationLayer> = persistentListOf(),
+      val routines: LoadableData<PersistentList<RoutineUiModel>> = LoadableData.Initial,
+      val index: Int = 0,
+      val currentYear: Int = 0,
+      val currentMonth: Int = 0,
+      val currentDay: Int = 0,
+      val errorMessageCode: ErrorMessageCode? = null,
+      val times: PersistentList<TimeDateUiModel> = persistentListOf(),
+      val timesMonth: PersistentList<TimeDateUiModel> = persistentListOf(),
   )
 }
