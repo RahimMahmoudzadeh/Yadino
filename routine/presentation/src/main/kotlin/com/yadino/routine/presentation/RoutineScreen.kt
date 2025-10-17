@@ -199,73 +199,63 @@ private fun RoutineScreen(
       },
     )
   }
-
-  ErrorDialog(
-    isOpen = routineDeleteDialog.value != null,
-    isClickOk = {
-      if (it) {
-        routineDeleteDialog.value?.let {
-          onDeleteRoutine(it)
-        }
-      }
-      routineDeleteDialog.value = null
-    },
-    message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.can_you_delete),
-    okMessage = stringResource(
-      id = com.rahim.yadino.library.designsystem.R.string.ok,
-    ),
-  )
-  if (openDialogAddRoutine) {
-    DialogAddRoutine(
-      onCloseDialog = {
-        onOpenDialogAddRoutine(false)
-        routineUpdateDialog.value = null
-      },
-      updateRoutine = routineUpdateDialog.value?.copy(
-        explanation = routineUpdateDialog.value?.explanation?.let {
-          if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
-            stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_right_sample)
-          } else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation) {
-            stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_left_sample)
-          } else {
-            it
+  when{
+    routineDeleteDialog.value != null ->{
+      ErrorDialog(
+        isClickOk = {
+          if (it) {
+            routineDeleteDialog.value?.let {
+              onDeleteRoutine(it)
+            }
           }
-        } ?: run {
-          routineUpdateDialog.value?.explanation ?: ""
+          routineDeleteDialog.value = null
         },
-      ),
-      onRoutineCreated = { routine ->
-        if (routineUpdateDialog.value != null) {
-          onUpdateRoutine(routine)
-        } else {
-          onAddRoutine(routine)
-        }
-        onOpenDialogAddRoutine(false)
-      },
-      currentNumberDay = state.currentDay,
-      currentNumberMonth = state.currentMonth,
-      currentNumberYear = state.currentYear,
-      timesMonth = state.timesMonth,
-      monthDecrease = { year, month ->
-        dialogMonthChange(year, month, IncreaseDecrease.DECREASE)
-      },
-      monthIncrease = { year, month ->
-        dialogMonthChange(year, month, IncreaseDecrease.INCREASE)
-      },
-    )
+        message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.can_you_delete),
+        okMessage = stringResource(
+          id = com.rahim.yadino.library.designsystem.R.string.ok,
+        ),
+      )
+    }
+    openDialogAddRoutine ->{
+      DialogAddRoutine(
+        onCloseDialog = {
+          onOpenDialogAddRoutine(false)
+          routineUpdateDialog.value = null
+        },
+        updateRoutine = routineUpdateDialog.value?.copy(
+          explanation = routineUpdateDialog.value?.explanation?.let {
+            if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
+              stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_right_sample)
+            } else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation) {
+              stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_left_sample)
+            } else {
+              it
+            }
+          } ?: run {
+            routineUpdateDialog.value?.explanation ?: ""
+          },
+        ),
+        onRoutineCreated = { routine ->
+          if (routineUpdateDialog.value != null) {
+            onUpdateRoutine(routine)
+          } else {
+            onAddRoutine(routine)
+          }
+          onOpenDialogAddRoutine(false)
+        },
+        currentNumberDay = state.currentDay,
+        currentNumberMonth = state.currentMonth,
+        currentNumberYear = state.currentYear,
+        timesMonth = state.timesMonth,
+        monthDecrease = { year, month ->
+          dialogMonthChange(year, month, IncreaseDecrease.DECREASE)
+        },
+        monthIncrease = { year, month ->
+          dialogMonthChange(year, month, IncreaseDecrease.INCREASE)
+        },
+      )
+    }
   }
-
-  ErrorDialog(
-    isOpen = errorClick,
-    message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.better_performance_access),
-    okMessage = stringResource(id = com.rahim.yadino.library.designsystem.R.string.setting),
-    isClickOk = {
-      if (it) {
-        goSettingPermission(context)
-      }
-      errorClick = false
-    },
-  )
 }
 
 @Composable
