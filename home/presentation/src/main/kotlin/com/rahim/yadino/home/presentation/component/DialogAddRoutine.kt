@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -94,7 +96,6 @@ fun DialogAddRoutine(
     updateRoutine?.monthNumber ?: persianData.shMonth,
     updateRoutine?.dayNumber ?: persianData.shDay,
   )
-
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
     BasicAlertDialog(
       properties = DialogProperties(
@@ -102,8 +103,9 @@ fun DialogAddRoutine(
         dismissOnClickOutside = false,
       ),
       modifier = modifier
-        .fillMaxWidth()
-        .padding(horizontal = space.space22)
+        .fillMaxWidth(0.9f)
+        .clip(shape = RoundedCornerShape(size.size8))
+        .background(color = MaterialTheme.colorScheme.background)
         .border(
           size.size2,
           brush = Brush.verticalGradient(gradientColors),
@@ -113,215 +115,209 @@ fun DialogAddRoutine(
         onCloseDialog()
       },
     ) {
-      Surface(
-        color = MaterialTheme.colorScheme.background,
-        shape = RoundedCornerShape(percent = 4),
+      Column(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(top = space.space16, end = space.space12, start = space.space12, bottom = space.space8),
       ) {
-        Column(
+        Text(
+          fontSize = fontSize.fontSize18,
+          fontWeight = FontWeight.Bold,
+          text = stringResource(id = R.string.creat_new_work),
+          modifier = Modifier.fillMaxWidth(),
+          textAlign = TextAlign.Center,
+          style = MaterialTheme.typography.bodyMedium.copy(
+            brush = Brush.verticalGradient(
+              gradientColors,
+            ),
+          ),
+        )
+        TextField(
+          modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth()
+            .padding(top = space.space18)
+            .height(size.size60)
+            .border(
+              width = size.size1,
+              brush = Brush.verticalGradient(gradientColors),
+              shape = RoundedCornerShape(size.size4),
+            ),
+          value = routineName,
+          onValueChange = {
+            isErrorName = it.length >= MAX_NAME_LENGTH
+            routineName = if (it.length <= MAX_NAME_LENGTH) it else routineName
+          },
+          placeholder = {
+            Text(
+              text = stringResource(id = R.string.name_hint_text_filed_routine),
+              color = MaterialTheme.colorScheme.primary,
+            )
+          },
+          colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.background,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
+            disabledIndicatorColor = MaterialTheme.colorScheme.background,
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            focusedTextColor = MaterialTheme.colorScheme.primary,
+            unfocusedTextColor = MaterialTheme.colorScheme.primary,
+          ),
+          textStyle = MaterialTheme.typography.bodyLarge,
+        )
+
+        if (isErrorName) {
+          Text(
+            modifier = Modifier.padding(start = space.space16),
+            text = if (routineName.isEmpty()) {
+              stringResource(id = R.string.emptyField)
+            } else {
+              stringResource(
+                id = R.string.length_textFiled_name_routine,
+              )
+            },
+            color = MaterialTheme.colorScheme.error,
+          )
+        }
+        TextField(
+          modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxWidth()
+            .padding(top = space.space18)
+            .height(size.size90)
+            .border(
+              width = size.size1,
+              brush = Brush.verticalGradient(gradientColors),
+              shape = RoundedCornerShape(size.size4),
+            ),
+          value = routineExplanation ?: "",
+          onValueChange = {
+            isErrorExplanation = it.length >= MAX_EXPLANATION_LENGTH
+            routineExplanation =
+              if (it.length <= MAX_EXPLANATION_LENGTH) it else routineExplanation
+          },
+          textStyle = MaterialTheme.typography.bodyMedium,
+          placeholder = {
+            Text(
+              text = stringResource(id = R.string.routine_explanation),
+              color = MaterialTheme.colorScheme.primary,
+            )
+          },
+          colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.background,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
+            disabledIndicatorColor = MaterialTheme.colorScheme.background,
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            focusedTextColor = MaterialTheme.colorScheme.primary,
+            unfocusedTextColor = MaterialTheme.colorScheme.primary,
+          ),
+        )
+        if (isErrorExplanation) {
+          Text(
+            modifier = Modifier.padding(start = space.space16),
+            text = stringResource(id = R.string.length_textFiled_explanation_routine),
+            color = MaterialTheme.colorScheme.error,
+          )
+        }
+        Row(
+          horizontalArrangement = Arrangement.SpaceBetween,
           modifier = Modifier
             .fillMaxWidth()
-            .padding(top = space.space16, end = space.space12, start = space.space12, bottom = space.space8),
+            .padding(
+              top = space.space10,
+              start = space.space20,
+            ),
         ) {
-          Text(
-            fontSize = fontSize.fontSize18,
-            fontWeight = FontWeight.Bold,
-            text = stringResource(id = R.string.creat_new_work),
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium.copy(
-              brush = Brush.verticalGradient(
-                gradientColors,
-              ),
-            ),
-          )
-          TextField(
-            modifier = Modifier
-              .background(MaterialTheme.colorScheme.background)
-              .fillMaxWidth()
-              .padding(top = space.space18)
-              .height(size.size60)
-              .border(
-                width = size.size1,
-                brush = Brush.verticalGradient(gradientColors),
-                shape = RoundedCornerShape(size.size4),
-              ),
-            value = routineName,
-            onValueChange = {
-              isErrorName = it.length >= MAX_NAME_LENGTH
-              routineName = if (it.length <= MAX_NAME_LENGTH) it else routineName
-            },
-            placeholder = {
-              Text(
-                text = stringResource(id = R.string.name_hint_text_filed_routine),
-                color = MaterialTheme.colorScheme.primary,
-              )
-            },
-            colors = TextFieldDefaults.colors(
-              focusedContainerColor = MaterialTheme.colorScheme.background,
-              focusedIndicatorColor = Color.Transparent,
-              unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
-              disabledIndicatorColor = MaterialTheme.colorScheme.background,
-              unfocusedContainerColor = MaterialTheme.colorScheme.background,
-              focusedTextColor = MaterialTheme.colorScheme.primary,
-              unfocusedTextColor = MaterialTheme.colorScheme.primary,
-            ),
-            textStyle = MaterialTheme.typography.bodyLarge,
-          )
-
-          if (isErrorName) {
+          Row(
+            verticalAlignment = Alignment.CenterVertically,
+          ) {
             Text(
-              modifier = Modifier.padding(start = space.space16),
-              text = if (routineName.isEmpty()) {
-                stringResource(id = R.string.emptyField)
-              } else {
-                stringResource(
-                  id = R.string.length_textFiled_name_routine,
-                )
-              },
-              color = MaterialTheme.colorScheme.error,
+              modifier = Modifier.padding(top = space.space14),
+              text = stringResource(id = R.string.set_alarms),
+              color = MaterialTheme.colorScheme.primary,
+              style = MaterialTheme.typography.bodyMedium,
+            )
+            Text(
+              modifier = Modifier.padding(top = space.space14, start = space.space4),
+              text = time?.persianLocate() ?: "",
+              color = MaterialTheme.colorScheme.primary,
+              fontWeight = FontWeight.SemiBold,
+              style = MaterialTheme.typography.bodyMedium,
             )
           }
-          TextField(
-            modifier = Modifier
-              .background(MaterialTheme.colorScheme.background)
-              .fillMaxWidth()
-              .padding(top = space.space18)
-              .height(size.size90)
-              .border(
-                width = size.size1,
-                brush = Brush.verticalGradient(gradientColors),
-                shape = RoundedCornerShape(size.size4),
-              ),
-            value = routineExplanation ?: "",
-            onValueChange = {
-              isErrorExplanation = it.length >= MAX_EXPLANATION_LENGTH
-              routineExplanation =
-                if (it.length <= MAX_EXPLANATION_LENGTH) it else routineExplanation
+          OutlinedButton(
+            border = BorderStroke(
+              size.size1,
+              Brush.horizontalGradient(gradientColors),
+            ),
+            onClick = {
+              alarmDialogState.show()
             },
+          ) {
+            Text(
+              text = stringResource(id = R.string.time_change),
+              style = MaterialTheme.typography.bodyMedium.copy(
+                brush = Brush.verticalGradient(
+                  gradientColors,
+                ),
+              ),
+            )
+          }
+        }
+        Spacer(modifier = Modifier.height(size.size22))
+        Row(
+          modifier = Modifier
+            .fillMaxWidth(1f)
+            .padding(space.space12),
+        ) {
+          DialogButtonBackground(
+            text = stringResource(id = R.string.confirmation),
+            gradient = Brush.verticalGradient(gradientColors),
+            modifier = Modifier
+              .fillMaxWidth(0.3f)
+              .height(size.size40),
             textStyle = MaterialTheme.typography.bodyMedium,
-            placeholder = {
-              Text(
-                text = stringResource(id = R.string.routine_explanation),
-                color = MaterialTheme.colorScheme.primary,
-              )
+            onClick = {
+              Timber.tag("tagNameRoutine").d(routineName.length.toString())
+              if (routineName.isEmpty()) {
+                isErrorName = true
+              } else {
+                val routine = RoutineUiModel(
+                  id = updateRoutine?.id,
+                  name = routineName,
+                  explanation = routineExplanation,
+                  timeHours = time,
+                  dayNumber = date.shDay,
+                  monthNumber = date.shMonth,
+                  yearNumber = date.shYear,
+                  dayName = date.dayName(),
+                  colorTask = null,
+                )
+                onRoutineCreated(routine)
+              }
             },
-            colors = TextFieldDefaults.colors(
-              focusedContainerColor = MaterialTheme.colorScheme.background,
-              focusedIndicatorColor = Color.Transparent,
-              unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
-              disabledIndicatorColor = MaterialTheme.colorScheme.background,
-              unfocusedContainerColor = MaterialTheme.colorScheme.background,
-              focusedTextColor = MaterialTheme.colorScheme.primary,
-              unfocusedTextColor = MaterialTheme.colorScheme.primary,
-            ),
           )
-          if (isErrorExplanation) {
+          Spacer(modifier = Modifier.width(size.size10))
+          TextButton(
+            onClick = {
+              onCloseDialog()
+            },
+          ) {
             Text(
-              modifier = Modifier.padding(start = space.space16),
-              text = stringResource(id = R.string.length_textFiled_explanation_routine),
-              color = MaterialTheme.colorScheme.error,
-            )
-          }
-          Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-              .fillMaxWidth()
-              .padding(
-                top = space.space10,
-                start = space.space20,
-              ),
-          ) {
-            Row(
-              verticalAlignment = Alignment.CenterVertically,
-            ) {
-              Text(
-                modifier = Modifier.padding(top = space.space14),
-                text = stringResource(id = R.string.set_alarms),
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyMedium,
-              )
-              Text(
-                modifier = Modifier.padding(top = space.space14, start = space.space4),
-                text = time?.persianLocate() ?: "",
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.SemiBold,
-                style = MaterialTheme.typography.bodyMedium,
-              )
-            }
-            OutlinedButton(
-              border = BorderStroke(
-                size.size1,
-                Brush.horizontalGradient(gradientColors),
-              ),
-              onClick = {
-                alarmDialogState.show()
-              },
-            ) {
-              Text(
-                text = stringResource(id = R.string.time_change),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                  brush = Brush.verticalGradient(
-                    gradientColors,
-                  ),
+              fontSize = fontSize.fontSize16,
+              text = stringResource(id = R.string.cancel),
+              style = MaterialTheme.typography.bodyMedium.copy(
+                brush = Brush.verticalGradient(
+                  gradientColors,
                 ),
-              )
-            }
-          }
-          Spacer(modifier = Modifier.height(size.size22))
-          Row(
-            modifier = Modifier
-              .fillMaxWidth(1f)
-              .padding(space.space12),
-          ) {
-            DialogButtonBackground(
-              text = stringResource(id = R.string.confirmation),
-              gradient = Brush.verticalGradient(gradientColors),
-              modifier = Modifier
-                .fillMaxWidth(0.3f)
-                .height(size.size40),
-              textStyle = MaterialTheme.typography.bodyMedium,
-              onClick = {
-                Timber.tag("tagNameRoutine").d(routineName.length.toString())
-                if (routineName.isEmpty()) {
-                  isErrorName = true
-                } else {
-                  val routine = RoutineUiModel(
-                    id = updateRoutine?.id,
-                    name = routineName,
-                    explanation = routineExplanation,
-                    timeHours = time,
-                    dayNumber = date.shDay,
-                    monthNumber = date.shMonth,
-                    yearNumber = date.shYear,
-                    dayName = date.dayName(),
-                    colorTask = null,
-                  )
-                  onRoutineCreated(routine)
-                }
-              },
+              ),
             )
-            Spacer(modifier = Modifier.width(size.size10))
-            TextButton(
-              onClick = {
-                onCloseDialog()
-              },
-            ) {
-              Text(
-                fontSize = fontSize.fontSize16,
-                text = stringResource(id = R.string.cancel),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                  brush = Brush.verticalGradient(
-                    gradientColors,
-                  ),
-                ),
-              )
-            }
           }
         }
       }
     }
   }
-
   ShowTimePicker(size = size, currentTime = time ?: "", dialogState = alarmDialogState) {
     time = it.toString()
   }
