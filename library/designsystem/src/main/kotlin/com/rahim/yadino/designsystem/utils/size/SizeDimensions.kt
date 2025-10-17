@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.dp
 @Immutable
 data class SizeDimensions(
     val size1: Dp = 1.dp,
+    val size2: Dp = 2.dp,
     val size4: Dp = 4.dp,
     val size6: Dp = 6.dp,
     val size8: Dp = 8.dp,
@@ -16,6 +17,7 @@ data class SizeDimensions(
     val size14: Dp = 14.dp,
     val size16: Dp = 16.dp,
     val size20: Dp = 20.dp,
+    val size22: Dp = 22.dp,
     val size24: Dp = 24.dp,
     val size28: Dp = 28.dp,
     val size32: Dp = 32.dp,
@@ -31,6 +33,7 @@ data class SizeDimensions(
     val size72: Dp = 72.dp,
     val size80: Dp = 80.dp,
     val size85: Dp = 85.dp,
+    val size90: Dp = 90.dp,
 )
 
 val LocalSize = compositionLocalOf { SizeDimensions() }

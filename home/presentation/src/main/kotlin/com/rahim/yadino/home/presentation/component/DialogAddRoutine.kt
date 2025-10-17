@@ -44,6 +44,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.designsystem.utils.size.LocalFontSize
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
+import com.rahim.yadino.designsystem.utils.size.SizeDimensions
 import com.rahim.yadino.designsystem.utils.theme.Onahau
 import com.rahim.yadino.designsystem.utils.theme.Purple
 import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
@@ -72,6 +76,10 @@ fun DialogAddRoutine(
   onRoutineCreated: (routine: RoutineUiModel) -> Unit,
 ) {
 
+  val size = LocalSize.current
+  val space = LocalSpacing.current
+  val fontSize = LocalFontSize.current
+
   var routineName by rememberSaveable { mutableStateOf(if (updateRoutine?.name.isNullOrBlank()) "" else updateRoutine.name) }
   var routineExplanation by rememberSaveable { mutableStateOf(if (updateRoutine?.explanation.isNullOrBlank()) "" else updateRoutine.explanation) }
   var time by rememberSaveable { mutableStateOf(if (updateRoutine?.timeHours.isNullOrBlank()) "12:00" else updateRoutine.timeHours) }
@@ -95,11 +103,11 @@ fun DialogAddRoutine(
       ),
       modifier = modifier
         .fillMaxWidth()
-        .padding(horizontal = 22.dp)
+        .padding(horizontal = space.space22)
         .border(
-          2.dp,
+          size.size2,
           brush = Brush.verticalGradient(gradientColors),
-          shape = RoundedCornerShape(8.dp),
+          shape = RoundedCornerShape(size.size8),
         ),
       onDismissRequest = {
         onCloseDialog()
@@ -112,10 +120,10 @@ fun DialogAddRoutine(
         Column(
           modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp, end = 12.dp, start = 12.dp, bottom = 8.dp),
+            .padding(top = space.space16, end = space.space12, start = space.space12, bottom = space.space8),
         ) {
           Text(
-            fontSize = 18.sp,
+            fontSize = fontSize.fontSize18,
             fontWeight = FontWeight.Bold,
             text = stringResource(id = R.string.creat_new_work),
             modifier = Modifier.fillMaxWidth(),
@@ -130,12 +138,12 @@ fun DialogAddRoutine(
             modifier = Modifier
               .background(MaterialTheme.colorScheme.background)
               .fillMaxWidth()
-              .padding(top = 18.dp)
-              .height(60.dp)
+              .padding(top = space.space18)
+              .height(size.size60)
               .border(
-                width = 1.dp,
+                width = size.size1,
                 brush = Brush.verticalGradient(gradientColors),
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(size.size4),
               ),
             value = routineName,
             onValueChange = {
@@ -162,7 +170,7 @@ fun DialogAddRoutine(
 
           if (isErrorName) {
             Text(
-              modifier = Modifier.padding(start = 16.dp),
+              modifier = Modifier.padding(start = space.space16),
               text = if (routineName.isEmpty()) {
                 stringResource(id = R.string.emptyField)
               } else {
@@ -177,12 +185,12 @@ fun DialogAddRoutine(
             modifier = Modifier
               .background(MaterialTheme.colorScheme.background)
               .fillMaxWidth()
-              .padding(top = 18.dp)
-              .height(90.dp)
+              .padding(top = space.space18)
+              .height(size.size90)
               .border(
-                width = 1.dp,
+                width = size.size1,
                 brush = Brush.verticalGradient(gradientColors),
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(size.size4),
               ),
             value = routineExplanation ?: "",
             onValueChange = {
@@ -209,7 +217,7 @@ fun DialogAddRoutine(
           )
           if (isErrorExplanation) {
             Text(
-              modifier = Modifier.padding(start = 16.dp),
+              modifier = Modifier.padding(start = space.space16),
               text = stringResource(id = R.string.length_textFiled_explanation_routine),
               color = MaterialTheme.colorScheme.error,
             )
@@ -219,21 +227,21 @@ fun DialogAddRoutine(
             modifier = Modifier
               .fillMaxWidth()
               .padding(
-                top = 10.dp,
-                start = 20.dp,
+                top = space.space10,
+                start = space.space20,
               ),
           ) {
             Row(
               verticalAlignment = Alignment.CenterVertically,
             ) {
               Text(
-                modifier = Modifier.padding(top = 14.dp),
+                modifier = Modifier.padding(top = space.space14),
                 text = stringResource(id = R.string.set_alarms),
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.bodyMedium,
               )
               Text(
-                modifier = Modifier.padding(top = 14.dp, start = 4.dp),
+                modifier = Modifier.padding(top = space.space14, start = space.space4),
                 text = time?.persianLocate() ?: "",
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.SemiBold,
@@ -242,7 +250,7 @@ fun DialogAddRoutine(
             }
             OutlinedButton(
               border = BorderStroke(
-                1.dp,
+                size.size1,
                 Brush.horizontalGradient(gradientColors),
               ),
               onClick = {
@@ -259,23 +267,21 @@ fun DialogAddRoutine(
               )
             }
           }
-          Spacer(modifier = Modifier.height(22.dp))
+          Spacer(modifier = Modifier.height(size.size22))
           Row(
             modifier = Modifier
               .fillMaxWidth(1f)
-              .padding(12.dp),
+              .padding(space.space12),
           ) {
             DialogButtonBackground(
               text = stringResource(id = R.string.confirmation),
               gradient = Brush.verticalGradient(gradientColors),
               modifier = Modifier
                 .fillMaxWidth(0.3f)
-                .height(40.dp),
-              textSize = 14.sp,
+                .height(size.size40),
               textStyle = MaterialTheme.typography.bodyMedium,
               onClick = {
                 Timber.tag("tagNameRoutine").d(routineName.length.toString())
-
                 if (routineName.isEmpty()) {
                   isErrorName = true
                 } else {
@@ -294,14 +300,14 @@ fun DialogAddRoutine(
                 }
               },
             )
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(size.size10))
             TextButton(
               onClick = {
                 onCloseDialog()
               },
             ) {
               Text(
-                fontSize = 16.sp,
+                fontSize = fontSize.fontSize16,
                 text = stringResource(id = R.string.cancel),
                 style = MaterialTheme.typography.bodyMedium.copy(
                   brush = Brush.verticalGradient(
@@ -316,7 +322,7 @@ fun DialogAddRoutine(
     }
   }
 
-  ShowTimePicker(time ?: "", alarmDialogState) {
+  ShowTimePicker(size = size, currentTime = time ?: "", dialogState = alarmDialogState) {
     time = it.toString()
   }
 }
@@ -324,13 +330,14 @@ fun DialogAddRoutine(
 @OptIn(ExperimentalTextApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ShowTimePicker(
+  size: SizeDimensions,
   currentTime: String,
   dialogState: MaterialDialogState,
   time: (LocalTime) -> Unit,
 ) {
   MaterialDialog(
     properties = DialogProperties(dismissOnClickOutside = false),
-    border = BorderStroke(2.dp, Brush.horizontalGradient(gradientColors)),
+    border = BorderStroke(size.size2, Brush.horizontalGradient(gradientColors)),
     backgroundColor = MaterialTheme.colorScheme.background,
     dialogState = dialogState,
     buttons = {
@@ -340,13 +347,11 @@ fun ShowTimePicker(
           brush = Brush.verticalGradient(
             gradientColors,
           ),
-          fontSize = 14.sp,
         ),
       )
       negativeButton(
         textStyle = TextStyle(
           color = MaterialTheme.colorScheme.primary,
-          fontSize = 14.sp,
         ),
         text = stringResource(id = R.string.cancel),
       )

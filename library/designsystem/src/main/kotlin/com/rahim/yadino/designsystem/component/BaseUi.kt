@@ -69,6 +69,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.shouldShowRationale
+import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.Periwinkle
 import com.rahim.yadino.designsystem.utils.theme.Purple
@@ -109,10 +110,10 @@ fun GradientButton(
 
 @Composable
 fun DialogButtonBackground(
+  modifier: Modifier = Modifier,
   text: String,
   gradient: Brush,
-  modifier: Modifier = Modifier,
-  textSize: TextUnit,
+  textSize: TextUnit = LocalFontSize.current.fontSize14,
   textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
   onClick: () -> Unit = { },
 ) {
@@ -291,7 +292,7 @@ fun GradientButtonPreview() {
 @Composable
 fun DialogButtonBackgroundWrapper() {
   DialogButtonBackground(
-    "انتخاب",
+    text = "انتخاب",
     gradient = Brush.horizontalGradient(gradientColors),
     modifier = Modifier
       .width(150.dp)

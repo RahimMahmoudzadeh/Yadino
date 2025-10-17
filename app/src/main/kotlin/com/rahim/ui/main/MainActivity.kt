@@ -58,6 +58,7 @@ import com.rahim.yadino.designsystem.component.TopBarCenterAlign
 import com.rahim.yadino.designsystem.component.goSettingPermission
 import com.rahim.yadino.designsystem.component.requestPermissionNotification
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
+import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.library.designsystem.R
