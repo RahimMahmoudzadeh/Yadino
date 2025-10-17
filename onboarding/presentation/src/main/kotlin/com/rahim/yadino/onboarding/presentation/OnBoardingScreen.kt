@@ -44,6 +44,11 @@ import com.rahim.yadino.base.use
 import com.rahim.yadino.createOvalBottomPath
 import com.rahim.yadino.designsystem.component.GradientButton
 import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.designsystem.utils.size.FontDimensions
+import com.rahim.yadino.designsystem.utils.size.LocalFontSize
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
+import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.onboarding.presentation.model.OnBoardingUiModel
 import kotlinx.coroutines.launch
@@ -73,16 +78,19 @@ internal fun OnBoardingRoute(
 
 @Composable
 private fun OnBoardingScreens(
-    modifier: Modifier = Modifier,
-    listItemWelcome: List<OnBoardingUiModel>,
-    navigateToHome: () -> Unit,
-    onClickSkip: () -> Unit,
+  modifier: Modifier = Modifier,
+  listItemWelcome: List<OnBoardingUiModel>,
+  navigateToHome: () -> Unit,
+  onClickSkip: () -> Unit,
 ) {
-  val scope = rememberCoroutineScope()
-  val pagerState = rememberPagerState { MAX_PAGE_SIZE_ONBOARDING }
-
   val configuration = LocalConfiguration.current
   val density = LocalDensity.current
+  val space = LocalSpacing.current
+  val size = LocalSize.current
+  val fontSize = LocalFontSize.current
+
+  val scope = rememberCoroutineScope()
+  val pagerState = rememberPagerState { MAX_PAGE_SIZE_ONBOARDING }
 
   val screenWidth by remember(configuration) { mutableIntStateOf(configuration.screenWidthDp) }
   val screenHeight by remember(configuration) { mutableIntStateOf(configuration.screenHeightDp) }
@@ -111,6 +119,8 @@ private fun OnBoardingScreens(
         imageRes = listItemWelcome[page].imageRes,
         ovalHeight = ovalHeight.dp,
         density = density,
+        fontSize = fontSize,
+        space = space,
       )
     }
     Column(
@@ -127,8 +137,10 @@ private fun OnBoardingScreens(
         text = stringResource(id = listItemWelcome[pagerState.currentPage].textButton),
         gradient = Brush.horizontalGradient(gradientColors),
         modifier = Modifier
-          .padding(end = 24.dp, start = 24.dp, bottom = 8.dp),
-        textSize = 18.sp,
+          .padding(end = space.space24, start = space.space24, bottom = space.space8),
+        textSize = fontSize.fontSize18,
+        size = size,
+        space = space,
         onClick = {
           scope.launch {
             if (pagerState.currentPage == MAX_PAGE_SIZE_ONBOARDING.minus(1)) {
@@ -143,7 +155,7 @@ private fun OnBoardingScreens(
       ) {
         Text(
           text = stringResource(R.string.skip),
-          color = MaterialTheme.colorScheme.onPrimaryContainer, fontSize = 14.sp,
+          color = MaterialTheme.colorScheme.onPrimaryContainer,
         )
       }
     }
@@ -158,6 +170,8 @@ fun WelcomePage(
   imageRes: Int,
   ovalHeight: Dp,
   density: Density,
+  fontSize: FontDimensions,
+  space: SpaceDimensions,
 ) {
   Column(modifier = modifier.fillMaxSize(), horizontalAlignment = CenterHorizontally) {
     val color = MaterialTheme.colorScheme.onSurface
@@ -175,7 +189,7 @@ fun WelcomePage(
     ) {
       Image(
         modifier = Modifier
-          .padding(top = 12.dp)
+          .padding(top = space.space12)
           .fillMaxSize(0.8f),
         painter = painterResource(id = imageRes),
         contentDescription = "welcomeImage",
@@ -189,15 +203,15 @@ fun WelcomePage(
         ),
         fontWeight = FontWeight.Bold,
       ),
-      fontSize = 40.sp,
-      modifier = Modifier.padding(top = 20.dp),
+      fontSize = fontSize.fontSize40,
+      modifier = Modifier.padding(top = space.space20),
     )
     Text(
       text = stringResource(id = textWelcomeBottom),
       fontSize = 24.sp,
       modifier = Modifier
         .fillMaxWidth()
-        .padding(top = 32.dp, start = 12.dp, end = 12.dp),
+        .padding(top = space.space32, start = space.space12, end = space.space12),
       textAlign = TextAlign.Center,
       style = TextStyle(
         color = MaterialTheme.colorScheme.primary,
@@ -215,6 +229,8 @@ private fun WelcomePreview1() {
       textWelcomeBottom = R.string.welcome_yadino,
       imageRes = R.drawable.welcome1,
       ovalHeight = 0.dp,
+      fontSize = LocalFontSize.current,
+      space = LocalSpacing.current,
       density = LocalDensity.current,
     )
   }
@@ -229,6 +245,8 @@ private fun WelcomePreview2() {
       textWelcomeBottom = 0,
       imageRes = R.drawable.welcome2,
       ovalHeight = 0.dp,
+      space = LocalSpacing.current,
+      fontSize = LocalFontSize.current,
       density = LocalDensity.current,
     )
   }
@@ -243,6 +261,8 @@ private fun WelcomePreview3() {
       textWelcomeBottom = 0,
       imageRes = R.drawable.welcome3,
       ovalHeight = 0.dp,
+      space = LocalSpacing.current,
+      fontSize = LocalFontSize.current,
       density = LocalDensity.current,
     )
   }
