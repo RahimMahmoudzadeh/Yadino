@@ -20,6 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.theme.Porcelain
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
@@ -36,17 +38,21 @@ fun AlarmHistoryCardItem(
   val textUnderLine = if (routineIsChecked) TextDecoration.LineThrough else TextDecoration.None
   val textAlpha = if (routineIsChecked) 0.6f else 1f
   val date = "$routineYearNumber/$routineMonthNumber/$routineDayNumber".persianLocate()
+
+  val space= LocalSpacing.current
+  val size= LocalSize.current
+
   Card(
     elevation = CardDefaults.elevatedCardElevation(4.dp),
     modifier = Modifier
       .fillMaxWidth()
-      .padding(horizontal = 6.dp, vertical = 4.dp),
+      .padding(horizontal = space.space6, vertical = space.space4),
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
     border = if (routineIsChecked) {
-      BorderStroke(1.dp, color = Porcelain)
+      BorderStroke(size.size1, color = Porcelain)
     } else {
       BorderStroke(
-        1.dp,
+        size.size1,
         Brush.verticalGradient(gradientColors),
       )
     },
@@ -54,7 +60,7 @@ fun AlarmHistoryCardItem(
     Row(
       modifier = Modifier
         .fillMaxWidth()
-        .padding(horizontal = 15.dp, vertical = 18.dp),
+        .padding(horizontal = space.space14, vertical = space.space18),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -67,7 +73,7 @@ fun AlarmHistoryCardItem(
         fontWeight = FontWeight.SemiBold,
         textDecoration = textUnderLine,
       )
-      Spacer(modifier = Modifier.width(8.dp))
+      Spacer(modifier = Modifier.width(size.size8))
       Text(
         text = routineName,
         color = MaterialTheme.colorScheme.primary.copy(textAlpha),
