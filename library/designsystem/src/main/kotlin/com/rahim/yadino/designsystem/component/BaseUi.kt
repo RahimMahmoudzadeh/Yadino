@@ -69,7 +69,12 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.shouldShowRationale
+import com.rahim.yadino.designsystem.utils.size.FontDimensions
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
+import com.rahim.yadino.designsystem.utils.size.SizeDimensions
+import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.Periwinkle
 import com.rahim.yadino.designsystem.utils.theme.Purple
@@ -86,7 +91,9 @@ fun GradientButton(
   gradient: Brush,
   modifier: Modifier = Modifier,
   textSize: TextUnit,
-  shape: Shape = RoundedCornerShape(16.dp),
+  size: SizeDimensions,
+  space: SpaceDimensions,
+  shape: Shape = RoundedCornerShape(size.size16),
   onClick: () -> Unit = { },
 ) {
   Button(
@@ -98,9 +105,9 @@ fun GradientButton(
   ) {
     Box(
       modifier = Modifier
-        .background(gradient)
-        .fillMaxWidth()
-        .padding(vertical = 12.dp),
+          .background(gradient)
+          .fillMaxWidth()
+          .padding(vertical = space.space12),
       contentAlignment = Alignment.Center,
     ) {
       Text(text = text, fontSize = textSize, color = Color.White)
@@ -113,6 +120,8 @@ fun DialogButtonBackground(
   modifier: Modifier = Modifier,
   text: String,
   gradient: Brush,
+  size: SizeDimensions,
+  space: SpaceDimensions,
   textSize: TextUnit = LocalFontSize.current.fontSize14,
   textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
   onClick: () -> Unit = { },
@@ -122,20 +131,20 @@ fun DialogButtonBackground(
     contentPadding = PaddingValues(),
     modifier = modifier,
     onClick = { onClick() },
-    shape = RoundedCornerShape(12),
+    shape = RoundedCornerShape(size.size12),
   ) {
     Box(
       modifier = Modifier
-        .background(gradient)
-        .padding(vertical = 10.dp)
-        .fillMaxWidth(),
+          .background(gradient)
+          .padding(vertical = space.space10)
+          .fillMaxWidth(),
       contentAlignment = Alignment.Center,
     ) {
       Text(
         text = text,
         fontSize = textSize,
         style = textStyle,
-        modifier = Modifier.padding(end = 4.dp, start = 4.dp),
+        modifier = Modifier.padding(horizontal = space.space4),
         color = Color.White,
       )
     }
@@ -144,9 +153,11 @@ fun DialogButtonBackground(
 
 @Composable
 fun DialogButtonBorder(
+  modifier: Modifier = Modifier,
+  space: SpaceDimensions,
+  size: SizeDimensions,
   text: String,
   gradient: Brush,
-  modifier: Modifier = Modifier,
   textSize: TextUnit,
   width: Float,
   height: Dp,
@@ -156,23 +167,23 @@ fun DialogButtonBorder(
     colors = ButtonDefaults.buttonColors(Color.Transparent),
     contentPadding = PaddingValues(),
     modifier = modifier
-      .fillMaxWidth(width)
-      .height(height),
+        .fillMaxWidth(width)
+        .height(height),
     onClick = { onClick() },
-    shape = RoundedCornerShape(12),
+    shape = RoundedCornerShape(size.size12),
   ) {
     Box(
       modifier = Modifier
-        .border(1.dp, brush = gradient, RoundedCornerShape(12))
-        .padding(vertical = 10.dp)
-        .fillMaxWidth(),
+          .border(size.size1, brush = gradient, RoundedCornerShape(size.size12))
+          .padding(vertical = space.space10)
+          .fillMaxWidth(),
       contentAlignment = Alignment.Center,
     ) {
       Text(
         text = text,
         fontSize = textSize,
         color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(end = 4.dp, start = 4.dp),
+        modifier = Modifier.padding(horizontal = space.space4),
       )
     }
   }
@@ -195,6 +206,7 @@ fun CircularProgressAnimated(isShow: Boolean) {
 @Composable
 fun TopBarCenterAlign(
   modifier: Modifier = Modifier,
+  size: SizeDimensions,
   title: String,
   openHistory: () -> Unit,
   isShowSearchIcon: Boolean,
@@ -206,7 +218,7 @@ fun TopBarCenterAlign(
 ) {
   CenterAlignedTopAppBar(
     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(MaterialTheme.colorScheme.onBackground),
-    modifier = modifier.shadow(elevation = 8.dp),
+    modifier = modifier.shadow(elevation = size.size8),
     title = {
       Text(
         textAlign = TextAlign.Center,
@@ -280,10 +292,12 @@ fun TopBarCenterAlign(
 fun GradientButtonPreview() {
   GradientButton(
     text = "شروع",
+    space = LocalSpacing.current,
+    size = LocalSize.current,
     gradient = Brush.horizontalGradient(gradientColors),
     modifier = Modifier
-      .width(150.dp)
-      .wrapContentHeight(),
+        .width(150.dp)
+        .wrapContentHeight(),
     textSize = 14.sp,
   )
 }
@@ -293,10 +307,12 @@ fun GradientButtonPreview() {
 fun DialogButtonBackgroundWrapper() {
   DialogButtonBackground(
     text = "انتخاب",
+    size = LocalSize.current,
+    space = LocalSpacing.current,
     gradient = Brush.horizontalGradient(gradientColors),
     modifier = Modifier
-      .width(150.dp)
-      .wrapContentHeight(),
+        .width(150.dp)
+        .wrapContentHeight(),
     textSize = 14.sp,
     textStyle = TextStyle(fontWeight = FontWeight.Bold),
     onClick = {},
@@ -361,15 +377,18 @@ fun ShowSearchBar(
 @Composable
 fun EmptyMessage(
   modifier: Modifier = Modifier,
+  size: SizeDimensions,
+  space: SpaceDimensions,
+  fontSize: FontDimensions,
   @StringRes messageEmpty: Int = R.string.not_work_for_day,
   @DrawableRes painter: Int = R.drawable.empty_list_home,
 ) {
   Image(
     modifier = modifier
-      .sizeIn(minHeight = 320.dp)
-      .fillMaxWidth()
-      .fillMaxHeight(0.8f)
-      .padding(10.dp),
+        .sizeIn(minHeight = size.size320)
+        .fillMaxWidth()
+        .fillMaxHeight(0.8f)
+        .padding(space.space10),
     alignment = Alignment.Center,
     painter = painterResource(id = painter),
     contentDescription = "empty list home",
@@ -377,10 +396,10 @@ fun EmptyMessage(
   Text(
     text = stringResource(id = messageEmpty),
     modifier = Modifier
-      .fillMaxWidth()
-      .padding(top = 22.dp),
+        .fillMaxWidth()
+        .padding(top = space.space22),
     textAlign = TextAlign.Center,
-    fontSize = 18.sp,
+    fontSize = fontSize.fontSize18,
     color = MaterialTheme.colorScheme.primary,
   )
 }
@@ -391,19 +410,22 @@ fun TimeItems(
   nameDay: String,
   isToday: Boolean,
   dayNumberChecked: Int,
+  size: SizeDimensions,
+  space: SpaceDimensions,
+  fontSize: FontDimensions,
   dayCheckedNumber: (day: Int) -> Unit,
 ) {
   if (dayNumber <= 0 || nameDay.isNullOrEmpty()) return
   if (isToday && dayNumber != dayNumberChecked) {
     Box(
       modifier = Modifier
-        .size(46.dp)
-        .padding(2.dp)
-        .border(
-          1.dp,
-          brush = Brush.verticalGradient(gradientColors),
-          shape = RoundedCornerShape(4.dp),
-        ),
+          .size(size.size46)
+          .padding(space.space2)
+          .border(
+              size.size1,
+              brush = Brush.verticalGradient(gradientColors),
+              shape = RoundedCornerShape(size.size4),
+          ),
       contentAlignment = Alignment.Center,
     ) {
       Text(
@@ -414,7 +436,7 @@ fun TimeItems(
         },
         text = dayNumber.toString().persianLocate(),
         textAlign = TextAlign.Center,
-        fontSize = 16.sp,
+        fontSize = fontSize.fontSize16,
         style = TextStyle(
           brush = Brush.verticalGradient(
             gradientColors,
@@ -425,12 +447,12 @@ fun TimeItems(
   } else if (nameDay == HalfWeekName.FRIDAY.nameDay && dayNumber != dayNumberChecked) {
     Box(
       modifier = Modifier
-        .size(46.dp)
-        .padding(2.dp)
-        .background(
-          color = Periwinkle,
-          shape = RoundedCornerShape(4.dp),
-        ),
+          .size(size.size46)
+          .padding(space.space2)
+          .background(
+              color = Periwinkle,
+              shape = RoundedCornerShape(size.size4),
+          ),
       contentAlignment = Alignment.Center,
     ) {
       Text(
@@ -441,37 +463,37 @@ fun TimeItems(
         },
         text = dayNumber.toString().persianLocate(),
         textAlign = TextAlign.Center,
-        fontSize = 16.sp,
+        fontSize = fontSize.fontSize16,
         color = MaterialTheme.colorScheme.surface,
       )
     }
   } else if (dayNumberChecked == dayNumber) {
     Box(
       modifier = Modifier
-        .size(46.dp)
-        .padding(2.dp)
-        .background(
-          brush = Brush.verticalGradient(gradientColors),
-          shape = RoundedCornerShape(4.dp),
-        ),
+        .size(size.size46)
+        .padding(space.space2)
+          .background(
+              brush = Brush.verticalGradient(gradientColors),
+              shape = RoundedCornerShape(size.size4),
+          ),
       contentAlignment = Alignment.Center,
     ) {
       Text(
         text = dayNumber.toString().persianLocate(),
         textAlign = TextAlign.Center,
-        fontSize = 16.sp,
+        fontSize = fontSize.fontSize16,
         color = Color.White,
       )
     }
   } else {
     Box(
       modifier = Modifier
-        .size(46.dp)
-        .padding(2.dp)
-        .background(
-          color = MaterialTheme.colorScheme.onTertiaryContainer,
-          shape = RoundedCornerShape(4.dp),
-        ),
+        .size(size.size46)
+        .padding(space.space2)
+          .background(
+              color = MaterialTheme.colorScheme.onTertiaryContainer,
+              shape = RoundedCornerShape(size.size4),
+          ),
       contentAlignment = Alignment.Center,
     ) {
       Text(
@@ -482,7 +504,7 @@ fun TimeItems(
         },
         text = dayNumber.toString().persianLocate(),
         textAlign = TextAlign.Center,
-        fontSize = 16.sp,
+        fontSize = fontSize.fontSize16,
         color = MaterialTheme.colorScheme.surface,
       )
     }
