@@ -5,8 +5,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import com.rahim.yadino.designsystem.utils.size.FontDimensions
+import com.rahim.yadino.designsystem.utils.size.LocalFontSize
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
+import com.rahim.yadino.designsystem.utils.size.SizeDimensions
+import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 
 private val DarkColorScheme = darkColorScheme(
   primary = Color.White,
@@ -68,10 +75,15 @@ fun YadinoTheme(
 //      WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
 //    }
   }
-
-  MaterialTheme(
-    colorScheme = colorScheme,
-    typography = Typography,
-    content = content,
-  )
+  CompositionLocalProvider(
+    LocalSpacing provides SpaceDimensions(),
+    LocalFontSize provides FontDimensions(),
+    LocalSize provides SizeDimensions(),
+  ) {
+    MaterialTheme(
+      colorScheme = colorScheme,
+      typography = Typography,
+      content = content,
+    )
+  }
 }
