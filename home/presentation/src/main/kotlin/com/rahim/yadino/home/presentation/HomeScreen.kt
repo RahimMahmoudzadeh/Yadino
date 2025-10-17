@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -141,49 +142,59 @@ private fun HomeScreen(
       },
     )
   }
-  ErrorDialog(
-    isOpen = routineModelDeleteDialog.value != null,
-    isClickOk = {
-      if (it) {
-        routineModelDeleteDialog.value?.let {
-          onDeleteRoutine(it)
-        }
-      }
-      routineModelDeleteDialog.value = null
-    },
-    message = stringResource(id = R.string.can_you_delete),
-    okMessage = stringResource(
-      id = R.string.ok,
-    ),
-  )
-  if (openDialog) {
-    DialogAddRoutine(
-      onCloseDialog = {
-        onOpenDialog(false)
-        routineModelUpdateDialog.value = null
-      },
-      onRoutineCreated = { routine ->
-        if (routineModelUpdateDialog.value != null) {
-          onUpdateRoutine(routine)
-        } else {
-          onAddRoutine(routine)
-        }
-        onOpenDialog(false)
-      },
-      updateRoutine = routineModelUpdateDialog.value?.copy(
-        explanation = routineModelUpdateDialog.value?.explanation?.let {
-          if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
-            stringResource(id = R.string.routine_right_sample)
-          } else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation) {
-            stringResource(id = R.string.routine_left_sample)
-          } else {
-            it
+  when {
+    routineModelDeleteDialog.value != null -> {
+      ErrorDialog(
+        isClickOk = {
+          if (it) {
+            routineModelDeleteDialog.value?.let {
+              onDeleteRoutine(it)
+            }
           }
-        } ?: run {
-          routineModelUpdateDialog.value?.explanation ?: ""
+          routineModelDeleteDialog.value = null
         },
-      ),
-    )
+        message = stringResource(id = R.string.can_you_delete),
+        okMessage = stringResource(
+          id = R.string.ok,
+        ),
+      )
+    }
+
+    openDialog -> {
+      DialogAddRoutine(
+        onCloseDialog = {
+          onOpenDialog(false)
+          routineModelUpdateDialog.value = null
+        },
+        onRoutineCreated = { routine ->
+          if (routineModelUpdateDialog.value != null) {
+            onUpdateRoutine(routine)
+          } else {
+            onAddRoutine(routine)
+          }
+          onOpenDialog(false)
+        },
+        updateRoutine = routineModelUpdateDialog.value?.copy(
+          explanation = routineModelUpdateDialog.value?.explanation?.let {
+            when (it) {
+              RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation -> {
+                stringResource(id = R.string.routine_right_sample)
+              }
+
+              RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation -> {
+                stringResource(id = R.string.routine_left_sample)
+              }
+
+              else -> {
+                it
+              }
+            }
+          } ?: run {
+            routineModelUpdateDialog.value?.explanation ?: ""
+          },
+        ),
+      )
+    }
   }
 }
 
