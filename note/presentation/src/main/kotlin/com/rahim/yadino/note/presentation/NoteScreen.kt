@@ -27,6 +27,10 @@ import com.rahim.yadino.note.presentation.component.ItemListNote
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.note.presentation.component.DialogAddNote
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
+import com.rahim.yadino.designsystem.utils.size.LocalFontSize
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
+import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import kotlinx.collections.immutable.PersistentList
 
@@ -76,7 +80,11 @@ private fun NoteScreen(
   val noteDeleteDialog = rememberSaveable { mutableStateOf<NoteUiModel?>(null) }
   val noteUpdateDialog = rememberSaveable { mutableStateOf<NoteUiModel?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
+
   val context = LocalContext.current
+  val size = LocalSize.current
+  val space = LocalSpacing.current
+  val fontSize = LocalFontSize.current
 
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -98,6 +106,9 @@ private fun NoteScreen(
           EmptyMessage(
             messageEmpty = if (searchText.isNotEmpty()) R.string.search_empty_note else R.string.not_note,
             painter = R.drawable.empty_note,
+            space = space,
+            size = size,
+            fontSize = fontSize,
           )
         } else {
           ItemsNote(
@@ -105,6 +116,7 @@ private fun NoteScreen(
             checkedNote = {
               onUpdateNote(it)
             },
+            spaceDimensions = space,
             updateNote = {
               if (it.isChecked) {
                 Toast.makeText(
@@ -167,6 +179,7 @@ private fun NoteScreen(
 @Composable
 fun ItemsNote(
   notes: PersistentList<NoteUiModel>,
+  spaceDimensions: SpaceDimensions,
   checkedNote: (NoteUiModel) -> Unit,
   updateNote: (NoteUiModel) -> Unit,
   deleteNote: (NoteUiModel) -> Unit,
@@ -175,10 +188,9 @@ fun ItemsNote(
     modifier = Modifier
       .fillMaxWidth()
       .padding(
-        end = 16.dp,
-        start = 16.dp,
+        horizontal = spaceDimensions.space16
       ),
-    contentPadding = PaddingValues(top = 25.dp),
+    contentPadding = PaddingValues(top = spaceDimensions.space24),
   ) {
     items(
       items = notes,
@@ -202,13 +214,4 @@ fun ItemsNote(
       },
     )
   }
-}
-
-@Composable
-fun ShowDialogDelete(
-  modifier: Modifier = Modifier,
-  isOpenDialog: Boolean,
-  click: (Boolean) -> Unit,
-) {
-
 }
