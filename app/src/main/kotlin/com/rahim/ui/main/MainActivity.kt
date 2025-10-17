@@ -282,17 +282,20 @@ fun YadinoApp(
         }
       }
     }
-    ErrorDialog(
-      isOpen = errorClick,
-      message = stringResource(id = R.string.better_performance_access),
-      okMessage = stringResource(id = R.string.setting),
-      isClickOk = {
-        if (it) {
-          goSettingPermission(context)
-        }
-        errorClick = false
-      },
-    )
+    when {
+      errorClick -> {
+        ErrorDialog(
+          message = stringResource(id = R.string.better_performance_access),
+          okMessage = stringResource(id = R.string.setting),
+          isClickOk = {
+            if (it) {
+              goSettingPermission(context)
+            }
+            errorClick = false
+          },
+        )
+      }
+    }
   }
 }
 
