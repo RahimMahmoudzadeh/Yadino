@@ -1,5 +1,6 @@
 package com.yadino.routine.presentation
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -52,6 +53,12 @@ import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
+import com.rahim.yadino.designsystem.utils.size.FontDimensions
+import com.rahim.yadino.designsystem.utils.size.LocalFontSize
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
+import com.rahim.yadino.designsystem.utils.size.SizeDimensions
+import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.font_medium
 import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.toStringResource
@@ -114,22 +121,26 @@ fun RoutineRoute(
 
 @Composable
 private fun RoutineScreen(
-    modifier: Modifier,
-    state: RoutineContract.State,
-    openDialogAddRoutine: Boolean,
-    onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,
-    showSearchBar: Boolean,
-    checkedRoutine: (RoutineUiModel) -> Unit,
-    dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
-    onUpdateRoutine: (RoutineUiModel) -> Unit,
-    onAddRoutine: (RoutineUiModel) -> Unit,
-    onDeleteRoutine: (RoutineUiModel) -> Unit,
-    onSearchText: (String) -> Unit,
-    monthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
-    dialogMonthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
-    weekChange: (IncreaseDecrease) -> Unit,
+  modifier: Modifier,
+  state: RoutineContract.State,
+  openDialogAddRoutine: Boolean,
+  onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,
+  showSearchBar: Boolean,
+  checkedRoutine: (RoutineUiModel) -> Unit,
+  dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
+  onUpdateRoutine: (RoutineUiModel) -> Unit,
+  onAddRoutine: (RoutineUiModel) -> Unit,
+  onDeleteRoutine: (RoutineUiModel) -> Unit,
+  onSearchText: (String) -> Unit,
+  monthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
+  dialogMonthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
+  weekChange: (IncreaseDecrease) -> Unit,
 ) {
   val context = LocalContext.current
+
+  val fontSize = LocalFontSize.current
+  val space = LocalSpacing.current
+  val size = LocalSize.current
 
   val routineDeleteDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
   val routineUpdateDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
@@ -165,9 +176,16 @@ private fun RoutineScreen(
         monthChange(state.currentYear, state.currentMonth, increaseDecrease)
       },
       weekChange = weekChange,
+      space = space,
+      size = size,
+      fontSize = fontSize,
     )
     GetRoutines(
+      space = space,
+      fontSize = fontSize,
+      size = size,
       state = state,
+      context = context,
       searchText = searchText,
       routineUpdateDialog = {
         if (it.isChecked) {
@@ -198,8 +216,8 @@ private fun RoutineScreen(
       },
     )
   }
-  when{
-    routineDeleteDialog.value != null ->{
+  when {
+    routineDeleteDialog.value != null -> {
       ErrorDialog(
         isClickOk = {
           if (it) {
@@ -215,7 +233,8 @@ private fun RoutineScreen(
         ),
       )
     }
-    openDialogAddRoutine ->{
+
+    openDialogAddRoutine -> {
       DialogAddRoutine(
         onCloseDialog = {
           onOpenDialogAddRoutine(false)
@@ -261,22 +280,31 @@ private fun RoutineScreen(
 private fun GetRoutines(
   state: RoutineContract.State,
   searchText: String,
+  context: Context,
+  size: SizeDimensions,
+  space: SpaceDimensions,
+  fontSize: FontDimensions,
   routineUpdateDialog: (RoutineUiModel) -> Unit,
   routineChecked: (RoutineUiModel) -> Unit,
   routineDeleteDialog: (RoutineUiModel) -> Unit,
 ) {
-  val context = LocalContext.current
   LoadableComponent(
     loadableData = state.routines,
     loaded = { routines ->
       if (routines.isEmpty()) {
         if (searchText.isNotEmpty()) {
           EmptyMessage(
+            space = space,
+            size = size,
+            fontSize = fontSize,
             messageEmpty = com.rahim.yadino.library.designsystem.R.string.search_empty_routine,
             painter = R.drawable.routine_empty,
           )
         } else {
           EmptyMessage(
+            space = space,
+            size = size,
+            fontSize = fontSize,
             messageEmpty = R.string.not_routine,
             painter = R.drawable.routine_empty,
           )
@@ -285,7 +313,7 @@ private fun GetRoutines(
         ListRoutines(
           modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp),
+            .padding(top = space.space16),
           routines = routines,
           checkedRoutine = {
             routineChecked(it)
@@ -309,19 +337,22 @@ private fun GetRoutines(
 
 @Composable
 private fun ItemTimeDate(
-    times: PersistentList<TimeDateUiModel>,
-    yearChecked: Int,
-    monthChecked: Int,
-    indexDay: Int,
-    screenWidth: Int,
-    dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
-    monthChange: (IncreaseDecrease) -> Unit,
-    weekChange: (IncreaseDecrease) -> Unit,
+  times: PersistentList<TimeDateUiModel>,
+  space: SpaceDimensions,
+  size: SizeDimensions,
+  fontSize: FontDimensions,
+  yearChecked: Int,
+  monthChecked: Int,
+  indexDay: Int,
+  screenWidth: Int,
+  dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
+  monthChange: (IncreaseDecrease) -> Unit,
+  weekChange: (IncreaseDecrease) -> Unit,
 ) {
   val arrayString = stringArrayResource(id = com.rahim.yadino.library.designsystem.R.array.half_week_name)
 
   Row(
-    modifier = Modifier.padding(top = 28.dp),
+    modifier = Modifier.padding(top = space.space28),
   ) {
     IconButton(
       onClick = {
@@ -336,7 +367,7 @@ private fun ItemTimeDate(
     }
     Text(
       modifier = Modifier
-        .padding(top = 12.dp)
+        .padding(top = space.space12)
         .fillMaxWidth(0.3f),
       text = "${yearChecked.toString().persianLocate()} ${monthChecked.calculateMonthName()}",
       color = MaterialTheme.colorScheme.primary,
@@ -357,18 +388,17 @@ private fun ItemTimeDate(
 
   Row(
     modifier = Modifier
-      .padding(top = 18.dp, end = 50.dp, start = 50.dp)
+      .padding(top = space.space18, end = space.space50, start = space.space50)
       .fillMaxWidth(),
     horizontalArrangement = Arrangement.SpaceBetween,
   ) {
     arrayString.reversed().forEachIndexed { index, nameDay ->
       Text(
         modifier = Modifier.padding(
-          start = if (index == 0) 13.dp else 0.dp,
-          end = if (index == 7) 12.dp else 0.dp,
-          top = if (index == 7) 3.dp else 0.dp,
+          start = if (index == 0) space.space13 else 0.dp,
+          end = if (index == 7) space.space12 else 0.dp,
+          top = if (index == 7) space.space3 else 0.dp,
         ),
-        fontSize = 14.sp,
         text = nameDay,
         color = MaterialTheme.colorScheme.primary,
       )
@@ -379,7 +409,7 @@ private fun ItemTimeDate(
     IconButton(
       modifier = Modifier
         .weight(1f)
-        .padding(top = 10.dp),
+        .padding(top = space.space10),
       onClick = {
         weekChange(IncreaseDecrease.INCREASE)
       },
@@ -393,16 +423,19 @@ private fun ItemTimeDate(
     ListTimes(
       modifier = Modifier
         .weight(8f)
-        .padding(top = 6.dp),
+        .padding(top = space.space8),
       times = times,
       screenWidth = screenWidth,
       dayCheckedNumber = dayCheckedNumber,
       indexDay = indexDay,
+      space = space,
+      fontSize = fontSize,
+      size = size,
     )
     IconButton(
       modifier = Modifier
         .weight(1f)
-        .padding(top = 10.dp),
+        .padding(top = space.space10),
       onClick = {
         weekChange(IncreaseDecrease.DECREASE)
       },
@@ -418,11 +451,14 @@ private fun ItemTimeDate(
 
 @Composable
 fun ListTimes(
-    modifier: Modifier = Modifier,
-    times: PersistentList<TimeDateUiModel>,
-    screenWidth: Int,
-    dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
-    indexDay: Int,
+  modifier: Modifier = Modifier,
+  times: PersistentList<TimeDateUiModel>,
+  screenWidth: Int,
+  dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
+  indexDay: Int,
+  fontSize: FontDimensions,
+  space: SpaceDimensions,
+  size: SizeDimensions,
 ) {
   val listStateDay = rememberLazyListState()
   val flingBehavior = rememberSnapFlingBehavior(lazyListState = listStateDay)
@@ -445,6 +481,9 @@ fun ListTimes(
         itemContent = {
           DayItems(
             it,
+            fontSize = fontSize,
+            space = space,
+            size = size,
             screenWidth = screenWidth,
             dayCheckedNumber = { timeDate ->
               dayCheckedNumber(timeDate)
@@ -458,15 +497,18 @@ fun ListTimes(
 
 @Composable
 private fun DayItems(
-    timeDate: TimeDateUiModel,
-    screenWidth: Int,
-    dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
+  timeDate: TimeDateUiModel,
+  screenWidth: Int,
+  size: SizeDimensions,
+  space: SpaceDimensions,
+  fontSize: FontDimensions,
+  dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
 ) {
   Text(
     modifier = Modifier
       .padding(
-        top = 4.dp,
-        start = if (timeDate.isChecked) if (screenWidth <= 420) 5.dp else 7.dp else 6.dp,
+        top = space.space4,
+        start = if (timeDate.isChecked) if (screenWidth <= 420) space.space5 else space.space7 else space.space6,
       )
       .clickable(
         onClick = {
@@ -477,7 +519,7 @@ private fun DayItems(
           }
         },
       )
-      .size(if (screenWidth <= 400) 36.dp else if (screenWidth in 400..420) 39.dp else 43.dp)
+      .size(if (screenWidth <= 400) size.size36 else if (screenWidth in 400..420) size.size39 else size.size43)
       .clip(CircleShape)
       .background(
         brush = if (timeDate.isChecked) {
@@ -494,13 +536,13 @@ private fun DayItems(
         },
       )
       .padding(
-        top = if (screenWidth <= 400) 8.dp else if (screenWidth in 400..420) 9.dp else 10.dp,
+        top = if (screenWidth <= 400) space.space8 else if (screenWidth in 400..420) space.space9 else space.space10,
       ),
     text = AnnotatedString(
       if (timeDate.dayNumber > 0) timeDate.dayNumber.toString().persianLocate() else "",
     ),
     style = TextStyle(
-      fontSize = if (screenWidth <= 420) 16.sp else 18.sp,
+      fontSize = if (screenWidth <= 420) fontSize.fontSize16 else fontSize.fontSize18,
       fontWeight = FontWeight.Bold,
       textAlign = TextAlign.Center,
       fontFamily = font_medium,
