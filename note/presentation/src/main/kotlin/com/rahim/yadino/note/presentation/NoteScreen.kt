@@ -134,27 +134,33 @@ private fun NoteScreen(
     )
   }
 
-  if (openDialog) {
-    DialogAddNote(
-      updateNote = noteUpdateDialog.value,
-      setNote = onAddNote,
-      openDialog = {
-        noteUpdateDialog.value = null
-        onOpenDialog(it)
-      },
-    )
-  }
+  when {
+    noteUpdateDialog.value != null -> {
+      ErrorDialog(
+        modifier,
+        isClickOk = {
+          noteDeleteDialog.value = null
+          if (it) {
+            onDelete(noteUpdateDialog.value!!)
+          }
+        },
+        message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.can_you_delete),
+        okMessage = stringResource(
+          id = com.rahim.yadino.library.designsystem.R.string.ok,
+        ),
+      )
+    }
 
-  noteDeleteDialog.value?.let { noteDelete ->
-    ShowDialogDelete(
-      click = {
-        noteDeleteDialog.value = null
-        if (it) {
-          onDelete(noteDelete)
-        }
-      },
-      isOpenDialog = noteDeleteDialog.value != null,
-    )
+    openDialog -> {
+      DialogAddNote(
+        updateNote = noteUpdateDialog.value,
+        setNote = onAddNote,
+        openDialog = {
+          noteUpdateDialog.value = null
+          onOpenDialog(it)
+        },
+      )
+    }
   }
 }
 
@@ -182,7 +188,7 @@ fun ItemsNote(
           priorityNote = it.state,
           descriptionNote = it.description,
           nameNote = it.name,
-          timeNote = it.timeNote ,
+          timeNote = it.timeNote,
           onChecked = { checked ->
             checkedNote(it.copy(isChecked = checked))
           },
@@ -204,15 +210,5 @@ fun ShowDialogDelete(
   isOpenDialog: Boolean,
   click: (Boolean) -> Unit,
 ) {
-  ErrorDialog(
-    modifier,
-    isOpenDialog,
-    isClickOk = {
-      click(it)
-    },
-    message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.can_you_delete),
-    okMessage = stringResource(
-      id = com.rahim.yadino.library.designsystem.R.string.ok,
-    ),
-  )
+
 }
