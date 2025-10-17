@@ -27,6 +27,10 @@ import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
+import com.rahim.yadino.designsystem.utils.size.FontDimensions
+import com.rahim.yadino.designsystem.utils.size.LocalFontSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
+import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.toStringResource
@@ -87,6 +91,9 @@ private fun HomeScreen(
   onSearchText: (searchText: String) -> Unit,
 ) {
   val context = LocalContext.current
+  val space = LocalSpacing.current
+  val fontSize = LocalFontSize.current
+
   val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
   val routineModelUpdateDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
@@ -115,6 +122,8 @@ private fun HomeScreen(
           ItemsHome(
             currentTime = homeState.currentDate,
             routineModels = routines,
+            space = space,
+            fontSize = fontSize,
             checkedRoutine = { checkedRoutine ->
               onCheckedRoutine(checkedRoutine)
             },
@@ -201,6 +210,8 @@ private fun HomeScreen(
 fun ItemsHome(
   currentTime: CurrentDateUiModel?,
   routineModels: PersistentList<RoutineUiModel>,
+  space: SpaceDimensions,
+  fontSize: FontDimensions,
   checkedRoutine: (RoutineUiModel) -> Unit,
   updateRoutine: (RoutineUiModel) -> Unit,
   deleteRoutine: (RoutineUiModel) -> Unit,
@@ -208,7 +219,7 @@ fun ItemsHome(
   Row(
     horizontalArrangement = Arrangement.SpaceBetween,
     modifier = Modifier
-      .padding(horizontal = 28.dp, vertical = 25.dp)
+      .padding(horizontal = space.space28, vertical = space.space24)
       .fillMaxWidth(),
   ) {
     currentTime?.date?.let { currentTime ->
@@ -220,7 +231,7 @@ fun ItemsHome(
     }
     Text(
       text = stringResource(id = com.rahim.yadino.home.presentation.R.string.list_work_day),
-      fontSize = 18.sp,
+      fontSize = fontSize.fontSize18,
       color = MaterialTheme.colorScheme.primary,
     )
   }
