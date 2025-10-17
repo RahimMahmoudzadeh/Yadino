@@ -19,11 +19,13 @@ data class SpaceDimensions(
     val space22: Dp = 22.dp,
     val space24: Dp = 24.dp,
     val space28: Dp = 28.dp,
+    val space30: Dp = 30.dp,
     val space32: Dp = 32.dp,
     val space36: Dp = 36.dp,
     val space40: Dp = 40.dp,
     val space44: Dp = 44.dp,
     val space48: Dp = 48.dp,
+    val space50: Dp = 50.dp,
     val space52: Dp = 52.dp,
     val space56: Dp = 56.dp,
 )

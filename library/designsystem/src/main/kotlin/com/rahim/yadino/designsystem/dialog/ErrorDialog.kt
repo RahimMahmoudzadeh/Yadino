@@ -27,6 +27,9 @@ import androidx.compose.ui.window.DialogProperties
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.DialogButtonBorder
 import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.designsystem.utils.size.LocalFontSize
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.library.designsystem.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,6 +40,10 @@ fun ErrorDialog(
   okMessage: String,
   isClickOk: (Boolean) -> Unit,
 ) {
+  val space = LocalSpacing.current
+  val size = LocalSize.current
+  val fontSize = LocalFontSize.current
+
   BasicAlertDialog(
     properties = DialogProperties(
       usePlatformDefaultWidth = false,
@@ -44,26 +51,26 @@ fun ErrorDialog(
     ),
     modifier = modifier
       .fillMaxWidth()
-      .padding(horizontal = 22.dp)
+      .padding(horizontal = space.space22)
       .border(
         1.dp,
         brush = Brush.verticalGradient(gradientColors),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(space.space8),
       ),
     onDismissRequest = { isClickOk(false) },
   ) {
     Column(
       modifier = Modifier
         .fillMaxWidth()
-        .clip(RoundedCornerShape(8.dp))
+        .clip(RoundedCornerShape(space.space8))
         .background(color = MaterialTheme.colorScheme.background),
       verticalArrangement = Arrangement.Center,
     ) {
       Text(
-        fontSize = 18.sp,
+        fontSize = fontSize.fontSize18,
         modifier = Modifier
           .fillMaxWidth()
-          .padding(top = 30.dp, end = 50.dp, start = 50.dp),
+          .padding(top = space.space30, end = space.space50, start = space.space50),
         text = message,
         textAlign = TextAlign.Center,
         color = MaterialTheme.colorScheme.primary,
@@ -73,17 +80,18 @@ fun ErrorDialog(
         modifier = Modifier
           .fillMaxWidth()
           .padding(
-            top = 30.dp,
-            bottom = 30.dp,
+            vertical = space.space30,
           ),
       ) {
         DialogButtonBorder(
           text = stringResource(id = R.string.no),
           gradient = Brush.verticalGradient(gradientColors),
           modifier = Modifier,
-          textSize = 14.sp,
+          textSize = fontSize.fontSize14,
           width = 0.22f,
-          40.dp,
+          space = space,
+          size = size,
+          height = size.size40,
           onClick = {
             isClickOk(false)
           },
@@ -93,9 +101,11 @@ fun ErrorDialog(
           gradient = Brush.verticalGradient(gradientColors),
           modifier = Modifier
             .fillMaxWidth(0.3f)
-            .height(40.dp)
-            .padding(start = 16.dp),
+            .height(size.size40)
+            .padding(start = space.space16),
           textSize = 14.sp,
+          size = size,
+          space = space,
           onClick = {
             isClickOk(true)
           },

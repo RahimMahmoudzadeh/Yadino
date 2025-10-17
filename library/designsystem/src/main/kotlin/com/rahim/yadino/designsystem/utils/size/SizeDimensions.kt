@@ -24,6 +24,7 @@ data class SizeDimensions(
     val size36: Dp = 36.dp,
     val size40: Dp = 40.dp,
     val size44: Dp = 44.dp,
+    val size46: Dp = 46.dp,
     val size48: Dp = 48.dp,
     val size52: Dp = 52.dp,
     val size56: Dp = 56.dp,
@@ -34,6 +35,7 @@ data class SizeDimensions(
     val size80: Dp = 80.dp,
     val size85: Dp = 85.dp,
     val size90: Dp = 90.dp,
+    val size320: Dp = 320.dp,
 )
 
 val LocalSize = compositionLocalOf { SizeDimensions() }
