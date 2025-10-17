@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
@@ -70,10 +69,10 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.shouldShowRationale
-import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
-import com.rahim.yadino.designsystem.theme.Periwinkle
-import com.rahim.yadino.designsystem.theme.Purple
-import com.rahim.yadino.designsystem.theme.PurpleGrey
+import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
+import com.rahim.yadino.designsystem.utils.theme.Periwinkle
+import com.rahim.yadino.designsystem.utils.theme.Purple
+import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
 import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate

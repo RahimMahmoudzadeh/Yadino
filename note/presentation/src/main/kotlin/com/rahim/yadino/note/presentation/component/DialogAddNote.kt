@@ -45,9 +45,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
-import com.rahim.yadino.designsystem.theme.CornflowerBlueDark
-import com.rahim.yadino.designsystem.theme.Mantis
-import com.rahim.yadino.designsystem.theme.Punch
+import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueDark
+import com.rahim.yadino.designsystem.utils.theme.Mantis
+import com.rahim.yadino.designsystem.utils.theme.Punch
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.model.PriorityNote

@@ -1,8 +1,6 @@
 package com.rahim.ui.main
 
 import android.Manifest
-import android.app.Activity
-import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.Window
@@ -55,14 +53,13 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.BuildConfig
 import com.rahim.data.distributionActions.StateOfClickItemDrawable
 import com.rahim.navigation.NavigationComponent
-import com.rahim.ui.main.MainContract
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
 import com.rahim.yadino.designsystem.component.goSettingPermission
 import com.rahim.yadino.designsystem.component.requestPermissionNotification
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
-import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
-import com.rahim.yadino.designsystem.theme.YadinoTheme
+import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
+import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.navigation.Destinations
 import com.rahim.yadino.navigation.component.BottomNavigationBar

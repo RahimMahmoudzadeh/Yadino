@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.rahim.yadino.designsystem.theme.Porcelain
+import com.rahim.yadino.designsystem.utils.theme.Porcelain
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
 

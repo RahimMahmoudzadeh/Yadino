@@ -1,4 +1,4 @@
-package com.rahim.yadino.designsystem.theme
+package com.rahim.yadino.designsystem.utils.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

@@ -44,7 +44,7 @@ import com.rahim.yadino.base.use
 import com.rahim.yadino.createOvalBottomPath
 import com.rahim.yadino.designsystem.component.GradientButton
 import com.rahim.yadino.designsystem.component.gradientColors
-import com.rahim.yadino.designsystem.theme.YadinoTheme
+import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.onboarding.presentation.model.OnBoardingUiModel
 import kotlinx.coroutines.launch
 import kotlin.math.max

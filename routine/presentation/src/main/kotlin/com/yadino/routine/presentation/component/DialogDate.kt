@@ -47,7 +47,7 @@ import com.rahim.yadino.calculateMonthName
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.TimeItems
 import com.rahim.yadino.designsystem.component.gradientColors
-import com.rahim.yadino.designsystem.theme.YadinoTheme
+import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate

@@ -24,11 +24,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.rahim.yadino.designsystem.component.gradientColors
-import com.rahim.yadino.designsystem.theme.CornflowerBlueDark
-import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
-import com.rahim.yadino.designsystem.theme.Mantis
-import com.rahim.yadino.designsystem.theme.Porcelain
-import com.rahim.yadino.designsystem.theme.Punch
+import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueDark
+import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
+import com.rahim.yadino.designsystem.utils.theme.Mantis
+import com.rahim.yadino.designsystem.utils.theme.Porcelain
+import com.rahim.yadino.designsystem.utils.theme.Punch
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.model.PriorityNote

@@ -50,10 +50,9 @@ import com.rahim.yadino.base.use
 import com.rahim.yadino.calculateMonthName
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
-import com.rahim.yadino.designsystem.component.goSettingPermission
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
-import com.rahim.yadino.designsystem.theme.font_medium
+import com.rahim.yadino.designsystem.utils.theme.font_medium
 import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.toStringResource
 import com.rahim.yadino.persianLocate

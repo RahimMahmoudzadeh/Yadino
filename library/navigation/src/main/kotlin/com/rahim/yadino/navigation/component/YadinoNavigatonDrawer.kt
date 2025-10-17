@@ -41,8 +41,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.rahim.yadino.designsystem.component.gradientColors
-import com.rahim.yadino.designsystem.theme.CornflowerBlueLight
-import com.rahim.yadino.designsystem.theme.YadinoTheme
+import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
+import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.library.navigation.R
 import com.rahim.yadino.navigation.component.DrawerItemType.RateToApp
 import com.rahim.yadino.navigation.component.DrawerItemType.ShareWithFriends

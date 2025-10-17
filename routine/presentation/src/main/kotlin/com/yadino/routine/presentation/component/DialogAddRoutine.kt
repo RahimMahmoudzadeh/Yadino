@@ -45,9 +45,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
-import com.rahim.yadino.designsystem.theme.Onahau
-import com.rahim.yadino.designsystem.theme.Purple
-import com.rahim.yadino.designsystem.theme.PurpleGrey
+import com.rahim.yadino.designsystem.utils.theme.Onahau
+import com.rahim.yadino.designsystem.utils.theme.Purple
+import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.persianLocate
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
