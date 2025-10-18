@@ -47,6 +47,9 @@ import com.rahim.yadino.calculateMonthName
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.TimeItems
 import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.designsystem.utils.size.LocalFontSize
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.library.designsystem.R
@@ -68,6 +71,11 @@ fun DialogChoseDate(
   monthIncrease: (year: Int, month: Int) -> Unit,
   monthDecrease: (year: Int, month: Int) -> Unit,
 ) {
+
+  val size = LocalSize.current
+  val space = LocalSpacing.current
+  val fontSize = LocalFontSize.current
+
   var dayClicked by rememberSaveable { mutableIntStateOf(0) }
 
   dayClicked = dayNumber
@@ -81,19 +89,19 @@ fun DialogChoseDate(
     ),
     modifier = modifier
       .fillMaxWidth()
-      .padding(horizontal = 14.dp),
+      .padding(horizontal = space.space14),
     onDismissRequest = {},
   ) {
     Surface(
       color = MaterialTheme.colorScheme.background,
       shape = RoundedCornerShape(percent = 6),
     ) {
-      Column(modifier = Modifier.padding(bottom = 12.dp)) {
+      Column(modifier = Modifier.padding(bottom = space.space12)) {
         Row(
           Modifier
             .fillMaxWidth()
             .background(brush = Brush.verticalGradient(gradientColors))
-            .padding(vertical = 10.dp, horizontal = 12.dp),
+            .padding(vertical = space.space10, horizontal = space.space12),
           horizontalArrangement = Arrangement.SpaceBetween,
         ) {
           IconButton(
@@ -109,7 +117,7 @@ fun DialogChoseDate(
           }
           Text(
             modifier = Modifier
-              .padding(top = 12.dp)
+              .padding(top = space.space12)
               .fillMaxWidth(0.5f),
             text = date,
             color = Color.White,
@@ -130,7 +138,7 @@ fun DialogChoseDate(
         Row(
           modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp, horizontal = 18.dp),
+            .padding(vertical = space.space12, horizontal = space.space18),
           horizontalArrangement = Arrangement.SpaceBetween,
         ) {
           val days = listOf(
@@ -148,7 +156,7 @@ fun DialogChoseDate(
                 Text(
                   text = it,
                   color = MaterialTheme.colorScheme.primary,
-                  modifier = Modifier.padding(end = 12.dp),
+                  modifier = Modifier.padding(end = space.space12),
                 )
               }
 
@@ -156,7 +164,7 @@ fun DialogChoseDate(
                 Text(
                   text = it,
                   color = MaterialTheme.colorScheme.primary,
-                  modifier = Modifier.padding(start = 12.dp),
+                  modifier = Modifier.padding(start = space.space12),
                 )
               }
 
@@ -171,7 +179,7 @@ fun DialogChoseDate(
         }
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
           LazyVerticalGrid(
-            modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
+            modifier = Modifier.padding(start = space.space10, end = space.space10, bottom = space.space10),
             columns = GridCells.Fixed(7),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -183,6 +191,9 @@ fun DialogChoseDate(
                 nameDay = time.nameDay,
                 isToday = time.isToday,
                 dayNumberChecked = dayClicked,
+                fontSize = fontSize,
+                size = size,
+                space = space,
                 dayCheckedNumber = { day ->
                   dayClicked = day
                 },
@@ -192,29 +203,31 @@ fun DialogChoseDate(
           Row(
             modifier = Modifier
               .fillMaxWidth()
-              .padding(start = 12.dp, top = 12.dp),
+              .padding(start = space.space12, top = space.space12),
           ) {
             DialogButtonBackground(
               text = stringResource(id = R.string.selection),
               gradient = Brush.verticalGradient(gradientColors),
               modifier = Modifier
                 .fillMaxWidth(0.25f)
-                .height(40.dp),
-              textSize = 16.sp,
+                .height(size.size40),
+              textSize = fontSize.fontSize16,
               textStyle = TextStyle(fontWeight = FontWeight.Bold),
+              space = space,
+              size = size,
               onClick = {
                 dayCheckedNumber(yearNumber, monthNumber, dayClicked)
                 closeDialog()
               },
             )
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(size.size10))
             TextButton(
               onClick = {
                 closeDialog()
               },
             ) {
               Text(
-                fontSize = 16.sp,
+                fontSize = fontSize.fontSize16,
                 text = stringResource(id = R.string.cancel),
                 style = TextStyle(
                   brush = Brush.verticalGradient(
