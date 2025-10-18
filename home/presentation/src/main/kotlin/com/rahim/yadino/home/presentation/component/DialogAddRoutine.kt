@@ -278,6 +278,8 @@ fun DialogAddRoutine(
               .fillMaxWidth(0.3f)
               .height(size.size40),
             textStyle = MaterialTheme.typography.bodyMedium,
+            size = size,
+            space = space,
             onClick = {
               Timber.tag("tagNameRoutine").d(routineName.length.toString())
               if (routineName.isEmpty()) {
