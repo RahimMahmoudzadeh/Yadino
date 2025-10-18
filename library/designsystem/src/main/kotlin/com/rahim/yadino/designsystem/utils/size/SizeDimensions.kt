@@ -30,6 +30,7 @@ data class SizeDimensions(
     val size48: Dp = 48.dp,
     val size52: Dp = 52.dp,
     val size56: Dp = 56.dp,
+    val size58: Dp = 58.dp,
     val size60: Dp = 60.dp,
     val size64: Dp = 64.dp,
     val size68: Dp = 68.dp,

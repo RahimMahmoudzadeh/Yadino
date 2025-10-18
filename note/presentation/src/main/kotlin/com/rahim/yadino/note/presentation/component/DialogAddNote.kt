@@ -1,5 +1,6 @@
 package com.rahim.yadino.note.presentation.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,6 +46,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.designsystem.utils.size.LocalFontSize
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
+import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueDark
 import com.rahim.yadino.designsystem.utils.theme.Mantis
 import com.rahim.yadino.designsystem.utils.theme.Punch
@@ -66,6 +71,10 @@ fun DialogAddNote(
   setNote: (NoteUiModel) -> Unit,
 ) {
 
+  val space = LocalSpacing.current
+  val size = LocalSize.current
+  val fontSize = LocalFontSize.current
+
   var state by remember { mutableStateOf(updateNote?.state ?: PriorityNote.LOW_PRIORITY) }
   var nameNote by rememberSaveable { mutableStateOf(updateNote?.name ?: "") }
   var description by rememberSaveable { mutableStateOf(updateNote?.description ?: "") }
@@ -81,11 +90,11 @@ fun DialogAddNote(
       ),
       modifier = modifier
         .fillMaxWidth()
-        .padding(horizontal = 22.dp)
+        .padding(horizontal = space.space22)
         .border(
-          2.dp,
+          size.size2,
           brush = Brush.verticalGradient(gradientColors),
-          shape = RoundedCornerShape(8.dp),
+          shape = RoundedCornerShape(size.size8),
         ),
       onDismissRequest = {
         openDialog(false)
@@ -98,10 +107,10 @@ fun DialogAddNote(
         Column(
           modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp, end = 18.dp, start = 18.dp, bottom = 8.dp),
+            .padding(top = space.space16, end = space.space18, start = space.space18, bottom = space.space8),
         ) {
           Text(
-            fontSize = 18.sp,
+            fontSize = fontSize.fontSize18,
             fontWeight = FontWeight.Bold,
             text = stringResource(id = R.string.creat_new_note),
             modifier = Modifier.fillMaxWidth(),
@@ -114,13 +123,13 @@ fun DialogAddNote(
           )
           TextField(
             modifier = Modifier
-              .padding(top = 18.dp)
+              .padding(top = space.space18)
               .fillMaxWidth()
-              .height(58.dp)
+              .height(size.size58)
               .border(
-                width = 1.dp,
+                width = size.size1,
                 brush = Brush.verticalGradient(gradientColors),
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(size.size4),
               ),
             value = nameNote,
             onValueChange = {
@@ -146,7 +155,7 @@ fun DialogAddNote(
           )
           if (isErrorName) {
             Text(
-              modifier = Modifier.padding(start = 16.dp),
+              modifier = Modifier.padding(start = space.space16),
               text = if (nameNote.isEmpty()) {
                 stringResource(id = R.string.emptyField)
               } else {
@@ -160,12 +169,12 @@ fun DialogAddNote(
           TextField(
             modifier = Modifier
               .fillMaxWidth()
-              .padding(top = 18.dp)
+              .padding(top = space.space18)
               .sizeIn(minHeight = 130.dp)
               .border(
-                width = 1.dp,
+                width = size.size1,
                 brush = Brush.horizontalGradient(gradientColors),
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(size.size4),
               ),
             value = description,
             onValueChange = {
@@ -191,13 +200,13 @@ fun DialogAddNote(
           )
           if (isErrorExplanation) {
             Text(
-              modifier = Modifier.padding(start = 16.dp),
+              modifier = Modifier.padding(start = space.space16),
               text = stringResource(id = R.string.length_textFiled_explanation_routine),
               color = MaterialTheme.colorScheme.error,
             )
           }
           Row(
-            modifier = Modifier.padding(top = 20.dp, start = 6.dp, end = 4.dp),
+            modifier = Modifier.padding(top = space.space20, start = space.space6, end = space.space4),
             horizontalArrangement = Arrangement.SpaceBetween,
           ) {
             Text(
@@ -223,13 +232,13 @@ fun DialogAddNote(
                   .semantics {
                     contentDescription = "Localized Description"
                   }
-                  .size(20.dp)
-                  .padding(start = 8.dp),
+                  .size(size.size20)
+                  .padding(start = space.space8),
               )
             }
             Row(modifier = Modifier.weight(0.2f)) {
               Text(
-                modifier = Modifier.padding(start = 24.dp),
+                modifier = Modifier.padding(start = space.space24),
                 text = stringResource(id = R.string.medium),
                 color = CornflowerBlueDark,
                 style = MaterialTheme.typography.bodyMedium,
@@ -246,14 +255,14 @@ fun DialogAddNote(
                   .semantics {
                     contentDescription = "Localized Description"
                   }
-                  .size(20.dp)
-                  .padding(start = 8.dp),
+                  .size(size.size20)
+                  .padding(start = space.space8),
               )
             }
             Row(modifier = Modifier.weight(0.13f)) {
               Text(
-                fontSize = 16.sp,
-                modifier = Modifier.padding(start = 24.dp),
+                fontSize = fontSize.fontSize16,
+                modifier = Modifier.padding(start = space.space24),
                 text = stringResource(id = R.string.low),
                 color = Mantis,
                 style = MaterialTheme.typography.bodyMedium,
@@ -270,26 +279,27 @@ fun DialogAddNote(
                   .semantics {
                     contentDescription = "Localized Description"
                   }
-                  .size(20.dp)
-                  .padding(start = 8.dp),
+                  .size(size.size20)
+                  .padding(start = space.space8),
               )
             }
           }
 
-          Spacer(modifier = Modifier.height(22.dp))
+          Spacer(modifier = Modifier.height(space.space22))
           Row(
             modifier = Modifier
               .fillMaxWidth(1f)
-              .padding(12.dp),
+              .padding(space.space12),
           ) {
             DialogButtonBackground(
               text = stringResource(id = R.string.confirmation),
               gradient = Brush.verticalGradient(gradientColors),
               modifier = Modifier
                 .fillMaxWidth(0.3f)
-                .height(40.dp),
-              textSize = 14.sp,
+                .height(size.size40),
               textStyle = MaterialTheme.typography.bodyMedium,
+              space = space,
+              size = size,
               onClick = {
                 if (nameNote.isEmpty()) {
                   isErrorName = true
@@ -320,7 +330,7 @@ fun DialogAddNote(
               },
             )
 
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(size.size10))
             TextButton(
               onClick = {
                 nameNote = ""
@@ -332,7 +342,7 @@ fun DialogAddNote(
               },
             ) {
               Text(
-                fontSize = 16.sp,
+                fontSize = fontSize.fontSize16,
                 text = stringResource(id = R.string.cancel),
                 style = MaterialTheme.typography.bodyMedium.copy(
                   brush = Brush.verticalGradient(
