@@ -154,6 +154,8 @@ fun YadinoApp(
   drawerItemClicked: (DrawerItemType) -> Unit,
 ) {
   val context = LocalContext.current
+  val size = LocalSize.current
+
   val notificationPermissionState =
     rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
 
@@ -213,6 +215,7 @@ fun YadinoApp(
                     coroutineScope.launch { drawerState.open() }
                   },
                   haveAlarm = haveAlarm,
+                  size = size,
                 )
               }
             },
