@@ -29,6 +29,7 @@ import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.utils.size.FontDimensions
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
+import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
@@ -92,6 +93,7 @@ private fun HomeScreen(
 ) {
   val context = LocalContext.current
   val space = LocalSpacing.current
+  val size = LocalSize.current
   val fontSize = LocalFontSize.current
 
   val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
@@ -116,6 +118,9 @@ private fun HomeScreen(
       loaded = { routines ->
         if (routines.isEmpty()) {
           EmptyMessage(
+            space = space,
+            size = size,
+            fontSize = fontSize,
             messageEmpty = if (searchText.isNotEmpty()) R.string.search_empty_routine else R.string.not_work_for_day,
           )
         } else {
