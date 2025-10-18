@@ -45,6 +45,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.theme.Onahau
 import com.rahim.yadino.designsystem.utils.theme.Purple
 import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
@@ -78,6 +80,9 @@ fun DialogAddRoutine(
   monthIncrease: ((year: Int, month: Int) -> Unit)? = null,
   monthDecrease: ((year: Int, month: Int) -> Unit)? = null,
 ) {
+  val size = LocalSize.current
+  val space = LocalSpacing.current
+
   var monthChecked by rememberSaveable { mutableIntStateOf(currentNumberMonth) }
   var yearChecked by rememberSaveable { mutableIntStateOf(currentNumberYear) }
   var dayChecked by rememberSaveable { mutableIntStateOf(currentNumberDay) }
@@ -317,6 +322,8 @@ fun DialogAddRoutine(
                 .height(40.dp),
               textSize = 14.sp,
               textStyle = MaterialTheme.typography.bodyMedium,
+              space = space,
+              size = size,
               onClick = {
                 Timber.tag("tagNameRoutine").d(routineName.length.toString())
 
