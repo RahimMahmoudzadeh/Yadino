@@ -25,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.Porcelain
 import com.rahim.yadino.enums.RoutineExplanation
@@ -44,6 +46,9 @@ fun ItemRoutine(
   openDialogEdit: () -> Unit,
   openDialogDelete: () -> Unit,
 ) {
+  val size = LocalSize.current
+  val space = LocalSpacing.current
+
   val textUnderLine = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
 
   val delete = SwipeAction(
@@ -69,10 +74,10 @@ fun ItemRoutine(
     Card(
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
       border = if (isChecked) {
-        BorderStroke(1.dp, color = Porcelain)
+        BorderStroke(size.size1, color = Porcelain)
       } else {
         BorderStroke(
-          1.dp,
+          size.size1,
           Brush.verticalGradient(gradientColors),
         )
       },
@@ -82,12 +87,12 @@ fun ItemRoutine(
       modifier = modifier
         .fillMaxWidth()
         .sizeIn(minHeight = 120.dp)
-        .padding(bottom = 12.dp),
+        .padding(bottom = space.space12),
     ) {
       Row(
         modifier = Modifier
           .fillMaxWidth()
-          .padding(end = 12.dp),
+          .padding(end = space.space12),
         horizontalArrangement = Arrangement.SpaceBetween,
       ) {
         Column(
@@ -105,7 +110,7 @@ fun ItemRoutine(
             ),
           )
           Row(
-            modifier = Modifier.padding(top = 22.dp, start = 12.dp),
+            modifier = Modifier.padding(top = space.space22, start = space.space12),
             verticalAlignment = Alignment.CenterVertically,
           ) {
             Text(
@@ -115,8 +120,8 @@ fun ItemRoutine(
               fontWeight = FontWeight.SemiBold,
               color = MaterialTheme.colorScheme.primary,
 
-            )
-            Spacer(modifier = Modifier.width(3.dp))
+              )
+            Spacer(modifier = Modifier.width(size.size3))
             Text(
               text = stringResource(id = R.string.remmeber),
               style = MaterialTheme.typography.bodySmall,
@@ -124,12 +129,12 @@ fun ItemRoutine(
               fontWeight = FontWeight.SemiBold,
               color = MaterialTheme.colorScheme.primary,
 
-            )
+              )
           }
         }
         Column(
           modifier = Modifier
-            .padding(top = 12.dp)
+            .padding(top = space.space12)
             .weight(0.7f),
           horizontalAlignment = Alignment.End,
         ) {
@@ -142,7 +147,7 @@ fun ItemRoutine(
           )
           if (explanationRoutine.isNotEmpty()) {
             Text(
-              modifier = Modifier.padding(top = 12.dp),
+              modifier = Modifier.padding(top = space.space12),
               text = "${stringResource(id = R.string.explanation)}: ${
                 if (explanationRoutine == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
                   stringResource(id = R.string.routine_right_sample)
@@ -157,7 +162,7 @@ fun ItemRoutine(
               textAlign = TextAlign.End,
               style = MaterialTheme.typography.bodyMedium,
 
-            )
+              )
           }
         }
       }
