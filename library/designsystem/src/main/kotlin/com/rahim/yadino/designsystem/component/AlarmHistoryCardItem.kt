@@ -24,7 +24,7 @@ import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.theme.Porcelain
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.persianLocate
+import com.rahim.yadino.toPersianDigits
 
 @Composable
 fun AlarmHistoryCardItem(
@@ -37,7 +37,7 @@ fun AlarmHistoryCardItem(
 ) {
   val textUnderLine = if (routineIsChecked) TextDecoration.LineThrough else TextDecoration.None
   val textAlpha = if (routineIsChecked) 0.6f else 1f
-  val date = "$routineYearNumber/$routineMonthNumber/$routineDayNumber".persianLocate()
+  val date = "$routineYearNumber/$routineMonthNumber/$routineDayNumber".toPersianDigits()
 
   val space= LocalSpacing.current
   val size= LocalSize.current
@@ -66,7 +66,7 @@ fun AlarmHistoryCardItem(
     ) {
       Text(
         text = "${stringResource(id = R.string.time)}: ${
-          routineTimeHours.persianLocate()
+          routineTimeHours.toPersianDigits()
         }  ${stringResource(id = R.string.date)}: $date",
         color = MaterialTheme.colorScheme.secondaryContainer.copy(textAlpha),
         style = MaterialTheme.typography.bodySmall,

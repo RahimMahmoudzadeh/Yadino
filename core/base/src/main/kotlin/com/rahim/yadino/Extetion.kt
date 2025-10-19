@@ -92,27 +92,26 @@ fun ErrorMessageCode.toStringResource() = when (this@toStringResource) {
   ErrorMessageCode.ERROR_TIME_PASSED -> R.string.errorTimePassed
 }
 
-fun String.persianLocate(): String {
-  var result = ""
-  var fa = '۰'
+fun String.toPersianDigits(): String {
+  val builder = StringBuilder(this.length) // Initialize with the same capacity
   for (ch in this) {
-    fa = ch
     when (ch) {
-      '0' -> fa = '۰'
-      '1' -> fa = '۱'
-      '2' -> fa = '۲'
-      '3' -> fa = '۳'
-      '4' -> fa = '۴'
-      '5' -> fa = '۵'
-      '6' -> fa = '۶'
-      '7' -> fa = '۷'
-      '8' -> fa = '۸'
-      '9' -> fa = '۹'
+      '0' -> builder.append('۰')
+      '1' -> builder.append('۱')
+      '2' -> builder.append('۲')
+      '3' -> builder.append('۳')
+      '4' -> builder.append('۴')
+      '5' -> builder.append('۵')
+      '6' -> builder.append('۶')
+      '7' -> builder.append('۷')
+      '8' -> builder.append('۸')
+      '9' -> builder.append('۹')
+      else -> builder.append(ch) // Don't forget non-digit characters
     }
-    result = "${result}$fa"
   }
-  return result
+  return builder.toString()
 }
+
 
 fun String.isPackageInstalled(packageManager: PackageManager): Boolean {
   try {

@@ -81,7 +81,7 @@ import com.rahim.yadino.designsystem.utils.theme.Purple
 import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
 import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.persianLocate
+import com.rahim.yadino.toPersianDigits
 
 val gradientColors = listOf(Purple, PurpleGrey)
 
@@ -434,7 +434,7 @@ fun TimeItems(
             dayNumber,
           )
         },
-        text = dayNumber.toString().persianLocate(),
+        text = dayNumber.toString().toPersianDigits(),
         textAlign = TextAlign.Center,
         fontSize = fontSize.fontSize16,
         style = TextStyle(
@@ -461,7 +461,7 @@ fun TimeItems(
             dayNumber,
           )
         },
-        text = dayNumber.toString().persianLocate(),
+        text = dayNumber.toString().toPersianDigits(),
         textAlign = TextAlign.Center,
         fontSize = fontSize.fontSize16,
         color = MaterialTheme.colorScheme.surface,
@@ -479,7 +479,7 @@ fun TimeItems(
       contentAlignment = Alignment.Center,
     ) {
       Text(
-        text = dayNumber.toString().persianLocate(),
+        text = dayNumber.toString().toPersianDigits(),
         textAlign = TextAlign.Center,
         fontSize = fontSize.fontSize16,
         color = Color.White,
@@ -502,7 +502,7 @@ fun TimeItems(
             dayNumber,
           )
         },
-        text = dayNumber.toString().persianLocate(),
+        text = dayNumber.toString().toPersianDigits(),
         textAlign = TextAlign.Center,
         fontSize = fontSize.fontSize16,
         color = MaterialTheme.colorScheme.surface,

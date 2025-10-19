@@ -51,7 +51,7 @@ import com.rahim.yadino.designsystem.utils.theme.Onahau
 import com.rahim.yadino.designsystem.utils.theme.Purple
 import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.persianLocate
+import com.rahim.yadino.toPersianDigits
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.yadino.routine.presentation.model.RoutineUiModel
@@ -250,7 +250,7 @@ fun DialogAddRoutine(
               )
               Text(
                 modifier = Modifier.padding(top = 14.dp, start = 4.dp),
-                text = time?.persianLocate() ?: "",
+                text = time?.toPersianDigits() ?: "",
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.bodyMedium,

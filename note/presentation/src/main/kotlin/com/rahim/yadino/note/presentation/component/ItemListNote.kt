@@ -15,6 +15,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -32,7 +35,7 @@ import com.rahim.yadino.designsystem.utils.theme.Punch
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.model.PriorityNote
-import com.rahim.yadino.persianLocate
+import com.rahim.yadino.toPersianDigits
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -50,7 +53,8 @@ fun ItemListNote(
   openDialogDelete: () -> Unit,
 ) {
   val textUnderLine = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
-  val date = "${timeNote.yearNumber}/${timeNote.monthNumber}/${timeNote.dayNumber}"
+  val date by remember { mutableStateOf("${timeNote.yearNumber}/${timeNote.monthNumber}/${timeNote.dayNumber}") }
+
   val delete = SwipeAction(
     icon = painterResource(id = R.drawable.delete),
     background = MaterialTheme.colorScheme.background,
@@ -82,7 +86,7 @@ fun ItemListNote(
       } else {
         BorderStroke(
           1.dp,
-          Brush.Companion.verticalGradient(gradientColors),
+          Brush.verticalGradient(gradientColors),
         )
       },
       onClick = {
@@ -112,7 +116,7 @@ fun ItemListNote(
         Column(modifier = Modifier.padding(top = 12.dp)) {
           Text(
             modifier = Modifier.align(Alignment.End),
-            color = if (priorityNote == PriorityNote.HIGH_PRIORITY) Punch  else if (priorityNote == PriorityNote.NORMAL) CornflowerBlueDark else Mantis,
+            color = if (priorityNote == PriorityNote.HIGH_PRIORITY) Punch else if (priorityNote == PriorityNote.NORMAL) CornflowerBlueDark else Mantis,
             text = nameNote,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
@@ -135,7 +139,7 @@ fun ItemListNote(
         modifier = Modifier
           .align(Alignment.Start)
           .padding(start = 12.dp, top = 12.dp, bottom = 12.dp),
-        text = date.persianLocate(),
+        text = date.toPersianDigits(),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.primary,
         fontWeight = FontWeight.SemiBold,

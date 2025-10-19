@@ -53,7 +53,7 @@ import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.persianLocate
+import com.rahim.yadino.toPersianDigits
 import com.yadino.routine.presentation.model.TimeDateUiModel
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
@@ -80,7 +80,7 @@ fun DialogChoseDate(
 
   dayClicked = dayNumber
 
-  val date = "$yearNumber ${monthNumber.calculateMonthName()}".persianLocate()
+  val date = "$yearNumber ${monthNumber.calculateMonthName()}".toPersianDigits()
 
   BasicAlertDialog(
     properties = DialogProperties(

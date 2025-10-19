@@ -41,7 +41,7 @@ import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
-import com.rahim.yadino.persianLocate
+import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.routine.presentation.R
 
 @Composable
@@ -82,7 +82,7 @@ private fun HistoryScreen(
                 stringResource(id = R.string.not_alarm)
               } else {
                 "${stringResource(id = R.string.you)} ${
-                  incompleteRoutine.size.toString().persianLocate()
+                  incompleteRoutine.size.toString().toPersianDigits()
                 } ${stringResource(id = R.string.have_alarm)}"
               }
             Text(
@@ -174,7 +174,7 @@ private fun RoutineCompleted(
     ) {
       Text(
         text = "( ${
-          completedRoutinesCount.toString().persianLocate()
+          completedRoutinesCount.toString().toPersianDigits()
         } ${stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine)} )",
         style = MaterialTheme.typography.bodyMedium,
         color = CornflowerBlueLight,

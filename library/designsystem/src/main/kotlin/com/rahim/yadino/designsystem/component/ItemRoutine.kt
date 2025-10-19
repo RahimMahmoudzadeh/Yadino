@@ -31,7 +31,7 @@ import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.Porcelain
 import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.persianLocate
+import com.rahim.yadino.toPersianDigits
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -114,7 +114,7 @@ fun ItemRoutine(
             verticalAlignment = Alignment.CenterVertically,
           ) {
             Text(
-              text = timeHoursRoutine.persianLocate(),
+              text = timeHoursRoutine.toPersianDigits(),
               style = MaterialTheme.typography.bodySmall,
               textDecoration = textUnderLine,
               fontWeight = FontWeight.SemiBold,

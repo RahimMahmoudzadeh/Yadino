@@ -62,7 +62,7 @@ import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.font_medium
 import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.toStringResource
-import com.rahim.yadino.persianLocate
+import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.routine.presentation.R
 import com.rahim.yadino.showToastShort
 import com.yadino.routine.presentation.component.DialogAddRoutine
@@ -369,7 +369,7 @@ private fun ItemTimeDate(
       modifier = Modifier
         .padding(top = space.space12)
         .fillMaxWidth(0.3f),
-      text = "${yearChecked.toString().persianLocate()} ${monthChecked.calculateMonthName()}",
+      text = "${yearChecked.toString().toPersianDigits()} ${monthChecked.calculateMonthName()}",
       color = MaterialTheme.colorScheme.primary,
       textAlign = TextAlign.Center,
     )
@@ -539,7 +539,7 @@ private fun DayItems(
         top = if (screenWidth <= 400) space.space8 else if (screenWidth in 400..420) space.space9 else space.space10,
       ),
     text = AnnotatedString(
-      if (timeDate.dayNumber > 0) timeDate.dayNumber.toString().persianLocate() else "",
+      if (timeDate.dayNumber > 0) timeDate.dayNumber.toString().toPersianDigits() else "",
     ),
     style = TextStyle(
       fontSize = if (screenWidth <= 420) fontSize.fontSize16 else fontSize.fontSize18,

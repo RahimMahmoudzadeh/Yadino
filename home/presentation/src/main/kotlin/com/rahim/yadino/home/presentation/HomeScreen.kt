@@ -40,7 +40,7 @@ import com.rahim.yadino.home.presentation.component.ListRoutines
 import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.persianLocate
+import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.showToastShort
 import kotlinx.collections.immutable.PersistentList
 
@@ -229,7 +229,7 @@ fun ItemsHome(
   ) {
     currentTime?.date?.let { currentTime ->
       Text(
-        text = currentTime.persianLocate(),
+        text = currentTime.toPersianDigits(),
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.primary,
       )
