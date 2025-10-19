@@ -41,6 +41,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
+import com.rahim.yadino.designsystem.utils.size.SizeDimensions
+import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.library.navigation.R
@@ -88,6 +92,9 @@ fun YadinoNavigationDrawer(
   content: @Composable () -> Unit,
 ) {
   val scope = rememberCoroutineScope()
+  val space = LocalSpacing.current
+  val sizeDimensions = LocalSize.current
+
   if (drawerState.isOpen) {
     BackHandler {
       scope.launch {
@@ -107,28 +114,32 @@ fun YadinoNavigationDrawer(
       ) {
         YadinoDrawerHeader(
           modifier = Modifier
-              .height(headerHeight)
-              .fillMaxWidth()
-              .drawBehind {
-                  drawRect(
-                      brush = Brush.linearGradient(
-                          colors = gradientColors,
-                          start = Offset(0f, size.height),
-                          end = Offset(size.width, 0f),
-                      ),
-                  )
-              }
-              .statusBarsPadding(),
+            .height(headerHeight)
+            .fillMaxWidth()
+            .drawBehind {
+              drawRect(
+                brush = Brush.linearGradient(
+                  colors = gradientColors,
+                  start = Offset(0f, size.height),
+                  end = Offset(size.width, 0f),
+                ),
+              )
+            }
+            .statusBarsPadding(),
           greetingTitle = R.string.hello_friend,
+          spaceDimensions = space,
+          sizeDimensions = sizeDimensions,
           iconRes = com.rahim.yadino.library.designsystem.R.drawable.img_app_wekup,
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(sizeDimensions.size12))
         yadinoDrawerItems.forEach { yadinoDrawerItem ->
           YadinoDrawerItem(
             modifier = Modifier
-                .padding(NavigationDrawerItemDefaults.ItemPadding)
-                .height(itemHeight)
-                .clickable { onItemClick(yadinoDrawerItem) },
+              .padding(NavigationDrawerItemDefaults.ItemPadding)
+              .height(itemHeight)
+              .clickable { onItemClick(yadinoDrawerItem) },
+            sizeDimensions = sizeDimensions,
+            spaceDimensions = space,
             title = yadinoDrawerItem.title,
             iconRes = yadinoDrawerItem.iconRes,
             rightSlot = if (yadinoDrawerItem is Theme) {
@@ -182,6 +193,8 @@ private fun ThemeSwitch(
 @Composable
 private fun YadinoDrawerHeader(
   modifier: Modifier = Modifier,
+  sizeDimensions: SizeDimensions,
+  spaceDimensions: SpaceDimensions,
   @StringRes greetingTitle: Int,
   @DrawableRes iconRes: Int,
 ) {
@@ -190,17 +203,17 @@ private fun YadinoDrawerHeader(
       painter = painterResource(id = iconRes),
       contentDescription = null,
       modifier = Modifier
-          .align(Alignment.TopEnd)
-          .size(
-              72.dp,
-          ),
+        .align(Alignment.TopEnd)
+        .size(
+          sizeDimensions.size72,
+        ),
     )
 
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = Modifier
-          .align(Alignment.Center)
-          .padding(top = 16.dp, end = 16.dp),
+        .align(Alignment.Center)
+        .padding(top = spaceDimensions.space16, end = spaceDimensions.space16),
     ) {
       Text(
         text = stringResource(id = greetingTitle),
@@ -214,6 +227,8 @@ private fun YadinoDrawerHeader(
 @Composable
 private fun YadinoDrawerItem(
   modifier: Modifier = Modifier,
+  spaceDimensions: SpaceDimensions,
+  sizeDimensions: SizeDimensions,
   @StringRes title: Int,
   @DrawableRes iconRes: Int,
   rightSlot: @Composable (() -> Unit)? = null,
@@ -225,14 +240,14 @@ private fun YadinoDrawerItem(
     Icon(
       painter = painterResource(id = iconRes),
       contentDescription = null,
-      modifier = Modifier.padding(horizontal = 12.dp),
+      modifier = Modifier.padding(horizontal = spaceDimensions.space12),
       tint = Color.Unspecified,
     )
     Text(text = stringResource(id = title), color = MaterialTheme.colorScheme.onSecondaryContainer)
     Spacer(modifier = Modifier.weight(1f))
     rightSlot?.run {
       this()
-      Spacer(modifier = Modifier.width(12.dp))
+      Spacer(modifier = Modifier.width(sizeDimensions.size12))
     }
   }
 }
