@@ -103,7 +103,6 @@ fun ErrorDialog(
             .fillMaxWidth(0.3f)
             .height(size.size40)
             .padding(start = space.space16),
-          textSize = 14.sp,
           size = size,
           space = space,
           onClick = {
