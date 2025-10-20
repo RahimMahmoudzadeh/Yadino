@@ -27,6 +27,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.designsystem.utils.size.LocalFontSize
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueDark
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.Mantis
@@ -52,6 +55,9 @@ fun ItemListNote(
   openDialogEdit: () -> Unit,
   openDialogDelete: () -> Unit,
 ) {
+  val space = LocalSpacing.current
+  val size = LocalSize.current
+
   val textUnderLine = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
   val date by remember { mutableStateOf("${timeNote.yearNumber}/${timeNote.monthNumber}/${timeNote.dayNumber}") }
 
@@ -80,12 +86,12 @@ fun ItemListNote(
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
       border = if (isChecked) {
         BorderStroke(
-          1.dp,
+          size.size1,
           color = Porcelain,
         )
       } else {
         BorderStroke(
-          1.dp,
+          size.size1,
           Brush.verticalGradient(gradientColors),
         )
       },
@@ -94,13 +100,13 @@ fun ItemListNote(
       },
       modifier = modifier
         .fillMaxWidth()
-        .sizeIn(minHeight = 120.dp)
-        .padding(bottom = 12.dp),
+        .sizeIn(minHeight = size.size120)
+        .padding(bottom = space.space12),
     ) {
       Row(
         modifier = Modifier
           .fillMaxWidth()
-          .padding(end = 12.dp),
+          .padding(end = space.space12),
         horizontalArrangement = Arrangement.SpaceBetween,
       ) {
         Checkbox(
@@ -113,7 +119,7 @@ fun ItemListNote(
             checkedColor = MaterialTheme.colorScheme.background,
           ),
         )
-        Column(modifier = Modifier.padding(top = 12.dp)) {
+        Column(modifier = Modifier.padding(top = space.space12)) {
           Text(
             modifier = Modifier.align(Alignment.End),
             color = if (priorityNote == PriorityNote.HIGH_PRIORITY) Punch else if (priorityNote == PriorityNote.NORMAL) CornflowerBlueDark else Mantis,
@@ -126,7 +132,7 @@ fun ItemListNote(
             textAlign = TextAlign.End,
             modifier = Modifier
               .align(Alignment.End)
-              .padding(top = 10.dp),
+              .padding(top = space.space10),
             text = descriptionNote,
             color = MaterialTheme.colorScheme.secondaryContainer,
             style = MaterialTheme.typography.bodyMedium,
@@ -138,7 +144,7 @@ fun ItemListNote(
       Text(
         modifier = Modifier
           .align(Alignment.Start)
-          .padding(start = 12.dp, top = 12.dp, bottom = 12.dp),
+          .padding(start = space.space12, top = space.space12, bottom = space.space12),
         text = date.toPersianDigits(),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.primary,
