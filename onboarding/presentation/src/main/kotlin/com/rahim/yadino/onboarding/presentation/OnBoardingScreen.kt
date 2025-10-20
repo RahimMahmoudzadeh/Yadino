@@ -208,7 +208,7 @@ fun WelcomePage(
     )
     Text(
       text = stringResource(id = textWelcomeBottom),
-      fontSize = 24.sp,
+      fontSize = fontSize.fontSize24,
       modifier = Modifier
         .fillMaxWidth()
         .padding(top = space.space32, start = space.space12, end = space.space12),
