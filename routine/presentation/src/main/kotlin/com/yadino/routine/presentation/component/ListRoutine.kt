@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rahim.yadino.designsystem.component.ItemRoutine
+import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.yadino.routine.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.PersistentList
 
@@ -18,9 +19,12 @@ fun ListRoutines(
   deleteRoutine: (RoutineUiModel) -> Unit,
   updateRoutine: (RoutineUiModel) -> Unit,
 ) {
+
+  val space = LocalSpacing.current
+
   LazyColumn(
     modifier = modifier,
-    contentPadding = PaddingValues(top = 0.dp, start = 16.dp, end = 16.dp),
+    contentPadding = PaddingValues(top = 0.dp, start = space.space16, end = space.space16),
   ) {
     items(items = routines) { routine ->
       ItemRoutine(
