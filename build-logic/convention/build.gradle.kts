@@ -49,9 +49,9 @@ gradlePlugin {
       id = "yadino.android.feature"
       implementationClass = "plugins.AndroidFeatureConventionPlugin"
     }
-    register("androidHilt") {
-      id = "yadino.android.hilt"
-      implementationClass = "plugins.AndroidHiltConventionPlugin"
+    register("yadinoDi") {
+      id = "yadino.di"
+      implementationClass = "plugins.YadinoDiConventionPlugin"
     }
     register("androidRoom") {
       id = "yadino.android.room"
