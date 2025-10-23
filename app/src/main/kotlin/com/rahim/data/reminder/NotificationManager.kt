@@ -15,7 +15,7 @@ import com.rahim.yadino.library.designsystem.R
 import java.util.Random
 import javax.inject.Inject
 
-class NotificationManager @Inject constructor(private val controlAlarm:ControlAlarm){
+class NotificationManager(private val controlAlarm:ControlAlarm){
   fun createFullNotification(context: Context, routineName: String, routineIdAlarm: Long, routineExplanation: String) {
     val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {
       addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)

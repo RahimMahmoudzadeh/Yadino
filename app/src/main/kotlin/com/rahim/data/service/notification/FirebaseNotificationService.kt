@@ -12,10 +12,8 @@ import com.google.firebase.messaging.RemoteMessage
 import com.rahim.R
 import com.rahim.ui.main.MainActivity
 import com.rahim.yadino.Constants.CHANNEL_ID
-import dagger.hilt.android.AndroidEntryPoint
 import java.util.Random
 
-@AndroidEntryPoint
 class FirebaseNotificationService : FirebaseMessagingService() {
   override fun onMessageReceived(remoteMessage: RemoteMessage) {
     super.onMessageReceived(remoteMessage)

@@ -18,7 +18,7 @@ import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
 
-class ReminderSchedulerImpl @Inject constructor(
+class ReminderSchedulerImpl(
     private val alarmManager: AlarmManager,
     private val context: Context,
 ) : ReminderScheduler {

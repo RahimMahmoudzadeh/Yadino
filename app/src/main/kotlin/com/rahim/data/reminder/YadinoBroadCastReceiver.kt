@@ -4,13 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.rahim.yadino.Constants
-import timber.log.Timber
-import javax.inject.Inject
 
-class YadinoBroadCastReceiver() : BroadcastReceiver() {
-  @Inject
-  lateinit var notificationManager : NotificationManager
-
+class YadinoBroadCastReceiver(private val notificationManager: NotificationManager) : BroadcastReceiver() {
   override fun onReceive(context: Context?, intent: Intent?) {
     sendNotificationAlarm(intent, context)
   }

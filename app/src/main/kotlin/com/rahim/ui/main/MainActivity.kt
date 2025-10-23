@@ -66,10 +66,8 @@ import com.rahim.yadino.navigation.Destinations
 import com.rahim.yadino.navigation.component.BottomNavigationBar
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
   private val mainViewModel: MainViewModel by viewModels()
