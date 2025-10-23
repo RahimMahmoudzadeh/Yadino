@@ -1,8 +1,8 @@
 plugins {
-  libs.plugins.yadino.android.run {
-    alias(library)
-//    alias(hilt)
-    alias(room)
+  libs.plugins.yadino.run {
+    alias(android.library)
+    alias(di)
+    alias(android.room)
   }
 }
 android {
