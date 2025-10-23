@@ -40,6 +40,7 @@ import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.toStringResource
 import kotlinx.collections.immutable.PersistentList
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun HomeRoute(
@@ -47,7 +48,7 @@ internal fun HomeRoute(
   openDialog: Boolean,
   clickSearch: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,
-  viewModel: HomeViewModel,
+  viewModel: HomeViewModel = koinViewModel(),
 ) {
   val (state, event) = use(viewModel = viewModel)
 
