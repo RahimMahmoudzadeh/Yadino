@@ -8,9 +8,15 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.rahim.BuildConfig
 import com.rahim.R
+import com.rahim.di.CafeBazaarDiModule
+import com.rahim.di.YadinoDiModule
 import com.rahim.yadino.Constants.CHANNEL_ID
 import com.rahim.yadino.Constants.CHANNEL_NAME
-import com.rahim.yadino.home.data.di.homeDiModule
+import com.rahim.yadino.core.timeDate.di.TimeDateDiModule
+import com.rahim.yadino.db.di.YadinoDatabaseModule
+import com.rahim.yadino.di.CoreDiModule
+import com.rahim.yadino.home.data.di.HomeDiModule
+import com.rahim.yadino.home.presentation.di.HomeDiPresentationModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
@@ -21,7 +27,7 @@ class App : Application() {
 
     startKoin {
       androidContext(this@App)
-      modules(homeDiModule)
+      modules(YadinoDiModule, HomeDiModule, HomeDiPresentationModule, CafeBazaarDiModule, YadinoDatabaseModule, TimeDateDiModule, CoreDiModule)
     }
 
     if (BuildConfig.DEBUG) {
