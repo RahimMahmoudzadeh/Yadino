@@ -10,13 +10,19 @@ import com.rahim.BuildConfig
 import com.rahim.R
 import com.rahim.yadino.Constants.CHANNEL_ID
 import com.rahim.yadino.Constants.CHANNEL_NAME
-import dagger.hilt.android.HiltAndroidApp
+import com.rahim.yadino.home.data.di.homeDiModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 import timber.log.Timber
 
-@HiltAndroidApp
 class App : Application() {
   override fun onCreate() {
     super.onCreate()
+
+    startKoin {
+      androidContext(this@App)
+      modules(homeDiModule)
+    }
 
     if (BuildConfig.DEBUG) {
       Timber.plant(Timber.DebugTree())

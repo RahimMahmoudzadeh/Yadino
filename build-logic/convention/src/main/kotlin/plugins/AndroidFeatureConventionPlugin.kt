@@ -10,7 +10,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     with(target) {
       applyPlugins {
-        listOf("yadino.android.library","stap.koin")
+        listOf("yadino.android.library", "yadino.di")
       }
       dependencies {
         add("implementation", versionCatalog.findLibrary("androidx.tracing.ktx").get())

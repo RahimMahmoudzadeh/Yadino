@@ -28,10 +28,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         configureFlavors(this)
       }
       dependencies {
-//        add(
-//          "implementation",
-//          versionCatalog.findLibrary("hilt.navigation.compose").get(),
-//        )
+        
         val subprojects = project
           .rootProject
           .subprojects
