@@ -19,9 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
@@ -34,14 +31,14 @@ import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.enums.RoutineExplanation
-import com.rahim.yadino.toStringResource
 import com.rahim.yadino.home.presentation.component.DialogAddRoutine
 import com.rahim.yadino.home.presentation.component.ListRoutines
 import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.showToastShort
+import com.rahim.yadino.toPersianDigits
+import com.rahim.yadino.toStringResource
 import kotlinx.collections.immutable.PersistentList
 
 @Composable
@@ -50,7 +47,7 @@ internal fun HomeRoute(
   openDialog: Boolean,
   clickSearch: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,
-  viewModel: HomeViewModel = hiltViewModel(),
+  viewModel: HomeViewModel,
 ) {
   val (state, event) = use(viewModel = viewModel)
 
