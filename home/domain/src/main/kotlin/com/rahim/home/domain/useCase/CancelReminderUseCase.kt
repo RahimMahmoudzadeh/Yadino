@@ -3,9 +3,8 @@ package com.rahim.home.domain.useCase
 import com.rahim.home.domain.model.Routine
 import com.rahim.home.domain.repo.HomeRepository
 import com.rahim.yadino.base.reminder.ReminderScheduler
-import javax.inject.Inject
 
-class CancelReminderUseCase @Inject constructor(
+class CancelReminderUseCase(
     private val routineRepository: HomeRepository,
     private val reminderScheduler: ReminderScheduler,
 ) {

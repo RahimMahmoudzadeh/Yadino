@@ -1,15 +1,14 @@
 package com.rahim.home.domain.useCase
 
 import com.rahim.home.domain.model.Routine
-import com.rahim.yadino.base.reminder.ReminderScheduler
 import com.rahim.home.domain.repo.HomeRepository
 import com.rahim.yadino.base.Resource
+import com.rahim.yadino.base.reminder.ReminderScheduler
 import com.rahim.yadino.base.reminder.ReminderState
 import com.rahim.yadino.enums.SuccessMessage
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import javax.inject.Inject
 
-class UpdateReminderUseCase @Inject constructor(
+class UpdateReminderUseCase(
     private val routineRepository: HomeRepository,
     private val reminderScheduler: ReminderScheduler,
 ) {

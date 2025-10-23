@@ -8,9 +8,8 @@ import com.rahim.yadino.base.reminder.ReminderState
 import com.rahim.yadino.enums.SuccessMessage
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import timber.log.Timber
-import javax.inject.Inject
 
-class AddReminderUseCase @Inject constructor(
+class AddReminderUseCase(
     private val routineRepository: HomeRepository,
     private val reminderScheduler: ReminderScheduler,
 ) {

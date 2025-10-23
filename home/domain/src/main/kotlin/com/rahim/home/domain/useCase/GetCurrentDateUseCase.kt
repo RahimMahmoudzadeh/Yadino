@@ -2,8 +2,7 @@ package com.rahim.home.domain.useCase
 
 import com.rahim.home.domain.model.CurrentDate
 import com.rahim.home.domain.repo.HomeRepository
-import javax.inject.Inject
 
-class GetCurrentDateUseCase @Inject constructor(private val homeRepository: HomeRepository) {
+class GetCurrentDateUseCase(private val homeRepository: HomeRepository) {
   operator fun invoke(): CurrentDate = homeRepository.getCurrentDate()
 }
