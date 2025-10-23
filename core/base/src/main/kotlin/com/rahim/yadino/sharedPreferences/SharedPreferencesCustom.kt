@@ -11,9 +11,8 @@ import com.rahim.yadino.Constants.SAMPLE_NOTE
 import com.rahim.yadino.Constants.SAMPLE_ROUTINE
 import com.rahim.yadino.Constants.WELCOME_SHARED
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class SharedPreferencesCustom @Inject constructor(private val context: Context) {
+class SharedPreferencesCustom (private val context: Context) {
   private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = NAME_SHARED_PREFERENCE)
 
   suspend fun saveWelcomePage(isShow: Boolean) {

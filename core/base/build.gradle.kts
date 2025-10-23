@@ -1,7 +1,7 @@
 plugins {
     libs.plugins.yadino.run {
         alias(android.library)
-//        alias(android.hilt)
+        alias(di)
         alias(android.library.compose)
     }
 }

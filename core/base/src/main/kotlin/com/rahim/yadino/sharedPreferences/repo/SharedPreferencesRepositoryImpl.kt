@@ -3,10 +3,8 @@ package com.rahim.yadino.sharedPreferences.repo
 import com.rahim.yadino.sharedPreferences.SharedPreferencesCustom
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import javax.inject.Inject
 
-class SharedPreferencesRepositoryImpl @Inject
-constructor(private val sharedPreferencesCustom: SharedPreferencesCustom) :
+class SharedPreferencesRepositoryImpl(private val sharedPreferencesCustom: SharedPreferencesCustom) :
   SharedPreferencesRepository {
   override suspend fun saveShowWelcome(isShow: Boolean) {
     sharedPreferencesCustom.saveWelcomePage(isShow)
