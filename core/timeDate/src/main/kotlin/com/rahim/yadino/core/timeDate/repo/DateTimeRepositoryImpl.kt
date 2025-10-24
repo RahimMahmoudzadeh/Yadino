@@ -5,8 +5,6 @@ import com.rahim.yadino.core.timeDate.mapper.toTimeDate
 import com.rahim.yadino.core.timeDate.model.TimeDateModel
 import com.rahim.yadino.db.dateTime.dao.TimeDao
 import com.rahim.yadino.db.dateTime.model.TimeDateEntity
-import com.rahim.yadino.di.DefaultDispatcher
-import com.rahim.yadino.di.IODispatcher
 import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.enums.WeekName
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,11 +14,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
-import javax.inject.Inject
 
-class DateTimeRepositoryImpl @Inject constructor(
-  @DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
-  @IODispatcher val ioDispatcher: CoroutineDispatcher,
+class DateTimeRepositoryImpl(
+  val defaultDispatcher: CoroutineDispatcher,
+  val ioDispatcher: CoroutineDispatcher,
   private val timeDao: TimeDao,
 ) :
   DateTimeRepository {
