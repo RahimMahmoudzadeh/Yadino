@@ -31,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -76,6 +77,10 @@ fun DialogAddRoutine(
   onCloseDialog: () -> Unit,
   onRoutineCreated: (routine: RoutineUiModel) -> Unit,
 ) {
+
+  val size = LocalSize.current
+  val space = LocalSpacing.current
+  val fontSize = LocalFontSize.current
 
   var routineName by rememberSaveable { mutableStateOf(if (updateRoutine?.name.isNullOrBlank()) "" else updateRoutine.name) }
   var routineExplanation by rememberSaveable { mutableStateOf(if (updateRoutine?.explanation.isNullOrBlank()) "" else updateRoutine.explanation) }
@@ -235,7 +240,7 @@ fun DialogAddRoutine(
             )
             Text(
               modifier = Modifier.padding(top = space.space14, start = space.space4),
-              text = time?.persianLocate() ?: "",
+              text = time?.toPersianDigits() ?: "",
               color = MaterialTheme.colorScheme.primary,
               fontWeight = FontWeight.SemiBold,
               style = MaterialTheme.typography.bodyMedium,
@@ -315,7 +320,7 @@ fun DialogAddRoutine(
       }
     }
   }
-  ShowTimePicker(size = size, currentTime = time ?: "", dialogState = alarmDialogState) {
+  ShowTimePicker(sizeDimensions = size, currentTime = time ?: "", dialogState = alarmDialogState) {
     time = it.toString()
   }
 }
@@ -324,12 +329,13 @@ fun DialogAddRoutine(
 @Composable
 fun ShowTimePicker(
   currentTime: String,
+  sizeDimensions: SizeDimensions,
   dialogState: MaterialDialogState,
   time: (LocalTime) -> Unit,
 ) {
   MaterialDialog(
     properties = DialogProperties(dismissOnClickOutside = false),
-    border = BorderStroke(size.size2, Brush.horizontalGradient(gradientColors)),
+    border = BorderStroke(sizeDimensions.size2, Brush.horizontalGradient(gradientColors)),
     backgroundColor = MaterialTheme.colorScheme.background,
     dialogState = dialogState,
     buttons = {

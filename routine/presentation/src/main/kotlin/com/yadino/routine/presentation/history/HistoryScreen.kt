@@ -36,18 +36,18 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.routine.presentation.R
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun HistoryRoute(
   modifier: Modifier = Modifier,
-  historyViewModel: HistoryViewModel = hiltViewModel(),
+  historyViewModel: HistoryViewModel = koinViewModel(),
 ) {
   val (state, event) = use(historyViewModel)
 

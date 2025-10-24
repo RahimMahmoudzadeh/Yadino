@@ -7,7 +7,6 @@ import com.yadino.routine.domain.useCase.GetAllRoutineUseCase
 import com.yadino.routine.presentation.mapper.toRoutineUiModel
 import com.yadino.routine.presentation.model.IncompleteOrCompletedRoutinesUiModel
 import com.yadino.routine.presentation.model.RoutineUiModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,10 +16,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class HistoryViewModel @Inject constructor(
+class HistoryViewModel(
   private val getRoutineUseCase: GetAllRoutineUseCase,
 ) : ViewModel(), RoutineHistoryContract {
 
