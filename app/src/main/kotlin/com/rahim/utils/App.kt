@@ -8,7 +8,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.rahim.BuildConfig
 import com.rahim.R
-import com.rahim.di.CafeBazaarDiModule
+import com.rahim.di.FlavorDiModule
 import com.rahim.di.YadinoDiModule
 import com.rahim.yadino.Constants.CHANNEL_ID
 import com.rahim.yadino.Constants.CHANNEL_NAME
@@ -36,7 +36,7 @@ class App : Application() {
         YadinoDiModule,
         HomeDiModule,
         HomeDiPresentationModule,
-        CafeBazaarDiModule,
+        FlavorDiModule,
         YadinoDatabaseModule,
         TimeDateDiModule,
         CoreDiModule,
