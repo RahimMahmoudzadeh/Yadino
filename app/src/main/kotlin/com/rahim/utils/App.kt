@@ -21,6 +21,7 @@ import com.rahim.yadino.note.data.di.NoteDiModule
 import com.rahim.yadino.note.presentation.di.NotePresentationDiModule
 import com.rahim.yadino.onboarding.presentation.di.OnBoardingDiModule
 import com.yadino.routine.data.di.RoutineDiModule
+import com.yadino.routine.presentation.di.RoutineUiDiModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
@@ -43,6 +44,7 @@ class App : Application() {
         NotePresentationDiModule,
         OnBoardingDiModule,
         RoutineDiModule,
+        RoutineUiDiModule,
       )
     }
 

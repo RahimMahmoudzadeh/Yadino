@@ -44,8 +44,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.calculateMonthName
@@ -61,22 +59,23 @@ import com.rahim.yadino.designsystem.utils.size.SizeDimensions
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.font_medium
 import com.rahim.yadino.enums.RoutineExplanation
-import com.rahim.yadino.toStringResource
-import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.routine.presentation.R
 import com.rahim.yadino.showToastShort
+import com.rahim.yadino.toPersianDigits
+import com.rahim.yadino.toStringResource
 import com.yadino.routine.presentation.component.DialogAddRoutine
 import com.yadino.routine.presentation.component.ListRoutines
 import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutineUiModel
 import com.yadino.routine.presentation.model.TimeDateUiModel
 import kotlinx.collections.immutable.PersistentList
+import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
 
 @Composable
 fun RoutineRoute(
   modifier: Modifier = Modifier,
-  viewModel: RoutineScreenViewModel = hiltViewModel(),
+  viewModel: RoutineScreenViewModel = koinViewModel(),
   openDialogAddRoutine: Boolean,
   showSearchBar: Boolean,
   onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,

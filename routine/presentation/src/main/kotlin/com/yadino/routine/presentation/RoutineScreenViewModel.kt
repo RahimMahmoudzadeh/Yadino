@@ -8,7 +8,6 @@ import com.rahim.yadino.Constants.MONTH_MIN
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.core.timeDate.repo.DateTimeRepository
-import com.rahim.yadino.di.IODispatcher
 import com.yadino.routine.domain.useCase.AddReminderUseCase
 import com.yadino.routine.domain.useCase.CancelReminderUseCase
 import com.yadino.routine.domain.useCase.DeleteReminderUseCase
@@ -20,7 +19,6 @@ import com.yadino.routine.presentation.mapper.toRoutineUiModel
 import com.yadino.routine.presentation.mapper.toTimeDateUiModel
 import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutineUiModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -34,10 +32,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
-@HiltViewModel
-class RoutineScreenViewModel @Inject constructor(
+class RoutineScreenViewModel(
   private val addReminderUseCase: AddReminderUseCase,
   private val updateReminderUseCase: UpdateReminderUseCase,
   private val cancelReminderUseCase: CancelReminderUseCase,
@@ -45,7 +41,6 @@ class RoutineScreenViewModel @Inject constructor(
   private val getRemindersUseCase: GetRemindersUseCase,
   private val searchRoutineUseCase: SearchRoutineUseCase,
   private val dateTimeRepository: DateTimeRepository,
-  @IODispatcher
   private val ioDispatcher: CoroutineDispatcher,
 ) :
   ViewModel(), RoutineContract {
