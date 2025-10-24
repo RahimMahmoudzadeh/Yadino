@@ -17,6 +17,7 @@ import com.rahim.yadino.db.di.YadinoDatabaseModule
 import com.rahim.yadino.di.CoreDiModule
 import com.rahim.yadino.home.data.di.HomeDiModule
 import com.rahim.yadino.home.presentation.di.HomeDiPresentationModule
+import com.rahim.yadino.note.data.di.NoteDiModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
@@ -27,7 +28,16 @@ class App : Application() {
 
     startKoin {
       androidContext(this@App)
-      modules(YadinoDiModule, HomeDiModule, HomeDiPresentationModule, CafeBazaarDiModule, YadinoDatabaseModule, TimeDateDiModule, CoreDiModule)
+      modules(
+        YadinoDiModule,
+        HomeDiModule,
+        HomeDiPresentationModule,
+        CafeBazaarDiModule,
+        YadinoDatabaseModule,
+        TimeDateDiModule,
+        CoreDiModule,
+        NoteDiModule
+      )
     }
 
     if (BuildConfig.DEBUG) {

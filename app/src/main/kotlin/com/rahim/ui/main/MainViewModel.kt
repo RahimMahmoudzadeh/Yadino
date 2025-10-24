@@ -24,7 +24,6 @@ class MainViewModel(
   private val repositoryRoutine: RoutineRepository,
   private val noteRepository: NoteRepository,
   private val appDistributionActions: AppDistributionActions,
-  @IODispatcher
   private val ioDispatcher: CoroutineDispatcher,
   private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) :
