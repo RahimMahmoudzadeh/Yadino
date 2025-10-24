@@ -4,9 +4,8 @@ import com.yadino.routine.domain.repo.RoutineRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
-class SearchRoutineUseCase @Inject constructor(
+class SearchRoutineUseCase(
     private val routineRepository: RoutineRepository,
 ) {
   operator fun invoke(name: String, yearNumber: Int?, monthNumber: Int?, dayNumber: Int?, coroutineScope: CoroutineScope) = routineRepository.searchRoutine(name, yearNumber, monthNumber, dayNumber)

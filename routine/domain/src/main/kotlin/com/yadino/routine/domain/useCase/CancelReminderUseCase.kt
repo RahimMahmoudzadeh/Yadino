@@ -1,11 +1,10 @@
 package com.yadino.routine.domain.useCase
 
 import com.rahim.yadino.base.reminder.ReminderScheduler
-import com.yadino.routine.domain.repo.RoutineRepository
 import com.yadino.routine.domain.model.Routine
-import javax.inject.Inject
+import com.yadino.routine.domain.repo.RoutineRepository
 
-class CancelReminderUseCase @Inject constructor(
+class CancelReminderUseCase(
   private val routineRepository: RoutineRepository,
   private val reminderScheduler: ReminderScheduler,
 ) {

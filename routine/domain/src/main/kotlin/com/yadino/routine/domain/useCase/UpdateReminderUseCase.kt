@@ -5,11 +5,10 @@ import com.rahim.yadino.base.reminder.ReminderScheduler
 import com.rahim.yadino.base.reminder.ReminderState
 import com.rahim.yadino.enums.SuccessMessage
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.yadino.routine.domain.repo.RoutineRepository
 import com.yadino.routine.domain.model.Routine
-import javax.inject.Inject
+import com.yadino.routine.domain.repo.RoutineRepository
 
-class UpdateReminderUseCase @Inject constructor(
+class UpdateReminderUseCase(
   private val routineRepository: RoutineRepository,
   private val reminderScheduler: ReminderScheduler,
 ) {
