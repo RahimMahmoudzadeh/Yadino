@@ -14,10 +14,9 @@ import kotlinx.coroutines.flow.map
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
 import timber.log.Timber
-import javax.inject.Inject
 import kotlin.random.Random
 
-class HomeRepositoryImpl @Inject constructor(
+class HomeRepositoryImpl(
   private val routineDao: RoutineDao,
   private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : HomeRepository {
