@@ -41,9 +41,7 @@ import com.rahim.yadino.Constants
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.library.designsystem.R
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class WakeupActivity : ComponentActivity() {
   private var routineName: String? = null
   private var routineId: String? = null
