@@ -109,8 +109,8 @@ fun RoutineRoute(
     dialogMonthChange = { year, month, increaseDecrease ->
       event.invoke(RoutineContract.Event.DialogMonthChange(yearNumber = year, monthNumber = month, increaseDecrease = increaseDecrease))
     },
-    monthChange = { year, month, increaseDecrease ->
-      event.invoke(RoutineContract.Event.MonthChange(yearNumber = year, monthNumber = month, increaseDecrease = increaseDecrease))
+    increaseOrDecrease = { increaseDecrease ->
+      event.invoke(RoutineContract.Event.MonthChange(increaseDecrease = increaseDecrease))
     },
     weekChange = { increaseDecrease ->
       event.invoke(RoutineContract.Event.WeekChange(increaseDecrease = increaseDecrease))
@@ -131,7 +131,7 @@ private fun RoutineScreen(
   onAddRoutine: (RoutineUiModel) -> Unit,
   onDeleteRoutine: (RoutineUiModel) -> Unit,
   onSearchText: (String) -> Unit,
-  monthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
+  increaseOrDecrease: (increaseDecrease: IncreaseDecrease) -> Unit,
   dialogMonthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
   weekChange: (IncreaseDecrease) -> Unit,
 ) {
@@ -172,7 +172,7 @@ private fun RoutineScreen(
       dayCheckedNumber = dayCheckedNumber,
       screenWidth = screenWidth,
       monthChange = { increaseDecrease ->
-        monthChange(state.currentYear, state.currentMonth, increaseDecrease)
+        increaseOrDecrease(increaseDecrease)
       },
       weekChange = weekChange,
       space = space,

@@ -77,7 +77,7 @@ class RoutineScreenViewModel(
 
       is RoutineContract.Event.UpdateRoutine -> updateRoutine(event.routine)
       is RoutineContract.Event.GetAllTimes -> getTimes()
-      is RoutineContract.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.yearNumber, event.monthNumber, event.increaseDecrease)
+      is RoutineContract.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.increaseDecrease)
       is RoutineContract.Event.WeekChange -> checkWeekIncreaseOrDecrease(event.increaseDecrease)
       is RoutineContract.Event.DialogMonthChange -> {
         checkDialogMonthChange(event.monthNumber, event.yearNumber, event.increaseDecrease)
@@ -105,10 +105,10 @@ class RoutineScreenViewModel(
     }
   }
 
-  private fun checkMonthIncreaseOrDecrease(yearNumber: Int, monthNumber: Int, increaseDecrease: IncreaseDecrease) {
+  private fun checkMonthIncreaseOrDecrease(increaseDecrease: IncreaseDecrease) {
     when (increaseDecrease) {
       IncreaseDecrease.INCREASE -> {
-        monthIncrease(month = monthNumber, year = yearNumber) { year, month ->
+        monthIncrease(month = state.value.currentMonth, year = state.value.currentYear) { year, month ->
           getTimesMonth(year, month)
           updateDayChecked(year, month)
           updateIndex(month, year)
@@ -116,7 +116,7 @@ class RoutineScreenViewModel(
       }
 
       IncreaseDecrease.DECREASE -> {
-        monthDecrease(month = monthNumber, year = yearNumber) { year, month ->
+        monthDecrease(month = state.value.currentMonth, year = state.value.currentYear) { year, month ->
           getTimesMonth(year, month)
           updateDayChecked(year, month)
           updateIndex(month, year)

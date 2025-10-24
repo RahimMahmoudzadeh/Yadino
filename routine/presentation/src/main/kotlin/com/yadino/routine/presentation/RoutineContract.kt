@@ -21,12 +21,12 @@ interface RoutineContract : UnidirectionalViewModel<RoutineContract.Event, Routi
     data class SearchRoutineByName(val routineName: String) : Event()
     data class GetRoutines(val timeDate: TimeDateUiModel) : Event()
     data class WeekChange(val increaseDecrease: IncreaseDecrease) : Event()
-    data class MonthChange(val yearNumber: Int, val monthNumber: Int, val increaseDecrease: IncreaseDecrease) : Event()
+    data class MonthChange(val increaseDecrease: IncreaseDecrease) : Event()
     data class DialogMonthChange(val yearNumber: Int, val monthNumber: Int, val increaseDecrease: IncreaseDecrease) : Event()
     data object GetAllTimes : Event()
   }
 
-  @Stable
+  @Immutable
   data class State(
       val routines: LoadableData<PersistentList<RoutineUiModel>> = LoadableData.Initial,
       val index: Int = 0,
