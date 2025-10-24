@@ -19,6 +19,7 @@ import com.rahim.yadino.home.data.di.HomeDiModule
 import com.rahim.yadino.home.presentation.di.HomeDiPresentationModule
 import com.rahim.yadino.note.data.di.NoteDiModule
 import com.rahim.yadino.note.presentation.di.NotePresentationDiModule
+import com.rahim.yadino.onboarding.presentation.di.OnBoardingDiModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
@@ -39,6 +40,7 @@ class App : Application() {
         CoreDiModule,
         NoteDiModule,
         NotePresentationDiModule,
+        OnBoardingDiModule,
       )
     }
 
