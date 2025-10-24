@@ -5,7 +5,7 @@ import com.rahim.yadino.note.domain.model.Note
 import kotlinx.coroutines.flow.Flow
 
 class GetNotesUseCase(private val noteRepository: NoteRepository) {
-  operator fun invoke(note: Note): Flow<List<Note>> {
+  operator fun invoke(): Flow<List<Note>> {
     return noteRepository.getNotes()
   }
 }

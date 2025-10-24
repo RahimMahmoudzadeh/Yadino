@@ -1,6 +1,8 @@
 package com.rahim.yadino.note.presentation.mapper
 
+import com.rahim.yadino.note.domain.model.NameNote
 import com.rahim.yadino.note.domain.model.Note
+import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.model.PriorityNote
 
@@ -35,3 +37,5 @@ fun checkState(state: Int): PriorityNote {
     else -> PriorityNote.LOW_PRIORITY
   }
 }
+
+fun NameNoteUi.toNameNote(): NameNote = NameNote(name = name)

@@ -18,26 +18,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
-import com.rahim.yadino.note.presentation.component.ItemListNote
 import com.rahim.yadino.designsystem.component.ShowSearchBar
-import com.rahim.yadino.note.presentation.component.DialogAddNote
 import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
+import com.rahim.yadino.note.presentation.component.DialogAddNote
+import com.rahim.yadino.note.presentation.component.ItemListNote
+import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import kotlinx.collections.immutable.PersistentList
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun NoteRoute(
   modifier: Modifier = Modifier,
-  viewModel: NoteViewModel = hiltViewModel(),
+  viewModel: NoteViewModel = koinViewModel(),
   openDialog: Boolean,
   clickSearch: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,
@@ -75,7 +75,7 @@ private fun NoteScreen(
   onUpdateNote: (NoteUiModel) -> Unit,
   onAddNote: (NoteUiModel) -> Unit,
   onDelete: (NoteUiModel) -> Unit,
-  onSearchText: (String) -> Unit,
+  onSearchText: (NameNoteUi) -> Unit,
 ) {
   val noteDeleteDialog = rememberSaveable { mutableStateOf<NoteUiModel?>(null) }
   val noteUpdateDialog = rememberSaveable { mutableStateOf<NoteUiModel?>(null) }
@@ -95,7 +95,7 @@ private fun NoteScreen(
     ) {
     ShowSearchBar(clickSearch, searchText = searchText) { search ->
       searchText = search
-      onSearchText(searchText)
+      onSearchText(NameNoteUi(search))
     }
     LoadableComponent(
       loadableData = state.notes,

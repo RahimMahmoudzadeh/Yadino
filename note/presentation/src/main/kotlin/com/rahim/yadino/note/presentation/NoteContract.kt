@@ -5,6 +5,7 @@ import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.rahim.yadino.note.domain.model.Note
+import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import kotlinx.collections.immutable.PersistentList
 
@@ -12,7 +13,7 @@ interface NoteContract : UnidirectionalViewModel<NoteContract.NoteEvent, NoteCon
 
   @Immutable
   sealed class NoteEvent() {
-    data class SearchNote(val searchText: String) : NoteEvent()
+    data class SearchNote(val nameNoteUi: NameNoteUi) : NoteEvent()
     data class DeleteNote(val deleteNote: NoteUiModel) : NoteEvent()
     data class UpdateNote(val updateNote: NoteUiModel) : NoteEvent()
     data class AddNote(val addNote: NoteUiModel) : NoteEvent()

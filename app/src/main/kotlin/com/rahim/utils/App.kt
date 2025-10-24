@@ -18,6 +18,7 @@ import com.rahim.yadino.di.CoreDiModule
 import com.rahim.yadino.home.data.di.HomeDiModule
 import com.rahim.yadino.home.presentation.di.HomeDiPresentationModule
 import com.rahim.yadino.note.data.di.NoteDiModule
+import com.rahim.yadino.note.presentation.di.NotePresentationDiModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
@@ -36,7 +37,8 @@ class App : Application() {
         YadinoDatabaseModule,
         TimeDateDiModule,
         CoreDiModule,
-        NoteDiModule
+        NoteDiModule,
+        NotePresentationDiModule,
       )
     }
 
