@@ -3,15 +3,14 @@ package com.rahim
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.rahim.data.flavor.AppDistributionActions
-import com.rahim.data.flavor.DrawerItemType
-import com.rahim.data.flavor.StateOfClickItemDrawable
+import com.rahim.data.distributionActions.AppDistributionActions
+import com.rahim.data.distributionActions.DrawerItemType
+import com.rahim.data.distributionActions.StateOfClickItemDrawable
 import com.rahim.yadino.Constants.MY_KET_LINK
 import com.rahim.yadino.Constants.MY_KET_PACKAGE_NAME
 import com.rahim.yadino.isPackageInstalled
-import javax.inject.Inject
 
-class MyketDistributionActionsImpl @Inject constructor(private val context: Context) : AppDistributionActions {
+class MyketDistributionActionsImpl(private val context: Context) : AppDistributionActions {
   override fun drawerItemType(drawerItemType: DrawerItemType): StateOfClickItemDrawable {
     return when (drawerItemType) {
       DrawerItemType.RateToApp -> {
