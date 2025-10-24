@@ -21,10 +21,9 @@ import kotlinx.coroutines.withContext
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
 import timber.log.Timber
-import javax.inject.Inject
 import kotlin.random.Random
 
-class RoutineRepositoryImpl @Inject constructor(
+class RoutineRepositoryImpl(
     private val routineDao: RoutineDao,
     private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : RoutineRepository {
