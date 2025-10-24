@@ -1,5 +1,6 @@
 package com.rahim.yadino.note.domain
 
+import com.rahim.yadino.note.domain.model.NameNote
 import com.rahim.yadino.note.domain.model.Note
 import kotlinx.coroutines.flow.Flow
 
@@ -9,5 +10,5 @@ interface NoteRepository {
   suspend fun deleteNote(note: Note)
   fun getNotes(): Flow<List<Note>>
   suspend fun addSampleNote()
-  fun searchNote(name: String): Flow<List<Note>>
+  fun searchNote(nameNote: NameNote): Flow<List<Note>>
 }
