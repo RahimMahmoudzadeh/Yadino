@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -67,10 +66,11 @@ import com.rahim.yadino.navigation.component.BottomNavigationBar
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
 
-  private val mainViewModel: MainViewModel by viewModels()
+  private val mainViewModel: MainViewModel by viewModel()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     installSplashScreen()
