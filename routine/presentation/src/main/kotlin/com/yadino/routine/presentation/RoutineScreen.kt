@@ -25,8 +25,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,6 +71,10 @@ import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutineUiModel
 import com.yadino.routine.presentation.model.TimeDateUiModel
 import kotlinx.collections.immutable.PersistentList
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.time.debounce
 import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
 
@@ -118,6 +124,7 @@ fun RoutineRoute(
   )
 }
 
+@OptIn(FlowPreview::class)
 @Composable
 private fun RoutineScreen(
   modifier: Modifier,
@@ -145,8 +152,17 @@ private fun RoutineScreen(
   val routineUpdateDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
 
   var errorClick by rememberSaveable { mutableStateOf(false) }
-  var searchText by rememberSaveable { mutableStateOf("") }
 
+  var searchQuery by remember { mutableStateOf("") }
+
+  LaunchedEffect(Unit) {
+    snapshotFlow { searchQuery }
+      .debounce(300)
+      .distinctUntilChanged()
+      .collect { query ->
+        onSearchText(query)
+      }
+  }
   LaunchedEffect(state.errorMessageCode) {
     state.errorMessageCode?.let { errorMessageCode ->
       context.showToastShort(stringId = errorMessageCode.toStringResource())
@@ -157,9 +173,8 @@ private fun RoutineScreen(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Top,
   ) {
-    ShowSearchBar(showSearchBar, searchText = searchText) { search ->
-      searchText = search
-      onSearchText(searchText)
+    ShowSearchBar(showSearchBar, searchText = searchQuery) { search ->
+      searchQuery = search
     }
 
     val configuration = LocalConfiguration.current
@@ -185,7 +200,7 @@ private fun RoutineScreen(
       size = size,
       state = state,
       context = context,
-      searchText = searchText,
+      searchText = searchQuery,
       routineUpdateDialog = {
         if (it.isChecked) {
           Toast.makeText(
