@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,6 +42,9 @@ import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.toStringResource
 import kotlinx.collections.immutable.PersistentList
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -76,6 +81,7 @@ internal fun HomeRoute(
   )
 }
 
+@OptIn(FlowPreview::class)
 @Composable
 private fun HomeScreen(
   modifier: Modifier = Modifier,
@@ -101,6 +107,14 @@ private fun HomeScreen(
   homeState.errorMessage?.let { errorMessage ->
     context.showToastShort(errorMessage.toStringResource())
   }
+  LaunchedEffect(Unit) {
+    snapshotFlow { searchText }
+      .debounce(300)
+      .distinctUntilChanged()
+      .collect { query ->
+        onSearchText(query)
+      }
+  }
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Top,
@@ -108,7 +122,6 @@ private fun HomeScreen(
   ) {
     ShowSearchBar(clickSearch, searchText = searchText) { search ->
       searchText = search
-      onSearchText(searchText)
     }
     LoadableComponent(
       loadableData = homeState.routines,
