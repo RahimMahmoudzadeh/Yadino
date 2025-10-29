@@ -61,5 +61,9 @@ gradlePlugin {
       id = "yadino.android.application.firebase"
       implementationClass = "plugins.AndroidApplicationFirebaseConventionPlugin"
     }
+    register("yadinoDecompose") {
+      id = "yadino.decompose"
+      implementationClass = "plugins.YadinoDecomposeConventionPlugin"
+    }
   }
 }

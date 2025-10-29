@@ -58,6 +58,10 @@ jetbrainsKotlinJvm = "2.2.21"
 #koin
 koin-bom = "4.1.1"
 
+#decompose
+decompose = "3.4.0-beta01"
+decompose-essenty = "2.5.0"
+
 [libraries]
 #core
 androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
@@ -84,6 +88,11 @@ lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", versio
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 
+#decompose
+decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+decompose-jetbrains = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decompose" }
+decompose-experimental = { module = "com.arkivanov.decompose:extensions-compose-experimental", version.ref = "decompose" }
+decompose-lifecycle-coroutines = { module = "com.arkivanov.essenty:lifecycle-coroutines", version.ref = "decompose-essenty" }
 
 #room
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidx-room" }
@@ -164,6 +173,7 @@ firebase = ["firebaseMessaging", "firebaseAnalytics", "firebaseCrashlytics"]
 accompanist = ["accompanist-pager", "accompanist-pager-indicators", "accompanist-permissions", "accompanist-systemuicontroller"]
 test = ["androidx-test-ext", "androidx-test-espresso", "androidx-compose-ui-test"]
 vico = ["vico-compose", "vico-compose-m3"]
+decompose = ["decompose", "decompose-jetbrains", "decompose-experimental", "decompose-lifecycle-coroutines"]
 
 
 [plugins]
@@ -189,4 +199,5 @@ yadino-android-library = { id = "yadino.android.library", version = "unspecified
 yadino-android-library-compose = { id = "yadino.android.library.compose", version = "unspecified" }
 yadino-android-room = { id = "yadino.android.room", version = "unspecified" }
 yadino-android-navigation = { id = "yadino.android.navigation", version = "unspecified" }
+yadino-decompose = { id = "stap.decompose", version = "unspecified" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
