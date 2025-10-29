@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,6 +34,10 @@ import com.rahim.yadino.note.presentation.component.ItemListNote
 import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import kotlinx.collections.immutable.PersistentList
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.time.debounce
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -65,6 +71,7 @@ internal fun NoteRoute(
   )
 }
 
+@OptIn(FlowPreview::class)
 @Composable
 private fun NoteScreen(
   modifier: Modifier = Modifier,
@@ -86,6 +93,15 @@ private fun NoteScreen(
   val space = LocalSpacing.current
   val fontSize = LocalFontSize.current
 
+  LaunchedEffect(Unit) {
+    snapshotFlow { searchText }
+      .debounce(300)
+      .distinctUntilChanged()
+      .collect { query ->
+        onSearchText(NameNoteUi(name = query))
+      }
+  }
+
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Top,
@@ -95,7 +111,6 @@ private fun NoteScreen(
     ) {
     ShowSearchBar(clickSearch, searchText = searchText) { search ->
       searchText = search
-      onSearchText(NameNoteUi(search))
     }
     LoadableComponent(
       loadableData = state.notes,
@@ -188,7 +203,7 @@ fun ItemsNote(
     modifier = Modifier
       .fillMaxWidth()
       .padding(
-        horizontal = spaceDimensions.space16
+        horizontal = spaceDimensions.space16,
       ),
     contentPadding = PaddingValues(top = spaceDimensions.space24),
   ) {
