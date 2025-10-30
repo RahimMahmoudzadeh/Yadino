@@ -1,7 +1,11 @@
-package com.rahim.yadino.home.presentation
+package com.rahim.yadino.home.presentation.component
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.update
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.rahim.home.domain.useCase.AddReminderUseCase
 import com.rahim.home.domain.useCase.CancelReminderUseCase
 import com.rahim.home.domain.useCase.DeleteReminderUseCase
@@ -17,18 +21,19 @@ import com.rahim.yadino.home.presentation.mapper.toRoutine
 import com.rahim.yadino.home.presentation.mapper.toRoutineUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.coroutines.CoroutineContext
 
-class HomeViewModel(
+class HomeComponentImpl(
+  componentContext: ComponentContext,
+  mainContext: CoroutineContext,
   private val addReminderUseCase: AddReminderUseCase,
   private val updateReminderUseCase: UpdateReminderUseCase,
   private val cancelReminderUseCase: CancelReminderUseCase,
@@ -36,37 +41,43 @@ class HomeViewModel(
   private val getTodayRoutinesUseCase: GetTodayRoutinesUseCase,
   private val searchRoutineUseCase: SearchRoutineUseCase,
   private val getCurrentDateUseCase: GetCurrentDateUseCase,
-) : ViewModel(), HomeContract {
+) : HomeComponent, ComponentContext by componentContext {
 
-  private val _state = MutableStateFlow(HomeContract.HomeState())
-  override val state: StateFlow<HomeContract.HomeState> = _state.onStart {
-    setCurrentTime()
-    getRoutines()
-  }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeContract.HomeState())
+  private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
 
-  override fun event(event: HomeContract.HomeEvent) {
+  private val _state = MutableValue(HomeComponent.State())
+  override val state: Value<HomeComponent.State> = _state
+
+  init {
+    lifecycle.doOnCreate {
+      setCurrentTime()
+      getRoutines()
+    }
+  }
+
+  override fun event(event: HomeComponent.Event) {
     when (event) {
-      HomeContract.HomeEvent.GetRoutines -> {
+      HomeComponent.Event.GetRoutines -> {
         getRoutines()
       }
 
-      is HomeContract.HomeEvent.AddRoutine -> {
+      is HomeComponent.Event.AddRoutine -> {
         addRoutine(event.routine)
       }
 
-      is HomeContract.HomeEvent.UpdateRoutine -> {
+      is HomeComponent.Event.UpdateRoutine -> {
         updateRoutine(event.routine)
       }
 
-      is HomeContract.HomeEvent.CheckedRoutine -> {
+      is HomeComponent.Event.CheckedRoutine -> {
         checkedRoutine(event.routine)
       }
 
-      is HomeContract.HomeEvent.DeleteRoutine -> {
+      is HomeComponent.Event.DeleteRoutine -> {
         deleteRoutine(event.routine)
       }
 
-      is HomeContract.HomeEvent.SearchRoutine -> {
+      is HomeComponent.Event.SearchRoutine -> {
         searchRoutines(searchText = event.routineName)
       }
     }
@@ -81,7 +92,7 @@ class HomeViewModel(
   }
 
   private fun searchRoutines(searchText: String) {
-    viewModelScope.launch {
+    scope.launch {
       if (searchText.isBlank()) {
         Timber.tag("routineSearch").d("getRoutines->$searchText")
         getRoutines()
@@ -92,7 +103,7 @@ class HomeViewModel(
   }
 
   private fun getRoutines() {
-    viewModelScope.launch {
+    scope.launch {
       _state.update {
         it.copy(routines = LoadableData.Loading)
       }
@@ -147,14 +158,14 @@ class HomeViewModel(
   }
 
   private fun deleteRoutine(routineModel: RoutineUiModel) {
-    viewModelScope.launch {
+    scope.launch {
       deleteReminderUseCase(routineModel.toRoutine())
     }
   }
 
   private fun updateRoutine(routineModel: RoutineUiModel) {
     Timber.tag("addRoutine").d("updateRoutine")
-    viewModelScope.launch {
+    scope.launch {
       val response = updateReminderUseCase(routineModel.toRoutine())
       when (response) {
         is Resource.Error -> {
@@ -171,13 +182,13 @@ class HomeViewModel(
   }
 
   private fun checkedRoutine(routineModel: RoutineUiModel) {
-    viewModelScope.launch {
+    scope.launch {
       cancelReminderUseCase(routineModel.toRoutine())
     }
   }
 
   private fun addRoutine(routineModel: RoutineUiModel) {
-    viewModelScope.launch {
+    scope.launch {
       Timber.tag("addRoutine").d("addRoutine")
       val response = addReminderUseCase(routineModel.toRoutine())
       when (response) {
