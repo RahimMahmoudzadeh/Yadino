@@ -46,7 +46,7 @@ androidTools = "31.13.0"
 androidxJunit = "1.2.1"
 
 #firebase
-firebasePerfPlugin = "2.0.1"
+firebasePerfPlugin = "2.0.2"
 firebaseCrashlyticsPlugin = "3.0.6"
 firebaseBom = "33.12.0"
 
