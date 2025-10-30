@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.rahim.yadino.navigation.Destinations
-import com.rahim.yadino.home.presentation.HomeRoute
+import com.rahim.yadino.home.presentation.ui.HomeRoute
 
 fun NavController.navigateToHome(navOptions: NavOptions? = null) {
   this.navigate(Destinations.Home.route, navOptions)

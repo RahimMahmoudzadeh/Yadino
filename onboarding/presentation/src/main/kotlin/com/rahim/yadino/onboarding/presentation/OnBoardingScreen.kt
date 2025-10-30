@@ -55,9 +55,9 @@ import kotlin.math.max
 
 @Composable
 internal fun OnBoardingRoute(
-  modifier: Modifier = Modifier,
-  viewModel: OnBoardingViewModel = koinViewModel(),
-  navigateToHome: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: OnBoardingComponent = koinViewModel(),
+    navigateToHome: () -> Unit,
 ) {
   val (state, event) = use(viewModel)
 

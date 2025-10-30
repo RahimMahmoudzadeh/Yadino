@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class OnBoardingViewModel(
+class OnBoardingComponent(
   private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : ViewModel(), OnBoardingContract {
 

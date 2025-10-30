@@ -46,8 +46,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun HistoryRoute(
-  modifier: Modifier = Modifier,
-  historyViewModel: HistoryViewModel = koinViewModel(),
+    modifier: Modifier = Modifier,
+    historyViewModel: HistoryComponent = koinViewModel(),
 ) {
   val (state, event) = use(historyViewModel)
 

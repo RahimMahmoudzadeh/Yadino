@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class NoteViewModel(
+class NoteComponent(
   private val addNoteUseCase: AddNoteUseCase,
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val updateNoteUseCase: UpdateNoteUseCase,

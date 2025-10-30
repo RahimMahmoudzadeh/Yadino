@@ -74,14 +74,13 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.time.debounce
 import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
 
 @Composable
 fun RoutineRoute(
   modifier: Modifier = Modifier,
-  viewModel: RoutineScreenViewModel = koinViewModel(),
+  viewModel: RoutineScreenComponent = koinViewModel(),
   openDialogAddRoutine: Boolean,
   showSearchBar: Boolean,
   onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,

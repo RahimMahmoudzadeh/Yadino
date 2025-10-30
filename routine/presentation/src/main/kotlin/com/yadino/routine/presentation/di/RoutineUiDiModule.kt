@@ -1,15 +1,15 @@
 package com.yadino.routine.presentation.di
 
 import com.rahim.yadino.enums.DispatchersQualifier
-import com.yadino.routine.presentation.RoutineScreenViewModel
-import com.yadino.routine.presentation.history.HistoryViewModel
+import com.yadino.routine.presentation.RoutineScreenComponent
+import com.yadino.routine.presentation.history.HistoryComponent
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val RoutineUiDiModule = module {
   viewModel {
-    RoutineScreenViewModel(
+    RoutineScreenComponent(
       addReminderUseCase = get(),
       cancelReminderUseCase = get(),
       deleteReminderUseCase = get(),
@@ -20,5 +20,5 @@ val RoutineUiDiModule = module {
       ioDispatcher = get((named(DispatchersQualifier.IO))),
     )
   }
-  viewModel { HistoryViewModel(getRoutineUseCase = get()) }
+  viewModel { HistoryComponent(getRoutineUseCase = get()) }
 }

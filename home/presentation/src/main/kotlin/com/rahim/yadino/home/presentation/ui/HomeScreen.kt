@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation
+package com.rahim.yadino.home.presentation.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -33,8 +33,9 @@ import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.enums.RoutineExplanation
-import com.rahim.yadino.home.presentation.component.DialogAddRoutine
-import com.rahim.yadino.home.presentation.component.ListRoutines
+import com.rahim.yadino.home.presentation.component.HomeComponent
+import com.rahim.yadino.home.presentation.ui.component.DialogAddRoutine
+import com.rahim.yadino.home.presentation.ui.component.ListRoutines
 import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.library.designsystem.R
@@ -53,30 +54,30 @@ internal fun HomeRoute(
   openDialog: Boolean,
   clickSearch: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,
-  viewModel: HomeViewModel = koinViewModel(),
+  viewModel: HomeComponent = koinViewModel(),
 ) {
   val (state, event) = use(viewModel = viewModel)
 
   HomeScreen(
     modifier = modifier,
-    homeState = state,
+    state = state,
     openDialog = openDialog,
     clickSearch = clickSearch,
     onCheckedRoutine = {
-      event.invoke(HomeContract.HomeEvent.CheckedRoutine(it))
+      event.invoke(HomeComponent.Event.CheckedRoutine(it))
     },
     onDeleteRoutine = {
-      event.invoke(HomeContract.HomeEvent.DeleteRoutine(it))
+      event.invoke(HomeComponent.Event.DeleteRoutine(it))
     },
     onUpdateRoutine = {
-      event.invoke(HomeContract.HomeEvent.UpdateRoutine(it))
+      event.invoke(HomeComponent.Event.UpdateRoutine(it))
     },
     onAddRoutine = {
-      event.invoke(HomeContract.HomeEvent.AddRoutine(it))
+      event.invoke(HomeComponent.Event.AddRoutine(it))
     },
     onOpenDialog = onOpenDialog,
     onSearchText = {
-      event.invoke(HomeContract.HomeEvent.SearchRoutine(it))
+      event.invoke(HomeComponent.Event.SearchRoutine(it))
     },
   )
 }
@@ -85,7 +86,7 @@ internal fun HomeRoute(
 @Composable
 private fun HomeScreen(
   modifier: Modifier = Modifier,
-  homeState: HomeContract.HomeState,
+  state: HomeComponent.State,
   openDialog: Boolean,
   clickSearch: Boolean,
   onCheckedRoutine: (RoutineUiModel) -> Unit,
@@ -104,7 +105,7 @@ private fun HomeScreen(
   val routineModelUpdateDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
 
-  homeState.errorMessage?.let { errorMessage ->
+  state.errorMessage?.let { errorMessage ->
     context.showToastShort(errorMessage.toStringResource())
   }
   LaunchedEffect(Unit) {
@@ -124,7 +125,7 @@ private fun HomeScreen(
       searchText = search
     }
     LoadableComponent(
-      loadableData = homeState.routines,
+      loadableData = state.routines,
       loading = {},
       loaded = { routines ->
         if (routines.isEmpty()) {
@@ -136,7 +137,7 @@ private fun HomeScreen(
           )
         } else {
           ItemsHome(
-            currentTime = homeState.currentDate,
+            currentTime = state.currentDate,
             routineModels = routines,
             space = space,
             fontSize = fontSize,

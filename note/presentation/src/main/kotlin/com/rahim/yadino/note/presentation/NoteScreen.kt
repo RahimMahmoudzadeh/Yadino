@@ -37,13 +37,12 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.time.debounce
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun NoteRoute(
   modifier: Modifier = Modifier,
-  viewModel: NoteViewModel = koinViewModel(),
+  viewModel: NoteComponent = koinViewModel(),
   openDialog: Boolean,
   clickSearch: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,

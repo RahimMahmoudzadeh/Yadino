@@ -10,7 +10,7 @@ class YadinoDecomposeConventionPlugin : Plugin<Project> {
         with(target) {
 
             dependencies {
-                add("implement", versionCatalog.findBundle("decompose").get())
+                add("implementation", versionCatalog.findBundle("decompose").get())
             }
         }
     }
