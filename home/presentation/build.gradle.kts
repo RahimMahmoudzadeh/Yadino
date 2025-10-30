@@ -1,6 +1,7 @@
 plugins {
   libs.plugins.yadino.run {
     alias(android.feature)
+    alias(decompose)
     alias(android.library.compose)
   }
 }
