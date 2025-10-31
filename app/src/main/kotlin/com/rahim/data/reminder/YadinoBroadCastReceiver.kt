@@ -5,7 +5,10 @@ import android.content.Context
 import android.content.Intent
 import com.rahim.yadino.Constants
 
-class YadinoBroadCastReceiver(private val notificationManager: NotificationManager) : BroadcastReceiver() {
+class YadinoBroadCastReceiver(private val notificationManager: NotificationManager?) : BroadcastReceiver() {
+  constructor() : this(null) {
+
+  }
   override fun onReceive(context: Context?, intent: Intent?) {
     sendNotificationAlarm(intent, context)
   }
@@ -16,7 +19,7 @@ class YadinoBroadCastReceiver(private val notificationManager: NotificationManag
       val reminderId = extras.getInt(Constants.KEY_LAUNCH_ID, 0)
 
       context?.let {
-        notificationManager.createFullNotification(
+        notificationManager?.createFullNotification(
           context,
           reminderName ?: "",
           reminderId.toLong(),
