@@ -27,7 +27,6 @@ fun NavigationComponent(
     onBoardingScreen {
       navController.navigateToHome(navOptions = navOptions { popUpTo(0) })
     }
-    homeScreen(openDialog = openDialog, onOpenDialog = onOpenDialog, clickSearch = clickSearch)
     routineScreen(
       openDialog = openDialog,
       onOpenDialog = onOpenDialog,

@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
@@ -34,6 +36,7 @@ import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.home.presentation.component.HomeComponent
+import com.rahim.yadino.home.presentation.component.HomeComponentImpl
 import com.rahim.yadino.home.presentation.ui.component.DialogAddRoutine
 import com.rahim.yadino.home.presentation.ui.component.ListRoutines
 import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
@@ -49,14 +52,14 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-internal fun HomeRoute(
+fun HomeRoute(
   modifier: Modifier = Modifier,
   openDialog: Boolean,
   clickSearch: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,
-  viewModel: HomeComponent = koinViewModel(),
+  homeComponent: HomeComponent,
 ) {
-  val (state, event) = use(viewModel = viewModel)
+  val (state, event) = use(component = homeComponent)
 
   HomeScreen(
     modifier = modifier,
@@ -80,6 +83,25 @@ internal fun HomeRoute(
       event.invoke(HomeComponent.Event.SearchRoutine(it))
     },
   )
+}
+
+@Preview
+@Composable
+fun HomeRoutePreview() {
+  YadinoTheme {
+    HomeRoute(
+      openDialog = false,
+      clickSearch = false,
+      onOpenDialog = {},
+      homeComponent = object : HomeComponent {
+        private val _state = MutableValue(HomeComponent.State())
+        override val state: Value<HomeComponent.State> = _state
+        override fun event(event: HomeComponent.Event) {
+          TODO("Not yet implemented")
+        }
+      },
+    )
+  }
 }
 
 @OptIn(FlowPreview::class)
@@ -255,10 +277,3 @@ fun ItemsHome(
   ListRoutines(modifier = Modifier.fillMaxWidth(), routines = routineModels, checkedRoutine = checkedRoutine, deleteRoutine = deleteRoutine, updateRoutine = updateRoutine)
 }
 
-@Preview
-@Composable
-fun HomeScreenWrapper() {
-  YadinoTheme {
-    HomeRoute(openDialog = false, clickSearch = false, onOpenDialog = {})
-  }
-}

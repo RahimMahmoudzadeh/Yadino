@@ -26,8 +26,8 @@ interface HomeComponent : UnidirectionalComponent<HomeComponent.Event, HomeCompo
 
   @Immutable
   data class State(
-      val routines: LoadableData<PersistentList<RoutineUiModel>> = LoadableData.Initial,
-      val currentDate: CurrentDateUiModel? = null,
-      val errorMessage: ErrorMessageCode? = null,
+    val routines: LoadableData<PersistentList<RoutineUiModel>> = LoadableData.Initial,
+    val currentDate: CurrentDateUiModel? = null,
+    val errorMessage: ErrorMessageCode? = null,
   )
 }
