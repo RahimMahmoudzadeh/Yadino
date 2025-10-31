@@ -35,7 +35,6 @@ class App : Application() {
       modules(
         YadinoDiModule,
         HomeDiModule,
-        HomeDiPresentationModule,
         FlavorDiModule,
         YadinoDatabaseModule,
         TimeDateDiModule,
