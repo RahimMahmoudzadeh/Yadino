@@ -1,6 +1,6 @@
 [versions]
 ksp = "2.2.20-2.0.4"
-kotlin = "2.2.20"
+kotlin = "2.2.21"
 kotlinxImmutableCollection = "0.4.0"
 
 #compose
@@ -53,7 +53,7 @@ firebaseBom = "33.12.0"
 constraintlayout = "2.2.1"
 constraintlayout-compose = "1.1.1"
 
-jetbrainsKotlinJvm = "2.2.20"
+jetbrainsKotlinJvm = "2.2.21"
 
 #koin
 koin-bom = "4.1.1"
