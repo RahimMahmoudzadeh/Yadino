@@ -1,4 +1,6 @@
 import convention.YadinoBuildType
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
   libs.plugins.yadino.run {
@@ -10,6 +12,21 @@ plugins {
   }
 }
 android {
+  val keystorePropertiesFile = rootProject.file("local.properties")
+  val keystoreProperties = Properties()
+  if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+  }
+
+  signingConfigs {
+    create("release") {
+      storeFile = rootProject.file("yadinoKst.jks")
+      storePassword = keystoreProperties.getProperty("storePassword")
+      keyAlias = keystoreProperties.getProperty("keyAlias")
+      keyPassword = keystoreProperties.getProperty("keyPassword")
+    }
+  }
+
   buildFeatures {
     buildConfig = true
   }
@@ -17,7 +34,7 @@ android {
     debug {
       applicationIdSuffix = YadinoBuildType.DEBUG.applicationIdSuffix
     }
-    val release by getting {
+    release {
       isMinifyEnabled = true
       isShrinkResources = true
       applicationIdSuffix = YadinoBuildType.RELEASE.applicationIdSuffix
@@ -25,7 +42,7 @@ android {
         getDefaultProguardFile("proguard-android-optimize.txt"),
         "proguard-rules.pro",
       )
-      signingConfig = signingConfigs.getByName("debug")
+      signingConfig = signingConfigs.getByName("release")
     }
   }
 }
