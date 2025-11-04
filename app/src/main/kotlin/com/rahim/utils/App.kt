@@ -16,7 +16,6 @@ import com.rahim.yadino.core.timeDate.di.TimeDateDiModule
 import com.rahim.yadino.db.di.YadinoDatabaseModule
 import com.rahim.yadino.di.CoreDiModule
 import com.rahim.yadino.home.data.di.HomeDiModule
-import com.rahim.yadino.home.presentation.di.HomeDiPresentationModule
 import com.rahim.yadino.note.data.di.NoteDiModule
 import com.rahim.yadino.note.presentation.di.NotePresentationDiModule
 import com.rahim.yadino.onboarding.presentation.di.OnBoardingDiModule
