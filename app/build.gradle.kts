@@ -6,6 +6,7 @@ plugins {
     alias(android.application.compose)
     alias(android.application.firebase)
     alias(android.room)
+    alias(decompose)
     alias(di)
   }
 }
