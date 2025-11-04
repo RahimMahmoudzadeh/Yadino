@@ -1,20 +1,20 @@
-package com.rahim.home.domain.useCase
+package com.rahim.yadino.home.domain.useCase
 
-import com.rahim.home.domain.model.Routine
-import com.rahim.home.domain.repo.HomeRepository
+import com.rahim.yadino.home.domain.model.Routine
+import com.rahim.yadino.home.domain.repo.HomeRepository
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.base.reminder.ReminderScheduler
 import com.rahim.yadino.base.reminder.ReminderState
 import com.rahim.yadino.enums.SuccessMessage
 import com.rahim.yadino.enums.error.ErrorMessageCode
+import timber.log.Timber
 
-class UpdateReminderUseCase(
+class AddReminderUseCase(
     private val routineRepository: HomeRepository,
     private val reminderScheduler: ReminderScheduler,
 ) {
   suspend operator fun invoke(routineModel: Routine): Resource<SuccessMessage, ErrorMessageCode> {
     try {
-      reminderScheduler.cancelReminder(routineModel.idAlarm ?: 0)
       val routine = routineModel.copy(
         idAlarm = routineRepository.getRoutineAlarmId(),
         colorTask = 0,
@@ -37,8 +37,8 @@ class UpdateReminderUseCase(
       )
       return when (reminderState) {
         ReminderState.SetSuccessfully -> {
-          routineRepository.updateRoutine(routine)
-          Resource.Success(SuccessMessage.UPDATE_REMINDER)
+          routineRepository.addRoutine(routine)
+          Resource.Success(SuccessMessage.SAVE_REMINDER)
         }
 
         is ReminderState.NotSet -> {
@@ -68,6 +68,7 @@ class UpdateReminderUseCase(
         }
       }
     } catch (e: Exception) {
+      Timber.tag("addRoutine").d("error->${e.message}")
       return Resource.Error(error = ErrorMessageCode.ERROR_SAVE_PROSES)
     }
   }
