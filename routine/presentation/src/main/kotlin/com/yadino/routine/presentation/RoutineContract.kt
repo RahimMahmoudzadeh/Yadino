@@ -3,6 +3,7 @@ package com.yadino.routine.presentation
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalComponent
+import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutineUiModel
@@ -10,7 +11,7 @@ import com.yadino.routine.presentation.model.TimeDateUiModel
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 
-interface RoutineContract : UnidirectionalComponent<RoutineContract.Event, RoutineContract.State> {
+interface RoutineContract : UnidirectionalViewModel<RoutineContract.Event, RoutineContract.State> {
   @Immutable
   sealed class Event {
     data class AddRoutine(val routine: RoutineUiModel) : Event()
