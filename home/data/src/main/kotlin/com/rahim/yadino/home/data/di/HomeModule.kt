@@ -1,13 +1,13 @@
 package com.rahim.yadino.home.data.di
 
-import com.rahim.home.domain.repo.HomeRepository
-import com.rahim.home.domain.useCase.AddReminderUseCase
-import com.rahim.home.domain.useCase.CancelReminderUseCase
-import com.rahim.home.domain.useCase.DeleteReminderUseCase
-import com.rahim.home.domain.useCase.GetCurrentDateUseCase
-import com.rahim.home.domain.useCase.GetTodayRoutinesUseCase
-import com.rahim.home.domain.useCase.SearchRoutineUseCase
-import com.rahim.home.domain.useCase.UpdateReminderUseCase
+import com.rahim.yadino.home.domain.repo.HomeRepository
+import com.rahim.yadino.home.domain.useCase.AddReminderUseCase
+import com.rahim.yadino.home.domain.useCase.CancelReminderUseCase
+import com.rahim.yadino.home.domain.useCase.DeleteReminderUseCase
+import com.rahim.yadino.home.domain.useCase.GetCurrentDateUseCase
+import com.rahim.yadino.home.domain.useCase.GetTodayRoutinesUseCase
+import com.rahim.yadino.home.domain.useCase.SearchRoutineUseCase
+import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.home.data.repoImpl.HomeRepositoryImpl
 import org.koin.dsl.module
 
