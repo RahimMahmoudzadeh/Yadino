@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
-import com.rahim.yadino.home.presentation.navigation.homeScreen
 import com.rahim.yadino.home.presentation.navigation.navigateToHome
 import com.rahim.yadino.note.presentation.navigation.noteScreen
 import com.rahim.yadino.onboarding.presentation.navigation.onBoardingScreen
