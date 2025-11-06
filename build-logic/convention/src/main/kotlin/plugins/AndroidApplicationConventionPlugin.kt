@@ -14,7 +14,11 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     with(target) {
       applyPlugins {
-        listOf("com.android.application", "org.jetbrains.kotlin.android")
+        listOf(
+          "com.android.application",
+          "org.jetbrains.kotlin.android",
+          versionCatalog.findPlugin("kotlinx-serialization").get().get().pluginId,
+        )
       }
       applicationGradle {
         defaultConfig.apply {
@@ -28,7 +32,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         configureFlavors(this)
       }
       dependencies {
-        
+
         val subprojects = project
           .rootProject
           .subprojects
@@ -47,6 +51,11 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
           .forEach { add("implementation", project(it.path)) }
         subprojects.filter { it.path.startsWith(":core:", false) }
           .forEach { add("implementation", project(it.path)) }
+
+        add(
+          "implementation",
+          versionCatalog.findLibrary("kotlinx-serialization").get()
+        )
       }
     }
   }

@@ -1,5 +1,5 @@
 plugins {
-    libs.plugins.run {
+  libs.plugins.run {
     alias(androidApplication) apply false
     alias(com.android.library) apply false
     alias(kotlinAndroid) apply false
@@ -11,6 +11,7 @@ plugins {
     alias(compose.compiler) apply false
     alias(jetbrains.kotlin.jvm) apply false
     alias(spotless)
+    alias(kotlinx.serialization) apply false
   }
 }
 spotless {
