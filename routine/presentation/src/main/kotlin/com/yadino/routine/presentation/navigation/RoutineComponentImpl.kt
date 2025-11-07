@@ -1,7 +1,5 @@
 package com.yadino.routine.presentation.navigation
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -14,12 +12,12 @@ import com.rahim.yadino.Constants.MONTH_MIN
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.core.timeDate.repo.DateTimeRepository
-import com.yadino.routine.domain.useCase.AddReminderUseCase
-import com.yadino.routine.domain.useCase.CancelReminderUseCase
-import com.yadino.routine.domain.useCase.DeleteReminderUseCase
-import com.yadino.routine.domain.useCase.GetRemindersUseCase
-import com.yadino.routine.domain.useCase.SearchRoutineUseCase
-import com.yadino.routine.domain.useCase.UpdateReminderUseCase
+import com.rahim.yadino.routine.domain.useCase.AddReminderUseCase
+import com.rahim.yadino.routine.domain.useCase.CancelReminderUseCase
+import com.rahim.yadino.routine.domain.useCase.DeleteReminderUseCase
+import com.rahim.yadino.routine.domain.useCase.GetRemindersUseCase
+import com.rahim.yadino.routine.domain.useCase.SearchRoutineUseCase
+import com.rahim.yadino.routine.domain.useCase.UpdateReminderUseCase
 import com.yadino.routine.presentation.mapper.toRoutine
 import com.yadino.routine.presentation.mapper.toRoutineUiModel
 import com.yadino.routine.presentation.mapper.toTimeDateUiModel
@@ -29,14 +27,8 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
@@ -44,6 +36,7 @@ import kotlin.coroutines.CoroutineContext
 class RoutineComponentImpl(
   componentContext: ComponentContext,
   mainContext: CoroutineContext,
+  ioContext: CoroutineContext,
   private val addReminderUseCase: AddReminderUseCase,
   private val updateReminderUseCase: UpdateReminderUseCase,
   private val cancelReminderUseCase: CancelReminderUseCase,
@@ -51,10 +44,10 @@ class RoutineComponentImpl(
   private val getRemindersUseCase: GetRemindersUseCase,
   private val searchRoutineUseCase: SearchRoutineUseCase,
   private val dateTimeRepository: DateTimeRepository,
-  private val ioDispatcher: CoroutineDispatcher,
 ) : RoutineComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
+  private val ioScope: CoroutineScope = coroutineScope(ioContext + SupervisorJob())
 
   private var lastYearNumber = dateTimeRepository.currentTimeYear
   private var lastMonthNumber = dateTimeRepository.currentTimeMonth
@@ -174,7 +167,7 @@ class RoutineComponentImpl(
   }
 
   private fun monthDecrease(month: Int, year: Int, time: (year: Int, month: Int) -> Unit) {
-    scope.launch(ioDispatcher) {
+    ioScope.launch {
       var month = month.minus(MONTH_MIN)
       var year = year
       if (month < MONTH_MIN) {
@@ -186,7 +179,7 @@ class RoutineComponentImpl(
   }
 
   private fun monthIncrease(month: Int, year: Int, time: (year: Int, month: Int) -> Unit) {
-    scope.launch(ioDispatcher) {
+    ioScope.launch {
       var month = month.plus(MONTH_MIN)
       var year = year
       if (month > MONTH_MAX) {
@@ -198,7 +191,7 @@ class RoutineComponentImpl(
   }
 
   private fun updateIndex(month: Int, year: Int, day: Int = DAY_MIN) {
-    scope.launch(ioDispatcher) {
+    ioScope.launch {
       val times = ArrayList(state.value.times)
       times.indexOfFirst { it.monthNumber == month && it.yearNumber == year && it.dayNumber == day }.let { index ->
         _state.update {
@@ -327,7 +320,7 @@ class RoutineComponentImpl(
   }
 
   private fun getTimesMonth(yearNumber: Int = dateTimeRepository.currentTimeYear, monthNumber: Int = dateTimeRepository.currentTimeMonth) {
-    scope.launch(ioDispatcher) {
+    ioScope.launch {
       val times = dateTimeRepository.getTimesMonth(yearNumber, monthNumber).toCollection(ArrayList())
       val isCheckedTime = times.find { it.isChecked || it.isToday }
       if (isCheckedTime == null) {

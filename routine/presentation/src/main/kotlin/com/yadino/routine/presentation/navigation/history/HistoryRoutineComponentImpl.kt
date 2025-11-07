@@ -7,7 +7,7 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.rahim.yadino.base.LoadableData
-import com.yadino.routine.domain.useCase.GetAllRoutineUseCase
+import com.rahim.yadino.routine.domain.useCase.GetAllRoutineUseCase
 import com.yadino.routine.presentation.mapper.toRoutineUiModel
 import com.yadino.routine.presentation.model.IncompleteOrCompletedRoutinesUiModel
 import com.yadino.routine.presentation.model.RoutineUiModel
