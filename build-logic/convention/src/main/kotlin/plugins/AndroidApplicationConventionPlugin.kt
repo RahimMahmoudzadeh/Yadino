@@ -17,7 +17,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         listOf(
           "com.android.application",
           "org.jetbrains.kotlin.android",
-          versionCatalog.findPlugin("kotlinx-serialization").get().get().pluginId,
         )
       }
       applicationGradle {
@@ -51,11 +50,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
           .forEach { add("implementation", project(it.path)) }
         subprojects.filter { it.path.startsWith(":core:", false) }
           .forEach { add("implementation", project(it.path)) }
-
-        add(
-          "implementation",
-          versionCatalog.findLibrary("kotlinx-serialization").get()
-        )
       }
     }
   }
