@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation
+package com.yadino.routine.presentation.ui
 
 import android.content.Context
 import android.widget.Toast
@@ -65,8 +65,10 @@ import com.rahim.yadino.routine.presentation.R
 import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.toStringResource
-import com.yadino.routine.presentation.component.DialogAddRoutine
-import com.yadino.routine.presentation.component.ListRoutines
+import com.yadino.routine.presentation.navigation.RoutineComponent
+import com.yadino.routine.presentation.navigation.RoutineComponentImpl
+import com.yadino.routine.presentation.ui.component.DialogAddRoutine
+import com.yadino.routine.presentation.ui.component.ListRoutines
 import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutineUiModel
 import com.yadino.routine.presentation.model.TimeDateUiModel
@@ -80,7 +82,7 @@ import timber.log.Timber
 @Composable
 fun RoutineRoute(
   modifier: Modifier = Modifier,
-  viewModel: RoutineScreenComponent = koinViewModel(),
+  viewModel: RoutineComponent,
   openDialogAddRoutine: Boolean,
   showSearchBar: Boolean,
   onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,
@@ -94,31 +96,31 @@ fun RoutineRoute(
     showSearchBar = showSearchBar,
     onOpenDialogAddRoutine = onOpenDialogAddRoutine,
     onUpdateRoutine = {
-      event.invoke(RoutineContract.Event.UpdateRoutine(it))
+      event.invoke(RoutineComponent.Event.UpdateRoutine(it))
     },
     onAddRoutine = {
-      event(RoutineContract.Event.AddRoutine(it))
+      event(RoutineComponent.Event.AddRoutine(it))
     },
     onDeleteRoutine = {
-      event.invoke(RoutineContract.Event.DeleteRoutine(it))
+      event.invoke(RoutineComponent.Event.DeleteRoutine(it))
     },
     onSearchText = {
-      event.invoke(RoutineContract.Event.SearchRoutineByName(it))
+      event.invoke(RoutineComponent.Event.SearchRoutineByName(it))
     },
     checkedRoutine = {
-      event.invoke(RoutineContract.Event.CheckedRoutine(it))
+      event.invoke(RoutineComponent.Event.CheckedRoutine(it))
     },
     dayCheckedNumber = { timeDate ->
-      event.invoke(RoutineContract.Event.GetRoutines(timeDate))
+      event.invoke(RoutineComponent.Event.GetRoutines(timeDate))
     },
     dialogMonthChange = { year, month, increaseDecrease ->
-      event.invoke(RoutineContract.Event.DialogMonthChange(yearNumber = year, monthNumber = month, increaseDecrease = increaseDecrease))
+      event.invoke(RoutineComponent.Event.DialogMonthChange(yearNumber = year, monthNumber = month, increaseDecrease = increaseDecrease))
     },
     increaseOrDecrease = { increaseDecrease ->
-      event.invoke(RoutineContract.Event.MonthChange(increaseDecrease = increaseDecrease))
+      event.invoke(RoutineComponent.Event.MonthChange(increaseDecrease = increaseDecrease))
     },
     weekChange = { increaseDecrease ->
-      event.invoke(RoutineContract.Event.WeekChange(increaseDecrease = increaseDecrease))
+      event.invoke(RoutineComponent.Event.WeekChange(increaseDecrease = increaseDecrease))
     },
   )
 }
@@ -127,7 +129,7 @@ fun RoutineRoute(
 @Composable
 private fun RoutineScreen(
   modifier: Modifier,
-  state: RoutineContract.State,
+  state: RoutineComponent.State,
   openDialogAddRoutine: Boolean,
   onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,
   showSearchBar: Boolean,
@@ -248,50 +250,50 @@ private fun RoutineScreen(
     }
 
     openDialogAddRoutine -> {
-      DialogAddRoutine(
-        onCloseDialog = {
-          onOpenDialogAddRoutine(false)
-          routineUpdateDialog.value = null
-        },
-        updateRoutine = routineUpdateDialog.value?.copy(
-          explanation = routineUpdateDialog.value?.explanation?.let {
-            if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
-              stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_right_sample)
-            } else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation) {
-              stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_left_sample)
-            } else {
-              it
-            }
-          } ?: run {
-            routineUpdateDialog.value?.explanation ?: ""
-          },
-        ),
-        onRoutineCreated = { routine ->
-          if (routineUpdateDialog.value != null) {
-            onUpdateRoutine(routine)
-          } else {
-            onAddRoutine(routine)
-          }
-          onOpenDialogAddRoutine(false)
-        },
-        currentNumberDay = state.currentDay,
-        currentNumberMonth = state.currentMonth,
-        currentNumberYear = state.currentYear,
-        timesMonth = state.timesMonth,
-        monthDecrease = { year, month ->
-          dialogMonthChange(year, month, IncreaseDecrease.DECREASE)
-        },
-        monthIncrease = { year, month ->
-          dialogMonthChange(year, month, IncreaseDecrease.INCREASE)
-        },
-      )
+        DialogAddRoutine(
+            onCloseDialog = {
+                onOpenDialogAddRoutine(false)
+                routineUpdateDialog.value = null
+            },
+            updateRoutine = routineUpdateDialog.value?.copy(
+                explanation = routineUpdateDialog.value?.explanation?.let {
+                    if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
+                        stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_right_sample)
+                    } else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation) {
+                        stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_left_sample)
+                    } else {
+                        it
+                    }
+                } ?: run {
+                    routineUpdateDialog.value?.explanation ?: ""
+                },
+            ),
+            onRoutineCreated = { routine ->
+                if (routineUpdateDialog.value != null) {
+                    onUpdateRoutine(routine)
+                } else {
+                    onAddRoutine(routine)
+                }
+                onOpenDialogAddRoutine(false)
+            },
+            currentNumberDay = state.currentDay,
+            currentNumberMonth = state.currentMonth,
+            currentNumberYear = state.currentYear,
+            timesMonth = state.timesMonth,
+            monthDecrease = { year, month ->
+                dialogMonthChange(year, month, IncreaseDecrease.DECREASE)
+            },
+            monthIncrease = { year, month ->
+                dialogMonthChange(year, month, IncreaseDecrease.INCREASE)
+            },
+        )
     }
   }
 }
 
 @Composable
 private fun GetRoutines(
-  state: RoutineContract.State,
+  state: RoutineComponent.State,
   searchText: String,
   context: Context,
   size: SizeDimensions,

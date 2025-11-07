@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.component
+package com.yadino.routine.presentation.ui.component
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -40,8 +40,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.rahim.yadino.calculateMonthName
 import com.rahim.yadino.designsystem.component.DialogButtonBackground

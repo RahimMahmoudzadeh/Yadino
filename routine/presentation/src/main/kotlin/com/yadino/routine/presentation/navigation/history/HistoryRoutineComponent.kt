@@ -1,13 +1,12 @@
-package com.yadino.routine.presentation.history
+package com.yadino.routine.presentation.navigation.history
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalComponent
-import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import com.yadino.routine.presentation.model.IncompleteOrCompletedRoutinesUiModel
 
-interface RoutineHistoryContract : UnidirectionalViewModel<RoutineHistoryContract.HistoryEvent, RoutineHistoryContract.HistoryState> {
+interface HistoryRoutineComponent : UnidirectionalComponent<HistoryRoutineComponent.HistoryEvent, HistoryRoutineComponent.HistoryState> {
   @Immutable
   sealed class HistoryEvent() {
     data object GetAllRoutine : HistoryEvent()

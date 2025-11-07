@@ -1,7 +1,13 @@
-package com.yadino.routine.presentation
+package com.yadino.routine.presentation.navigation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.update
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.rahim.yadino.Constants.DAY_MIN
 import com.rahim.yadino.Constants.MONTH_MAX
 import com.rahim.yadino.Constants.MONTH_MIN
@@ -22,6 +28,7 @@ import com.yadino.routine.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -32,8 +39,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.coroutines.CoroutineContext
 
-class RoutineScreenComponent(
+class RoutineComponentImpl(
+  componentContext: ComponentContext,
+  mainContext: CoroutineContext,
   private val addReminderUseCase: AddReminderUseCase,
   private val updateReminderUseCase: UpdateReminderUseCase,
   private val cancelReminderUseCase: CancelReminderUseCase,
@@ -42,28 +52,33 @@ class RoutineScreenComponent(
   private val searchRoutineUseCase: SearchRoutineUseCase,
   private val dateTimeRepository: DateTimeRepository,
   private val ioDispatcher: CoroutineDispatcher,
-) :
-  ViewModel(), RoutineContract {
+) : RoutineComponent, ComponentContext by componentContext {
+
+  private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
 
   private var lastYearNumber = dateTimeRepository.currentTimeYear
   private var lastMonthNumber = dateTimeRepository.currentTimeMonth
   private var lastDayNumber = dateTimeRepository.currentTimeDay
 
-  private var _state = MutableStateFlow(RoutineContract.State())
-  override val state: StateFlow<RoutineContract.State> = _state.onStart {
-    setCurrentTime()
-    getTimesMonth()
-    getRoutines()
-    getTimes()
-  }.stateIn(viewModelScope, SharingStarted.Lazily, RoutineContract.State())
+  private var _state = MutableValue(RoutineComponent.State())
+  override val state: Value<RoutineComponent.State> = _state
+
+  init {
+    lifecycle.doOnCreate {
+      setCurrentTime()
+      getTimesMonth()
+      getRoutines()
+      getTimes()
+    }
+  }
 
   private var searchNameRoutine = ""
-  override fun event(event: RoutineContract.Event) {
+  override fun event(event: RoutineComponent.Event) {
     when (event) {
-      is RoutineContract.Event.AddRoutine -> addRoutine(event.routine)
-      is RoutineContract.Event.CheckedRoutine -> checkedRoutine(event.routine)
-      is RoutineContract.Event.DeleteRoutine -> deleteRoutine(event.routine)
-      is RoutineContract.Event.GetRoutines -> {
+      is RoutineComponent.Event.AddRoutine -> addRoutine(event.routine)
+      is RoutineComponent.Event.CheckedRoutine -> checkedRoutine(event.routine)
+      is RoutineComponent.Event.DeleteRoutine -> deleteRoutine(event.routine)
+      is RoutineComponent.Event.GetRoutines -> {
         event.run {
           updateLastTime(timeDate.yearNumber, timeDate.monthNumber, timeDate.dayNumber)
           updateDayChecked(timeDate.yearNumber, timeDate.monthNumber, timeDate.dayNumber)
@@ -71,15 +86,15 @@ class RoutineScreenComponent(
         }
       }
 
-      is RoutineContract.Event.SearchRoutineByName -> {
+      is RoutineComponent.Event.SearchRoutineByName -> {
         getRoutines(searchText = event.routineName)
       }
 
-      is RoutineContract.Event.UpdateRoutine -> updateRoutine(event.routine)
-      is RoutineContract.Event.GetAllTimes -> getTimes()
-      is RoutineContract.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.increaseDecrease)
-      is RoutineContract.Event.WeekChange -> checkWeekIncreaseOrDecrease(event.increaseDecrease)
-      is RoutineContract.Event.DialogMonthChange -> {
+      is RoutineComponent.Event.UpdateRoutine -> updateRoutine(event.routine)
+      is RoutineComponent.Event.GetAllTimes -> getTimes()
+      is RoutineComponent.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.increaseDecrease)
+      is RoutineComponent.Event.WeekChange -> checkWeekIncreaseOrDecrease(event.increaseDecrease)
+      is RoutineComponent.Event.DialogMonthChange -> {
         checkDialogMonthChange(event.monthNumber, event.yearNumber, event.increaseDecrease)
       }
     }
@@ -159,7 +174,7 @@ class RoutineScreenComponent(
   }
 
   private fun monthDecrease(month: Int, year: Int, time: (year: Int, month: Int) -> Unit) {
-    viewModelScope.launch(ioDispatcher) {
+    scope.launch(ioDispatcher) {
       var month = month.minus(MONTH_MIN)
       var year = year
       if (month < MONTH_MIN) {
@@ -171,7 +186,7 @@ class RoutineScreenComponent(
   }
 
   private fun monthIncrease(month: Int, year: Int, time: (year: Int, month: Int) -> Unit) {
-    viewModelScope.launch(ioDispatcher) {
+    scope.launch(ioDispatcher) {
       var month = month.plus(MONTH_MIN)
       var year = year
       if (month > MONTH_MAX) {
@@ -183,7 +198,7 @@ class RoutineScreenComponent(
   }
 
   private fun updateIndex(month: Int, year: Int, day: Int = DAY_MIN) {
-    viewModelScope.launch(ioDispatcher) {
+    scope.launch(ioDispatcher) {
       val times = ArrayList(state.value.times)
       times.indexOfFirst { it.monthNumber == month && it.yearNumber == year && it.dayNumber == day }.let { index ->
         _state.update {
@@ -204,7 +219,7 @@ class RoutineScreenComponent(
   }
 
   private fun getRoutines(yearNumber: Int = lastYearNumber, monthNumber: Int = lastMonthNumber, numberDay: Int = lastDayNumber, searchText: String = "") {
-    viewModelScope.launch {
+    scope.launch {
       searchNameRoutine = searchText
       if (searchText.isNotBlank()) {
         Timber.tag("routineSearch").d("getRoutines->$searchNameRoutine")
@@ -252,13 +267,13 @@ class RoutineScreenComponent(
   }
 
   private fun deleteRoutine(routine: RoutineUiModel) {
-    viewModelScope.launch {
+    scope.launch {
       deleteReminderUseCase(routine = routine.toRoutine())
     }
   }
 
   private fun updateRoutine(routine: RoutineUiModel) {
-    viewModelScope.launch {
+    scope.launch {
       Timber.tag("routineViewModel").d("GetRoutines")
       when (val response = updateReminderUseCase(routine = routine.toRoutine())) {
         is Resource.Error -> {
@@ -275,13 +290,13 @@ class RoutineScreenComponent(
   }
 
   private fun checkedRoutine(routine: RoutineUiModel) {
-    viewModelScope.launch {
+    scope.launch {
       cancelReminderUseCase(routine = routine.toRoutine())
     }
   }
 
   private fun addRoutine(routine: RoutineUiModel) {
-    viewModelScope.launch {
+    scope.launch {
       when (val response = addReminderUseCase(routine.toRoutine())) {
         is Resource.Error -> {
           _state.update { state ->
@@ -297,7 +312,7 @@ class RoutineScreenComponent(
   }
 
   private fun getTimes() {
-    viewModelScope.launch {
+    scope.launch {
       dateTimeRepository.getTimes().catch {}.collect { times ->
         _state.update {
           it.copy(
@@ -312,7 +327,7 @@ class RoutineScreenComponent(
   }
 
   private fun getTimesMonth(yearNumber: Int = dateTimeRepository.currentTimeYear, monthNumber: Int = dateTimeRepository.currentTimeMonth) {
-    viewModelScope.launch(ioDispatcher) {
+    scope.launch(ioDispatcher) {
       val times = dateTimeRepository.getTimesMonth(yearNumber, monthNumber).toCollection(ArrayList())
       val isCheckedTime = times.find { it.isChecked || it.isToday }
       if (isCheckedTime == null) {
@@ -328,7 +343,7 @@ class RoutineScreenComponent(
   private fun calculateIndexDay(index: Int) = index.minus(index % 7)
 
   private fun updateDayChecked(yearNumber: Int, monthNumber: Int, day: Int = DAY_MIN) {
-    viewModelScope.launch {
+    scope.launch {
       dateTimeRepository.updateDayToToday(day, yearNumber, monthNumber)
       _state.update {
         it.copy(currentMonth = monthNumber, currentYear = yearNumber, currentDay = day)

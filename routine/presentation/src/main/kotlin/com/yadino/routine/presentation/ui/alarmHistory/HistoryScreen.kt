@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.history
+package com.yadino.routine.presentation.ui.alarmHistory
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -42,14 +42,14 @@ import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.routine.presentation.R
-import org.koin.androidx.compose.koinViewModel
+import com.yadino.routine.presentation.navigation.history.HistoryRoutineComponent
 
 @Composable
-internal fun HistoryRoute(
-    modifier: Modifier = Modifier,
-    historyViewModel: HistoryComponent = koinViewModel(),
+fun HistoryRoute(
+  modifier: Modifier = Modifier,
+  component: HistoryRoutineComponent,
 ) {
-  val (state, event) = use(historyViewModel)
+  val (state, event) = use(component)
 
   HistoryScreen(modifier = modifier, state = state)
 }
@@ -58,7 +58,7 @@ internal fun HistoryRoute(
 @Composable
 private fun HistoryScreen(
   modifier: Modifier = Modifier,
-  state: RoutineHistoryContract.HistoryState,
+  state: HistoryRoutineComponent.HistoryState,
 ) {
 
   var expanded by rememberSaveable {

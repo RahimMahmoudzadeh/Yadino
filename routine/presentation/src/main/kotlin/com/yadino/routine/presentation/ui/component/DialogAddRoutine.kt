@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.component
+package com.yadino.routine.presentation.ui.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -55,6 +55,9 @@ import com.rahim.yadino.designsystem.utils.theme.Purple
 import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.toPersianDigits
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.MaterialDialogState
+import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import com.yadino.routine.presentation.model.RoutineUiModel
@@ -405,50 +408,50 @@ fun ShowTimePicker(
   currentTime: String,
   sizeDimensions: SizeDimensions,
   fontSize: FontDimensions,
-  dialogState: com.vanpra.composematerialdialogs.MaterialDialogState,
+  dialogState: MaterialDialogState,
   time: (LocalTime) -> Unit,
 ) {
-  com.vanpra.composematerialdialogs.MaterialDialog(
-    properties = DialogProperties(dismissOnClickOutside = false),
-    border = BorderStroke(sizeDimensions.size2, Brush.horizontalGradient(gradientColors)),
-    backgroundColor = MaterialTheme.colorScheme.background,
-    dialogState = dialogState,
-    buttons = {
-      positiveButton(
-        text = stringResource(id = R.string.confirmation),
-        textStyle = TextStyle(
-          brush = Brush.verticalGradient(
-            gradientColors,
+    MaterialDialog(
+      properties = DialogProperties(dismissOnClickOutside = false),
+      border = BorderStroke(sizeDimensions.size2, Brush.horizontalGradient(gradientColors)),
+      backgroundColor = MaterialTheme.colorScheme.background,
+      dialogState = dialogState,
+      buttons = {
+        positiveButton(
+          text = stringResource(id = R.string.confirmation),
+          textStyle = TextStyle(
+            brush = Brush.verticalGradient(
+              gradientColors,
+            ),
+            fontSize = fontSize.fontSize14,
           ),
-          fontSize = fontSize.fontSize14,
+        )
+        negativeButton(
+          textStyle = TextStyle(
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = fontSize.fontSize14,
+          ),
+          text = stringResource(id = R.string.cancel),
+        )
+      },
+    ) {
+      timepicker(
+        colors = TimePickerDefaults.colors(
+          activeBackgroundColor = Onahau,
+          inactiveBackgroundColor = Onahau,
+          activeTextColor = Color.Black,
+          borderColor = Purple,
+          selectorColor = Purple,
+          headerTextColor = PurpleGrey,
         ),
-      )
-      negativeButton(
-        textStyle = TextStyle(
-          color = MaterialTheme.colorScheme.primary,
-          fontSize = fontSize.fontSize14,
-        ),
-        text = stringResource(id = R.string.cancel),
-      )
-    },
-  ) {
-    timepicker(
-      colors = com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults.colors(
-        activeBackgroundColor = Onahau,
-        inactiveBackgroundColor = Onahau,
-        activeTextColor = Color.Black,
-        borderColor = Purple,
-        selectorColor = Purple,
-        headerTextColor = PurpleGrey,
-      ),
-      title = "  ",
-      timeRange = LocalTime.MIDNIGHT..LocalTime.MAX,
-      is24HourClock = true,
-      initialTime = calculateCurrentTime(currentTime),
-    ) { time ->
-      time(time)
+        title = "  ",
+        timeRange = LocalTime.MIDNIGHT..LocalTime.MAX,
+        is24HourClock = true,
+        initialTime = calculateCurrentTime(currentTime),
+      ) { time ->
+        time(time)
+      }
     }
-  }
 }
 
 fun calculateCurrentTime(currentTime: String): LocalTime {
