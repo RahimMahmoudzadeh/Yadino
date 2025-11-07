@@ -17,6 +17,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FloatingActionButton
@@ -46,10 +47,18 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.arkivanov.decompose.defaultComponentContext
+import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.BuildConfig
+import com.rahim.yadino.navigation.config.ConfigChildComponent
+import com.rahim.component.RootComponent
+import com.rahim.component.RootComponentImpl
 import com.rahim.data.distributionActions.StateOfClickItemDrawable
 import com.rahim.navigation.NavigationComponent
 import com.rahim.yadino.base.use
@@ -60,6 +69,7 @@ import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
+import com.rahim.yadino.home.presentation.ui.HomeRoute
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.navigation.Destinations
 import com.rahim.yadino.navigation.component.BottomNavigationBar
@@ -79,6 +89,7 @@ class MainActivity : ComponentActivity() {
       window.isNavigationBarContrastEnforced = false
     }
     super.onCreate(savedInstanceState)
+    val root = RootComponentImpl(componentContext = defaultComponentContext())
     getTokenFirebase()
 
     setContent {
@@ -94,6 +105,7 @@ class MainActivity : ComponentActivity() {
           event.invoke(MainContract.MainEvent.ClickDrawer(it))
         },
         window = window,
+        rootComponent = root,
       )
     }
   }
@@ -149,10 +161,14 @@ fun YadinoApp(
   isDarkTheme: Boolean = isSystemInDarkTheme(),
   haveAlarm: Boolean,
   window: Window,
+  rootComponent: RootComponent,
   drawerItemClicked: (DrawerItemType) -> Unit,
 ) {
   val context = LocalContext.current
   val size = LocalSize.current
+
+//  val stack = rootComponent.stack.subscribeAsState()
+//  val configurationState = stack.value.active.configuration
 
   val notificationPermissionState =
     rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
@@ -177,106 +193,94 @@ fun YadinoApp(
 
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
     YadinoTheme(darkTheme = isDarkTheme) {
-      Surface(
-        modifier = Modifier
-          .fillMaxSize()
-          .background(MaterialTheme.colorScheme.background),
+      YadinoNavigationDrawer(
+        modifier = Modifier.width(240.dp),
+        drawerState = drawerState,
+        isDarkTheme = isDarkTheme,
+        onItemClick = drawerItemClicked,
+        gesturesEnabled = destinationNavBackStackEntry != Destinations.OnBoarding.route,
       ) {
-        YadinoNavigationDrawer(
-          modifier = Modifier.width(240.dp),
-          drawerState = drawerState,
-          isDarkTheme = isDarkTheme,
-          onItemClick = drawerItemClicked,
-          gesturesEnabled = destinationNavBackStackEntry != Destinations.OnBoarding.route,
-        ) {
-          Scaffold(
-            topBar = {
-              AnimatedVisibility(
-                visible = destinationNavBackStackEntry != Destinations.OnBoarding.route,
-                enter = fadeIn() + expandVertically(animationSpec = tween(800)),
-                exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
+        Scaffold(
+          topBar = {
+            AnimatedVisibility(
+              visible = destinationNavBackStackEntry != Destinations.OnBoarding.route,
+              enter = fadeIn() + expandVertically(animationSpec = tween(800)),
+              exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
+            ) {
+              TopBarCenterAlign(
+                title = checkNavBackStackEntry(destinationNavBackStackEntry = destinationNavBackStackEntry, rootComponent = rootComponent),
+                openHistory = {
+                  navController.navigate(Destinations.AlarmHistory.route)
+                },
+                isShowSearchIcon = destinationNavBackStackEntry != Destinations.Calender.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route,
+                isShowBackIcon = destinationNavBackStackEntry == Destinations.AlarmHistory.route,
+                onClickBack = {
+                  navController.navigateUp()
+                },
+                onClickSearch = {
+                  clickSearch = !clickSearch
+                },
+                onDrawerClick = {
+                  coroutineScope.launch { drawerState.open() }
+                },
+                haveAlarm = haveAlarm,
+                size = size,
+              )
+            }
+          },
+          floatingActionButton = {
+            if (destinationNavBackStackEntry != Destinations.OnBoarding.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route) {
+              FloatingActionButton(
+                containerColor = CornflowerBlueLight,
+                contentColor = Color.White,
+                onClick = {
+                  requestPermissionNotification(
+                    isGranted = {
+                      if (it) {
+                        openDialog = true
+                      } else {
+                        errorClick = true
+                      }
+                    },
+                    permissionState = {
+                      it.launchPermissionRequest()
+                    },
+                    notificationPermission = notificationPermissionState,
+                  )
+                },
               ) {
-                TopBarCenterAlign(
-                  title = checkNavBackStackEntry(destinationNavBackStackEntry),
-                  openHistory = {
-                    navController.navigate(Destinations.AlarmHistory.route)
-                  },
-                  isShowSearchIcon = destinationNavBackStackEntry != Destinations.Calender.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route,
-                  isShowBackIcon = destinationNavBackStackEntry == Destinations.AlarmHistory.route,
-                  onClickBack = {
-                    navController.navigateUp()
-                  },
-                  onClickSearch = {
-                    clickSearch = !clickSearch
-                  },
-                  onDrawerClick = {
-                    coroutineScope.launch { drawerState.open() }
-                  },
-                  haveAlarm = haveAlarm,
-                  size = size,
-                )
+                Icon(imageVector = ImageVector.vectorResource(com.rahim.R.drawable.ic_add), "add item")
               }
-            },
-            floatingActionButton = {
-              if (destinationNavBackStackEntry != Destinations.OnBoarding.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route) {
-                FloatingActionButton(
-                  containerColor = CornflowerBlueLight,
-                  contentColor = Color.White,
-                  onClick = {
-                    requestPermissionNotification(
-                      isGranted = {
-                        if (it) {
-                          openDialog = true
-                        } else {
-                          errorClick = true
-                        }
-                      },
-                      permissionState = {
-                        it.launchPermissionRequest()
-                      },
-                      notificationPermission = notificationPermissionState,
-                    )
-                  },
-                ) {
-                  Icon(imageVector = ImageVector.vectorResource(com.rahim.R.drawable.ic_add), "add item")
-                }
-              }
-            },
-            bottomBar = {
-              AnimatedVisibility(
-                visible = destinationNavBackStackEntry != Destinations.OnBoarding.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route,
-                enter = fadeIn() + expandVertically(animationSpec = tween(800)),
-                exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
-              ) {
-                BottomNavigationBar(
-                  navController,
-                  navBackStackEntry,
-                  destinationNavBackStackEntry,
-                )
-              }
-            },
-            containerColor = MaterialTheme.colorScheme.background,
-          ) { innerPadding ->
-
+            }
+          },
+          bottomBar = {
+            AnimatedVisibility(
+              visible = destinationNavBackStackEntry != Destinations.OnBoarding.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route,
+              enter = fadeIn() + expandVertically(animationSpec = tween(800)),
+              exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
+            ) {
+              BottomNavigationBar(
+                navController,
+                navBackStackEntry,
+                destinationNavBackStackEntry,
+              )
+            }
+          },
+          containerColor = MaterialTheme.colorScheme.background,
+        ) { innerPadding ->
+          if (isShowWelcomeScreen) {
+            RootContent(component = rootComponent, modifier = Modifier.padding(innerPadding))
+          } else {
             NavigationComponent(
               navController,
               innerPadding = innerPadding,
-              startDestination = if (isShowWelcomeScreen) Destinations.Home.route else Destinations.OnBoarding.route,
+              startDestination = Destinations.OnBoarding.route,
               openDialog = openDialog,
               clickSearch = clickSearch,
               onOpenDialog = { isOpen ->
                 openDialog = isOpen
               },
             )
-            if (destination == Destinations.Home.route) {
-              requestPermissionNotification(
-                notificationPermission = notificationPermissionState,
-                isGranted = {},
-                permissionState = {
-                  it.launchPermissionRequest()
-                },
-              )
-            }
           }
         }
       }
@@ -299,16 +303,49 @@ fun YadinoApp(
 }
 
 @Composable
-private fun checkNavBackStackEntry(destinationNavBackStackEntry: String?) = when (destinationNavBackStackEntry) {
-  Destinations.Home.route -> stringResource(
-    id = R.string.my_firend,
-  )
+fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
+  Children(
+    stack = component.stack,
+    modifier = modifier.fillMaxSize(),
+    animation = stackAnimation(fade()),
+  ) {
+    Surface(
+      modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),
+    ) {
+      when (val child = it.instance) {
+        is RootComponent.ChildStack.HomeStack -> {
+          HomeRoute(
+            openDialog = false, homeComponent = child.homeComponent, clickSearch = false,
+            onOpenDialog = {
 
-  Destinations.Routine.route -> stringResource(
-    id = com.rahim.R.string.list_routine,
-  )
+            },
+          )
+        }
+      }
+    }
+  }
+}
 
-  Destinations.AlarmHistory.route -> stringResource(id = com.rahim.R.string.historyAlarm)
+@Composable
+private fun checkNavBackStackEntry(destinationNavBackStackEntry: String?, rootComponent: RootComponent): String {
+  val stack = rootComponent.stack.subscribeAsState()
+  val configurationState = stack.value.active.configuration
 
-  else -> stringResource(id = com.rahim.R.string.notes)
+  return if (configurationState is ConfigChildComponent.Home) {
+    stringResource(
+      id = R.string.my_firend,
+    )
+  } else {
+    when (destinationNavBackStackEntry) {
+      Destinations.Routine.route -> stringResource(
+        id = com.rahim.R.string.list_routine,
+      )
+
+      Destinations.AlarmHistory.route -> stringResource(id = com.rahim.R.string.historyAlarm)
+
+      else -> stringResource(id = com.rahim.R.string.notes)
+    }
+  }
 }
