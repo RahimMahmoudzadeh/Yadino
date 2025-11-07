@@ -1,4 +1,4 @@
-package com.rahim.yadino.note.presentation.component
+package com.rahim.yadino.note.presentation.ui.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement

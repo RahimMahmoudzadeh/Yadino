@@ -1,14 +1,13 @@
-package com.rahim.yadino.note.presentation
+package com.rahim.yadino.note.presentation.component
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalComponent
-import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import kotlinx.collections.immutable.PersistentList
 
-interface NoteContract : UnidirectionalViewModel<NoteContract.NoteEvent, NoteContract.NoteState> {
+interface NoteComponent : UnidirectionalComponent<NoteComponent.NoteEvent, NoteComponent.NoteState> {
 
   @Immutable
   sealed class NoteEvent() {

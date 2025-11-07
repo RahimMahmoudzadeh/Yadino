@@ -1,4 +1,4 @@
-package com.rahim.yadino.note.presentation
+package com.rahim.yadino.note.presentation.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -29,41 +29,42 @@ import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
-import com.rahim.yadino.note.presentation.component.DialogAddNote
-import com.rahim.yadino.note.presentation.component.ItemListNote
+import com.rahim.yadino.note.presentation.R
+import com.rahim.yadino.note.presentation.component.NoteComponent
 import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
+import com.rahim.yadino.note.presentation.ui.component.DialogAddNote
+import com.rahim.yadino.note.presentation.ui.component.ItemListNote
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-internal fun NoteRoute(
+fun NoteRoute(
   modifier: Modifier = Modifier,
-  viewModel: NoteComponent = koinViewModel(),
+  component: NoteComponent,
   openDialog: Boolean,
   clickSearch: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,
 ) {
-  val (state, event) = use(viewModel = viewModel)
+  val (state, event) = use(component)
 
   NoteScreen(
     modifier = modifier,
     state = state,
     onUpdateNote = {
-      event(NoteContract.NoteEvent.UpdateNote(it))
+      event(NoteComponent.NoteEvent.UpdateNote(it))
     },
     onAddNote = {
-      event(NoteContract.NoteEvent.AddNote(it))
+      event(NoteComponent.NoteEvent.AddNote(it))
     },
     onDelete = {
-      event(NoteContract.NoteEvent.DeleteNote(it))
+      event(NoteComponent.NoteEvent.DeleteNote(it))
     },
     onOpenDialog = onOpenDialog,
     onSearchText = {
-      event(NoteContract.NoteEvent.SearchNote(it))
+      event(NoteComponent.NoteEvent.SearchNote(it))
     },
     openDialog = openDialog,
     clickSearch = clickSearch,
@@ -74,7 +75,7 @@ internal fun NoteRoute(
 @Composable
 private fun NoteScreen(
   modifier: Modifier = Modifier,
-  state: NoteContract.NoteState,
+  state: NoteComponent.NoteState,
   openDialog: Boolean,
   clickSearch: Boolean,
   onOpenDialog: (isOpen: Boolean) -> Unit,
