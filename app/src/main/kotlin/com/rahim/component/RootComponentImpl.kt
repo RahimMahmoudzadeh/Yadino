@@ -5,6 +5,8 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
+import com.rahim.component.RootComponent.ChildStack.*
+import com.rahim.yadino.core.timeDate.repo.DateTimeRepository
 import com.rahim.yadino.home.domain.useCase.AddReminderUseCase
 import com.rahim.yadino.home.domain.useCase.CancelReminderUseCase
 import com.rahim.yadino.home.domain.useCase.DeleteReminderUseCase
@@ -15,8 +17,23 @@ import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.home.presentation.component.HomeComponent
 import com.rahim.yadino.home.presentation.component.HomeComponentImpl
 import com.rahim.yadino.navigation.config.ConfigChildComponent
+import com.rahim.yadino.note.domain.useCase.AddNoteUseCase
+import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
+import com.rahim.yadino.note.domain.useCase.GetNotesUseCase
+import com.rahim.yadino.note.domain.useCase.SearchNoteUseCase
+import com.rahim.yadino.note.domain.useCase.UpdateNoteUseCase
+import com.rahim.yadino.note.presentation.component.NoteComponent
+import com.rahim.yadino.note.presentation.component.NoteComponentImpl
+import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
+import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponentImpl
+import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
+import com.rahim.yadino.routine.domain.useCase.GetAllRoutineUseCase
+import com.rahim.yadino.routine.domain.useCase.GetRemindersUseCase
+import com.yadino.routine.presentation.navigation.RoutineComponent
+import com.yadino.routine.presentation.navigation.RoutineComponentImpl
+import com.yadino.routine.presentation.navigation.history.HistoryRoutineComponent
+import com.yadino.routine.presentation.navigation.history.HistoryRoutineComponentImpl
 import kotlinx.coroutines.Dispatchers
-import kotlinx.serialization.builtins.serializer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
@@ -51,14 +68,65 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     getCurrentDateUseCase = getCurrentDateUseCase,
   )
 
+  private val sharedPreferencesRepository: SharedPreferencesRepository = get()
+  private fun onBoardingComponent(componentContext: ComponentContext): OnBoardingComponent = OnBoardingComponentImpl(
+    componentContext = componentContext,
+    mainContext = Dispatchers.Main,
+    sharedPreferencesRepository = sharedPreferencesRepository,
+  )
+
+  private val getAllRoutineUseCase: GetAllRoutineUseCase = get()
+  private fun historyRoutineComponent(componentContext: ComponentContext): HistoryRoutineComponent = HistoryRoutineComponentImpl(
+    componentContext = componentContext,
+    mainContext = Dispatchers.Main,
+    getAllRoutineUseCase = getAllRoutineUseCase,
+  )
+
+  private val addReminderUseCaseRoutine: com.rahim.yadino.routine.domain.useCase.AddReminderUseCase = get()
+  private val updateReminderUseCaseRoutine: com.rahim.yadino.routine.domain.useCase.UpdateReminderUseCase = get()
+  private val cancelReminderUseCaseRoutine: com.rahim.yadino.routine.domain.useCase.CancelReminderUseCase = get()
+  private val deleteReminderUseCaseRoutine: com.rahim.yadino.routine.domain.useCase.DeleteReminderUseCase = get()
+  private val getTodayRoutinesUseCaseRoutine: GetRemindersUseCase = get()
+  private val searchRoutineUseCaseRoutine: com.rahim.yadino.routine.domain.useCase.SearchRoutineUseCase = get()
+  private val dateTimeRepository: DateTimeRepository = get()
+
+  private fun routineComponent(componentContext: ComponentContext): RoutineComponent = RoutineComponentImpl(
+    componentContext = componentContext,
+    mainContext = Dispatchers.Main,
+    ioContext = Dispatchers.IO,
+    addReminderUseCase = addReminderUseCaseRoutine,
+    updateReminderUseCase = updateReminderUseCaseRoutine,
+    cancelReminderUseCase = cancelReminderUseCaseRoutine,
+    deleteReminderUseCase = deleteReminderUseCaseRoutine,
+    getRemindersUseCase = getTodayRoutinesUseCaseRoutine,
+    searchRoutineUseCase = searchRoutineUseCaseRoutine,
+    dateTimeRepository = dateTimeRepository,
+  )
+
+  private val addNoteUseCase: AddNoteUseCase = get()
+  private val deleteNoteUseCase: DeleteNoteUseCase = get()
+  private val updateNoteUseCase: UpdateNoteUseCase = get()
+  private val getNotesUseCase: GetNotesUseCase = get()
+  private val searchNoteUseCase: SearchNoteUseCase = get()
+
+  private fun noteComponent(componentContext: ComponentContext): NoteComponent = NoteComponentImpl(
+    componentContext = componentContext,
+    mainContext = Dispatchers.Main,
+    addNoteUseCase = addNoteUseCase,
+    deleteNoteUseCase = deleteNoteUseCase,
+    updateNoteUseCase = updateNoteUseCase,
+    getNotesUseCase = getNotesUseCase,
+    searchNoteUseCase = searchNoteUseCase,
+  )
+
   private fun childComponent(
     config: ConfigChildComponent,
     childComponentContext: ComponentContext,
   ): RootComponent.ChildStack = when (config) {
-    is ConfigChildComponent.Home -> RootComponent.ChildStack.HomeStack(homeComponent = homeComponent(componentContext = childComponentContext))
-
-    else -> {
-      RootComponent.ChildStack.HomeStack(homeComponent = homeComponent(componentContext = childComponentContext))
-    }
+    is ConfigChildComponent.Home -> HomeStack(component = homeComponent(componentContext = childComponentContext))
+    is ConfigChildComponent.OnBoarding -> OnBoarding(component = onBoardingComponent(componentContext = childComponentContext))
+    is ConfigChildComponent.HistoryRoutine -> HistoryRoutine(component = historyRoutineComponent(componentContext = childComponentContext))
+    is ConfigChildComponent.Note -> Note(component = noteComponent(componentContext = childComponentContext))
+    is ConfigChildComponent.Routine -> Routine(component = routineComponent(componentContext = childComponentContext))
   }
 }
