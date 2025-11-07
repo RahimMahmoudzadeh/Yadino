@@ -14,6 +14,7 @@ import com.rahim.yadino.home.domain.useCase.SearchRoutineUseCase
 import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.home.presentation.component.HomeComponent
 import com.rahim.yadino.home.presentation.component.HomeComponentImpl
+import com.rahim.yadino.navigation.config.ConfigChildComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.builtins.serializer
 import org.koin.core.component.KoinComponent
@@ -22,14 +23,6 @@ import org.koin.core.component.get
 class RootComponentImpl(componentContext: ComponentContext) : RootComponent, ComponentContext by componentContext, KoinComponent {
   private val navigation = StackNavigation<ConfigChildComponent>()
 
-  override val stack: Value<ChildStack<*, RootComponent.ChildStack>> = childStack(
-    source = navigation,
-    serializer = ConfigChildComponent.serializer(),
-    initialConfiguration = ConfigChildComponent.Home,
-    handleBackButton = true,
-    childFactory = ::childComponent,
-  )
-
   private val addReminderUseCase: AddReminderUseCase = get()
   private val updateReminderUseCase: UpdateReminderUseCase = get()
   private val cancelReminderUseCase: CancelReminderUseCase = get()
@@ -37,6 +30,14 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private val getTodayRoutinesUseCase: GetTodayRoutinesUseCase = get()
   private val searchRoutineUseCase: SearchRoutineUseCase = get()
   private val getCurrentDateUseCase: GetCurrentDateUseCase = get()
+
+  override val stack: Value<ChildStack<*, RootComponent.ChildStack>> = childStack(
+    source = navigation,
+    serializer = ConfigChildComponent.serializer(),
+    initialConfiguration = ConfigChildComponent.Home,
+    handleBackButton = true,
+    childFactory = ::childComponent,
+  )
 
   private fun homeComponent(componentContext: ComponentContext): HomeComponent = HomeComponentImpl(
     componentContext = componentContext,
