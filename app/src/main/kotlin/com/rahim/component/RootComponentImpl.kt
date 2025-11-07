@@ -123,10 +123,10 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     config: ConfigChildComponent,
     childComponentContext: ComponentContext,
   ): RootComponent.ChildStack = when (config) {
-    is ConfigChildComponent.Home -> HomeStack(component = homeComponent(componentContext = childComponentContext))
-    is ConfigChildComponent.OnBoarding -> OnBoarding(component = onBoardingComponent(componentContext = childComponentContext))
-    is ConfigChildComponent.HistoryRoutine -> HistoryRoutine(component = historyRoutineComponent(componentContext = childComponentContext))
-    is ConfigChildComponent.Note -> Note(component = noteComponent(componentContext = childComponentContext))
-    is ConfigChildComponent.Routine -> Routine(component = routineComponent(componentContext = childComponentContext))
+    ConfigChildComponent.Home -> HomeStack(component = homeComponent(componentContext = childComponentContext))
+    ConfigChildComponent.OnBoarding -> OnBoarding(component = onBoardingComponent(componentContext = childComponentContext))
+    ConfigChildComponent.HistoryRoutine -> HistoryRoutine(component = historyRoutineComponent(componentContext = childComponentContext))
+    ConfigChildComponent.Note -> Note(component = noteComponent(componentContext = childComponentContext))
+    ConfigChildComponent.Routine -> Routine(component = routineComponent(componentContext = childComponentContext))
   }
 }
