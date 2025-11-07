@@ -46,7 +46,6 @@ fun NoteRoute(
   component: NoteComponent,
   openDialog: Boolean,
   clickSearch: Boolean,
-  onOpenDialog: (isOpen: Boolean) -> Unit,
 ) {
   val (state, event) = use(component)
 
@@ -62,7 +61,7 @@ fun NoteRoute(
     onDelete = {
       event(NoteComponent.NoteEvent.DeleteNote(it))
     },
-    onOpenDialog = onOpenDialog,
+    onOpenDialog = {},
     onSearchText = {
       event(NoteComponent.NoteEvent.SearchNote(it))
     },
