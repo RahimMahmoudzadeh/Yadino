@@ -18,7 +18,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -41,7 +40,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -67,6 +65,7 @@ import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.home.presentation.ui.HomeRoute
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.component.BottomNavigationBar
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
 import com.rahim.yadino.navigation.config.ConfigChildComponent
@@ -189,7 +188,6 @@ fun YadinoApp(
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
     YadinoTheme(darkTheme = isDarkTheme) {
       YadinoNavigationDrawer(
-        modifier = Modifier.width(240.dp),
         drawerState = drawerState,
         isDarkTheme = isDarkTheme,
         onItemClick = drawerItemClicked,
@@ -254,14 +252,13 @@ fun YadinoApp(
               enter = fadeIn() + expandVertically(animationSpec = tween(800)),
               exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
             ) {
-//              BottomNavigationBar(
-//                navController,
-//                navBackStackEntry,
-//                destinationNavBackStackEntry,
-//              )
+              BottomNavigationBar(
+                configuration = configurationState,
+                component = rootComponent,
+              )
             }
           },
-          containerColor = MaterialTheme.colorScheme.background,
+          modifier = Modifier.fillMaxSize(),
         ) { innerPadding ->
           RootContent(component = rootComponent, modifier = Modifier.padding(innerPadding))
         }
