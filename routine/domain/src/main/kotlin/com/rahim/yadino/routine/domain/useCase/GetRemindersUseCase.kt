@@ -1,6 +1,6 @@
-package com.yadino.routine.domain.useCase
+package com.rahim.yadino.routine.domain.useCase
 
-import com.yadino.routine.domain.repo.RoutineRepository
+import com.rahim.yadino.routine.domain.repo.RoutineRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn

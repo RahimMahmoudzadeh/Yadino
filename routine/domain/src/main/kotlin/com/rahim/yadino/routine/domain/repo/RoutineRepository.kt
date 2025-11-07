@@ -1,8 +1,8 @@
-package com.yadino.routine.domain.repo
+package com.rahim.yadino.routine.domain.repo
 
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.yadino.routine.domain.model.Routine
+import com.rahim.yadino.routine.domain.model.Routine
 import kotlinx.coroutines.flow.Flow
 
 interface RoutineRepository {

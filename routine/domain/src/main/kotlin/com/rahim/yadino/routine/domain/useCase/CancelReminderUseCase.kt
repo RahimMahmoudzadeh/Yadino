@@ -1,8 +1,8 @@
-package com.yadino.routine.domain.useCase
+package com.rahim.yadino.routine.domain.useCase
 
 import com.rahim.yadino.base.reminder.ReminderScheduler
-import com.yadino.routine.domain.model.Routine
-import com.yadino.routine.domain.repo.RoutineRepository
+import com.rahim.yadino.routine.domain.model.Routine
+import com.rahim.yadino.routine.domain.repo.RoutineRepository
 
 class CancelReminderUseCase(
   private val routineRepository: RoutineRepository,

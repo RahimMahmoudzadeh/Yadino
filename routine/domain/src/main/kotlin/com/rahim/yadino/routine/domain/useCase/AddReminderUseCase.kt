@@ -1,28 +1,27 @@
-package com.yadino.routine.domain.useCase
+package com.rahim.yadino.routine.domain.useCase
 
 import com.rahim.yadino.base.Resource
 import com.rahim.yadino.base.reminder.ReminderScheduler
 import com.rahim.yadino.base.reminder.ReminderState
 import com.rahim.yadino.enums.SuccessMessage
 import com.rahim.yadino.enums.error.ErrorMessageCode
-import com.yadino.routine.domain.model.Routine
-import com.yadino.routine.domain.repo.RoutineRepository
+import com.rahim.yadino.routine.domain.repo.RoutineRepository
+import com.rahim.yadino.routine.domain.model.Routine
 
-class UpdateReminderUseCase(
+class AddReminderUseCase(
   private val routineRepository: RoutineRepository,
   private val reminderScheduler: ReminderScheduler,
 ) {
-  suspend operator fun invoke(routine: Routine): Resource<SuccessMessage, ErrorMessageCode> {
+  suspend operator fun invoke(routineModel: Routine): Resource<SuccessMessage, ErrorMessageCode> {
     try {
-      reminderScheduler.cancelReminder(routine.idAlarm ?: 0)
-      val routine = routine.copy(
+      val routine = routineModel.copy(
         idAlarm = routineRepository.getRoutineAlarmId(),
         colorTask = 0,
         timeInMillisecond = routineRepository.convertDateToMilSecond(
-          routine.yearNumber,
-          routine.monthNumber,
-          routine.dayNumber,
-          routine.timeHours,
+          routineModel.yearNumber,
+          routineModel.monthNumber,
+          routineModel.dayNumber,
+          routineModel.timeHours,
         ),
       )
       val equalRoutine = routineRepository.checkEqualRoutine(routine)
@@ -38,7 +37,7 @@ class UpdateReminderUseCase(
       return when (reminderState) {
         ReminderState.SetSuccessfully -> {
           routineRepository.addRoutine(routine)
-          Resource.Success(SuccessMessage.UPDATE_REMINDER)
+          Resource.Success(SuccessMessage.SAVE_REMINDER)
         }
 
         is ReminderState.NotSet -> {

@@ -1,4 +1,4 @@
-package com.yadino.routine.domain.model
+package com.rahim.yadino.routine.domain.model
 
 data class Routine(
   val name: String,
