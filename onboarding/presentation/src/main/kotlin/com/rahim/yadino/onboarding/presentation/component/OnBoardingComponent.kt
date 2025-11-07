@@ -1,11 +1,11 @@
-package com.rahim.yadino.onboarding.presentation
+package com.rahim.yadino.onboarding.presentation.component
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.UnidirectionalComponent
-import com.rahim.yadino.base.UnidirectionalViewModel
+import com.rahim.yadino.onboarding.presentation.R
 import com.rahim.yadino.onboarding.presentation.model.OnBoardingUiModel
 
-interface OnBoardingContract : UnidirectionalViewModel<OnBoardingContract.WelcomeEvent, OnBoardingContract.WelcomeState> {
+interface OnBoardingComponent : UnidirectionalComponent<OnBoardingComponent.WelcomeEvent, OnBoardingComponent.WelcomeState> {
 
   @Immutable
   sealed class WelcomeEvent {

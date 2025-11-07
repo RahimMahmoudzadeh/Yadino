@@ -1,0 +1,44 @@
+package com.rahim.yadino.onboarding.presentation.component
+
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import com.arkivanov.essenty.lifecycle.doOnCreate
+import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
+
+class OnBoardingComponentImpl(
+  componentContext: ComponentContext,
+  mainContext: CoroutineContext,
+  private val sharedPreferencesRepository: SharedPreferencesRepository,
+) : OnBoardingComponent, ComponentContext by componentContext {
+
+  private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
+
+  private val _state = MutableValue(OnBoardingComponent.WelcomeState())
+  override val state: Value<OnBoardingComponent.WelcomeState> = _state
+
+  init {
+    lifecycle.doOnCreate {
+      isShowWelcomeScreen()
+    }
+  }
+
+  override fun event(event: OnBoardingComponent.WelcomeEvent) = when (event) {
+    is OnBoardingComponent.WelcomeEvent.SaveShowWelcome -> {
+      saveShowWelcome(event.isShow)
+    }
+  }
+
+  private fun saveShowWelcome(isShow: Boolean) {
+    scope.launch {
+      sharedPreferencesRepository.saveShowWelcome(isShow)
+    }
+  }
+
+  private fun isShowWelcomeScreen() = sharedPreferencesRepository.isShowWelcomeScreen()
+}
