@@ -57,7 +57,6 @@ import kotlin.math.max
 fun OnBoardingRoute(
   modifier: Modifier = Modifier,
   component: OnBoardingComponent,
-  navigateToHome: () -> Unit,
 ) {
   val (state, event) = use(component)
 
@@ -66,11 +65,11 @@ fun OnBoardingRoute(
     listItemWelcome = state.listItemWelcome,
     navigateToHome = {
       event.invoke(OnBoardingComponent.WelcomeEvent.SaveShowWelcome(true))
-      navigateToHome()
+//      navigateToHome()
     },
     onClickSkip = {
       event.invoke(OnBoardingComponent.WelcomeEvent.SaveShowWelcome(true))
-      navigateToHome()
+//      navigateToHome()
     },
   )
 }
