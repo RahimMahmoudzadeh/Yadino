@@ -3,6 +3,7 @@ package com.rahim.component
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
 import com.rahim.component.RootComponent.ChildStack.*
@@ -55,6 +56,10 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     handleBackButton = true,
     childFactory = ::childComponent,
   )
+
+  override fun onTabClick(tab: ConfigChildComponent) {
+    navigation.bringToFront(tab)
+  }
 
   private fun homeComponent(componentContext: ComponentContext): HomeComponent = HomeComponentImpl(
     componentContext = componentContext,
