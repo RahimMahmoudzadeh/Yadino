@@ -82,19 +82,19 @@ import timber.log.Timber
 @Composable
 fun RoutineRoute(
   modifier: Modifier = Modifier,
-  viewModel: RoutineComponent,
+  component: RoutineComponent,
   openDialogAddRoutine: Boolean,
   showSearchBar: Boolean,
-  onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,
+//  onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,
 ) {
-  val (state, event) = use(viewModel)
+  val (state, event) = use(component)
 
   RoutineScreen(
     modifier = modifier,
     state = state,
     openDialogAddRoutine = openDialogAddRoutine,
     showSearchBar = showSearchBar,
-    onOpenDialogAddRoutine = onOpenDialogAddRoutine,
+    onOpenDialogAddRoutine = {},
     onUpdateRoutine = {
       event.invoke(RoutineComponent.Event.UpdateRoutine(it))
     },
