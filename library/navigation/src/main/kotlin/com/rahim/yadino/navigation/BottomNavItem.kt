@@ -2,6 +2,7 @@ package com.rahim.yadino.navigation
 
 import androidx.annotation.DrawableRes
 import com.rahim.yadino.library.navigation.R
+import com.rahim.yadino.navigation.config.ConfigChildComponent
 
 sealed class BottomNavItem(
   val route: String,
@@ -10,29 +11,30 @@ sealed class BottomNavItem(
   @DrawableRes val iconDark: Int?,
 ) {
   data object Home : BottomNavItem(
-    Destinations.Home.route,
-    R.drawable.home,
-    R.drawable.home_selected,
-    R.drawable.home_dark,
+    route = ConfigChildComponent.Home.toString(),
+    iconNormal = R.drawable.home,
+    iconSelected = R.drawable.home_selected,
+    iconDark = R.drawable.home_dark,
   )
 
   data object Routine : BottomNavItem(
-    Destinations.Routine.route,
-    R.drawable.note,
-    R.drawable.mote_selected,
-    R.drawable.note_dark,
+    route = Destinations.Routine.route,
+    iconNormal = R.drawable.note,
+    iconSelected = R.drawable.mote_selected,
+    iconDark = R.drawable.note_dark,
   )
 
   data object Note : BottomNavItem(
-    Destinations.Note.route,
-    R.drawable.routine,
-    R.drawable.routine_selected,
-    R.drawable.routine_dark,
+    route = Destinations.Note.route,
+    iconNormal = R.drawable.routine,
+    iconSelected = R.drawable.routine_selected,
+    iconDark = R.drawable.routine_dark,
   )
+
   data object Empty : BottomNavItem(
-    Destinations.Empty.route,
-    null,
-    null,
-    null,
+    route = Destinations.Empty.route,
+    iconNormal = null,
+    iconSelected = null,
+    iconDark = null,
   )
 }
