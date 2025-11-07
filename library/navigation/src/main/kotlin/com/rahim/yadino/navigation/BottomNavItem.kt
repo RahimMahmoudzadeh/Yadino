@@ -18,21 +18,21 @@ sealed class BottomNavItem(
   )
 
   data object Routine : BottomNavItem(
-    route = Destinations.Routine.route,
+    route = ConfigChildComponent.Routine.toString(),
     iconNormal = R.drawable.note,
     iconSelected = R.drawable.mote_selected,
     iconDark = R.drawable.note_dark,
   )
 
   data object Note : BottomNavItem(
-    route = Destinations.Note.route,
+    route = ConfigChildComponent.Note.toString(),
     iconNormal = R.drawable.routine,
     iconSelected = R.drawable.routine_selected,
     iconDark = R.drawable.routine_dark,
   )
 
   data object Empty : BottomNavItem(
-    route = Destinations.Empty.route,
+    route = "Empty",
     iconNormal = null,
     iconSelected = null,
     iconDark = null,
