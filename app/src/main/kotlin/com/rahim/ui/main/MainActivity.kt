@@ -258,7 +258,6 @@ fun YadinoApp(
               )
             }
           },
-          modifier = Modifier.fillMaxSize(),
         ) { innerPadding ->
           RootContent(component = rootComponent, modifier = Modifier.padding(innerPadding))
         }
@@ -288,11 +287,7 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
     modifier = modifier.fillMaxSize(),
     animation = stackAnimation(fade()),
   ) {
-    Surface(
-      modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background),
-    ) {
+    Surface(color = MaterialTheme.colorScheme.background) {
       when (val child = it.instance) {
         is RootComponent.ChildStack.HomeStack -> {
           HomeRoute(
