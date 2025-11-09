@@ -65,9 +65,8 @@ import com.rahim.yadino.routine.presentation.R
 import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.toStringResource
-import com.yadino.routine.presentation.navigation.RoutineComponent
-import com.yadino.routine.presentation.navigation.RoutineComponentImpl
-import com.yadino.routine.presentation.ui.component.DialogAddRoutine
+import com.yadino.routine.presentation.component.RoutineComponent
+import com.yadino.routine.presentation.ui.addRoutineDialog.DialogAddRoutine
 import com.yadino.routine.presentation.ui.component.ListRoutines
 import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutineUiModel
@@ -76,23 +75,19 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
 
 @Composable
 fun RoutineRoute(
   modifier: Modifier = Modifier,
   component: RoutineComponent,
-  openDialogAddRoutine: Boolean,
   showSearchBar: Boolean,
-//  onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,
 ) {
   val (state, event) = use(component)
 
   RoutineScreen(
     modifier = modifier,
     state = state,
-    openDialogAddRoutine = openDialogAddRoutine,
     showSearchBar = showSearchBar,
     onOpenDialogAddRoutine = {},
     onUpdateRoutine = {
@@ -130,7 +125,6 @@ fun RoutineRoute(
 private fun RoutineScreen(
   modifier: Modifier,
   state: RoutineComponent.State,
-  openDialogAddRoutine: Boolean,
   onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,
   showSearchBar: Boolean,
   checkedRoutine: (RoutineUiModel) -> Unit,
@@ -249,45 +243,45 @@ private fun RoutineScreen(
       )
     }
 
-    openDialogAddRoutine -> {
-        DialogAddRoutine(
-            onCloseDialog = {
-                onOpenDialogAddRoutine(false)
-                routineUpdateDialog.value = null
-            },
-            updateRoutine = routineUpdateDialog.value?.copy(
-                explanation = routineUpdateDialog.value?.explanation?.let {
-                    if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
-                        stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_right_sample)
-                    } else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation) {
-                        stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_left_sample)
-                    } else {
-                        it
-                    }
-                } ?: run {
-                    routineUpdateDialog.value?.explanation ?: ""
-                },
-            ),
-            onRoutineCreated = { routine ->
-                if (routineUpdateDialog.value != null) {
-                    onUpdateRoutine(routine)
-                } else {
-                    onAddRoutine(routine)
-                }
-                onOpenDialogAddRoutine(false)
-            },
-            currentNumberDay = state.currentDay,
-            currentNumberMonth = state.currentMonth,
-            currentNumberYear = state.currentYear,
-            timesMonth = state.timesMonth,
-            monthDecrease = { year, month ->
-                dialogMonthChange(year, month, IncreaseDecrease.DECREASE)
-            },
-            monthIncrease = { year, month ->
-                dialogMonthChange(year, month, IncreaseDecrease.INCREASE)
-            },
-        )
-    }
+//    openDialogAddRoutine -> {
+//        DialogAddRoutine(
+//            onCloseDialog = {
+//                onOpenDialogAddRoutine(false)
+//                routineUpdateDialog.value = null
+//            },
+//            updateRoutine = routineUpdateDialog.value?.copy(
+//                explanation = routineUpdateDialog.value?.explanation?.let {
+//                    if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
+//                        stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_right_sample)
+//                    } else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation) {
+//                        stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_left_sample)
+//                    } else {
+//                        it
+//                    }
+//                } ?: run {
+//                    routineUpdateDialog.value?.explanation ?: ""
+//                },
+//            ),
+//            onRoutineCreated = { routine ->
+//                if (routineUpdateDialog.value != null) {
+//                    onUpdateRoutine(routine)
+//                } else {
+//                    onAddRoutine(routine)
+//                }
+//                onOpenDialogAddRoutine(false)
+//            },
+//            currentNumberDay = state.currentDay,
+//            currentNumberMonth = state.currentMonth,
+//            currentNumberYear = state.currentYear,
+//            timesMonth = state.timesMonth,
+//            monthDecrease = { year, month ->
+//                dialogMonthChange(year, month, IncreaseDecrease.DECREASE)
+//            },
+//            monthIncrease = { year, month ->
+//                dialogMonthChange(year, month, IncreaseDecrease.INCREASE)
+//            },
+//        )
+//    }
   }
 }
 
