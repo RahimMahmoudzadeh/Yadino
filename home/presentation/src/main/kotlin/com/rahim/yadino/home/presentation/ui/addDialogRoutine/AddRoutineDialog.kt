@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation.ui.component
+package com.rahim.yadino.home.presentation.ui.addDialogRoutine
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.window.DialogProperties
+import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
@@ -49,6 +50,7 @@ import com.rahim.yadino.designsystem.utils.size.SizeDimensions
 import com.rahim.yadino.designsystem.utils.theme.Onahau
 import com.rahim.yadino.designsystem.utils.theme.Purple
 import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
+import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponent
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.toPersianDigits
@@ -68,20 +70,23 @@ const val MAX_EXPLANATION_LENGTH = 40
   ExperimentalMaterial3Api::class,
 )
 @Composable
-fun DialogAddRoutine(
+fun AddRoutineDialog(
   modifier: Modifier = Modifier,
-  updateRoutine: RoutineUiModel? = null,
-  onCloseDialog: () -> Unit,
-  onRoutineCreated: (routine: RoutineUiModel) -> Unit,
+  component: AddRoutineDialogComponent,
+//  updateRoutine: RoutineUiModel? = null,
+//  onCloseDialog: () -> Unit,
+//  onRoutineCreated: (routine: RoutineUiModel) -> Unit,
 ) {
+
+  val (state,event) = use(component)
 
   val size = LocalSize.current
   val space = LocalSpacing.current
   val fontSize = LocalFontSize.current
 
-  var routineName by rememberSaveable { mutableStateOf(if (updateRoutine?.name.isNullOrBlank()) "" else updateRoutine.name) }
-  var routineExplanation by rememberSaveable { mutableStateOf(if (updateRoutine?.explanation.isNullOrBlank()) "" else updateRoutine.explanation) }
-  var time by rememberSaveable { mutableStateOf(if (updateRoutine?.timeHours.isNullOrBlank()) "12:00" else updateRoutine.timeHours) }
+  var routineName by rememberSaveable { mutableStateOf(if (state.updateRoutine?.name.isNullOrBlank()) "" else state.updateRoutine.name) }
+  var routineExplanation by rememberSaveable { mutableStateOf(if (state.updateRoutine?.explanation.isNullOrBlank()) "" else state.updateRoutine.explanation) }
+  var time by rememberSaveable { mutableStateOf(if (state.updateRoutine?.timeHours.isNullOrBlank()) "12:00" else state.updateRoutine.timeHours) }
 
   var isErrorName by remember { mutableStateOf(false) }
   var isErrorExplanation by remember { mutableStateOf(false) }
@@ -89,9 +94,9 @@ fun DialogAddRoutine(
 
   val persianData = PersianDate()
   val date = persianData.initJalaliDate(
-    updateRoutine?.yearNumber ?: persianData.shYear,
-    updateRoutine?.monthNumber ?: persianData.shMonth,
-    updateRoutine?.dayNumber ?: persianData.shDay,
+    state.updateRoutine?.yearNumber ?: persianData.shYear,
+    state.updateRoutine?.monthNumber ?: persianData.shMonth,
+    state.updateRoutine?.dayNumber ?: persianData.shDay,
   )
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
     BasicAlertDialog(
@@ -109,7 +114,7 @@ fun DialogAddRoutine(
           shape = RoundedCornerShape(size.size8),
         ),
       onDismissRequest = {
-        onCloseDialog()
+//        onCloseDialog()
       },
     ) {
       Column(
@@ -283,7 +288,7 @@ fun DialogAddRoutine(
                 isErrorName = true
               } else {
                 val routine = RoutineUiModel(
-                  id = updateRoutine?.id,
+                  id = state.updateRoutine?.id,
                   name = routineName,
                   explanation = routineExplanation,
                   timeHours = time,
@@ -293,14 +298,14 @@ fun DialogAddRoutine(
                   dayName = date.dayName(),
                   colorTask = null,
                 )
-                onRoutineCreated(routine)
+//                onRoutineCreated(routine)
               }
             },
           )
           Spacer(modifier = Modifier.width(size.size10))
           TextButton(
             onClick = {
-              onCloseDialog()
+//              onCloseDialog()
             },
           ) {
             Text(
