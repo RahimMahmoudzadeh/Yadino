@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.navigation
+package com.yadino.routine.presentation.component
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.LoadableData

@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.navigation
+package com.yadino.routine.presentation.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -24,7 +24,6 @@ import com.yadino.routine.presentation.mapper.toTimeDateUiModel
 import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.catch
