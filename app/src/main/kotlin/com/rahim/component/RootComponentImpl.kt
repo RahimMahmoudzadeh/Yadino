@@ -24,7 +24,8 @@ import com.rahim.yadino.home.presentation.component.HomeComponent
 import com.rahim.yadino.home.presentation.component.HomeComponentImpl
 import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponent
 import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponentImpl
-import com.rahim.yadino.navigation.config.AddRoutineDialogHome
+import com.rahim.yadino.navigation.config.AddRoutineDialogHomeScreen
+import com.rahim.yadino.navigation.config.AddRoutineDialogRoutineScreen
 import com.rahim.yadino.navigation.config.ConfigChildComponent
 import com.rahim.yadino.note.domain.useCase.AddNoteUseCase
 import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
@@ -38,10 +39,10 @@ import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponentImp
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
 import com.rahim.yadino.routine.domain.useCase.GetAllRoutineUseCase
 import com.rahim.yadino.routine.domain.useCase.GetRemindersUseCase
-import com.yadino.routine.presentation.navigation.RoutineComponent
-import com.yadino.routine.presentation.navigation.RoutineComponentImpl
-import com.yadino.routine.presentation.navigation.history.HistoryRoutineComponent
-import com.yadino.routine.presentation.navigation.history.HistoryRoutineComponentImpl
+import com.yadino.routine.presentation.component.RoutineComponent
+import com.yadino.routine.presentation.component.RoutineComponentImpl
+import com.yadino.routine.presentation.component.history.HistoryRoutineComponent
+import com.yadino.routine.presentation.component.history.HistoryRoutineComponentImpl
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -56,8 +57,11 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private val getTodayRoutinesUseCase: GetTodayRoutinesUseCase = get()
   private val searchRoutineUseCase: SearchRoutineUseCase = get()
   private val getCurrentDateUseCase: GetCurrentDateUseCase = get()
-  private val addRoutineDialogComponentNavigationSlot =
-    SlotNavigation<AddRoutineDialogHome>()
+  private val addRoutineDialogHomeScreenComponentNavigationSlot =
+    SlotNavigation<AddRoutineDialogHomeScreen>()
+
+  private val addRoutineDialogRoutineScreenComponentNavigationSlot =
+    SlotNavigation<AddRoutineDialogRoutineScreen>()
 
 
   override val stack: Value<ChildStack<*, RootComponent.ChildStack>> = childStack(
@@ -68,22 +72,44 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     childFactory = ::childComponent,
   )
 
-  override val addRoutineDialog: Value<ChildSlot<AddRoutineDialogHome, AddRoutineDialogComponent>> =
+  override val addRoutineDialogHomeScreen: Value<ChildSlot<AddRoutineDialogHomeScreen, AddRoutineDialogComponent>> =
     childSlot(
-      source = addRoutineDialogComponentNavigationSlot,
-      serializer = AddRoutineDialogHome.serializer(),
+      source = addRoutineDialogHomeScreenComponentNavigationSlot,
+      serializer = AddRoutineDialogHomeScreen.serializer(),
       handleBackButton = true,
-      key = "addRoutineDialog",
+      key = "addRoutineDialogHomeScreenComponentNavigationSlot",
     ) { config, childComponentContext ->
       AddRoutineDialogComponentImpl(
         componentContext = childComponentContext,
         mainDispatcher = Dispatchers.Main,
-        onDismissed = addRoutineDialogComponentNavigationSlot::dismiss,
+        onDismissed = addRoutineDialogHomeScreenComponentNavigationSlot::dismiss,
+      )
+    }
+
+  override val addRoutineDialogRoutineScreen: Value<ChildSlot<AddRoutineDialogRoutineScreen, com.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent>> =
+    childSlot(
+      source = addRoutineDialogRoutineScreenComponentNavigationSlot,
+      serializer = AddRoutineDialogRoutineScreen.serializer(),
+      handleBackButton = true,
+      key = "addRoutineDialogRoutineScreenComponentNavigationSlot",
+    ) { config, childComponentContext ->
+      com.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponentImpl(
+        componentContext = childComponentContext,
+        mainDispatcher = Dispatchers.Main,
+        onDismissed = addRoutineDialogRoutineScreenComponentNavigationSlot::dismiss,
       )
     }
 
   override fun onTabClick(tab: ConfigChildComponent) {
     navigation.bringToFront(tab)
+  }
+
+  override fun onShowAddDialogRoutineHomeScreen(dialog: AddRoutineDialogHomeScreen) {
+    addRoutineDialogHomeScreenComponentNavigationSlot.activate(dialog)
+  }
+
+  override fun onShowAddDialogRoutineRoutineScreen(dialog: AddRoutineDialogRoutineScreen) {
+    addRoutineDialogRoutineScreenComponentNavigationSlot.activate(dialog)
   }
 
   private fun homeComponent(componentContext: ComponentContext): HomeComponent = HomeComponentImpl(
@@ -97,7 +123,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     searchRoutineUseCase = searchRoutineUseCase,
     getCurrentDateUseCase = getCurrentDateUseCase,
     onShowAddRoutineDialog = {
-      addRoutineDialogComponentNavigationSlot.activate(AddRoutineDialogHome)
+      addRoutineDialogHomeScreenComponentNavigationSlot.activate(AddRoutineDialogHomeScreen)
     }
   )
 
