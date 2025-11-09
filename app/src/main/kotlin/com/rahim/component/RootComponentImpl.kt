@@ -3,6 +3,7 @@ package com.rahim.component
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -95,6 +96,9 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     getTodayRoutinesUseCase = getTodayRoutinesUseCase,
     searchRoutineUseCase = searchRoutineUseCase,
     getCurrentDateUseCase = getCurrentDateUseCase,
+    onShowAddRoutineDialog = {
+      addRoutineDialogComponentNavigationSlot.activate(AddRoutineDialogHome)
+    }
   )
 
   private val sharedPreferencesRepository: SharedPreferencesRepository = get()
@@ -157,5 +161,6 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     ConfigChildComponent.HistoryRoutine -> HistoryRoutine(component = historyRoutineComponent(componentContext = childComponentContext))
     ConfigChildComponent.Note -> Note(component = noteComponent(componentContext = childComponentContext))
     ConfigChildComponent.Routine -> Routine(component = routineComponent(componentContext = childComponentContext))
+    else -> Routine(component = routineComponent(componentContext = childComponentContext))
   }
 }
