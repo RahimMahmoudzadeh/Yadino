@@ -1,6 +1,10 @@
 package com.rahim.component
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.childSlot
+import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
@@ -17,6 +21,9 @@ import com.rahim.yadino.home.domain.useCase.SearchRoutineUseCase
 import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.home.presentation.component.HomeComponent
 import com.rahim.yadino.home.presentation.component.HomeComponentImpl
+import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponent
+import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponentImpl
+import com.rahim.yadino.navigation.config.AddRoutineDialogHome
 import com.rahim.yadino.navigation.config.ConfigChildComponent
 import com.rahim.yadino.note.domain.useCase.AddNoteUseCase
 import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
@@ -48,6 +55,9 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private val getTodayRoutinesUseCase: GetTodayRoutinesUseCase = get()
   private val searchRoutineUseCase: SearchRoutineUseCase = get()
   private val getCurrentDateUseCase: GetCurrentDateUseCase = get()
+  private val addRoutineDialogComponentNavigationSlot =
+    SlotNavigation<AddRoutineDialogHome>()
+
 
   override val stack: Value<ChildStack<*, RootComponent.ChildStack>> = childStack(
     source = navigation,
@@ -56,6 +66,20 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     handleBackButton = true,
     childFactory = ::childComponent,
   )
+
+  override val addRoutineDialog: Value<ChildSlot<AddRoutineDialogHome, AddRoutineDialogComponent>> =
+    childSlot(
+      source = addRoutineDialogComponentNavigationSlot,
+      serializer = AddRoutineDialogHome.serializer(),
+      handleBackButton = true,
+      key = "addRoutineDialog",
+    ) { config, childComponentContext ->
+      AddRoutineDialogComponentImpl(
+        componentContext = childComponentContext,
+        mainDispatcher = Dispatchers.Main,
+        onDismissed = addRoutineDialogComponentNavigationSlot::dismiss,
+      )
+    }
 
   override fun onTabClick(tab: ConfigChildComponent) {
     navigation.bringToFront(tab)
