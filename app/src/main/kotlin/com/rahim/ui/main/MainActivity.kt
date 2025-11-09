@@ -14,7 +14,6 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -68,6 +67,8 @@ import com.rahim.yadino.library.designsystem.R
 import com.rahim.component.BottomNavigationBar
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
+import com.rahim.yadino.navigation.config.AddRoutineDialogHomeScreen
+import com.rahim.yadino.navigation.config.AddRoutineDialogRoutineScreen
 import com.rahim.yadino.navigation.config.ConfigChildComponent
 import com.rahim.yadino.note.presentation.ui.NoteRoute
 import com.rahim.yadino.onboarding.presentation.OnBoardingRoute
@@ -171,7 +172,6 @@ fun YadinoApp(
   val notificationPermissionState =
     rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
 
-  var openDialog by rememberSaveable { mutableStateOf(false) }
   var errorClick by rememberSaveable { mutableStateOf(false) }
   var clickSearch by rememberSaveable { mutableStateOf(false) }
 
@@ -230,7 +230,19 @@ fun YadinoApp(
                   requestPermissionNotification(
                     isGranted = {
                       if (it) {
-                        openDialog = true
+                        when (configurationState) {
+                          ConfigChildComponent.Home -> {
+                            rootComponent.onShowAddDialogRoutineHomeScreen(AddRoutineDialogHomeScreen)
+                          }
+
+                          ConfigChildComponent.Routine -> {
+                            rootComponent.onShowAddDialogRoutineRoutineScreen(AddRoutineDialogRoutineScreen)
+                          }
+
+                          else -> {
+
+                          }
+                        }
                       } else {
                         errorClick = true
                       }
@@ -287,14 +299,16 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
     modifier = modifier.fillMaxSize(),
     animation = stackAnimation(fade()),
   ) {
+    val addRoutineDialog =
+      component.addRoutineDialogHomeScreen.subscribeAsState().value.child
+
     Surface(color = MaterialTheme.colorScheme.background) {
       when (val child = it.instance) {
         is RootComponent.ChildStack.HomeStack -> {
           HomeRoute(
-            openDialog = false, homeComponent = child.component, clickSearch = false,
-            onOpenDialog = {
-
-            },
+            homeComponent = child.component,
+            clickSearch = false,
+            dialogSlot = addRoutineDialog,
           )
         }
 
