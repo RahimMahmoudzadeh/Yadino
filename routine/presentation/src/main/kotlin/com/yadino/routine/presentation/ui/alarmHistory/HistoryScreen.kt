@@ -42,7 +42,7 @@ import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.routine.presentation.R
-import com.yadino.routine.presentation.navigation.history.HistoryRoutineComponent
+import com.yadino.routine.presentation.component.history.HistoryRoutineComponent
 
 @Composable
 fun HistoryRoute(

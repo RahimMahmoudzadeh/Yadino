@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.navigation.history
+package com.yadino.routine.presentation.component.history
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue

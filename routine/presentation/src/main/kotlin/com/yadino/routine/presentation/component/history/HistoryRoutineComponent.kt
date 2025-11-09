@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.navigation.history
+package com.yadino.routine.presentation.component.history
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.LoadableData
