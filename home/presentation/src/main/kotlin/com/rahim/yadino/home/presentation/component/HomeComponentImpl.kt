@@ -39,6 +39,7 @@ class HomeComponentImpl(
   private val getTodayRoutinesUseCase: GetTodayRoutinesUseCase,
   private val searchRoutineUseCase: SearchRoutineUseCase,
   private val getCurrentDateUseCase: GetCurrentDateUseCase,
+  private val onShowAddRoutineDialog: () -> Unit,
 ) : HomeComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
@@ -78,6 +79,8 @@ class HomeComponentImpl(
       is HomeComponent.Event.SearchRoutine -> {
         searchRoutines(searchText = event.routineName)
       }
+
+      HomeComponent.Event.OnShowAddRoutineDialog -> onShowAddRoutineDialog()
     }
   }
 

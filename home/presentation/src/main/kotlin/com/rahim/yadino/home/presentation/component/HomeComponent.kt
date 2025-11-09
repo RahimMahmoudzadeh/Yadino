@@ -17,6 +17,8 @@ interface HomeComponent : UnidirectionalComponent<HomeComponent.Event, HomeCompo
     data class DeleteRoutine(val routine: RoutineUiModel) : Event()
     data class SearchRoutine(val routineName: String) : Event()
     data object GetRoutines : Event()
+
+    data object OnShowAddRoutineDialog : Event()
   }
 
   @Immutable
