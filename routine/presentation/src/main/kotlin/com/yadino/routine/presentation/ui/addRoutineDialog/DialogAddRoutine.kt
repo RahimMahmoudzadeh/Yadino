@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.ui.component
+package com.yadino.routine.presentation.ui.addRoutineDialog
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -60,6 +60,7 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import com.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent
 import com.yadino.routine.presentation.model.RoutineUiModel
 import com.yadino.routine.presentation.model.TimeDateUiModel
 import kotlinx.collections.immutable.PersistentList
@@ -85,6 +86,7 @@ fun DialogAddRoutine(
   onRoutineCreated: (routine: RoutineUiModel) -> Unit,
   monthIncrease: ((year: Int, month: Int) -> Unit)? = null,
   monthDecrease: ((year: Int, month: Int) -> Unit)? = null,
+  componentComponent: AddRoutineDialogComponent,
 ) {
   val size = LocalSize.current
   val fontSize = LocalFontSize.current
@@ -370,26 +372,26 @@ fun DialogAddRoutine(
           }
           if (isShowDateDialog) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-              DialogChoseDate(
-                times = timesMonth,
-                yearNumber = yearChecked,
-                monthNumber = monthChecked,
-                dayNumber = dayChecked,
-                closeDialog = {
-                  isShowDateDialog = false
-                },
-                dayCheckedNumber = { year, month, day ->
-                  dayChecked = day
-                  monthChecked = month
-                  yearChecked = year
-                },
-                monthIncrease = { year, month ->
-                  monthIncrease?.invoke(year, month)
-                },
-                monthDecrease = { year, month ->
-                  monthDecrease?.invoke(year, month)
-                },
-              )
+                DialogChoseDate(
+                    times = timesMonth,
+                    yearNumber = yearChecked,
+                    monthNumber = monthChecked,
+                    dayNumber = dayChecked,
+                    closeDialog = {
+                        isShowDateDialog = false
+                    },
+                    dayCheckedNumber = { year, month, day ->
+                        dayChecked = day
+                        monthChecked = month
+                        yearChecked = year
+                    },
+                    monthIncrease = { year, month ->
+                        monthIncrease?.invoke(year, month)
+                    },
+                    monthDecrease = { year, month ->
+                        monthDecrease?.invoke(year, month)
+                    },
+                )
             }
           }
         }

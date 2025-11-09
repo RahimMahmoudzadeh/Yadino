@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.ui.component
+package com.yadino.routine.presentation.ui.addRoutineDialog
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
