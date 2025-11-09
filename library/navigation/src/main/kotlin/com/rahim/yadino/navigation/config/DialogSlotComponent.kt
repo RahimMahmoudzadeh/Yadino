@@ -3,4 +3,7 @@ package com.rahim.yadino.navigation.config
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object AddRoutineDialogHome: ConfigChildComponent
+data object AddRoutineDialogHomeScreen: ConfigChildComponent
+
+@Serializable
+data object AddRoutineDialogRoutineScreen: ConfigChildComponent
