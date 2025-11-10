@@ -73,12 +73,9 @@ const val MAX_EXPLANATION_LENGTH = 40
 fun AddRoutineDialog(
   modifier: Modifier = Modifier,
   component: AddRoutineDialogComponent,
-//  updateRoutine: RoutineUiModel? = null,
-//  onCloseDialog: () -> Unit,
-//  onRoutineCreated: (routine: RoutineUiModel) -> Unit,
 ) {
 
-  val (state,event) = use(component)
+  val (state, event) = use(component)
 
   val size = LocalSize.current
   val space = LocalSpacing.current
@@ -114,7 +111,7 @@ fun AddRoutineDialog(
           shape = RoundedCornerShape(size.size8),
         ),
       onDismissRequest = {
-//        onCloseDialog()
+        event.invoke(AddRoutineDialogComponent.Event.DismissDialog)
       },
     ) {
       Column(
@@ -298,14 +295,14 @@ fun AddRoutineDialog(
                   dayName = date.dayName(),
                   colorTask = null,
                 )
-//                onRoutineCreated(routine)
+                event.invoke(AddRoutineDialogComponent.Event.CreateRoutine(routine))
               }
             },
           )
           Spacer(modifier = Modifier.width(size.size10))
           TextButton(
             onClick = {
-//              onCloseDialog()
+              event.invoke(AddRoutineDialogComponent.Event.DismissDialog)
             },
           ) {
             Text(
