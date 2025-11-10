@@ -8,7 +8,8 @@ interface AddRoutineDialogComponent : UnidirectionalComponent<AddRoutineDialogCo
 
   @Immutable
   sealed class Event {
-
+    data object DismissDialog : Event()
+    data class CreateRoutine(val routine: RoutineUiModel) : Event()
   }
 
   @Immutable
