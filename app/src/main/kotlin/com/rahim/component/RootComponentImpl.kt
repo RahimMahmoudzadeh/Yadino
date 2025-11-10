@@ -82,6 +82,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
       AddRoutineDialogComponentImpl(
         componentContext = childComponentContext,
         mainDispatcher = Dispatchers.Main,
+        addReminderUseCase = addReminderUseCase,
         onDismissed = addRoutineDialogHomeScreenComponentNavigationSlot::dismiss,
       )
     }
@@ -124,7 +125,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     getCurrentDateUseCase = getCurrentDateUseCase,
     onShowAddRoutineDialog = {
       addRoutineDialogHomeScreenComponentNavigationSlot.activate(AddRoutineDialogHomeScreen)
-    }
+    },
   )
 
   private val sharedPreferencesRepository: SharedPreferencesRepository = get()
