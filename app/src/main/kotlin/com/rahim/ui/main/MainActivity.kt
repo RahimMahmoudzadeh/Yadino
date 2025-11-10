@@ -313,7 +313,7 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
         }
 
         is RootComponent.ChildStack.OnBoarding -> OnBoardingRoute(component = child.component)
-        is RootComponent.ChildStack.Routine -> RoutineRoute(component = child.component, openDialogAddRoutine = false, showSearchBar = false)
+        is RootComponent.ChildStack.Routine -> RoutineRoute(component = child.component, showSearchBar = false)
         is RootComponent.ChildStack.HistoryRoutine -> HistoryRoute(component = child.component)
         is RootComponent.ChildStack.Note -> NoteRoute(component = child.component, openDialog = false, clickSearch = false)
       }
