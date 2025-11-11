@@ -38,7 +38,9 @@ import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponentImpl
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
 import com.rahim.yadino.routine.domain.useCase.GetAllRoutineUseCase
+import com.rahim.yadino.routine.domain.useCase.GetCurrentTimeUseCase
 import com.rahim.yadino.routine.domain.useCase.GetRemindersUseCase
+import com.rahim.yadino.routine.domain.useCase.GetTimesMonthUseCase
 import com.yadino.routine.presentation.component.RoutineComponent
 import com.yadino.routine.presentation.component.RoutineComponentImpl
 import com.yadino.routine.presentation.component.history.HistoryRoutineComponent
@@ -87,6 +89,9 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
       )
     }
 
+  private val getTimesMonthUseCase : GetTimesMonthUseCase = get()
+  private val getCurrentTimeUseCase : GetCurrentTimeUseCase = get()
+
   override val addRoutineDialogRoutineScreen: Value<ChildSlot<AddRoutineDialogRoutineScreen, com.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent>> =
     childSlot(
       source = addRoutineDialogRoutineScreenComponentNavigationSlot,
@@ -97,6 +102,10 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
       com.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponentImpl(
         componentContext = childComponentContext,
         mainDispatcher = Dispatchers.Main,
+        ioDispatcher = Dispatchers.IO,
+        addReminderUseCase = addReminderUseCaseRoutine,
+        getTimesMonthUseCase = getTimesMonthUseCase,
+        getCurrentTimeUseCase = getCurrentTimeUseCase,
         onDismissed = addRoutineDialogRoutineScreenComponentNavigationSlot::dismiss,
       )
     }
