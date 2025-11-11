@@ -21,7 +21,6 @@ interface RoutineComponent : UnidirectionalComponent<RoutineComponent.Event, Rou
     data class GetRoutines(val timeDate: TimeDateUiModel) : Event()
     data class WeekChange(val increaseDecrease: IncreaseDecrease) : Event()
     data class MonthChange(val increaseDecrease: IncreaseDecrease) : Event()
-    data class DialogMonthChange(val yearNumber: Int, val monthNumber: Int, val increaseDecrease: IncreaseDecrease) : Event()
     data object GetAllTimes : Event()
   }
 

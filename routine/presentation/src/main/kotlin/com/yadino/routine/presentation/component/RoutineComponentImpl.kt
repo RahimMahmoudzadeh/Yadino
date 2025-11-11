@@ -86,24 +86,10 @@ class RoutineComponentImpl(
       is RoutineComponent.Event.GetAllTimes -> getTimes()
       is RoutineComponent.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.increaseDecrease)
       is RoutineComponent.Event.WeekChange -> checkWeekIncreaseOrDecrease(event.increaseDecrease)
-      is RoutineComponent.Event.DialogMonthChange -> {
-        checkDialogMonthChange(event.monthNumber, event.yearNumber, event.increaseDecrease)
-      }
     }
   }
 
-  private fun checkDialogMonthChange(monthNumber: Int, yearNumber: Int, increaseDecrease: IncreaseDecrease) {
-    when (increaseDecrease) {
-      IncreaseDecrease.INCREASE -> monthIncrease(monthNumber, yearNumber) { year, month ->
-        getTimesMonth(year, month)
-      }
 
-      IncreaseDecrease.DECREASE ->
-        monthDecrease(monthNumber, yearNumber) { year, month ->
-          getTimesMonth(year, month)
-        }
-    }
-  }
 
   private fun checkWeekIncreaseOrDecrease(increaseDecrease: IncreaseDecrease) {
     when (increaseDecrease) {
