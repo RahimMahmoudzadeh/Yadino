@@ -4,7 +4,7 @@ kotlin = "2.2.21"
 kotlinxImmutableCollection = "0.4.0"
 
 #compose
-compose-bom = "2025.10.01"
+compose-bom = "2025.11.00"
 activity-compose = "1.11.0"
 
 #navigation
@@ -18,7 +18,6 @@ androidx-core = "1.17.0"
 androidx-lifecycle = "2.9.4"
 androidx-room = "2.8.3"
 
-androidx-navigation = "2.9.5"
 timber = "5.0.1"
 samanzamani = "1.7.1"
 datetime = "0.9.0"
@@ -27,26 +26,26 @@ accompanist_pager = "0.36.0"
 accompanist_pager_indicators = "0.36.0"
 accompanist_permissions = "0.37.3"
 accompanist_system_ui = "0.36.0"
-lottie_compose = "6.6.10"
+lottie_compose = "6.7.1"
 junit = "4.13.2"
 junit-test = "3.5.1"
 androidx-ext-junit = "1.3.0"
 espresso_core = "3.7.0"
-agp = "8.13.0"
+agp = "8.13.1"
 google-services = "4.4.4"
 material3Android = "1.4.0"
 compose-test = "1.9.4"
-androidxCoreSplashscreen = "1.0.1"
-vico = "2.2.1"
+androidxCoreSplashscreen = "1.2.0"
+vico = "2.3.2"
 androidxTracing = "1.3.0"
 spotless = "8.0.0"
 datastore = "1.1.7"
 
-androidTools = "31.13.0"
+androidTools = "31.13.1"
 androidxJunit = "1.2.1"
 
 #firebase
-firebasePerfPlugin = "2.0.1"
+firebasePerfPlugin = "2.0.2"
 firebaseCrashlyticsPlugin = "3.0.6"
 firebaseBom = "33.12.0"
 
@@ -59,7 +58,7 @@ jetbrainsKotlinJvm = "2.2.21"
 koin-bom = "4.1.1"
 
 #decompose
-decompose = "3.4.0-beta01"
+decompose = "3.4.0"
 decompose-essenty = "2.5.0"
 
 #kotlinx-serialization
@@ -84,7 +83,6 @@ ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
-androidx-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie_compose" }
 
 #data store
@@ -107,9 +105,6 @@ koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-core = { module = "io.insert-koin:koin-core" }
 koin-android = { module = "io.insert-koin:koin-android" }
 koin-android-compose = { module = "io.insert-koin:koin-androidx-compose" }
-
-#navigation
-androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "androidx-navigation" }
 
 #timber
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
@@ -171,10 +166,9 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 
 [bundles]
 compose = ["androidx-compose-activity", "androidx-material3-android", "lifecycle-runtime-compose",
-    "lifecycle-viewmodel-compose", "androidx-navigation", "lottie-compose", "constraintlayout-compose"]
+    "lifecycle-viewmodel-compose", "lottie-compose", "constraintlayout-compose"]
 room = ["room-runtime", "room-ktx"]
 koin = ["koin-android-compose", "koin-core", "koin-android"]
-navigation = ["androidx-navigation-ui"]
 firebase = ["firebaseMessaging", "firebaseAnalytics", "firebaseCrashlytics"]
 accompanist = ["accompanist-pager", "accompanist-pager-indicators", "accompanist-permissions", "accompanist-systemuicontroller"]
 test = ["androidx-test-ext", "androidx-test-espresso", "androidx-compose-ui-test"]
@@ -205,6 +199,5 @@ yadino-di = { id = "yadino.di", version = "unspecified" }
 yadino-android-library = { id = "yadino.android.library", version = "unspecified" }
 yadino-android-library-compose = { id = "yadino.android.library.compose", version = "unspecified" }
 yadino-android-room = { id = "yadino.android.room", version = "unspecified" }
-yadino-android-navigation = { id = "yadino.android.navigation", version = "unspecified" }
 yadino-decompose = { id = "yadino.decompose", version = "unspecified" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
