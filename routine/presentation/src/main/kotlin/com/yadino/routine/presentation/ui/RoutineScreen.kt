@@ -46,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.Child
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.calculateMonthName
@@ -66,6 +67,7 @@ import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.toStringResource
 import com.yadino.routine.presentation.component.RoutineComponent
+import com.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent
 import com.yadino.routine.presentation.ui.addRoutineDialog.DialogAddRoutine
 import com.yadino.routine.presentation.ui.component.ListRoutines
 import com.yadino.routine.presentation.model.IncreaseDecrease
@@ -80,11 +82,23 @@ import timber.log.Timber
 @Composable
 fun RoutineRoute(
   modifier: Modifier = Modifier,
-  component: RoutineComponent,
   showSearchBar: Boolean,
+  component: RoutineComponent,
+  dialogSlot: Child.Created<Any, AddRoutineDialogComponent>?,
 ) {
   val (state, event) = use(component)
 
+  dialogSlot?.let { dialogSlot ->
+    dialogSlot.instance.also { dialogComponent ->
+      DialogAddRoutine(
+        updateRoutine = null,
+        currentNumberDay = state.currentDay,
+        currentNumberMonth = state.currentMonth,
+        currentNumberYear = state.currentYear,
+        componentComponent = dialogComponent,
+      )
+    }
+  }
   RoutineScreen(
     modifier = modifier,
     state = state,
@@ -107,9 +121,6 @@ fun RoutineRoute(
     },
     dayCheckedNumber = { timeDate ->
       event.invoke(RoutineComponent.Event.GetRoutines(timeDate))
-    },
-    dialogMonthChange = { year, month, increaseDecrease ->
-      event.invoke(RoutineComponent.Event.DialogMonthChange(yearNumber = year, monthNumber = month, increaseDecrease = increaseDecrease))
     },
     increaseOrDecrease = { increaseDecrease ->
       event.invoke(RoutineComponent.Event.MonthChange(increaseDecrease = increaseDecrease))
@@ -134,7 +145,6 @@ private fun RoutineScreen(
   onDeleteRoutine: (RoutineUiModel) -> Unit,
   onSearchText: (String) -> Unit,
   increaseOrDecrease: (increaseDecrease: IncreaseDecrease) -> Unit,
-  dialogMonthChange: (year: Int, month: Int, increaseDecrease: IncreaseDecrease) -> Unit,
   weekChange: (IncreaseDecrease) -> Unit,
 ) {
   val context = LocalContext.current
@@ -242,46 +252,6 @@ private fun RoutineScreen(
         ),
       )
     }
-
-//    openDialogAddRoutine -> {
-//        DialogAddRoutine(
-//            onCloseDialog = {
-//                onOpenDialogAddRoutine(false)
-//                routineUpdateDialog.value = null
-//            },
-//            updateRoutine = routineUpdateDialog.value?.copy(
-//                explanation = routineUpdateDialog.value?.explanation?.let {
-//                    if (it == RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation) {
-//                        stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_right_sample)
-//                    } else if (it == RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation) {
-//                        stringResource(id = com.rahim.yadino.library.designsystem.R.string.routine_left_sample)
-//                    } else {
-//                        it
-//                    }
-//                } ?: run {
-//                    routineUpdateDialog.value?.explanation ?: ""
-//                },
-//            ),
-//            onRoutineCreated = { routine ->
-//                if (routineUpdateDialog.value != null) {
-//                    onUpdateRoutine(routine)
-//                } else {
-//                    onAddRoutine(routine)
-//                }
-//                onOpenDialogAddRoutine(false)
-//            },
-//            currentNumberDay = state.currentDay,
-//            currentNumberMonth = state.currentMonth,
-//            currentNumberYear = state.currentYear,
-//            timesMonth = state.timesMonth,
-//            monthDecrease = { year, month ->
-//                dialogMonthChange(year, month, IncreaseDecrease.DECREASE)
-//            },
-//            monthIncrease = { year, month ->
-//                dialogMonthChange(year, month, IncreaseDecrease.INCREASE)
-//            },
-//        )
-//    }
   }
 }
 
