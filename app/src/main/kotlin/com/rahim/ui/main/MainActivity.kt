@@ -169,16 +169,14 @@ fun YadinoApp(
   val stack = rootComponent.stack.subscribeAsState()
   val configurationState = stack.value.active.configuration
 
-  val notificationPermissionState =
-    rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
+  val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
 
   var errorClick by rememberSaveable { mutableStateOf(false) }
   var clickSearch by rememberSaveable { mutableStateOf(false) }
 
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val coroutineScope = rememberCoroutineScope()
-  val windowInsetsController =
-    WindowCompat.getInsetsController(window, window.decorView)
+  val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
   if (configurationState !is ConfigChildComponent.OnBoarding) {
     windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
   } else {
@@ -299,8 +297,9 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
     modifier = modifier.fillMaxSize(),
     animation = stackAnimation(fade()),
   ) {
-    val addRoutineDialog =
-      component.addRoutineDialogHomeScreen.subscribeAsState().value.child
+    val addRoutineDialogHome = component.addRoutineDialogHomeScreen.subscribeAsState().value.child
+
+    val addRoutineDialogRoutine = component.addRoutineDialogRoutineScreen.subscribeAsState().value.child
 
     Surface(color = MaterialTheme.colorScheme.background) {
       when (val child = it.instance) {
@@ -308,12 +307,12 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
           HomeRoute(
             homeComponent = child.component,
             clickSearch = false,
-            dialogSlot = addRoutineDialog,
+            dialogSlot = addRoutineDialogHome,
           )
         }
 
         is RootComponent.ChildStack.OnBoarding -> OnBoardingRoute(component = child.component)
-        is RootComponent.ChildStack.Routine -> RoutineRoute(component = child.component, showSearchBar = false)
+        is RootComponent.ChildStack.Routine -> RoutineRoute(component = child.component, showSearchBar = false, dialogSlot = addRoutineDialogRoutine)
         is RootComponent.ChildStack.HistoryRoutine -> HistoryRoute(component = child.component)
         is RootComponent.ChildStack.Note -> NoteRoute(component = child.component, openDialog = false, clickSearch = false)
       }
