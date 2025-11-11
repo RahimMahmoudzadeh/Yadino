@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.utils.size.FontDimensions
@@ -60,7 +61,9 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import com.yadino.routine.presentation.component.RoutineComponent
 import com.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent
+import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutineUiModel
 import com.yadino.routine.presentation.model.TimeDateUiModel
 import kotlinx.collections.immutable.PersistentList
@@ -81,16 +84,13 @@ fun DialogAddRoutine(
   currentNumberMonth: Int,
   currentNumberYear: Int,
   updateRoutine: RoutineUiModel? = null,
-  timesMonth: PersistentList<TimeDateUiModel>,
-  onCloseDialog: () -> Unit,
-  onRoutineCreated: (routine: RoutineUiModel) -> Unit,
-  monthIncrease: ((year: Int, month: Int) -> Unit)? = null,
-  monthDecrease: ((year: Int, month: Int) -> Unit)? = null,
   componentComponent: AddRoutineDialogComponent,
 ) {
   val size = LocalSize.current
   val fontSize = LocalFontSize.current
   val space = LocalSpacing.current
+
+  val (state, event) = use(componentComponent)
 
   var monthChecked by rememberSaveable { mutableIntStateOf(currentNumberMonth) }
   var yearChecked by rememberSaveable { mutableIntStateOf(currentNumberYear) }
@@ -127,7 +127,7 @@ fun DialogAddRoutine(
           shape = RoundedCornerShape(size.size8),
         ),
       onDismissRequest = {
-        onCloseDialog()
+        event.invoke(AddRoutineDialogComponent.Event.Dismiss)
       },
     ) {
       Surface(
@@ -284,13 +284,13 @@ fun DialogAddRoutine(
               )
             }
           }
-          if (timesMonth.isNotEmpty()) {
+          if (state.timesMonth.isNotEmpty()) {
             Row(
               horizontalArrangement = Arrangement.SpaceBetween,
               modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                  top = if (timesMonth.isNotEmpty()) 0.dp else space.space10,
+                  top = if (state.timesMonth.isNotEmpty()) 0.dp else space.space10,
                   start = space.space20,
                 ),
             ) {
@@ -349,14 +349,14 @@ fun DialogAddRoutine(
                     dayName = persianData.dayName(date),
                     colorTask = null,
                   )
-                  onRoutineCreated(routine)
+                  event.invoke(AddRoutineDialogComponent.Event.CreateRoutine(routine))
                 }
               },
             )
             Spacer(modifier = Modifier.width(size.size10))
             TextButton(
               onClick = {
-                onCloseDialog()
+                event.invoke(AddRoutineDialogComponent.Event.Dismiss)
               },
             ) {
               Text(
@@ -372,26 +372,26 @@ fun DialogAddRoutine(
           }
           if (isShowDateDialog) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                DialogChoseDate(
-                    times = timesMonth,
-                    yearNumber = yearChecked,
-                    monthNumber = monthChecked,
-                    dayNumber = dayChecked,
-                    closeDialog = {
-                        isShowDateDialog = false
-                    },
-                    dayCheckedNumber = { year, month, day ->
-                        dayChecked = day
-                        monthChecked = month
-                        yearChecked = year
-                    },
-                    monthIncrease = { year, month ->
-                        monthIncrease?.invoke(year, month)
-                    },
-                    monthDecrease = { year, month ->
-                        monthDecrease?.invoke(year, month)
-                    },
-                )
+              DialogChoseDate(
+                times = state.timesMonth,
+                yearNumber = yearChecked,
+                monthNumber = monthChecked,
+                dayNumber = dayChecked,
+                closeDialog = {
+                  isShowDateDialog = false
+                },
+                dayCheckedNumber = { year, month, day ->
+                  dayChecked = day
+                  monthChecked = month
+                  yearChecked = year
+                },
+                monthIncrease = { year, month ->
+                  event.invoke(AddRoutineDialogComponent.Event.MonthChange(yearNumber = year, monthNumber = month, increaseDecrease = IncreaseDecrease.INCREASE))
+                },
+                monthDecrease = { year, month ->
+                  event.invoke(AddRoutineDialogComponent.Event.MonthChange(yearNumber = year, monthNumber = month, increaseDecrease = IncreaseDecrease.DECREASE))
+                },
+              )
             }
           }
         }
@@ -413,47 +413,47 @@ fun ShowTimePicker(
   dialogState: MaterialDialogState,
   time: (LocalTime) -> Unit,
 ) {
-    MaterialDialog(
-      properties = DialogProperties(dismissOnClickOutside = false),
-      border = BorderStroke(sizeDimensions.size2, Brush.horizontalGradient(gradientColors)),
-      backgroundColor = MaterialTheme.colorScheme.background,
-      dialogState = dialogState,
-      buttons = {
-        positiveButton(
-          text = stringResource(id = R.string.confirmation),
-          textStyle = TextStyle(
-            brush = Brush.verticalGradient(
-              gradientColors,
-            ),
-            fontSize = fontSize.fontSize14,
+  MaterialDialog(
+    properties = DialogProperties(dismissOnClickOutside = false),
+    border = BorderStroke(sizeDimensions.size2, Brush.horizontalGradient(gradientColors)),
+    backgroundColor = MaterialTheme.colorScheme.background,
+    dialogState = dialogState,
+    buttons = {
+      positiveButton(
+        text = stringResource(id = R.string.confirmation),
+        textStyle = TextStyle(
+          brush = Brush.verticalGradient(
+            gradientColors,
           ),
-        )
-        negativeButton(
-          textStyle = TextStyle(
-            color = MaterialTheme.colorScheme.primary,
-            fontSize = fontSize.fontSize14,
-          ),
-          text = stringResource(id = R.string.cancel),
-        )
-      },
-    ) {
-      timepicker(
-        colors = TimePickerDefaults.colors(
-          activeBackgroundColor = Onahau,
-          inactiveBackgroundColor = Onahau,
-          activeTextColor = Color.Black,
-          borderColor = Purple,
-          selectorColor = Purple,
-          headerTextColor = PurpleGrey,
+          fontSize = fontSize.fontSize14,
         ),
-        title = "  ",
-        timeRange = LocalTime.MIDNIGHT..LocalTime.MAX,
-        is24HourClock = true,
-        initialTime = calculateCurrentTime(currentTime),
-      ) { time ->
-        time(time)
-      }
+      )
+      negativeButton(
+        textStyle = TextStyle(
+          color = MaterialTheme.colorScheme.primary,
+          fontSize = fontSize.fontSize14,
+        ),
+        text = stringResource(id = R.string.cancel),
+      )
+    },
+  ) {
+    timepicker(
+      colors = TimePickerDefaults.colors(
+        activeBackgroundColor = Onahau,
+        inactiveBackgroundColor = Onahau,
+        activeTextColor = Color.Black,
+        borderColor = Purple,
+        selectorColor = Purple,
+        headerTextColor = PurpleGrey,
+      ),
+      title = "  ",
+      timeRange = LocalTime.MIDNIGHT..LocalTime.MAX,
+      is24HourClock = true,
+      initialTime = calculateCurrentTime(currentTime),
+    ) { time ->
+      time(time)
     }
+  }
 }
 
 fun calculateCurrentTime(currentTime: String): LocalTime {
