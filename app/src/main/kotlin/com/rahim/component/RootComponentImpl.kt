@@ -24,9 +24,9 @@ import com.rahim.yadino.home.presentation.component.HomeComponent
 import com.rahim.yadino.home.presentation.component.HomeComponentImpl
 import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponent
 import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponentImpl
-import com.rahim.yadino.navigation.config.AddRoutineDialogHomeScreen
-import com.rahim.yadino.navigation.config.AddRoutineDialogRoutineScreen
-import com.rahim.yadino.navigation.config.ConfigChildComponent
+import com.rahim.component.config.AddRoutineDialogHomeScreen
+import com.rahim.component.config.AddRoutineDialogRoutineScreen
+import com.rahim.component.config.ConfigChildComponent
 import com.rahim.yadino.note.domain.useCase.AddNoteUseCase
 import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
 import com.rahim.yadino.note.domain.useCase.GetNotesUseCase
@@ -46,6 +46,7 @@ import com.yadino.routine.presentation.component.RoutineComponentImpl
 import com.yadino.routine.presentation.component.history.HistoryRoutineComponent
 import com.yadino.routine.presentation.component.history.HistoryRoutineComponentImpl
 import kotlinx.coroutines.Dispatchers
+import kotlinx.serialization.builtins.serializer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
@@ -85,12 +86,13 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
         componentContext = childComponentContext,
         mainDispatcher = Dispatchers.Main,
         addReminderUseCase = addReminderUseCase,
+        routine = config.routine,
         onDismissed = addRoutineDialogHomeScreenComponentNavigationSlot::dismiss,
       )
     }
 
-  private val getTimesMonthUseCase : GetTimesMonthUseCase = get()
-  private val getCurrentTimeUseCase : GetCurrentTimeUseCase = get()
+  private val getTimesMonthUseCase: GetTimesMonthUseCase = get()
+  private val getCurrentTimeUseCase: GetCurrentTimeUseCase = get()
 
   override val addRoutineDialogRoutineScreen: Value<ChildSlot<AddRoutineDialogRoutineScreen, com.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent>> =
     childSlot(
@@ -125,15 +127,14 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private fun homeComponent(componentContext: ComponentContext): HomeComponent = HomeComponentImpl(
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
-    addReminderUseCase = addReminderUseCase,
     updateReminderUseCase = updateReminderUseCase,
     cancelReminderUseCase = cancelReminderUseCase,
     deleteReminderUseCase = deleteReminderUseCase,
     getTodayRoutinesUseCase = getTodayRoutinesUseCase,
     searchRoutineUseCase = searchRoutineUseCase,
     getCurrentDateUseCase = getCurrentDateUseCase,
-    onShowAddRoutineDialog = {
-      addRoutineDialogHomeScreenComponentNavigationSlot.activate(AddRoutineDialogHomeScreen)
+    onShowUpdateRoutineDialog = {routineModel->
+      addRoutineDialogHomeScreenComponentNavigationSlot.activate(AddRoutineDialogHomeScreen(routineModel))
     },
   )
 

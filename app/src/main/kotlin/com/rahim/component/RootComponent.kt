@@ -4,9 +4,9 @@ import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.value.Value
 import com.rahim.yadino.home.presentation.component.HomeComponent
 import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponent
-import com.rahim.yadino.navigation.config.AddRoutineDialogHomeScreen
-import com.rahim.yadino.navigation.config.AddRoutineDialogRoutineScreen
-import com.rahim.yadino.navigation.config.ConfigChildComponent
+import com.rahim.component.config.AddRoutineDialogHomeScreen
+import com.rahim.component.config.AddRoutineDialogRoutineScreen
+import com.rahim.component.config.ConfigChildComponent
 import com.rahim.yadino.note.presentation.component.NoteComponent
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
 import com.yadino.routine.presentation.component.RoutineComponent
