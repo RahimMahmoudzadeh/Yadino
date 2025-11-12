@@ -1,5 +1,7 @@
 package com.rahim.yadino.home.presentation.model
 
+import kotlinx.serialization.Serializable
+@Serializable
 data class RoutineUiModel(
   val name: String,
   val colorTask: Int?,
