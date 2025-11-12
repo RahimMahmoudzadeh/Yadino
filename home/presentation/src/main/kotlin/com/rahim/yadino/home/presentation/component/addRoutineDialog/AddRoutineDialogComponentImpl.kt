@@ -15,11 +15,13 @@ class AddRoutineDialogComponentImpl(
   componentContext: ComponentContext,
   mainDispatcher: CoroutineContext,
   private val addReminderUseCase: AddReminderUseCase,
+  private val routine: RoutineUiModel?,
   private val onDismissed: () -> Unit,
 ) : AddRoutineDialogComponent, ComponentContext by componentContext {
 
   private val scope = coroutineScope(mainDispatcher + SupervisorJob())
-  private val _state = MutableValue(AddRoutineDialogComponent.State())
+
+  private val _state = MutableValue(AddRoutineDialogComponent.State(updateRoutine = routine))
   override val state: Value<AddRoutineDialogComponent.State> = _state
 
   override fun event(event: AddRoutineDialogComponent.Event) = when (event) {

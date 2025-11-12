@@ -2,6 +2,7 @@ package com.rahim.yadino.home.presentation.component.addRoutineDialog
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.UnidirectionalComponent
+import com.rahim.yadino.home.domain.model.Routine
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 
 interface AddRoutineDialogComponent : UnidirectionalComponent<AddRoutineDialogComponent.Event, AddRoutineDialogComponent.State> {
