@@ -60,17 +60,17 @@ fun NoteRoute(
   NoteScreen(
     modifier = modifier,
     state = state,
-    onOpenDialog = {
-
+    onUpdateNote = { updateNote ->
+      event(NoteComponent.Event.OnOpenUpdateNoteDialog(updateNote))
     },
     onDelete = {
-      event(NoteComponent.NoteEvent.DeleteNote(it))
+      event(NoteComponent.Event.Delete(it))
     },
     onSearchText = {
-      event(NoteComponent.NoteEvent.SearchNote(it))
+      event(NoteComponent.Event.Search(it))
     },
     onCheckedNote = {
-      event(NoteComponent.NoteEvent.OnCheckedNote(it))
+      event(NoteComponent.Event.OnChecked(it))
     },
     clickSearch = clickSearch,
   )
@@ -80,9 +80,9 @@ fun NoteRoute(
 @Composable
 private fun NoteScreen(
   modifier: Modifier = Modifier,
-  state: NoteComponent.NoteState,
+  state: NoteComponent.State,
   clickSearch: Boolean,
-  onOpenDialog: (note: NoteUiModel) -> Unit,
+  onUpdateNote: (note: NoteUiModel) -> Unit,
   onDelete: (NoteUiModel) -> Unit,
   onCheckedNote: (NoteUiModel) -> Unit,
   onSearchText: (NameNoteUi) -> Unit,
@@ -143,7 +143,7 @@ private fun NoteScreen(
                 ).show()
                 return@ItemsNote
               }
-              onOpenDialog(updateNote)
+              onUpdateNote(updateNote)
             },
             deleteNote = {
               if (it.isChecked) {
