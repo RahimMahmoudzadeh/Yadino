@@ -7,4 +7,4 @@ import kotlinx.serialization.Serializable
 data class AddRoutineDialogHomeScreen(val routine: RoutineUiModel? = null) : ConfigChildComponent
 
 @Serializable
-data object AddRoutineDialogRoutineScreen : ConfigChildComponent
+data class AddRoutineDialogRoutineScreen(val updateRoutine: com.yadino.routine.presentation.model.RoutineUiModel? = null) : ConfigChildComponent
