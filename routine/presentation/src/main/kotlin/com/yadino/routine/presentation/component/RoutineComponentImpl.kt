@@ -36,13 +36,12 @@ class RoutineComponentImpl(
   componentContext: ComponentContext,
   mainContext: CoroutineContext,
   ioContext: CoroutineContext,
-  private val addReminderUseCase: AddReminderUseCase,
-  private val updateReminderUseCase: UpdateReminderUseCase,
   private val cancelReminderUseCase: CancelReminderUseCase,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val getRemindersUseCase: GetRemindersUseCase,
   private val searchRoutineUseCase: SearchRoutineUseCase,
   private val dateTimeRepository: DateTimeRepository,
+  private val onShowUpdateDialog: (routineUpdate: RoutineUiModel) -> Unit,
 ) : RoutineComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
@@ -67,7 +66,6 @@ class RoutineComponentImpl(
   private var searchNameRoutine = ""
   override fun event(event: RoutineComponent.Event) {
     when (event) {
-      is RoutineComponent.Event.AddRoutine -> addRoutine(event.routine)
       is RoutineComponent.Event.CheckedRoutine -> checkedRoutine(event.routine)
       is RoutineComponent.Event.DeleteRoutine -> deleteRoutine(event.routine)
       is RoutineComponent.Event.GetRoutines -> {
@@ -82,13 +80,12 @@ class RoutineComponentImpl(
         getRoutines(searchText = event.routineName)
       }
 
-      is RoutineComponent.Event.UpdateRoutine -> updateRoutine(event.routine)
+      is RoutineComponent.Event.OnShowUpdateDialog -> onShowUpdateDialog(event.routine)
       is RoutineComponent.Event.GetAllTimes -> getTimes()
       is RoutineComponent.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.increaseDecrease)
       is RoutineComponent.Event.WeekChange -> checkWeekIncreaseOrDecrease(event.increaseDecrease)
     }
   }
-
 
 
   private fun checkWeekIncreaseOrDecrease(increaseDecrease: IncreaseDecrease) {
@@ -250,42 +247,9 @@ class RoutineComponentImpl(
     }
   }
 
-  private fun updateRoutine(routine: RoutineUiModel) {
-    scope.launch {
-      Timber.tag("routineViewModel").d("GetRoutines")
-      when (val response = updateReminderUseCase(routine = routine.toRoutine())) {
-        is Resource.Error -> {
-          _state.update { state ->
-            state.copy(
-              errorMessageCode = response.error,
-            )
-          }
-        }
-
-        is Resource.Success -> {}
-      }
-    }
-  }
-
   private fun checkedRoutine(routine: RoutineUiModel) {
     scope.launch {
       cancelReminderUseCase(routine = routine.toRoutine())
-    }
-  }
-
-  private fun addRoutine(routine: RoutineUiModel) {
-    scope.launch {
-      when (val response = addReminderUseCase(routine.toRoutine())) {
-        is Resource.Error -> {
-          _state.update { state ->
-            state.copy(
-              errorMessageCode = response.error,
-            )
-          }
-        }
-
-        is Resource.Success -> {}
-      }
     }
   }
 
