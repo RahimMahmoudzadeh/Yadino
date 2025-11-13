@@ -15,6 +15,7 @@ interface AddRoutineDialogComponent : UnidirectionalComponent<AddRoutineDialogCo
   sealed class Event {
     data object Dismiss : Event()
     data class CreateRoutine(val routine: RoutineUiModel) : Event()
+    data class UpdateRoutine(val routine: RoutineUiModel) : Event()
     data class MonthChange(val yearNumber: Int, val monthNumber: Int, val increaseDecrease: IncreaseDecrease) : Event()
 
   }

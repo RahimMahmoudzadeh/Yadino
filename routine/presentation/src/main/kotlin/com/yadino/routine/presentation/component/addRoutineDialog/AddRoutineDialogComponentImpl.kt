@@ -12,6 +12,7 @@ import com.rahim.yadino.Constants.MONTH_MIN
 import com.rahim.yadino.routine.domain.useCase.AddReminderUseCase
 import com.rahim.yadino.routine.domain.useCase.GetCurrentTimeUseCase
 import com.rahim.yadino.routine.domain.useCase.GetTimesMonthUseCase
+import com.rahim.yadino.routine.domain.useCase.UpdateReminderUseCase
 import com.yadino.routine.presentation.mapper.toCurrentTimeUiModel
 import com.yadino.routine.presentation.mapper.toRoutine
 import com.yadino.routine.presentation.mapper.toTimeDateUiModel
@@ -28,6 +29,7 @@ class AddRoutineDialogComponentImpl(
   ioDispatcher: CoroutineContext,
   private val updateRoutine: RoutineUiModel?,
   private val addReminderUseCase: AddReminderUseCase,
+  private val updateReminderUseCase: UpdateReminderUseCase,
   private val getTimesMonthUseCase: GetTimesMonthUseCase,
   private val getCurrentTimeUseCase: GetCurrentTimeUseCase,
   private val onDismissed: () -> Unit,
@@ -48,6 +50,7 @@ class AddRoutineDialogComponentImpl(
   override fun event(event: AddRoutineDialogComponent.Event) = when (event) {
     AddRoutineDialogComponent.Event.Dismiss -> onDismissed()
     is AddRoutineDialogComponent.Event.CreateRoutine -> addRoutine(event.routine)
+    is AddRoutineDialogComponent.Event.UpdateRoutine -> updateRoutine(event.routine)
     is AddRoutineDialogComponent.Event.MonthChange -> checkDialogMonthChange(monthNumber = event.monthNumber, yearNumber = event.yearNumber, increaseDecrease = event.increaseDecrease)
   }
 
@@ -55,6 +58,18 @@ class AddRoutineDialogComponentImpl(
     scope.launch {
       runCatching {
         addReminderUseCase.invoke(routine.toRoutine())
+      }.onSuccess {
+        onDismissed()
+      }.onFailure {
+
+      }
+    }
+  }
+
+  private fun updateRoutine(routine: RoutineUiModel) {
+    scope.launch {
+      runCatching {
+        updateReminderUseCase.invoke(routine.toRoutine())
       }.onSuccess {
         onDismissed()
       }.onFailure {
