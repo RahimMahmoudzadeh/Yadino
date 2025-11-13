@@ -46,7 +46,6 @@ import com.yadino.routine.presentation.component.RoutineComponentImpl
 import com.yadino.routine.presentation.component.history.HistoryRoutineComponent
 import com.yadino.routine.presentation.component.history.HistoryRoutineComponentImpl
 import kotlinx.coroutines.Dispatchers
-import kotlinx.serialization.builtins.serializer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
@@ -86,6 +85,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
         componentContext = childComponentContext,
         mainDispatcher = Dispatchers.Main,
         addReminderUseCase = addReminderUseCase,
+        updateReminderUseCase = updateReminderUseCase,
         routine = config.routine,
         onDismissed = addRoutineDialogHomeScreenComponentNavigationSlot::dismiss,
       )
@@ -105,6 +105,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
         componentContext = childComponentContext,
         mainDispatcher = Dispatchers.Main,
         ioDispatcher = Dispatchers.IO,
+        updateRoutine = config.updateRoutine,
         addReminderUseCase = addReminderUseCaseRoutine,
         getTimesMonthUseCase = getTimesMonthUseCase,
         getCurrentTimeUseCase = getCurrentTimeUseCase,
@@ -164,13 +165,14 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
     ioContext = Dispatchers.IO,
-    addReminderUseCase = addReminderUseCaseRoutine,
-    updateReminderUseCase = updateReminderUseCaseRoutine,
     cancelReminderUseCase = cancelReminderUseCaseRoutine,
     deleteReminderUseCase = deleteReminderUseCaseRoutine,
     getRemindersUseCase = getTodayRoutinesUseCaseRoutine,
     searchRoutineUseCase = searchRoutineUseCaseRoutine,
     dateTimeRepository = dateTimeRepository,
+    onShowUpdateDialog = {
+      addRoutineDialogRoutineScreenComponentNavigationSlot.activate(AddRoutineDialogRoutineScreen(it))
+    }
   )
 
   private val addNoteUseCase: AddNoteUseCase = get()
