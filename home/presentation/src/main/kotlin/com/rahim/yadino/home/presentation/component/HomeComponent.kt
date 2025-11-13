@@ -11,14 +11,12 @@ import kotlinx.collections.immutable.PersistentList
 interface HomeComponent : UnidirectionalComponent<HomeComponent.Event, HomeComponent.State> {
   @Immutable
   sealed class Event {
-    data class AddRoutine(val routine: RoutineUiModel) : Event()
     data class CheckedRoutine(val routine: RoutineUiModel) : Event()
     data class UpdateRoutine(val routine: RoutineUiModel) : Event()
     data class DeleteRoutine(val routine: RoutineUiModel) : Event()
     data class SearchRoutine(val routineName: String) : Event()
+    data class OnShowUpdateRoutineDialog(val routine: RoutineUiModel) : Event()
     data object GetRoutines : Event()
-
-    data object OnShowAddRoutineDialog : Event()
   }
 
   @Immutable

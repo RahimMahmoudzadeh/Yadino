@@ -62,37 +62,6 @@ fun HomeRoute(
     dialogSlot.instance.also { dialogComponent ->
       AddRoutineDialog(
         component = dialogComponent,
-//        onCloseDialog = {
-//          onOpenDialog(false)
-//          routineModelUpdateDialog.value = null
-//        },
-//        onRoutineCreated = { routine ->
-//          if (routineModelUpdateDialog.value != null) {
-//            onUpdateRoutine(routine)
-//          } else {
-//            onAddRoutine(routine)
-//          }
-//          onOpenDialog(false)
-//        },
-//        updateRoutine = routineModelUpdateDialog.value?.copy(
-//          explanation = routineModelUpdateDialog.value?.explanation?.let {
-//            when (it) {
-//              RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation -> {
-//                stringResource(id = R.string.routine_right_sample)
-//              }
-//
-//              RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation -> {
-//                stringResource(id = R.string.routine_left_sample)
-//              }
-//
-//              else -> {
-//                it
-//              }
-//            }
-//          } ?: run {
-//            routineModelUpdateDialog.value?.explanation ?: ""
-//          },
-//        ),
       )
     }
   }
@@ -107,13 +76,7 @@ fun HomeRoute(
       event.invoke(HomeComponent.Event.DeleteRoutine(it))
     },
     onUpdateRoutine = {
-      event.invoke(HomeComponent.Event.UpdateRoutine(it))
-    },
-    onAddRoutine = {
-      event.invoke(HomeComponent.Event.AddRoutine(it))
-    },
-    onOpenDialog = {
-      event.invoke(HomeComponent.Event.OnShowAddRoutineDialog)
+      event.invoke(HomeComponent.Event.OnShowUpdateRoutineDialog(it))
     },
     onSearchText = {
       event.invoke(HomeComponent.Event.SearchRoutine(it))
@@ -130,8 +93,6 @@ private fun HomeScreen(
   onCheckedRoutine: (RoutineUiModel) -> Unit,
   onDeleteRoutine: (RoutineUiModel) -> Unit,
   onUpdateRoutine: (RoutineUiModel) -> Unit,
-  onAddRoutine: (RoutineUiModel) -> Unit,
-  onOpenDialog: (isOpen: Boolean) -> Unit,
   onSearchText: (searchText: String) -> Unit,
 ) {
   val context = LocalContext.current
@@ -140,7 +101,6 @@ private fun HomeScreen(
   val fontSize = LocalFontSize.current
 
   val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
-  val routineModelUpdateDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
 
   state.errorMessage?.let { errorMessage ->
@@ -191,8 +151,7 @@ private fun HomeScreen(
                 ).show()
                 return@ItemsHome
               }
-              routineModelUpdateDialog.value = routineUpdate
-              onOpenDialog(true)
+              onUpdateRoutine(routineUpdate)
             },
             { deleteRoutine ->
               routineModelDeleteDialog.value = deleteRoutine
@@ -260,42 +219,40 @@ fun ItemsHome(
 @Preview
 @Composable
 private fun HomeScreenPreview() {
-    YadinoTheme {
-        HomeScreen(
-            state = HomeComponent.State(
-                routines = LoadableData.Loaded(
-                    persistentListOf(
-                        RoutineUiModel(
-                            name = "Task 1",
-                            colorTask = 0,
-                            dayName = "Saturday",
-                            dayNumber = 1,
-                            monthNumber = 1,
-                            yearNumber = 1403,
-                            timeHours = "10:00",
-                        ),
-                        RoutineUiModel(
-                            name = "Task 2",
-                            colorTask = 1,
-                            dayName = "Saturday",
-                            dayNumber = 1,
-                            monthNumber = 1,
-                            yearNumber = 1403,
-                            timeHours = "11:00",
-                            isChecked = true
-                        )
-                    )
-                ),
-                currentDate = CurrentDateUiModel("شنبه ۱ فروردین"),
-                errorMessage = null
+  YadinoTheme {
+    HomeScreen(
+      state = HomeComponent.State(
+        routines = LoadableData.Loaded(
+          persistentListOf(
+            RoutineUiModel(
+              name = "Task 1",
+              colorTask = 0,
+              dayName = "Saturday",
+              dayNumber = 1,
+              monthNumber = 1,
+              yearNumber = 1403,
+              timeHours = "10:00",
             ),
-            clickSearch = false,
-            onCheckedRoutine = {},
-            onDeleteRoutine = {},
-            onUpdateRoutine = {},
-            onAddRoutine = {},
-            onOpenDialog = {},
-            onSearchText = {},
-        )
-    }
+            RoutineUiModel(
+              name = "Task 2",
+              colorTask = 1,
+              dayName = "Saturday",
+              dayNumber = 1,
+              monthNumber = 1,
+              yearNumber = 1403,
+              timeHours = "11:00",
+              isChecked = true,
+            ),
+          ),
+        ),
+        currentDate = CurrentDateUiModel("شنبه ۱ فروردین"),
+        errorMessage = null,
+      ),
+      clickSearch = false,
+      onCheckedRoutine = {},
+      onDeleteRoutine = {},
+      onUpdateRoutine = {},
+      onSearchText = {},
+    )
+  }
 }

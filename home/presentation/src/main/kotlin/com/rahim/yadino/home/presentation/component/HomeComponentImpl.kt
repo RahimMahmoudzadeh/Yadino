@@ -32,14 +32,13 @@ import kotlin.coroutines.CoroutineContext
 class HomeComponentImpl(
   componentContext: ComponentContext,
   mainContext: CoroutineContext,
-  private val addReminderUseCase: AddReminderUseCase,
   private val updateReminderUseCase: UpdateReminderUseCase,
   private val cancelReminderUseCase: CancelReminderUseCase,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val getTodayRoutinesUseCase: GetTodayRoutinesUseCase,
   private val searchRoutineUseCase: SearchRoutineUseCase,
   private val getCurrentDateUseCase: GetCurrentDateUseCase,
-  private val onShowAddRoutineDialog: () -> Unit,
+  private val onShowUpdateRoutineDialog: (RoutineUiModel) -> Unit,
 ) : HomeComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
@@ -60,10 +59,6 @@ class HomeComponentImpl(
         getRoutines()
       }
 
-      is HomeComponent.Event.AddRoutine -> {
-        addRoutine(event.routine)
-      }
-
       is HomeComponent.Event.UpdateRoutine -> {
         updateRoutine(event.routine)
       }
@@ -79,8 +74,7 @@ class HomeComponentImpl(
       is HomeComponent.Event.SearchRoutine -> {
         searchRoutines(searchText = event.routineName)
       }
-
-      HomeComponent.Event.OnShowAddRoutineDialog -> onShowAddRoutineDialog()
+      is HomeComponent.Event.OnShowUpdateRoutineDialog -> onShowUpdateRoutineDialog(event.routine)
     }
   }
 
@@ -185,24 +179,6 @@ class HomeComponentImpl(
   private fun checkedRoutine(routineModel: RoutineUiModel) {
     scope.launch {
       cancelReminderUseCase(routineModel.toRoutine())
-    }
-  }
-
-  private fun addRoutine(routineModel: RoutineUiModel) {
-    scope.launch {
-      Timber.tag("addRoutine").d("addRoutine")
-      val response = addReminderUseCase(routineModel.toRoutine())
-      when (response) {
-        is Resource.Error -> {
-          _state.update { state ->
-            state.copy(
-              errorMessage = response.error,
-            )
-          }
-        }
-
-        is Resource.Success -> {}
-      }
     }
   }
 }
