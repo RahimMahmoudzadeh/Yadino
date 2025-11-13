@@ -61,12 +61,9 @@ import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import com.yadino.routine.presentation.component.RoutineComponent
 import com.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent
 import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutineUiModel
-import com.yadino.routine.presentation.model.TimeDateUiModel
-import kotlinx.collections.immutable.PersistentList
 import saman.zamani.persiandate.PersianDate
 import timber.log.Timber
 import java.time.LocalTime
@@ -80,36 +77,32 @@ const val MAX_EXPLANATION_LENGTH = 40
 @Composable
 fun DialogAddRoutine(
   modifier: Modifier = Modifier,
-  currentNumberDay: Int,
-  currentNumberMonth: Int,
-  currentNumberYear: Int,
-  updateRoutine: RoutineUiModel? = null,
   componentComponent: AddRoutineDialogComponent,
 ) {
   val size = LocalSize.current
   val fontSize = LocalFontSize.current
   val space = LocalSpacing.current
+  val persianData = PersianDate()
 
   val (state, event) = use(componentComponent)
 
-  var monthChecked by rememberSaveable { mutableIntStateOf(currentNumberMonth) }
-  var yearChecked by rememberSaveable { mutableIntStateOf(currentNumberYear) }
-  var dayChecked by rememberSaveable { mutableIntStateOf(currentNumberDay) }
+  var monthChecked by rememberSaveable { mutableIntStateOf(state.currentTime?.currentMonth ?: persianData.shMonth) }
+  var yearChecked by rememberSaveable { mutableIntStateOf(state.currentTime?.currentYear ?: persianData.shYear) }
+  var dayChecked by rememberSaveable { mutableIntStateOf(state.currentTime?.currentDay ?: persianData.shDay) }
 
-  var routineName by rememberSaveable { mutableStateOf(if (updateRoutine?.name.isNullOrBlank()) "" else updateRoutine.name) }
-  var routineExplanation by rememberSaveable { mutableStateOf(if (updateRoutine?.explanation.isNullOrBlank()) "" else updateRoutine.explanation) }
-  var time by rememberSaveable { mutableStateOf(if (updateRoutine?.timeHours.isNullOrBlank()) "12:00" else updateRoutine.timeHours) }
+  var routineName by rememberSaveable { mutableStateOf(state.updateRoutine?.name ?: "") }
+  var routineExplanation by rememberSaveable { mutableStateOf(state.updateRoutine?.explanation ?: "") }
+  var time by rememberSaveable { mutableStateOf(state.updateRoutine?.timeHours ?: "12:00") }
 
   var isErrorName by remember { mutableStateOf(false) }
   var isShowDateDialog by remember { mutableStateOf(false) }
   var isErrorExplanation by remember { mutableStateOf(false) }
   val alarmDialogState = rememberMaterialDialogState()
 
-  val persianData = PersianDate()
   val date = persianData.initJalaliDate(
-    updateRoutine?.yearNumber ?: yearChecked,
-    updateRoutine?.monthNumber ?: monthChecked,
-    updateRoutine?.dayNumber ?: dayChecked,
+    state.updateRoutine?.yearNumber ?: yearChecked,
+    state.updateRoutine?.monthNumber ?: monthChecked,
+    state.updateRoutine?.dayNumber ?: dayChecked,
   )
 
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -339,7 +332,7 @@ fun DialogAddRoutine(
                   isErrorName = true
                 } else {
                   val routine = RoutineUiModel(
-                    id = updateRoutine?.id,
+                    id = state.updateRoutine?.id,
                     name = routineName,
                     explanation = routineExplanation,
                     timeHours = time,
