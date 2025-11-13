@@ -284,32 +284,23 @@ fun AddRoutineDialog(
               if (routineName.isEmpty()) {
                 isErrorName = true
               } else {
-                state.updateRoutine?.let { updateRoutine ->
-                  val routine = RoutineUiModel(
-                    id = updateRoutine.id,
-                    name = routineName,
-                    explanation = routineExplanation,
-                    timeHours = time,
-                    dayNumber = date.shDay,
-                    monthNumber = date.shMonth,
-                    yearNumber = date.shYear,
-                    dayName = date.dayName(),
-                    colorTask = null,
-                  )
-                  event.invoke(AddRoutineDialogComponent.Event.UpdateRoutine(routine))
-                } ?: run {
-                  val routine = RoutineUiModel(
-                    name = routineName,
-                    explanation = routineExplanation,
-                    timeHours = time,
-                    dayNumber = date.shDay,
-                    monthNumber = date.shMonth,
-                    yearNumber = date.shYear,
-                    dayName = date.dayName(),
-                    colorTask = null,
-                  )
-                  event.invoke(AddRoutineDialogComponent.Event.CreateRoutine(routine))
+                val routine = RoutineUiModel(
+                  id = state.updateRoutine?.id,
+                  name = routineName,
+                  explanation = routineExplanation,
+                  timeHours = time,
+                  dayNumber = date.shDay,
+                  monthNumber = date.shMonth,
+                  yearNumber = date.shYear,
+                  dayName = date.dayName(),
+                  colorTask = null,
+                )
+                val eventToSend = if (state.updateRoutine != null) {
+                  AddRoutineDialogComponent.Event.UpdateRoutine(routine)
+                } else {
+                  AddRoutineDialogComponent.Event.CreateRoutine(routine)
                 }
+                event.invoke(eventToSend)
               }
             },
           )
