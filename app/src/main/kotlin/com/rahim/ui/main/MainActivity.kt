@@ -234,7 +234,7 @@ fun YadinoApp(
                           }
 
                           ConfigChildComponent.Routine -> {
-                            rootComponent.onShowAddDialogRoutineRoutineScreen(AddRoutineDialogRoutineScreen)
+                            rootComponent.onShowAddDialogRoutineRoutineScreen(AddRoutineDialogRoutineScreen())
                           }
 
                           else -> {
