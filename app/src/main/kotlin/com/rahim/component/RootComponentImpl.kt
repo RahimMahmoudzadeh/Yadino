@@ -12,6 +12,7 @@ import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
 import com.rahim.component.RootComponent.ChildStack.*
+import com.rahim.component.config.AddNoteDialog
 import com.rahim.yadino.core.timeDate.repo.DateTimeRepository
 import com.rahim.yadino.home.domain.useCase.AddReminderUseCase
 import com.rahim.yadino.home.domain.useCase.CancelReminderUseCase
@@ -34,6 +35,8 @@ import com.rahim.yadino.note.domain.useCase.SearchNoteUseCase
 import com.rahim.yadino.note.domain.useCase.UpdateNoteUseCase
 import com.rahim.yadino.note.presentation.component.NoteComponent
 import com.rahim.yadino.note.presentation.component.NoteComponentImpl
+import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
+import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponentImpl
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponentImpl
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
@@ -46,6 +49,7 @@ import com.yadino.routine.presentation.component.RoutineComponentImpl
 import com.yadino.routine.presentation.component.history.HistoryRoutineComponent
 import com.yadino.routine.presentation.component.history.HistoryRoutineComponentImpl
 import kotlinx.coroutines.Dispatchers
+import kotlinx.serialization.builtins.serializer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
@@ -65,6 +69,8 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private val addRoutineDialogRoutineScreenComponentNavigationSlot =
     SlotNavigation<AddRoutineDialogRoutineScreen>()
 
+  private val addNoteDialogComponentNavigationSlot =
+    SlotNavigation<AddNoteDialog>()
 
   override val stack: Value<ChildStack<*, RootComponent.ChildStack>> = childStack(
     source = navigation,
@@ -114,6 +120,27 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
       )
     }
 
+  private val addNoteUseCase: AddNoteUseCase = get()
+  private val updateNoteUseCase: UpdateNoteUseCase = get()
+
+  override val addNoteDialog: Value<ChildSlot<AddNoteDialog, AddNoteDialogComponent>> =
+    childSlot(
+      source = addNoteDialogComponentNavigationSlot,
+      serializer = AddNoteDialog.serializer(),
+      handleBackButton = true,
+      key = "addNoteDialogComponentNavigationSlot",
+    ) { config, childComponentContext ->
+      AddNoteDialogComponentImpl(
+        componentContext = childComponentContext,
+        mainDispatcher = Dispatchers.Main,
+        ioDispatcher = Dispatchers.IO,
+        addNoteUseCase = addNoteUseCase,
+        updateNoteUseCase = updateNoteUseCase,
+        updateNote = config.updateNote,
+        onDismissed = addNoteDialogComponentNavigationSlot::dismiss,
+      )
+    }
+
   override fun onTabClick(tab: ConfigChildComponent) {
     navigation.bringToFront(tab)
   }
@@ -126,6 +153,10 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     addRoutineDialogRoutineScreenComponentNavigationSlot.activate(dialog)
   }
 
+  override fun onShowAddNoteDialog(dialog: AddNoteDialog) {
+    addNoteDialogComponentNavigationSlot.activate(dialog)
+  }
+
   private fun homeComponent(componentContext: ComponentContext): HomeComponent = HomeComponentImpl(
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
@@ -135,7 +166,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     getTodayRoutinesUseCase = getTodayRoutinesUseCase,
     searchRoutineUseCase = searchRoutineUseCase,
     getCurrentDateUseCase = getCurrentDateUseCase,
-    onShowUpdateRoutineDialog = {routineModel->
+    onShowUpdateRoutineDialog = { routineModel ->
       addRoutineDialogHomeScreenComponentNavigationSlot.activate(AddRoutineDialogHomeScreen(routineModel))
     },
   )
@@ -173,21 +204,17 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     dateTimeRepository = dateTimeRepository,
     onShowUpdateDialog = {
       addRoutineDialogRoutineScreenComponentNavigationSlot.activate(AddRoutineDialogRoutineScreen(it))
-    }
+    },
   )
 
-  private val addNoteUseCase: AddNoteUseCase = get()
   private val deleteNoteUseCase: DeleteNoteUseCase = get()
-  private val updateNoteUseCase: UpdateNoteUseCase = get()
   private val getNotesUseCase: GetNotesUseCase = get()
   private val searchNoteUseCase: SearchNoteUseCase = get()
 
   private fun noteComponent(componentContext: ComponentContext): NoteComponent = NoteComponentImpl(
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
-    addNoteUseCase = addNoteUseCase,
     deleteNoteUseCase = deleteNoteUseCase,
-    updateNoteUseCase = updateNoteUseCase,
     getNotesUseCase = getNotesUseCase,
     searchNoteUseCase = searchNoteUseCase,
   )
