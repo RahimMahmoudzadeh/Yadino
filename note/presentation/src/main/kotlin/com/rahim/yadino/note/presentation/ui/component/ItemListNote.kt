@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
@@ -153,4 +154,25 @@ fun ItemListNote(
       )
     }
   }
+}
+
+@Preview
+@Composable
+fun ItemListNotePreview() {
+    ItemListNote(
+        onChecked = {},
+        isChecked = false,
+        priorityNote = PriorityNote.NORMAL,
+        nameNote = "Test Note",
+        descriptionNote = "This is a test description for a note.",
+        timeNote = NoteUiModel.TimeNoteUiModel(
+            yearNumber = 1403,
+            monthNumber = 4,
+            dayNumber = 28,
+            dayName = "Saturday",
+            timeCreateMillSecond = 0L
+        ),
+        openDialogEdit = {},
+        openDialogDelete = {}
+    )
 }
