@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
@@ -52,6 +53,7 @@ import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueDark
 import com.rahim.yadino.designsystem.utils.theme.Mantis
 import com.rahim.yadino.designsystem.utils.theme.Punch
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.model.PriorityNote
 import saman.zamani.persiandate.PersianDate
@@ -64,21 +66,22 @@ const val maxExplanation = 40
 @Composable
 fun AddNoteDialog(
   modifier: Modifier = Modifier,
-  updateNote: NoteUiModel? = null,
-  openDialog: (Boolean) -> Unit,
-  setNote: (NoteUiModel) -> Unit,
+  component: AddNoteDialogComponent,
 ) {
+
+  val (state, event) = use(component)
 
   val space = LocalSpacing.current
   val size = LocalSize.current
   val fontSize = LocalFontSize.current
 
-  var state by remember { mutableStateOf(updateNote?.state ?: PriorityNote.LOW_PRIORITY) }
-  var nameNote by rememberSaveable { mutableStateOf(updateNote?.name ?: "") }
-  var description by rememberSaveable { mutableStateOf(updateNote?.description ?: "") }
+  var noteState by remember { mutableStateOf(state.updateNote?.state ?: PriorityNote.LOW_PRIORITY) }
+  var nameNote by rememberSaveable { mutableStateOf(state.updateNote?.name ?: "") }
+  var description by rememberSaveable { mutableStateOf(state.updateNote?.description ?: "") }
   val persianDate = PersianDate()
   var isErrorName by remember { mutableStateOf(false) }
   var isErrorExplanation by remember { mutableStateOf(false) }
+
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
     BasicAlertDialog(
       properties = DialogProperties(
@@ -95,7 +98,7 @@ fun AddNoteDialog(
           shape = RoundedCornerShape(size.size8),
         ),
       onDismissRequest = {
-        openDialog(false)
+        event(AddNoteDialogComponent.Event.Dismiss)
       },
     ) {
       Column(
@@ -220,8 +223,8 @@ fun AddNoteDialog(
                 selectedColor = Punch,
                 unselectedColor = Punch,
               ),
-              selected = state == PriorityNote.HIGH_PRIORITY,
-              onClick = { state = PriorityNote.HIGH_PRIORITY },
+              selected = noteState == PriorityNote.HIGH_PRIORITY,
+              onClick = { noteState = PriorityNote.HIGH_PRIORITY },
               modifier = Modifier
                 .semantics {
                   contentDescription = "Localized Description"
@@ -243,8 +246,8 @@ fun AddNoteDialog(
                 selectedColor = CornflowerBlueDark,
                 unselectedColor = CornflowerBlueDark,
               ),
-              selected = state == PriorityNote.NORMAL,
-              onClick = { state = PriorityNote.NORMAL },
+              selected = noteState == PriorityNote.NORMAL,
+              onClick = { noteState = PriorityNote.NORMAL },
               modifier = Modifier
                 .semantics {
                   contentDescription = "Localized Description"
@@ -267,8 +270,8 @@ fun AddNoteDialog(
                 selectedColor = Mantis,
                 unselectedColor = Mantis,
               ),
-              selected = state == PriorityNote.LOW_PRIORITY,
-              onClick = { state = PriorityNote.LOW_PRIORITY },
+              selected = noteState == PriorityNote.LOW_PRIORITY,
+              onClick = { noteState = PriorityNote.LOW_PRIORITY },
               modifier = Modifier
                 .semantics {
                   contentDescription = "Localized Description"
@@ -298,28 +301,31 @@ fun AddNoteDialog(
               if (nameNote.isEmpty()) {
                 isErrorName = true
               } else {
-                setNote(
-                  NoteUiModel(
-                    id = updateNote?.id ?: Random.nextInt(),
-                    name = nameNote,
-                    description = description,
-                    state = state,
-                    isChecked = updateNote?.isChecked ?: false,
-                    timeNote = updateNote?.timeNote ?: NoteUiModel.TimeNoteUiModel(
-                      monthNumber = persianDate.shMonth,
-                      dayNumber = persianDate.shDay,
-                      yearNumber = persianDate.shYear,
-                      dayName = persianDate.dayName(),
-                      timeCreateMillSecond = System.currentTimeMillis(),
-                    ),
+                val note = NoteUiModel(
+                  id = state.updateNote?.id ?: Random.nextInt(),
+                  name = nameNote,
+                  description = description,
+                  state = noteState,
+                  isChecked = state.updateNote?.isChecked ?: false,
+                  timeNote = state.updateNote?.timeNote ?: NoteUiModel.TimeNoteUiModel(
+                    monthNumber = persianDate.shMonth,
+                    dayNumber = persianDate.shDay,
+                    yearNumber = persianDate.shYear,
+                    dayName = persianDate.dayName(),
+                    timeCreateMillSecond = System.currentTimeMillis(),
                   ),
                 )
-                openDialog(false)
-                nameNote = ""
-                description = ""
-                isErrorExplanation = false
-                isErrorName = false
-                state = PriorityNote.LOW_PRIORITY
+                val eventToSend = if (state.updateNote != null) {
+                  AddNoteDialogComponent.Event.UpdateNote(note)
+                } else {
+                  AddNoteDialogComponent.Event.CreateNote(note)
+                }
+                event.invoke(eventToSend)
+//                nameNote = ""
+//                description = ""
+//                isErrorExplanation = false
+//                isErrorName = false
+//                noteState = PriorityNote.LOW_PRIORITY
               }
             },
           )
@@ -327,12 +333,7 @@ fun AddNoteDialog(
           Spacer(modifier = Modifier.width(size.size10))
           TextButton(
             onClick = {
-              nameNote = ""
-              description = ""
-              state = PriorityNote.LOW_PRIORITY
-              isErrorExplanation = false
-              isErrorName = false
-              openDialog(false)
+             event(AddNoteDialogComponent.Event.Dismiss)
             },
           ) {
             Text(
@@ -349,13 +350,4 @@ fun AddNoteDialog(
       }
     }
   }
-}
-
-@Preview()
-@Composable
-fun AddNoteDialogWrapper() {
-  AddNoteDialog(
-    openDialog = {},
-    setNote = { note -> },
-  )
 }
