@@ -17,6 +17,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         listOf(
           "com.android.application",
           "org.jetbrains.kotlin.android",
+          versionCatalog.findPlugin("kotlin-parcelize").get().get().pluginId,
         )
       }
       applicationGradle {
