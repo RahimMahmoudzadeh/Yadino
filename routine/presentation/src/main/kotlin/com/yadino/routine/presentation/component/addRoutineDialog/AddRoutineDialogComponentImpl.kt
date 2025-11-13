@@ -26,6 +26,7 @@ class AddRoutineDialogComponentImpl(
   componentContext: ComponentContext,
   mainDispatcher: CoroutineContext,
   ioDispatcher: CoroutineContext,
+  private val updateRoutine: RoutineUiModel?,
   private val addReminderUseCase: AddReminderUseCase,
   private val getTimesMonthUseCase: GetTimesMonthUseCase,
   private val getCurrentTimeUseCase: GetCurrentTimeUseCase,
@@ -34,7 +35,8 @@ class AddRoutineDialogComponentImpl(
 
   private val scope = coroutineScope(mainDispatcher + SupervisorJob())
   private val ioScope = coroutineScope(ioDispatcher + SupervisorJob())
-  private val _state = MutableValue(AddRoutineDialogComponent.State())
+
+  private val _state = MutableValue(AddRoutineDialogComponent.State(updateRoutine = updateRoutine))
   override val state: Value<AddRoutineDialogComponent.State> = _state
 
   init {
@@ -99,7 +101,7 @@ class AddRoutineDialogComponentImpl(
         times[time] = times.first { it.dayNumber == DAY_MIN }.copy(isChecked = true)
       }
       _state.update {
-        it.copy(timesMonth = times.map { it.toTimeDateUiModel() }.toPersistentList())
+        it.copy(timesMonth = times.map { it.toTimeDateUiModel() }.toPersistentList(), currentTime = currentTime)
       }
     }
   }

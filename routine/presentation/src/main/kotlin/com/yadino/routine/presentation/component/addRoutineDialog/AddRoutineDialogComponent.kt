@@ -2,7 +2,7 @@ package com.yadino.routine.presentation.component.addRoutineDialog
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.UnidirectionalComponent
-import com.yadino.routine.presentation.component.RoutineComponent.Event
+import com.yadino.routine.presentation.model.CurrentTimeUiModel
 import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutineUiModel
 import com.yadino.routine.presentation.model.TimeDateUiModel
@@ -20,6 +20,10 @@ interface AddRoutineDialogComponent : UnidirectionalComponent<AddRoutineDialogCo
   }
 
   @Immutable
-  data class State(val timesMonth: PersistentList<TimeDateUiModel> = persistentListOf())
+  data class State(
+    val timesMonth: PersistentList<TimeDateUiModel> = persistentListOf(),
+    val updateRoutine: RoutineUiModel? = null,
+    val currentTime: CurrentTimeUiModel? = null,
+  )
 
 }
