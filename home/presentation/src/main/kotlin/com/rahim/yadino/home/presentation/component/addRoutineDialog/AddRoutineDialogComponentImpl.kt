@@ -5,6 +5,7 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.rahim.yadino.home.domain.useCase.AddReminderUseCase
+import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.home.presentation.mapper.toRoutine
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import kotlinx.coroutines.SupervisorJob
@@ -15,6 +16,7 @@ class AddRoutineDialogComponentImpl(
   componentContext: ComponentContext,
   mainDispatcher: CoroutineContext,
   private val addReminderUseCase: AddReminderUseCase,
+  private val updateReminderUseCase: UpdateReminderUseCase,
   private val routine: RoutineUiModel?,
   private val onDismissed: () -> Unit,
 ) : AddRoutineDialogComponent, ComponentContext by componentContext {
@@ -27,12 +29,25 @@ class AddRoutineDialogComponentImpl(
   override fun event(event: AddRoutineDialogComponent.Event) = when (event) {
     AddRoutineDialogComponent.Event.DismissDialog -> onDismissed()
     is AddRoutineDialogComponent.Event.CreateRoutine -> addRoutine(event.routine)
+    is AddRoutineDialogComponent.Event.UpdateRoutine -> updateRoutine(event.routine)
   }
 
   private fun addRoutine(routine: RoutineUiModel) {
     scope.launch {
       runCatching {
         addReminderUseCase.invoke(routine.toRoutine())
+      }.onSuccess {
+        onDismissed()
+      }.onFailure {
+
+      }
+    }
+  }
+
+  private fun updateRoutine(routine: RoutineUiModel) {
+    scope.launch {
+      runCatching {
+        updateReminderUseCase.invoke(routine.toRoutine())
       }.onSuccess {
         onDismissed()
       }.onFailure {
