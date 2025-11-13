@@ -13,8 +13,7 @@ interface NoteComponent : UnidirectionalComponent<NoteComponent.NoteEvent, NoteC
   sealed class NoteEvent() {
     data class SearchNote(val nameNoteUi: NameNoteUi) : NoteEvent()
     data class DeleteNote(val deleteNote: NoteUiModel) : NoteEvent()
-    data class UpdateNote(val updateNote: NoteUiModel) : NoteEvent()
-    data class AddNote(val addNote: NoteUiModel) : NoteEvent()
+    data class OnCheckedNote(val checkedNote: NoteUiModel) : NoteEvent()
     data object GetNotes : NoteEvent()
   }
 

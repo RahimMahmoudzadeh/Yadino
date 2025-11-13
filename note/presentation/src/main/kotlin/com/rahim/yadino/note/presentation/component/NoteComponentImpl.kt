@@ -29,9 +29,7 @@ import kotlin.coroutines.CoroutineContext
 class NoteComponentImpl(
   componentContext: ComponentContext,
   mainContext: CoroutineContext,
-  private val addNoteUseCase: AddNoteUseCase,
   private val deleteNoteUseCase: DeleteNoteUseCase,
-  private val updateNoteUseCase: UpdateNoteUseCase,
   private val getNotesUseCase: GetNotesUseCase,
   private val searchNoteUseCase: SearchNoteUseCase,
 ) : NoteComponent, ComponentContext by componentContext {
@@ -51,20 +49,7 @@ class NoteComponentImpl(
     is NoteComponent.NoteEvent.GetNotes -> getNotes()
     is NoteComponent.NoteEvent.SearchNote -> searchItems(event.nameNoteUi)
     is NoteComponent.NoteEvent.DeleteNote -> delete(event.deleteNote)
-    is NoteComponent.NoteEvent.UpdateNote -> updateNote(event.updateNote)
-    is NoteComponent.NoteEvent.AddNote -> addNote(event.addNote)
-  }
-
-  private fun addNote(note: NoteUiModel) {
-    scope.launch {
-      addNoteUseCase(note.toNote())
-    }
-  }
-
-  private fun updateNote(note: NoteUiModel) {
-    scope.launch {
-      updateNoteUseCase(note.toNote())
-    }
+    is NoteComponent.NoteEvent.OnCheckedNote -> TODO()
   }
 
   private fun delete(note: NoteUiModel) {
