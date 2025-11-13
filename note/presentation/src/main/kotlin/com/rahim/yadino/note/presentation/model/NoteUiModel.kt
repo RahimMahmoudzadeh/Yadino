@@ -11,6 +11,7 @@ data class NoteUiModel(
   val state: PriorityNote = PriorityNote.HIGH_PRIORITY,
   val timeNote: TimeNoteUiModel,
 ) {
+  @Serializable
   data class TimeNoteUiModel(
     val monthNumber: Int,
     val yearNumber: Int,
