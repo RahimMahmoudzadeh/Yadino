@@ -1,5 +1,6 @@
-package com.rahim.yadino.navigation.config
+package com.rahim.component.config
 
+import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import kotlinx.serialization.Serializable
 
 @Serializable
