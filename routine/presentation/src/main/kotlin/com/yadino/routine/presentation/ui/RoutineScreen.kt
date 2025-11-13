@@ -61,7 +61,6 @@ import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SizeDimensions
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.font_medium
-import com.rahim.yadino.enums.RoutineExplanation
 import com.rahim.yadino.routine.presentation.R
 import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toPersianDigits
@@ -91,10 +90,6 @@ fun RoutineRoute(
   dialogSlot?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       DialogAddRoutine(
-        updateRoutine = null,
-        currentNumberDay = state.currentDay,
-        currentNumberMonth = state.currentMonth,
-        currentNumberYear = state.currentYear,
         componentComponent = dialogComponent,
       )
     }
@@ -103,12 +98,8 @@ fun RoutineRoute(
     modifier = modifier,
     state = state,
     showSearchBar = showSearchBar,
-    onOpenDialogAddRoutine = {},
-    onUpdateRoutine = {
-      event.invoke(RoutineComponent.Event.UpdateRoutine(it))
-    },
-    onAddRoutine = {
-      event(RoutineComponent.Event.AddRoutine(it))
+    onShowUpdateDialog = {
+      event.invoke(RoutineComponent.Event.OnShowUpdateDialog(it))
     },
     onDeleteRoutine = {
       event.invoke(RoutineComponent.Event.DeleteRoutine(it))
@@ -136,12 +127,10 @@ fun RoutineRoute(
 private fun RoutineScreen(
   modifier: Modifier,
   state: RoutineComponent.State,
-  onOpenDialogAddRoutine: (isOpen: Boolean) -> Unit,
   showSearchBar: Boolean,
   checkedRoutine: (RoutineUiModel) -> Unit,
   dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
-  onUpdateRoutine: (RoutineUiModel) -> Unit,
-  onAddRoutine: (RoutineUiModel) -> Unit,
+  onShowUpdateDialog: (routine: RoutineUiModel) -> Unit,
   onDeleteRoutine: (RoutineUiModel) -> Unit,
   onSearchText: (String) -> Unit,
   increaseOrDecrease: (increaseDecrease: IncreaseDecrease) -> Unit,
@@ -154,10 +143,6 @@ private fun RoutineScreen(
   val size = LocalSize.current
 
   val routineDeleteDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
-  val routineUpdateDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
-
-  var errorClick by rememberSaveable { mutableStateOf(false) }
-
   var searchQuery by remember { mutableStateOf("") }
 
   LaunchedEffect(Unit) {
@@ -206,8 +191,8 @@ private fun RoutineScreen(
       state = state,
       context = context,
       searchText = searchQuery,
-      routineUpdateDialog = {
-        if (it.isChecked) {
+      routineUpdateDialog = { routineUpdate ->
+        if (routineUpdate.isChecked) {
           Toast.makeText(
             context,
             com.rahim.yadino.library.designsystem.R.string.not_update_checked_routine,
@@ -215,8 +200,7 @@ private fun RoutineScreen(
           ).show()
           return@GetRoutines
         }
-        onOpenDialogAddRoutine(true)
-        routineUpdateDialog.value = it
+        onShowUpdateDialog(routineUpdate)
       },
       routineChecked = {
         checkedRoutine(it)
