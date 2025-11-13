@@ -342,7 +342,12 @@ fun DialogAddRoutine(
                     dayName = persianData.dayName(date),
                     colorTask = null,
                   )
-                  event.invoke(AddRoutineDialogComponent.Event.CreateRoutine(routine))
+                  val eventToSend = if (state.updateRoutine != null) {
+                    AddRoutineDialogComponent.Event.UpdateRoutine(routine)
+                  } else {
+                    AddRoutineDialogComponent.Event.CreateRoutine(routine)
+                  }
+                  event.invoke(eventToSend)
                 }
               },
             )
