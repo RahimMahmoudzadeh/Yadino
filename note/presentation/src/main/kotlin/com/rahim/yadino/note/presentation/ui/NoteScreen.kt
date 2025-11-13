@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import com.arkivanov.decompose.Child
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
@@ -31,6 +32,7 @@ import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.note.presentation.R
 import com.rahim.yadino.note.presentation.component.NoteComponent
+import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
 import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.ui.addNoteDialog.AddNoteDialog
@@ -43,29 +45,33 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @Composable
 fun NoteRoute(
   modifier: Modifier = Modifier,
-  component: NoteComponent,
-  openDialog: Boolean,
   clickSearch: Boolean,
+  component: NoteComponent,
+  dialogSlot: Child.Created<Any, AddNoteDialogComponent>?,
 ) {
   val (state, event) = use(component)
-
+  dialogSlot?.let { dialogSlot ->
+    dialogSlot.instance.also { dialogComponent ->
+      AddNoteDialog(
+        component = dialogComponent,
+      )
+    }
+  }
   NoteScreen(
     modifier = modifier,
     state = state,
-    onUpdateNote = {
-      event(NoteComponent.NoteEvent.UpdateNote(it))
-    },
-    onAddNote = {
-      event(NoteComponent.NoteEvent.AddNote(it))
+    onOpenDialog = {
+
     },
     onDelete = {
       event(NoteComponent.NoteEvent.DeleteNote(it))
     },
-    onOpenDialog = {},
     onSearchText = {
       event(NoteComponent.NoteEvent.SearchNote(it))
     },
-    openDialog = openDialog,
+    onCheckedNote = {
+      event(NoteComponent.NoteEvent.OnCheckedNote(it))
+    },
     clickSearch = clickSearch,
   )
 }
@@ -75,16 +81,13 @@ fun NoteRoute(
 private fun NoteScreen(
   modifier: Modifier = Modifier,
   state: NoteComponent.NoteState,
-  openDialog: Boolean,
   clickSearch: Boolean,
-  onOpenDialog: (isOpen: Boolean) -> Unit,
-  onUpdateNote: (NoteUiModel) -> Unit,
-  onAddNote: (NoteUiModel) -> Unit,
+  onOpenDialog: (note: NoteUiModel) -> Unit,
   onDelete: (NoteUiModel) -> Unit,
+  onCheckedNote: (NoteUiModel) -> Unit,
   onSearchText: (NameNoteUi) -> Unit,
 ) {
   val noteDeleteDialog = rememberSaveable { mutableStateOf<NoteUiModel?>(null) }
-  val noteUpdateDialog = rememberSaveable { mutableStateOf<NoteUiModel?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
 
   val context = LocalContext.current
@@ -127,12 +130,12 @@ private fun NoteScreen(
         } else {
           ItemsNote(
             notes = notes,
-            checkedNote = {
-              onUpdateNote(it)
+            checkedNote = { note ->
+              onCheckedNote(note)
             },
             spaceDimensions = space,
-            updateNote = {
-              if (it.isChecked) {
+            updateNote = { updateNote ->
+              if (updateNote.isChecked) {
                 Toast.makeText(
                   context,
                   R.string.not_update_checked_note,
@@ -140,8 +143,7 @@ private fun NoteScreen(
                 ).show()
                 return@ItemsNote
               }
-              noteUpdateDialog.value = it
-              onOpenDialog(true)
+              onOpenDialog(updateNote)
             },
             deleteNote = {
               if (it.isChecked) {
@@ -161,13 +163,13 @@ private fun NoteScreen(
   }
 
   when {
-    noteUpdateDialog.value != null -> {
+    noteDeleteDialog.value != null -> {
       ErrorDialog(
         modifier,
         isClickOk = {
           noteDeleteDialog.value = null
           if (it) {
-            onDelete(noteUpdateDialog.value!!)
+            onDelete(noteDeleteDialog.value!!)
           }
         },
         message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.can_you_delete),
@@ -177,16 +179,16 @@ private fun NoteScreen(
       )
     }
 
-    openDialog -> {
-      AddNoteDialog(
-        updateNote = noteUpdateDialog.value,
-        setNote = onAddNote,
-        openDialog = {
-          noteUpdateDialog.value = null
-          onOpenDialog(it)
-        },
-      )
-    }
+//    openDialog -> {
+//      AddNoteDialog(
+//        updateNote = noteUpdateDialog.value,
+//        setNote = onAddNote,
+//        openDialog = {
+//          noteUpdateDialog.value = null
+//          onOpenDialog(it)
+//        },
+//      )
+//    }
   }
 }
 
