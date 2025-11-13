@@ -65,6 +65,7 @@ import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.home.presentation.ui.HomeRoute
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.component.BottomNavigationBar
+import com.rahim.component.config.AddNoteDialog
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
 import com.rahim.component.config.AddRoutineDialogHomeScreen
@@ -238,7 +239,7 @@ fun YadinoApp(
                           }
 
                           else -> {
-
+                            rootComponent.onShowAddNoteDialog(AddNoteDialog())
                           }
                         }
                       } else {
@@ -298,8 +299,8 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
     animation = stackAnimation(fade()),
   ) {
     val addRoutineDialogHome = component.addRoutineDialogHomeScreen.subscribeAsState().value.child
-
     val addRoutineDialogRoutine = component.addRoutineDialogRoutineScreen.subscribeAsState().value.child
+    val addNoteDialog = component.addNoteDialog.subscribeAsState().value.child
 
     Surface(color = MaterialTheme.colorScheme.background) {
       when (val child = it.instance) {
@@ -314,7 +315,7 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
         is RootComponent.ChildStack.OnBoarding -> OnBoardingRoute(component = child.component)
         is RootComponent.ChildStack.Routine -> RoutineRoute(component = child.component, showSearchBar = false, dialogSlot = addRoutineDialogRoutine)
         is RootComponent.ChildStack.HistoryRoutine -> HistoryRoute(component = child.component)
-        is RootComponent.ChildStack.Note -> NoteRoute(component = child.component, openDialog = false, clickSearch = false)
+        is RootComponent.ChildStack.Note -> NoteRoute(component = child.component, clickSearch = false, dialogSlot = addNoteDialog)
       }
     }
   }
