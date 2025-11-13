@@ -1,5 +1,8 @@
 package com.rahim.yadino.note.presentation.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class NoteUiModel(
   val id: Int? = null,
   val name: String,
