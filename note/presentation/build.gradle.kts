@@ -1,8 +1,11 @@
 plugins {
-  libs.plugins.yadino.run {
-    alias(android.feature)
-    alias(android.library.compose)
-    alias(decompose)
+  libs.plugins.run {
+    yadino.run{
+      alias(android.feature)
+      alias(android.library.compose)
+      alias(decompose)
+    }
+    alias(kotlinx.serialization)
   }
 }
 
