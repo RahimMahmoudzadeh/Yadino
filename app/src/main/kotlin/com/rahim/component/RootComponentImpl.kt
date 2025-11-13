@@ -107,6 +107,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
         ioDispatcher = Dispatchers.IO,
         updateRoutine = config.updateRoutine,
         addReminderUseCase = addReminderUseCaseRoutine,
+        updateReminderUseCase = updateReminderUseCaseRoutine,
         getTimesMonthUseCase = getTimesMonthUseCase,
         getCurrentTimeUseCase = getCurrentTimeUseCase,
         onDismissed = addRoutineDialogRoutineScreenComponentNavigationSlot::dismiss,
