@@ -1,14 +1,13 @@
-package com.rahim.yadino.navigation
+package com.rahim.component
 
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
+import com.rahim.component.config.ConfigChildComponent
 import com.rahim.yadino.library.navigation.R
-import com.rahim.yadino.navigation.config.ConfigChildComponent
 
 sealed class BottomNavItem(
-  val route: String,
-  @DrawableRes val iconNormal: Int,
-  @DrawableRes val iconSelected: Int,
+    val route: String,
+    @DrawableRes val iconNormal: Int,
+    @DrawableRes val iconSelected: Int,
 ) {
   data object Home : BottomNavItem(
     route = ConfigChildComponent.Home.toString(),
