@@ -7,11 +7,9 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.rahim.yadino.base.LoadableData
-import com.rahim.yadino.note.domain.useCase.AddNoteUseCase
 import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
 import com.rahim.yadino.note.domain.useCase.GetNotesUseCase
 import com.rahim.yadino.note.domain.useCase.SearchNoteUseCase
-import com.rahim.yadino.note.domain.useCase.UpdateNoteUseCase
 import com.rahim.yadino.note.presentation.mapper.toNameNote
 import com.rahim.yadino.note.presentation.mapper.toNote
 import com.rahim.yadino.note.presentation.mapper.toNoteUiModel
@@ -32,12 +30,13 @@ class NoteComponentImpl(
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val getNotesUseCase: GetNotesUseCase,
   private val searchNoteUseCase: SearchNoteUseCase,
+  private val onOpenUpdateNoteDialog: (updateNote: NoteUiModel) -> Unit,
 ) : NoteComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
 
-  private var _state = MutableValue(NoteComponent.NoteState())
-  override val state: Value<NoteComponent.NoteState> = _state
+  private var _state = MutableValue(NoteComponent.State())
+  override val state: Value<NoteComponent.State> = _state
 
   init {
     lifecycle.doOnCreate {
@@ -45,11 +44,12 @@ class NoteComponentImpl(
     }
   }
 
-  override fun event(event: NoteComponent.NoteEvent) = when (event) {
-    is NoteComponent.NoteEvent.GetNotes -> getNotes()
-    is NoteComponent.NoteEvent.SearchNote -> searchItems(event.nameNoteUi)
-    is NoteComponent.NoteEvent.DeleteNote -> delete(event.deleteNote)
-    is NoteComponent.NoteEvent.OnCheckedNote -> TODO()
+  override fun event(event: NoteComponent.Event) = when (event) {
+    is NoteComponent.Event.GetNotes -> getNotes()
+    is NoteComponent.Event.Search -> searchItems(event.nameNoteUi)
+    is NoteComponent.Event.Delete -> delete(event.deleteNote)
+    is NoteComponent.Event.OnChecked -> TODO()
+    is NoteComponent.Event.OnOpenUpdateNoteDialog -> onOpenUpdateNoteDialog(event.updateNote)
   }
 
   private fun delete(note: NoteUiModel) {
