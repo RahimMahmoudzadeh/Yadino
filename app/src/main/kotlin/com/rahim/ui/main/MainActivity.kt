@@ -67,9 +67,9 @@ import com.rahim.yadino.library.designsystem.R
 import com.rahim.component.BottomNavigationBar
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
-import com.rahim.yadino.navigation.config.AddRoutineDialogHomeScreen
-import com.rahim.yadino.navigation.config.AddRoutineDialogRoutineScreen
-import com.rahim.yadino.navigation.config.ConfigChildComponent
+import com.rahim.component.config.AddRoutineDialogHomeScreen
+import com.rahim.component.config.AddRoutineDialogRoutineScreen
+import com.rahim.component.config.ConfigChildComponent
 import com.rahim.yadino.note.presentation.ui.NoteRoute
 import com.rahim.yadino.onboarding.presentation.OnBoardingRoute
 import com.yadino.routine.presentation.ui.RoutineRoute
@@ -230,7 +230,7 @@ fun YadinoApp(
                       if (it) {
                         when (configurationState) {
                           ConfigChildComponent.Home -> {
-                            rootComponent.onShowAddDialogRoutineHomeScreen(AddRoutineDialogHomeScreen)
+                            rootComponent.onShowAddDialogRoutineHomeScreen(AddRoutineDialogHomeScreen())
                           }
 
                           ConfigChildComponent.Routine -> {
