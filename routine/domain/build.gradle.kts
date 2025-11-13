@@ -10,4 +10,5 @@ android {
 }
 dependencies {
   implementation(projects.core.base)
+  implementation(projects.core.timeDate)
 }

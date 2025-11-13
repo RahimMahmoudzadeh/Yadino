@@ -1,7 +1,7 @@
 package com.rahim.yadino.home.presentation.mapper
 
-import com.rahim.home.domain.model.CurrentDate
-import com.rahim.home.domain.model.Routine
+import com.rahim.yadino.home.domain.model.CurrentDate
+import com.rahim.yadino.home.domain.model.Routine
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 
 fun RoutineUiModel.toRoutine(): Routine =

@@ -3,12 +3,16 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-  libs.plugins.yadino.run {
-    alias(android.application)
-    alias(android.application.compose)
-    alias(android.application.firebase)
-    alias(android.room)
-    alias(di)
+  libs.plugins.run {
+    yadino.run {
+      alias(android.application)
+      alias(android.application.compose)
+      alias(android.application.firebase)
+      alias(android.room)
+      alias(decompose)
+      alias(di)
+    }
+    alias(kotlinx.serialization)
   }
 }
 android {

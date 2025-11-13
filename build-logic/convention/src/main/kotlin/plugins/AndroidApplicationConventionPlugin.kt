@@ -14,7 +14,11 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     with(target) {
       applyPlugins {
-        listOf("com.android.application", "org.jetbrains.kotlin.android")
+        listOf(
+          "com.android.application",
+          "org.jetbrains.kotlin.android",
+          versionCatalog.findPlugin("kotlin-parcelize").get().get().pluginId,
+        )
       }
       applicationGradle {
         defaultConfig.apply {
@@ -28,7 +32,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         configureFlavors(this)
       }
       dependencies {
-        
+
         val subprojects = project
           .rootProject
           .subprojects

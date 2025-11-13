@@ -13,6 +13,7 @@ dependencies {
   projects.run {
     implementation(core.base)
     implementation(core.db)
+    implementation(core.timeDate)
     implementation(routine.domain)
   }
 }

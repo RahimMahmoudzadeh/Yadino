@@ -1,7 +1,7 @@
 package com.yadino.routine.presentation.model
 
 data class CurrentTimeUiModel(
-  val currentNumberDay: Int,
-  val currentNumberMonth: Int,
-  val currentNumberYear: Int,
+  val currentDay: Int,
+  val currentMonth: Int,
+  val currentYear: Int,
 )

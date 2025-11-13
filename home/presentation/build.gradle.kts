@@ -1,7 +1,11 @@
 plugins {
-  libs.plugins.yadino.run {
-    alias(android.feature)
-    alias(android.library.compose)
+  libs.plugins.run {
+    yadino.run {
+      alias(android.feature)
+      alias(decompose)
+      alias(android.library.compose)
+    }
+    alias(kotlinx.serialization)
   }
 }
 
@@ -9,7 +13,7 @@ android {
   namespace = "com.rahim.yadino.home.presentation"
 }
 dependencies {
-  projects.run{
+  projects.run {
     implementation(home.domain)
   }
 

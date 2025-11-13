@@ -14,10 +14,9 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -40,18 +39,21 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import com.arkivanov.decompose.defaultComponentContext
+import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.BuildConfig
+import com.rahim.component.RootComponent
+import com.rahim.component.RootComponentImpl
 import com.rahim.data.distributionActions.StateOfClickItemDrawable
-import com.rahim.navigation.NavigationComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
 import com.rahim.yadino.designsystem.component.goSettingPermission
@@ -60,17 +62,25 @@ import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
+import com.rahim.yadino.home.presentation.ui.HomeRoute
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.navigation.Destinations
-import com.rahim.yadino.navigation.component.BottomNavigationBar
+import com.rahim.component.BottomNavigationBar
+import com.rahim.component.config.AddNoteDialog
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
+import com.rahim.component.config.AddRoutineDialogHomeScreen
+import com.rahim.component.config.AddRoutineDialogRoutineScreen
+import com.rahim.component.config.ConfigChildComponent
+import com.rahim.yadino.note.presentation.ui.NoteRoute
+import com.rahim.yadino.onboarding.presentation.OnBoardingRoute
+import com.yadino.routine.presentation.ui.RoutineRoute
+import com.yadino.routine.presentation.ui.alarmHistory.HistoryRoute
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.get
 
 class MainActivity : ComponentActivity() {
 
-  private val mainViewModel: MainViewModel by viewModel()
+  private val mainViewModel: MainComponent = get()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     installSplashScreen()
@@ -79,10 +89,11 @@ class MainActivity : ComponentActivity() {
       window.isNavigationBarContrastEnforced = false
     }
     super.onCreate(savedInstanceState)
+    val root = RootComponentImpl(componentContext = defaultComponentContext())
     getTokenFirebase()
 
     setContent {
-      val (state, event) = use(viewModel = mainViewModel)
+      val (state, event) = use(mainViewModel)
 
       changeTheme(state.isDarkTheme)
       checkStateOfClickItemDrawable(state.stateOfClickItemDrawable)
@@ -94,6 +105,7 @@ class MainActivity : ComponentActivity() {
           event.invoke(MainContract.MainEvent.ClickDrawer(it))
         },
         window = window,
+        rootComponent = root,
       )
     }
   }
@@ -149,27 +161,24 @@ fun YadinoApp(
   isDarkTheme: Boolean = isSystemInDarkTheme(),
   haveAlarm: Boolean,
   window: Window,
+  rootComponent: RootComponent,
   drawerItemClicked: (DrawerItemType) -> Unit,
 ) {
   val context = LocalContext.current
   val size = LocalSize.current
 
-  val notificationPermissionState =
-    rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
+  val stack = rootComponent.stack.subscribeAsState()
+  val configurationState = stack.value.active.configuration
 
-  var openDialog by rememberSaveable { mutableStateOf(false) }
+  val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
+
   var errorClick by rememberSaveable { mutableStateOf(false) }
-  val navController = rememberNavController()
   var clickSearch by rememberSaveable { mutableStateOf(false) }
 
-  val destination = navController.currentBackStackEntry?.destination?.route
-  val navBackStackEntry by navController.currentBackStackEntryAsState()
-  val destinationNavBackStackEntry = navBackStackEntry?.destination?.route
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val coroutineScope = rememberCoroutineScope()
-  val windowInsetsController =
-    WindowCompat.getInsetsController(window, window.decorView)
-  if (destinationNavBackStackEntry != Destinations.OnBoarding.route) {
+  val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+  if (configurationState !is ConfigChildComponent.OnBoarding) {
     windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
   } else {
     windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
@@ -177,107 +186,91 @@ fun YadinoApp(
 
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
     YadinoTheme(darkTheme = isDarkTheme) {
-      Surface(
-        modifier = Modifier
-          .fillMaxSize()
-          .background(MaterialTheme.colorScheme.background),
+      YadinoNavigationDrawer(
+        drawerState = drawerState,
+        isDarkTheme = isDarkTheme,
+        onItemClick = drawerItemClicked,
+        gesturesEnabled = configurationState !is ConfigChildComponent.OnBoarding,
       ) {
-        YadinoNavigationDrawer(
-          modifier = Modifier.width(240.dp),
-          drawerState = drawerState,
-          isDarkTheme = isDarkTheme,
-          onItemClick = drawerItemClicked,
-          gesturesEnabled = destinationNavBackStackEntry != Destinations.OnBoarding.route,
-        ) {
-          Scaffold(
-            topBar = {
-              AnimatedVisibility(
-                visible = destinationNavBackStackEntry != Destinations.OnBoarding.route,
-                enter = fadeIn() + expandVertically(animationSpec = tween(800)),
-                exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
-              ) {
-                TopBarCenterAlign(
-                  title = checkNavBackStackEntry(destinationNavBackStackEntry),
-                  openHistory = {
-                    navController.navigate(Destinations.AlarmHistory.route)
-                  },
-                  isShowSearchIcon = destinationNavBackStackEntry != Destinations.Calender.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route,
-                  isShowBackIcon = destinationNavBackStackEntry == Destinations.AlarmHistory.route,
-                  onClickBack = {
-                    navController.navigateUp()
-                  },
-                  onClickSearch = {
-                    clickSearch = !clickSearch
-                  },
-                  onDrawerClick = {
-                    coroutineScope.launch { drawerState.open() }
-                  },
-                  haveAlarm = haveAlarm,
-                  size = size,
-                )
-              }
-            },
-            floatingActionButton = {
-              if (destinationNavBackStackEntry != Destinations.OnBoarding.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route) {
-                FloatingActionButton(
-                  containerColor = CornflowerBlueLight,
-                  contentColor = Color.White,
-                  onClick = {
-                    requestPermissionNotification(
-                      isGranted = {
-                        if (it) {
-                          openDialog = true
-                        } else {
-                          errorClick = true
-                        }
-                      },
-                      permissionState = {
-                        it.launchPermissionRequest()
-                      },
-                      notificationPermission = notificationPermissionState,
-                    )
-                  },
-                ) {
-                  Icon(imageVector = ImageVector.vectorResource(com.rahim.R.drawable.ic_add), "add item")
-                }
-              }
-            },
-            bottomBar = {
-              AnimatedVisibility(
-                visible = destinationNavBackStackEntry != Destinations.OnBoarding.route && destinationNavBackStackEntry != Destinations.AlarmHistory.route,
-                enter = fadeIn() + expandVertically(animationSpec = tween(800)),
-                exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
-              ) {
-                BottomNavigationBar(
-                  navController,
-                  navBackStackEntry,
-                  destinationNavBackStackEntry,
-                )
-              }
-            },
-            containerColor = MaterialTheme.colorScheme.background,
-          ) { innerPadding ->
-
-            NavigationComponent(
-              navController,
-              innerPadding = innerPadding,
-              startDestination = if (isShowWelcomeScreen) Destinations.Home.route else Destinations.OnBoarding.route,
-              openDialog = openDialog,
-              clickSearch = clickSearch,
-              onOpenDialog = { isOpen ->
-                openDialog = isOpen
-              },
-            )
-            if (destination == Destinations.Home.route) {
-              requestPermissionNotification(
-                notificationPermission = notificationPermissionState,
-                isGranted = {},
-                permissionState = {
-                  it.launchPermissionRequest()
+        Scaffold(
+          topBar = {
+            AnimatedVisibility(
+              visible = configurationState !is ConfigChildComponent.OnBoarding,
+              enter = fadeIn() + expandVertically(animationSpec = tween(800)),
+              exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
+            ) {
+              TopBarCenterAlign(
+                title = checkNavBackStackEntry(rootComponent = rootComponent),
+                openHistory = {
+//                  navController.navigate(Destinations.AlarmHistory.route)
                 },
+                isShowSearchIcon = configurationState !is ConfigChildComponent.HistoryRoutine,
+                isShowBackIcon = configurationState is ConfigChildComponent.HistoryRoutine,
+                onClickBack = {
+//                  navController.navigateUp()
+                },
+                onClickSearch = {
+                  clickSearch = !clickSearch
+                },
+                onDrawerClick = {
+                  coroutineScope.launch { drawerState.open() }
+                },
+                haveAlarm = haveAlarm,
+                size = size,
               )
             }
-          }
+          },
+          floatingActionButton = {
+            if (configurationState !is ConfigChildComponent.OnBoarding && configurationState !is ConfigChildComponent.HistoryRoutine) {
+              FloatingActionButton(
+                containerColor = CornflowerBlueLight,
+                contentColor = Color.White,
+                onClick = {
+                  requestPermissionNotification(
+                    isGranted = {
+                      if (it) {
+                        when (configurationState) {
+                          ConfigChildComponent.Home -> {
+                            rootComponent.onShowAddDialogRoutineHomeScreen(AddRoutineDialogHomeScreen())
+                          }
+
+                          ConfigChildComponent.Routine -> {
+                            rootComponent.onShowAddDialogRoutineRoutineScreen(AddRoutineDialogRoutineScreen())
+                          }
+
+                          else -> {
+                            rootComponent.onShowAddNoteDialog(AddNoteDialog())
+                          }
+                        }
+                      } else {
+                        errorClick = true
+                      }
+                    },
+                    permissionState = {
+                      it.launchPermissionRequest()
+                    },
+                    notificationPermission = notificationPermissionState,
+                  )
+                },
+              ) {
+                Icon(imageVector = ImageVector.vectorResource(com.rahim.R.drawable.ic_add), "add item")
+              }
+            }
+          },
+          bottomBar = {
+            AnimatedVisibility(
+              visible = configurationState !is ConfigChildComponent.OnBoarding && configurationState !is ConfigChildComponent.HistoryRoutine,
+              enter = fadeIn() + expandVertically(animationSpec = tween(800)),
+              exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
+            ) {
+              BottomNavigationBar(
+                configuration = configurationState,
+                component = rootComponent,
+              )
+            }
+          },
+        ) { innerPadding ->
+          RootContent(component = rootComponent, modifier = Modifier.padding(innerPadding))
         }
       }
     }
@@ -299,16 +292,53 @@ fun YadinoApp(
 }
 
 @Composable
-private fun checkNavBackStackEntry(destinationNavBackStackEntry: String?) = when (destinationNavBackStackEntry) {
-  Destinations.Home.route -> stringResource(
-    id = R.string.my_firend,
-  )
+fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
+  Children(
+    stack = component.stack,
+    modifier = modifier.fillMaxSize(),
+    animation = stackAnimation(fade()),
+  ) {
+    val addRoutineDialogHome = component.addRoutineDialogHomeScreen.subscribeAsState().value.child
+    val addRoutineDialogRoutine = component.addRoutineDialogRoutineScreen.subscribeAsState().value.child
+    val addNoteDialog = component.addNoteDialog.subscribeAsState().value.child
 
-  Destinations.Routine.route -> stringResource(
-    id = com.rahim.R.string.list_routine,
-  )
+    Surface(color = MaterialTheme.colorScheme.background) {
+      when (val child = it.instance) {
+        is RootComponent.ChildStack.HomeStack -> {
+          HomeRoute(
+            homeComponent = child.component,
+            clickSearch = false,
+            dialogSlot = addRoutineDialogHome,
+          )
+        }
 
-  Destinations.AlarmHistory.route -> stringResource(id = com.rahim.R.string.historyAlarm)
+        is RootComponent.ChildStack.OnBoarding -> OnBoardingRoute(component = child.component)
+        is RootComponent.ChildStack.Routine -> RoutineRoute(component = child.component, showSearchBar = false, dialogSlot = addRoutineDialogRoutine)
+        is RootComponent.ChildStack.HistoryRoutine -> HistoryRoute(component = child.component)
+        is RootComponent.ChildStack.Note -> NoteRoute(component = child.component, clickSearch = false, dialogSlot = addNoteDialog)
+      }
+    }
+  }
+}
 
-  else -> stringResource(id = com.rahim.R.string.notes)
+@Composable
+private fun checkNavBackStackEntry(rootComponent: RootComponent): String {
+  val stack = rootComponent.stack.subscribeAsState()
+  val configurationState = stack.value.active.configuration
+
+  return when (configurationState) {
+    is ConfigChildComponent.Home -> {
+      stringResource(
+        id = R.string.my_firend,
+      )
+    }
+
+    is ConfigChildComponent.Routine -> stringResource(
+      id = com.rahim.R.string.list_routine,
+    )
+
+    is ConfigChildComponent.HistoryRoutine -> stringResource(id = com.rahim.R.string.historyAlarm)
+
+    else -> stringResource(id = com.rahim.R.string.notes)
+  }
 }

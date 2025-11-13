@@ -48,29 +48,28 @@ import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
+import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
 import com.rahim.yadino.onboarding.presentation.model.OnBoardingUiModel
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 import kotlin.math.max
 
 @Composable
-internal fun OnBoardingRoute(
+fun OnBoardingRoute(
   modifier: Modifier = Modifier,
-  viewModel: OnBoardingViewModel = koinViewModel(),
-  navigateToHome: () -> Unit,
+  component: OnBoardingComponent,
 ) {
-  val (state, event) = use(viewModel)
+  val (state, event) = use(component)
 
   OnBoardingScreens(
     modifier = modifier,
     listItemWelcome = state.listItemWelcome,
     navigateToHome = {
-      event.invoke(OnBoardingContract.WelcomeEvent.SaveShowWelcome(true))
-      navigateToHome()
+      event.invoke(OnBoardingComponent.WelcomeEvent.SaveShowWelcome(true))
+//      navigateToHome()
     },
     onClickSkip = {
-      event.invoke(OnBoardingContract.WelcomeEvent.SaveShowWelcome(true))
-      navigateToHome()
+      event.invoke(OnBoardingComponent.WelcomeEvent.SaveShowWelcome(true))
+//      navigateToHome()
     },
   )
 }

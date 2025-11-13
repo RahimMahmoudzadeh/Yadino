@@ -368,6 +368,8 @@ fun ShowSearchBar(
           unfocusedIndicatorColor = PurpleGrey,
           focusedIndicatorColor = Purple,
           disabledIndicatorColor = Color.Transparent,
+          focusedTextColor = MaterialTheme.colorScheme.primary,
+          unfocusedTextColor = MaterialTheme.colorScheme.primary,
         ),
       )
     }
