@@ -1,4 +1,4 @@
-package com.rahim.yadino.note.presentation.ui.component
+package com.rahim.yadino.note.presentation.ui.addNoteDialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -62,7 +62,7 @@ const val maxExplanation = 40
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DialogAddNote(
+fun AddNoteDialog(
   modifier: Modifier = Modifier,
   updateNote: NoteUiModel? = null,
   openDialog: (Boolean) -> Unit,
@@ -353,8 +353,8 @@ fun DialogAddNote(
 
 @Preview()
 @Composable
-fun DialogAddNoteWrapper() {
-  DialogAddNote(
+fun AddNoteDialogWrapper() {
+  AddNoteDialog(
     openDialog = {},
     setNote = { note -> },
   )

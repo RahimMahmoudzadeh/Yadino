@@ -33,7 +33,7 @@ import com.rahim.yadino.note.presentation.R
 import com.rahim.yadino.note.presentation.component.NoteComponent
 import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
-import com.rahim.yadino.note.presentation.ui.component.DialogAddNote
+import com.rahim.yadino.note.presentation.ui.addNoteDialog.AddNoteDialog
 import com.rahim.yadino.note.presentation.ui.component.ItemListNote
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.FlowPreview
@@ -178,7 +178,7 @@ private fun NoteScreen(
     }
 
     openDialog -> {
-      DialogAddNote(
+      AddNoteDialog(
         updateNote = noteUpdateDialog.value,
         setNote = onAddNote,
         openDialog = {
