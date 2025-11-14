@@ -321,11 +321,6 @@ fun AddNoteDialog(
                   AddNoteDialogComponent.Event.CreateNote(note)
                 }
                 event.invoke(eventToSend)
-//                nameNote = ""
-//                description = ""
-//                isErrorExplanation = false
-//                isErrorName = false
-//                noteState = PriorityNote.LOW_PRIORITY
               }
             },
           )
