@@ -13,7 +13,7 @@ fun Note.toNoteUiModel(): NoteUiModel =
     description = this.description,
     isChecked = this.isChecked,
     state = checkState(this.state),
-    timeNote = NoteUiModel.TimeNoteUiModel(timeCreateMillSecond = this.timeInMileSecond ?: 0, yearNumber = this.dayNumber ?: 0, monthNumber = this.monthNumber ?: 0, dayNumber = this.yearNumber ?: 0, dayName = this.dayName),
+    timeNote = NoteUiModel.TimeNoteUiModel(timeCreateMillSecond = this.timeInMileSecond ?: 0, yearNumber = this.yearNumber ?: 0, monthNumber = this.monthNumber ?: 0, dayNumber = this.dayNumber ?: 0, dayName = this.dayName),
   )
 
 fun NoteUiModel.toNote(): Note =

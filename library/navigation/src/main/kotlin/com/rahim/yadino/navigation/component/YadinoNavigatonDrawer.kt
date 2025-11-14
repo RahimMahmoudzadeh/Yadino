@@ -1,5 +1,6 @@
 package com.rahim.yadino.navigation.component
 
+import android.content.pm.PackageManager
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -35,6 +36,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -94,6 +96,14 @@ fun YadinoNavigationDrawer(
   val scope = rememberCoroutineScope()
   val space = LocalSpacing.current
   val sizeDimensions = LocalSize.current
+  val context = LocalContext.current
+
+  val versionName = try {
+    val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+    packageInfo.versionName
+  } catch (e: PackageManager.NameNotFoundException) {
+    "N/A"
+  }
 
   if (drawerState.isOpen) {
     BackHandler {
@@ -154,6 +164,15 @@ fun YadinoNavigationDrawer(
             },
           )
         }
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+          text = "v $versionName",
+          modifier = Modifier
+            .padding(space.space16)
+            .align(Alignment.CenterHorizontally),
+          style = MaterialTheme.typography.bodyMedium,
+          color = MaterialTheme.colorScheme.onSecondaryContainer
+        )
       }
     },
     gesturesEnabled = gesturesEnabled,

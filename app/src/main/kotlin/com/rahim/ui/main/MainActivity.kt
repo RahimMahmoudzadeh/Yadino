@@ -270,7 +270,7 @@ fun YadinoApp(
             }
           },
         ) { innerPadding ->
-          RootContent(component = rootComponent, modifier = Modifier.padding(innerPadding))
+          RootContent(component = rootComponent, clickSearch = clickSearch, modifier = Modifier.padding(innerPadding))
         }
       }
     }
@@ -292,7 +292,7 @@ fun YadinoApp(
 }
 
 @Composable
-fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
+fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifier = Modifier) {
   Children(
     stack = component.stack,
     modifier = modifier.fillMaxSize(),
@@ -307,15 +307,15 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
         is RootComponent.ChildStack.HomeStack -> {
           HomeRoute(
             homeComponent = child.component,
-            clickSearch = false,
+            clickSearch = clickSearch,
             dialogSlot = addRoutineDialogHome,
           )
         }
 
         is RootComponent.ChildStack.OnBoarding -> OnBoardingRoute(component = child.component)
-        is RootComponent.ChildStack.Routine -> RoutineRoute(component = child.component, showSearchBar = false, dialogSlot = addRoutineDialogRoutine)
+        is RootComponent.ChildStack.Routine -> RoutineRoute(component = child.component, showSearchBar = clickSearch, dialogSlot = addRoutineDialogRoutine)
         is RootComponent.ChildStack.HistoryRoutine -> HistoryRoute(component = child.component)
-        is RootComponent.ChildStack.Note -> NoteRoute(component = child.component, clickSearch = false, dialogSlot = addNoteDialog)
+        is RootComponent.ChildStack.Note -> NoteRoute(component = child.component, clickSearch = clickSearch, dialogSlot = addNoteDialog)
       }
     }
   }

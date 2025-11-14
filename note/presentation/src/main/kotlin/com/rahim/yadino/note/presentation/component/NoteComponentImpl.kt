@@ -10,6 +10,7 @@ import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
 import com.rahim.yadino.note.domain.useCase.GetNotesUseCase
 import com.rahim.yadino.note.domain.useCase.SearchNoteUseCase
+import com.rahim.yadino.note.domain.useCase.UpdateNoteUseCase
 import com.rahim.yadino.note.presentation.mapper.toNameNote
 import com.rahim.yadino.note.presentation.mapper.toNote
 import com.rahim.yadino.note.presentation.mapper.toNoteUiModel
@@ -30,6 +31,7 @@ class NoteComponentImpl(
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val getNotesUseCase: GetNotesUseCase,
   private val searchNoteUseCase: SearchNoteUseCase,
+  private val updateNoteUseCase: UpdateNoteUseCase,
   private val onOpenUpdateNoteDialog: (updateNote: NoteUiModel) -> Unit,
 ) : NoteComponent, ComponentContext by componentContext {
 
@@ -48,10 +50,15 @@ class NoteComponentImpl(
     is NoteComponent.Event.GetNotes -> getNotes()
     is NoteComponent.Event.Search -> searchItems(event.nameNoteUi)
     is NoteComponent.Event.Delete -> delete(event.deleteNote)
-    is NoteComponent.Event.OnChecked -> TODO()
+    is NoteComponent.Event.OnChecked -> updateNote(event.checkedNote)
     is NoteComponent.Event.OnOpenUpdateNoteDialog -> onOpenUpdateNoteDialog(event.updateNote)
   }
 
+  private fun updateNote(note: NoteUiModel){
+    scope.launch {
+      updateNoteUseCase(note.toNote())
+    }
+  }
   private fun delete(note: NoteUiModel) {
     scope.launch {
       deleteNoteUseCase(note.toNote())

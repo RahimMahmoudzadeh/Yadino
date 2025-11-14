@@ -178,17 +178,6 @@ private fun NoteScreen(
         ),
       )
     }
-
-//    openDialog -> {
-//      AddNoteDialog(
-//        updateNote = noteUpdateDialog.value,
-//        setNote = onAddNote,
-//        openDialog = {
-//          noteUpdateDialog.value = null
-//          onOpenDialog(it)
-//        },
-//      )
-//    }
   }
 }
 
