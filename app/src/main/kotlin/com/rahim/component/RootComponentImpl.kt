@@ -217,9 +217,10 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     deleteNoteUseCase = deleteNoteUseCase,
     getNotesUseCase = getNotesUseCase,
     searchNoteUseCase = searchNoteUseCase,
-    onOpenUpdateNoteDialog = {updateNote ->
+    updateNoteUseCase = updateNoteUseCase,
+    onOpenUpdateNoteDialog = { updateNote ->
       addNoteDialogComponentNavigationSlot.activate(AddNoteDialog(updateNote))
-    }
+    },
   )
 
   private fun childComponent(
