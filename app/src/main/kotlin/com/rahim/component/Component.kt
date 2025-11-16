@@ -16,6 +16,7 @@ import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.component.BottomNavItem
 import com.rahim.component.config.ConfigChildComponent
+import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 
 @Composable
 fun BottomNavigationBar(
@@ -45,14 +46,11 @@ fun BottomNavigationBar(
       icon = {
         Icon(
           painter = painterResource(
-            id = BottomNavItem.Home.iconNormal,
+            id = if (configuration is ConfigChildComponent.Home) BottomNavItem.Home.iconSelected else BottomNavItem.Home.iconNormal,
           ),
+          tint = if (configuration is ConfigChildComponent.Home) CornflowerBlueLight else MaterialTheme.colorScheme.onTertiary,
           contentDescription = BottomNavItem.Home.route,
-          modifier = Modifier
-            .then(
-              if (configuration is ConfigChildComponent.Home) Modifier.size(size.size36) else Modifier.size(size.size32),
-            )
-            .padding(space.space8),
+          modifier = Modifier.padding(space.space8),
         )
       },
       selected = configuration is ConfigChildComponent.Home,
@@ -71,15 +69,11 @@ fun BottomNavigationBar(
       icon = {
         Icon(
           painter = painterResource(
-            id = BottomNavItem.Routine.iconNormal,
+            id = if (configuration is ConfigChildComponent.Routine) BottomNavItem.Routine.iconSelected else BottomNavItem.Routine.iconNormal,
           ),
+          tint = if (configuration is ConfigChildComponent.Routine) CornflowerBlueLight else MaterialTheme.colorScheme.onTertiary,
           contentDescription = BottomNavItem.Routine.route,
           modifier = Modifier
-            .then(
-              if (configuration is ConfigChildComponent.Routine) Modifier.size(
-                size.size36,
-              ) else Modifier.size(size.size32),
-            )
             .padding(space.space8),
         )
       },
@@ -98,14 +92,10 @@ fun BottomNavigationBar(
       },
       icon = {
         Icon(
-          painter = painterResource(id = BottomNavItem.Note.iconNormal),
+          painter = painterResource(id = if (configuration is ConfigChildComponent.Note) BottomNavItem.Note.iconSelected else BottomNavItem.Note.iconNormal),
           contentDescription = BottomNavItem.Note.route,
+          tint = if (configuration is ConfigChildComponent.Note) CornflowerBlueLight else MaterialTheme.colorScheme.onTertiary,
           modifier = Modifier
-            .then(
-              if (configuration is ConfigChildComponent.Note) Modifier.size(
-                size.size36,
-              ) else Modifier.size(size.size32),
-            )
             .padding(space.space8),
         )
       },
