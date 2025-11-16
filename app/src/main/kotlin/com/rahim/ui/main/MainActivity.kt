@@ -202,12 +202,12 @@ fun YadinoApp(
               TopBarCenterAlign(
                 title = checkNavBackStackEntry(rootComponent = rootComponent),
                 openHistory = {
-//                  navController.navigate(Destinations.AlarmHistory.route)
+                  rootComponent.showHistoryRoutine()
                 },
                 isShowSearchIcon = configurationState !is ConfigChildComponent.HistoryRoutine,
                 isShowBackIcon = configurationState is ConfigChildComponent.HistoryRoutine,
                 onClickBack = {
-//                  navController.navigateUp()
+                  rootComponent.navigateUp()
                 },
                 onClickSearch = {
                   clickSearch = !clickSearch

@@ -26,6 +26,10 @@ interface RootComponent {
   fun onShowAddDialogRoutineRoutineScreen(dialog: AddRoutineDialogRoutineScreen)
   fun onShowAddNoteDialog(dialog: AddNoteDialog)
 
+
+  fun showHistoryRoutine()
+  fun navigateUp()
+
   sealed class ChildStack {
     class HomeStack(val component: HomeComponent) : ChildStack()
     class OnBoarding(val component: OnBoardingComponent) : ChildStack()
