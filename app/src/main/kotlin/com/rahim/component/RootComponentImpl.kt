@@ -1,6 +1,7 @@
 package com.rahim.component
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.DelicateDecomposeApi
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
@@ -10,6 +11,8 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.rahim.component.RootComponent.ChildStack.*
 import com.rahim.component.config.AddNoteDialog
@@ -155,6 +158,15 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
 
   override fun onShowAddNoteDialog(dialog: AddNoteDialog) {
     addNoteDialogComponentNavigationSlot.activate(dialog)
+  }
+
+  @OptIn(DelicateDecomposeApi::class)
+  override fun showHistoryRoutine() {
+    navigation.push(ConfigChildComponent.HistoryRoutine)
+  }
+
+  override fun navigateUp() {
+    navigation.pop()
   }
 
   private fun homeComponent(componentContext: ComponentContext): HomeComponent = HomeComponentImpl(
