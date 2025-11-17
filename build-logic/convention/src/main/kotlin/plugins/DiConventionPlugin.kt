@@ -5,7 +5,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import versionCatalog
 
-class YadinoDiConventionPlugin : Plugin<Project> {
+class DiConventionPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     with(target) {
 

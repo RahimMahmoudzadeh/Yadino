@@ -8,7 +8,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import versionCatalog
 
-class AndroidLibraryConventionPlugin : Plugin<Project> {
+class LibraryConventionPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     with(target) {
       applyPlugins {

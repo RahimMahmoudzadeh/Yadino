@@ -5,7 +5,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import versionCatalog
 
-class YadinoDecomposeConventionPlugin : Plugin<Project> {
+class DecomposeConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
 
