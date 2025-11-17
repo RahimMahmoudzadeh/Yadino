@@ -1,18 +1,17 @@
 package plugins
-
-import applicationGradle
+import androidGradle
 import applyPlugins
 import configureAndroidCompose
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
+class LibraryComposeConventionPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     with(target) {
       applyPlugins {
-        listOf("com.android.application", "org.jetbrains.kotlin.plugin.compose")
+        listOf("com.android.library", "org.jetbrains.kotlin.plugin.compose")
       }
-      applicationGradle {
+      androidGradle {
         configureAndroidCompose(this)
       }
     }

@@ -9,7 +9,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import versionCatalog
 
-class AndroidRoomConventionPlugin : Plugin<Project> {
+class DbConventionPlugin : Plugin<Project> {
 
   override fun apply(target: Project) {
     with(target) {

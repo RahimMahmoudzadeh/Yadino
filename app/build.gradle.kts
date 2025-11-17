@@ -4,14 +4,12 @@ import java.util.Properties
 
 plugins {
   libs.plugins.run {
-    yadino.run {
-      alias(android.application)
-      alias(android.application.compose)
-      alias(android.application.firebase)
-      alias(android.room)
-      alias(decompose)
-      alias(di)
-    }
+    alias(application)
+    alias(application.compose)
+    alias(firebase)
+    alias(db)
+    alias(decompose)
+    alias(di)
     alias(kotlinx.serialization)
   }
 }

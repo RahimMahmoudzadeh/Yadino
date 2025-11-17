@@ -186,14 +186,14 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 # Plugins defined by this project
-yadino-android-application = { id = "yadino.android.application", version = "unspecified" }
-yadino-android-application-compose = { id = "yadino.android.application.compose", version = "unspecified" }
-yadino-android-application-firebase = { id = "yadino.android.application.firebase", version = "unspecified" }
-yadino-android-application-flavors = { id = "yadino.android.application.flavors", version = "unspecified" }
-yadino-android-feature = { id = "yadino.android.feature", version = "unspecified" }
-yadino-di = { id = "yadino.di", version = "unspecified" }
-yadino-android-library = { id = "yadino.android.library", version = "unspecified" }
-yadino-android-library-compose = { id = "yadino.android.library.compose", version = "unspecified" }
-yadino-android-room = { id = "yadino.android.room", version = "unspecified" }
-yadino-decompose = { id = "yadino.decompose", version = "unspecified" }
+application = { id = "yadino.application", version = "unspecified" }
+application-compose = { id = "application.compose", version = "unspecified" }
+firebase = { id = "firebase", version = "unspecified" }
+#yadino-android-application-flavors = { id = "yadino.android.application.flavors", version = "unspecified" }
+presentation = { id = "presentation.module", version = "unspecified" }
+di = { id = "di", version = "unspecified" }
+library = { id = "library", version = "unspecified" }
+library-compose = { id = "library.compose", version = "unspecified" }
+db = { id = "db", version = "unspecified" }
+decompose = { id = "decompose", version = "unspecified" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }

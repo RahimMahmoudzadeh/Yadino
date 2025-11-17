@@ -6,11 +6,11 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import versionCatalog
 
-class AndroidFeatureConventionPlugin : Plugin<Project> {
+class PresentationConventionPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     with(target) {
       applyPlugins {
-        listOf("yadino.android.library", "yadino.di")
+        listOf("library", "di")
       }
       dependencies {
         add("implementation", versionCatalog.findLibrary("androidx.tracing.ktx").get())

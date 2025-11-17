@@ -29,41 +29,41 @@ dependencies {
 
 gradlePlugin {
   plugins {
-    register("androidApplicationCompose") {
-      id = "yadino.android.application.compose"
-      implementationClass = "plugins.AndroidApplicationComposeConventionPlugin"
+    register("applicationCompose") {
+      id = "application.compose"
+      implementationClass = "plugins.ApplicationComposeConventionPlugin"
     }
-    register("androidApplication") {
-      id = "yadino.android.application"
-      implementationClass = "plugins.AndroidApplicationConventionPlugin"
+    register("application") {
+      id = "yadino.application"
+      implementationClass = "plugins.ApplicationConventionPlugin"
     }
-    register("androidLibraryCompose") {
-      id = "yadino.android.library.compose"
-      implementationClass = "plugins.AndroidLibraryComposeConventionPlugin"
+    register("libraryCompose") {
+      id = "library.compose"
+      implementationClass = "plugins.LibraryComposeConventionPlugin"
     }
-    register("androidLibrary") {
-      id = "yadino.android.library"
-      implementationClass = "plugins.AndroidLibraryConventionPlugin"
+    register("library") {
+      id = "library"
+      implementationClass = "plugins.LibraryConventionPlugin"
     }
-    register("androidFeature") {
-      id = "yadino.android.feature"
-      implementationClass = "plugins.AndroidFeatureConventionPlugin"
+    register("presentation") {
+      id = "presentation.module"
+      implementationClass = "plugins.PresentationConventionPlugin"
     }
-    register("yadinoDi") {
-      id = "yadino.di"
-      implementationClass = "plugins.YadinoDiConventionPlugin"
+    register("di") {
+      id = "di"
+      implementationClass = "plugins.DiConventionPlugin"
     }
-    register("androidRoom") {
-      id = "yadino.android.room"
-      implementationClass = "plugins.AndroidRoomConventionPlugin"
+    register("db") {
+      id = "db"
+      implementationClass = "plugins.DbConventionPlugin"
     }
-    register("androidFirebase") {
-      id = "yadino.android.application.firebase"
-      implementationClass = "plugins.AndroidApplicationFirebaseConventionPlugin"
+    register("firebase") {
+      id = "firebase"
+      implementationClass = "plugins.FirebaseConventionPlugin"
     }
-    register("yadinoDecompose") {
-      id = "yadino.decompose"
-      implementationClass = "plugins.YadinoDecomposeConventionPlugin"
+    register("decompose") {
+      id = "decompose"
+      implementationClass = "plugins.DecomposeConventionPlugin"
     }
   }
 }
