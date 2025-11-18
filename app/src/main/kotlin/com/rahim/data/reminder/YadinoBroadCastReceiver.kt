@@ -4,8 +4,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.rahim.yadino.Constants
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class YadinoBroadCastReceiver(private val notificationManager: NotificationManager) : BroadcastReceiver() {
+class YadinoBroadCastReceiver : BroadcastReceiver(), KoinComponent {
+
+  private val notificationManager: NotificationManager by inject()
+
   override fun onReceive(context: Context?, intent: Intent?) {
     sendNotificationAlarm(intent, context)
   }
@@ -17,7 +22,7 @@ class YadinoBroadCastReceiver(private val notificationManager: NotificationManag
 
       context?.let {
         notificationManager.createFullNotification(
-          context,
+          it,
           reminderName ?: "",
           reminderId.toLong(),
           "",
