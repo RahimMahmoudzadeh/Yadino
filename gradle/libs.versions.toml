@@ -12,7 +12,7 @@ androidDesugarJdkLibs = "2.1.5"
 androidx-core = "1.17.0"
 
 androidx-lifecycle = "2.9.4"
-androidx-room = "2.8.3"
+androidx-room = "2.8.4"
 
 timber = "5.0.1"
 samanzamani = "1.7.1"
