@@ -6,32 +6,29 @@ import android.content.Context
 import android.content.Intent
 import android.media.Ringtone
 import android.media.RingtoneManager
-import android.os.CountDownTimer
 import com.rahim.data.reminder.YadinoBroadCastReceiver
 
-class ControlAlarmImplementation: ControlAlarm {
+class ControlAlarmImplementation : ControlAlarm {
+
+  private var ringtone: Ringtone? = null
+
   override fun playRingtone(context: Context, alarmId: Long?) {
+    ringtone?.stop()
     val notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-    val ringtone = RingtoneManager.getRingtone(context, notification)
-    ringtone.play()
-    stopRingtone(ringtone, context, alarmId)
+    ringtone = RingtoneManager.getRingtone(context, notification)
+    ringtone?.play()
   }
 
-  override fun stopRingtone(ringtone: Ringtone?, context: Context, alarmId: Long?) {
-    object : CountDownTimer(6000, 1000) {
-      override fun onTick(millisUntilFinished: Long) {}
-      override fun onFinish() {
-        ringtone?.stop()
-        cancelAlarm(context, alarmId)
-      }
-    }.start()
+  override fun stopRingtone(context: Context, alarmId: Long?) {
+    ringtone?.stop()
+    cancelAlarm(context = context, alarmId = alarmId)
   }
 
-  override fun cancelAlarm(context: Context, idAlarm: Long?) {
+  override fun cancelAlarm(context: Context, alarmId: Long?) {
     val intent = Intent(context, YadinoBroadCastReceiver::class.java)
     val pendingIntent = PendingIntent.getBroadcast(
       context,
-      idAlarm?.toInt() ?: 0,
+      alarmId?.toInt() ?: 0,
       intent,
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )

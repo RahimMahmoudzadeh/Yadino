@@ -20,6 +20,7 @@ class NotificationManager(private val controlAlarm:ControlAlarm){
     val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {
       addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
       putExtra(Constants.KEY_LAUNCH_NAME, routineName)
+      putExtra(Constants.KEY_LAUNCH_ID, routineIdAlarm)
     }
     val fullScreenPendingIntent = PendingIntent.getActivity(
       context,

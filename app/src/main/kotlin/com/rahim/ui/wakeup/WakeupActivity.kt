@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,80 +38,89 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.rahim.data.reminder.alarm.ControlAlarm
 import com.rahim.yadino.Constants
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.library.designsystem.R
+import org.koin.android.ext.android.inject
+import org.koin.java.KoinJavaComponent.inject
 
 class WakeupActivity : ComponentActivity() {
+
+  private val controlAlarm: ControlAlarm by inject()
   private var routineName: String? = null
-  private var routineId: String? = null
+  private var routineId: Long? = null
+
   override fun onCreate(savedInstanceState: Bundle?) {
     installSplashScreen()
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
     setContent {
 
+      val context = LocalContext.current
+
       var isPlaying by remember { mutableStateOf(true) }
       var speed by remember { mutableFloatStateOf(1f) }
       val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.data))
 
-        YadinoTheme {
-            Surface(
+      YadinoTheme {
+        Surface(
+          modifier = Modifier.Companion
+            .fillMaxSize()
+            .background(Brush.Companion.linearGradient(gradientColors)),
+        ) {
+          Column(
+            modifier = Modifier.Companion
+              .fillMaxSize()
+              .background(Brush.Companion.linearGradient(gradientColors)),
+            horizontalAlignment = Alignment.Companion.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
+          ) {
+            Image(
+              modifier = Modifier.Companion.padding(top = 28.dp),
+              painter = painterResource(id = R.drawable.img_app_wekup),
+              contentDescription = "empty list home",
+            )
+            Text(
+              fontSize = 32.sp,
+              modifier = Modifier.Companion.padding(top = 34.dp),
+              text = resources.getString(R.string.my_firend),
+              color = Color.Companion.White,
+            )
+            Text(
+              textAlign = TextAlign.Companion.Center,
+              fontSize = 32.sp,
+              modifier = Modifier.Companion
+                .padding(top = 10.dp)
+                .fillMaxWidth(),
+              color = Color.Companion.White,
+              text = resources.getString(R.string.forget_work, routineName),
+            )
+            Column {
+              val progress by animateLottieCompositionAsState(
+                composition,
+                iterations = LottieConstants.IterateForever,
+                isPlaying = isPlaying,
+                speed = speed,
+                restartOnPlay = false,
+              )
+              LottieAnimation(
+                composition,
+                {
+                  progress
+                },
                 modifier = Modifier.Companion
-                    .fillMaxSize()
-                    .background(Brush.Companion.linearGradient(gradientColors)),
-            ) {
-                Column(
-                    modifier = Modifier.Companion
-                        .fillMaxSize()
-                        .background(Brush.Companion.linearGradient(gradientColors)),
-                    horizontalAlignment = Alignment.Companion.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Image(
-                        modifier = Modifier.Companion.padding(top = 28.dp),
-                        painter = painterResource(id = R.drawable.img_app_wekup),
-                        contentDescription = "empty list home",
-                    )
-                    Text(
-                        fontSize = 32.sp,
-                        modifier = Modifier.Companion.padding(top = 34.dp),
-                        text = resources.getString(R.string.my_firend),
-                        color = Color.Companion.White,
-                    )
-                    Text(
-                        textAlign = TextAlign.Companion.Center,
-                        fontSize = 32.sp,
-                        modifier = Modifier.Companion
-                            .padding(top = 10.dp)
-                            .fillMaxWidth(),
-                        color = Color.Companion.White,
-                        text = resources.getString(R.string.forget_work, routineName),
-                    )
-                    Column {
-                        val progress by animateLottieCompositionAsState(
-                            composition,
-                            iterations = LottieConstants.IterateForever,
-                            isPlaying = isPlaying,
-                            speed = speed,
-                            restartOnPlay = false,
-                        )
-                        LottieAnimation(
-                            composition,
-                            {
-                                progress
-                            },
-                            modifier = Modifier.Companion
-                                .size(300.dp)
-                                .clickable {
-                                    finish()
-                                },
-                        )
-                    }
-                }
+                  .size(300.dp)
+                  .clickable {
+                    controlAlarm.stopRingtone(context = context, alarmId = routineId)
+                    finish()
+                  },
+              )
             }
+          }
         }
+      }
     }
   }
 
@@ -122,7 +132,7 @@ class WakeupActivity : ComponentActivity() {
 
   private fun getIntentResult() {
     routineName = intent.getStringExtra(Constants.KEY_LAUNCH_NAME)
-    routineId = intent.getStringExtra(Constants.KEY_LAUNCH_ID)
+    routineId = intent.getLongExtra(Constants.KEY_LAUNCH_ID, 0)
   }
 
   private fun setWakeupSetting() {
