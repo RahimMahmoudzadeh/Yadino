@@ -22,7 +22,7 @@ class ReminderSchedulerImpl(
     private val context: Context,
 ) : ReminderScheduler {
 
-  override fun setReminder(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Long): ReminderState {
+  override fun setReminder(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Int): ReminderState {
     if (reminderTime < System.currentTimeMillis()) return ReminderState.NotSet(ErrorMessageCode.ERROR_TIME_PASSED)
 
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -40,7 +40,7 @@ class ReminderSchedulerImpl(
   }
 
   @RequiresApi(Build.VERSION_CODES.S)
-  private fun checkPermissionAfterApiLevel31(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Long): ReminderState {
+  private fun checkPermissionAfterApiLevel31(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Int): ReminderState {
     return if (alarmManager.canScheduleExactAlarms()) {
       setAlarm(
         reminderName,
@@ -58,7 +58,7 @@ class ReminderSchedulerImpl(
   }
 
   @SuppressLint("NewApi")
-  private fun checkPermissionAfterApiLevel33(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Long): ReminderState {
+  private fun checkPermissionAfterApiLevel33(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Int): ReminderState {
     return when {
       alarmManager.canScheduleExactAlarms() && areNotificationsEnabled(context) -> {
         setAlarm(
@@ -92,7 +92,7 @@ class ReminderSchedulerImpl(
     }
   }
 
-  private fun setAlarm(reminderName: String, reminderId: Int, reminderTime: Long, reminderAlarmId: Long) {
+  private fun setAlarm(reminderName: String, reminderId: Int, reminderTime: Long, reminderAlarmId: Int) {
     val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).apply {
       putExtra(Constants.KEY_LAUNCH_NAME, reminderName)
       putExtra(Constants.KEY_REMINDER_ID, reminderId)
@@ -100,7 +100,7 @@ class ReminderSchedulerImpl(
 
     val pendingIntent = PendingIntent.getBroadcast(
       context,
-      reminderAlarmId.toInt(),
+      reminderAlarmId,
       alarmIntent,
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
@@ -110,11 +110,11 @@ class ReminderSchedulerImpl(
     )
   }
 
-  override suspend fun cancelReminder(reminderAlarmId: Long) {
+  override suspend fun cancelReminder(reminderAlarmId: Int) {
     val intent = Intent(context, YadinoBroadCastReceiver::class.java)
     val pendingIntent = PendingIntent.getBroadcast(
       context,
-      reminderAlarmId.toInt(),
+      reminderAlarmId,
       intent,
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
