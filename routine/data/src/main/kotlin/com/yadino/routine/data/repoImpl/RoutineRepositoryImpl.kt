@@ -48,7 +48,7 @@ class RoutineRepositoryImpl(
           isChecked = false,
           explanation = if (index == 1) RoutineExplanation.ROUTINE_LEFT_SAMPLE.explanation else RoutineExplanation.ROUTINE_RIGHT_SAMPLE.explanation,
           isSample = true,
-          idAlarm = index.plus(1).toLong(),
+          idAlarm = index.plus(1),
           timeInMillisecond = persianData.time,
           id = index,
       )
@@ -57,39 +57,17 @@ class RoutineRepositoryImpl(
   }
 
   override suspend fun changeRoutineId() = withContext(Dispatchers.IO) {
-      val routines = routineDao.getRoutinesByDate()
-
+      val routines = routineDao.getRoutinesNotHaveIdAlarm()
       routines.forEach {
-          if (it.idAlarm == null) {
-              var idRandom = Random.nextInt(0, 10000000)
-              var equalIdAlarm = getIdAlarmsNotNull().find { it == idRandom.toLong() }
-              while (equalIdAlarm != null) {
-                  idRandom = Random.nextInt(0, 10000000)
-                  equalIdAlarm = getIdAlarmsNotNull().find { it == idRandom.toLong() }
-              }
-              routineDao.addRoutine(it.copy(idAlarm = idRandom.toLong()))
-          }
+        routineDao.addRoutine(it.copy(idAlarm = getRoutineAlarmId()))
       }
-  }
-
-  private suspend fun getIdAlarmsNotNull(): List<Long> {
-    val idAlarms = routineDao.getIdAlarms()
-    val idNotNull = ArrayList<Long>()
-    if (idAlarms.isNotEmpty()) {
-      idNotNull.addAll(
-        idAlarms.filter {
-          it != null
-        },
-      )
-    }
-    return idNotNull
   }
 
   override suspend fun checkedAllRoutinePastTime() {
     routineDao.updateRoutinesPastTime(System.currentTimeMillis())
   }
 
-  override suspend fun getAllRoutine(): List<Routine> = routineDao.getRoutinesByDate().map { it.toRoutineModelDomainLayer() }
+  override suspend fun getAllRoutine(): List<Routine> = routineDao.getRoutines().map { it.toRoutineModelDomainLayer() }
 
   override suspend fun addRoutine(routine: Routine) {
     sharedPreferencesRepository.setShowSampleRoutine(true)
@@ -125,15 +103,14 @@ class RoutineRepositoryImpl(
     return persianDate.time
   }
 
-  override suspend fun getRoutineAlarmId(): Long {
-    val idAlarms = routineDao.getIdAlarms()
-    var idRandom = Random.nextInt(0, 10000000)
-    var equalIdAlarm = idAlarms.find { it == idRandom.toLong() }
-    while (equalIdAlarm != null) {
-      idRandom = Random.nextInt(0, 10000000)
-      equalIdAlarm = idAlarms.find { it == idRandom.toLong() }
-    }
-    return idRandom.toLong()
+  override suspend fun getRoutineAlarmId(): Int {
+    val existingAlarmIds = routineDao.getIdAlarms().toSet()
+    var potentialId: Int
+    do {
+      potentialId = Random.nextInt(1, Int.MAX_VALUE)
+    } while (existingAlarmIds.contains(potentialId))
+
+    return potentialId
   }
 
   override suspend fun removeRoutine(routine: Routine): Int {
@@ -179,7 +156,7 @@ class RoutineRepositoryImpl(
       }
   }
 
-  override suspend fun getRoutine(id: Int): Routine = routineDao.getRoutine(id).toRoutineModelDomainLayer()
+  override suspend fun getRoutine(id: Int): Routine = routineDao.getRoutineById(id).toRoutineModelDomainLayer()
   override suspend fun checkedRoutine(routine: Routine) {
     Timber.tag("routineViewModel").d("checkedRoutine")
     sharedPreferencesRepository.setShowSampleRoutine(true)
