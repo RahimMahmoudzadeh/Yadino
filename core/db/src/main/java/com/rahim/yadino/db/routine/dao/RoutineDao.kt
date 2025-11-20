@@ -13,13 +13,16 @@ interface RoutineDao {
   suspend fun addRoutine(routineEntity: RoutineEntity): Long
 
   @Query("SELECT * FROM tbl_routine WHERE id =:id")
-  suspend fun getRoutine(id: Int): RoutineEntity
+  suspend fun getRoutineById(id: Int): RoutineEntity
 
   @Query("SELECT * FROM tbl_routine WHERE  yearNumber =:yearNumber AND monthNumber =:monthNumber AND dayNumber =:dayNumber")
   fun getRoutinesByDate(monthNumber: Int, dayNumber: Int, yearNumber: Int): Flow<List<RoutineEntity>>
 
   @Query("SELECT * FROM tbl_routine")
-  suspend fun getRoutinesByDate(): List<RoutineEntity>
+  suspend fun getRoutines(): List<RoutineEntity>
+
+  @Query("SELECT * FROM tbl_routine WHERE idAlarm==null")
+  suspend fun getRoutinesNotHaveIdAlarm(): List<RoutineEntity>
 
   @Query("UPDATE tbl_routine SET isChecked=1 WHERE isChecked=0 AND timeInMillisecond<:currentTime AND isSample=0")
   suspend fun updateRoutinesPastTime(currentTime: Long)
