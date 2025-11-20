@@ -15,6 +15,6 @@ data class RoutineUiModel(
   val id: Int? = null,
   val explanation: String? = null,
   val isSample: Boolean = false,
-  val idAlarm: Long? = null,
+  val idAlarm: Int? = null,
   val timeInMillisecond: Long? = null,
 )

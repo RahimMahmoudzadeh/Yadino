@@ -49,7 +49,7 @@ class WakeupActivity : ComponentActivity() {
 
   private val controlAlarm: ControlAlarm by inject()
   private var routineName: String? = null
-  private var routineId: Long? = null
+  private var routineId: Int? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     installSplashScreen()
@@ -131,7 +131,7 @@ class WakeupActivity : ComponentActivity() {
 
   private fun getIntentResult() {
     routineName = intent.getStringExtra(Constants.KEY_LAUNCH_NAME)
-    routineId = intent.getLongExtra(Constants.KEY_REMINDER_ALARM_ID, 0)
+    routineId = intent.getIntExtra(Constants.KEY_REMINDER_ALARM_ID, 0)
   }
 
   private fun setWakeupSetting() {
