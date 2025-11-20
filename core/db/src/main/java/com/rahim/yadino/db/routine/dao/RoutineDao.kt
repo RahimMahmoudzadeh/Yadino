@@ -46,7 +46,7 @@ interface RoutineDao {
   suspend fun removeSampleRoutine()
 
   @Query("SELECT idAlarm FROM tbl_routine WHERE isChecked=0")
-  suspend fun getIdAlarms(): List<Long>
+  suspend fun getIdAlarms(): List<Int>
 
   @Query("SELECT EXISTS(SELECT 1 FROM tbl_routine WHERE isChecked = 0)")
   fun haveAlarm(): Flow<Boolean>
