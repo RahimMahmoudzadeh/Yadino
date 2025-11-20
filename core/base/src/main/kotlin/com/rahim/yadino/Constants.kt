@@ -44,9 +44,11 @@ object Constants {
   const val ALARM_MESSAGE = "alarm Message"
   const val ALARM_NAME = "alarm name"
   const val ALARM_ID = "alarmId"
+  const val NOTIFICATION_ID = "notification id"
   const val ROUTINE = "routine"
   const val KEY_LAUNCH_NAME = "key_launch_name"
-  const val KEY_LAUNCH_ID = "key_reminder_name"
+  const val KEY_REMINDER_ID = "key reminder id"
+  const val KEY_REMINDER_ALARM_ID = "key reminder alarm id"
 
   // Value
   const val IS_ALARM = "is Alarm"

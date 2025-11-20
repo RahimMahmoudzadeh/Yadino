@@ -2,7 +2,7 @@ package com.rahim.di
 
 import android.app.AlarmManager
 import android.content.Context
-import com.rahim.data.reminder.NotificationManager
+import com.rahim.data.reminder.notification.NotificationManager
 import com.rahim.data.reminder.ReminderSchedulerImpl
 import com.rahim.data.reminder.alarm.ControlAlarm
 import com.rahim.data.reminder.alarm.ControlAlarmImplementation
