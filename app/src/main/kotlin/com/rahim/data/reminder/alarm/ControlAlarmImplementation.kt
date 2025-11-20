@@ -12,23 +12,23 @@ class ControlAlarmImplementation : ControlAlarm {
 
   private var ringtone: Ringtone? = null
 
-  override fun playRingtone(context: Context, alarmId: Long?) {
+  override fun playRingtone(context: Context, alarmId: Int?) {
     ringtone?.stop()
     val notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
     ringtone = RingtoneManager.getRingtone(context, notification)
     ringtone?.play()
   }
 
-  override fun stopRingtone(context: Context, alarmId: Long?) {
+  override fun stopRingtone(context: Context, alarmId: Int?) {
     ringtone?.stop()
     cancelAlarm(context = context, alarmId = alarmId)
   }
 
-  override fun cancelAlarm(context: Context, alarmId: Long?) {
+  override fun cancelAlarm(context: Context, alarmId: Int?) {
     val intent = Intent(context, YadinoBroadCastReceiver::class.java)
     val pendingIntent = PendingIntent.getBroadcast(
       context,
-      alarmId?.toInt() ?: 0,
+      alarmId?: 0,
       intent,
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
