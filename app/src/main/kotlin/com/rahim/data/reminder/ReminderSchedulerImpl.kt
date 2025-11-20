@@ -16,7 +16,6 @@ import com.rahim.yadino.Constants
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import kotlinx.coroutines.delay
 import timber.log.Timber
-import javax.inject.Inject
 
 class ReminderSchedulerImpl(
     private val alarmManager: AlarmManager,
@@ -93,15 +92,15 @@ class ReminderSchedulerImpl(
     }
   }
 
-  private fun setAlarm(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Long) {
+  private fun setAlarm(reminderName: String, reminderId: Int, reminderTime: Long, reminderAlarmId: Long) {
     val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).apply {
       putExtra(Constants.KEY_LAUNCH_NAME, reminderName)
-      putExtra(Constants.KEY_LAUNCH_ID, reminderId)
+      putExtra(Constants.KEY_REMINDER_ID, reminderId)
     }
-    Timber.Forest.tag("intentTitle").d("AndroidReminderScheduler setAlarm-> $reminderName")
+
     val pendingIntent = PendingIntent.getBroadcast(
       context,
-      reminderIdAlarm.toInt(),
+      reminderAlarmId.toInt(),
       alarmIntent,
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
@@ -111,18 +110,18 @@ class ReminderSchedulerImpl(
     )
   }
 
-  override suspend fun cancelReminder(id: Long) {
+  override suspend fun cancelReminder(reminderAlarmId: Long) {
     val intent = Intent(context, YadinoBroadCastReceiver::class.java)
     val pendingIntent = PendingIntent.getBroadcast(
       context,
-      id.toInt(),
+      reminderAlarmId.toInt(),
       intent,
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
     alarmManager.cancel(
       pendingIntent,
     )
-      delay(100)
+     delay(100)
   }
 
   @SuppressLint("InlinedApi")
