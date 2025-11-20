@@ -44,7 +44,6 @@ import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.library.designsystem.R
 import org.koin.android.ext.android.inject
-import org.koin.java.KoinJavaComponent.inject
 
 class WakeupActivity : ComponentActivity() {
 
@@ -132,7 +131,7 @@ class WakeupActivity : ComponentActivity() {
 
   private fun getIntentResult() {
     routineName = intent.getStringExtra(Constants.KEY_LAUNCH_NAME)
-    routineId = intent.getLongExtra(Constants.KEY_LAUNCH_ID, 0)
+    routineId = intent.getLongExtra(Constants.KEY_REMINDER_ALARM_ID, 0)
   }
 
   private fun setWakeupSetting() {
