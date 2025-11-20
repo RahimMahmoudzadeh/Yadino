@@ -26,13 +26,12 @@ class ReminderSchedulerImpl(
     if (reminderTime < System.currentTimeMillis()) return ReminderState.NotSet(ErrorMessageCode.ERROR_TIME_PASSED)
 
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      checkPermissionAfterApiLevel33(reminderName, reminderId, reminderTime, reminderIdAlarm)
+      checkPermissionAfterApiLevel33(reminderName, reminderTime, reminderIdAlarm)
     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      checkPermissionAfterApiLevel31(reminderName, reminderId, reminderTime, reminderIdAlarm)
+      checkPermissionAfterApiLevel31(reminderName, reminderTime, reminderIdAlarm)
     } else {
       setAlarm(
         reminderName,
-        reminderId,
         reminderTime,
         reminderIdAlarm,
       ).let { ReminderState.SetSuccessfully }
@@ -40,11 +39,10 @@ class ReminderSchedulerImpl(
   }
 
   @RequiresApi(Build.VERSION_CODES.S)
-  private fun checkPermissionAfterApiLevel31(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Int): ReminderState {
+  private fun checkPermissionAfterApiLevel31(reminderName: String, reminderTime: Long, reminderIdAlarm: Int): ReminderState {
     return if (alarmManager.canScheduleExactAlarms()) {
       setAlarm(
         reminderName,
-        reminderId,
         reminderTime,
         reminderIdAlarm,
       )
@@ -58,12 +56,11 @@ class ReminderSchedulerImpl(
   }
 
   @SuppressLint("NewApi")
-  private fun checkPermissionAfterApiLevel33(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Int): ReminderState {
+  private fun checkPermissionAfterApiLevel33(reminderName: String, reminderTime: Long, reminderIdAlarm: Int): ReminderState {
     return when {
       alarmManager.canScheduleExactAlarms() && areNotificationsEnabled(context) -> {
         setAlarm(
           reminderName,
-          reminderId,
           reminderTime,
           reminderIdAlarm,
         ).let { ReminderState.SetSuccessfully }
@@ -92,10 +89,10 @@ class ReminderSchedulerImpl(
     }
   }
 
-  private fun setAlarm(reminderName: String, reminderId: Int, reminderTime: Long, reminderAlarmId: Int) {
+  private fun setAlarm(reminderName: String, reminderTime: Long, reminderAlarmId: Int) {
     val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).apply {
       putExtra(Constants.KEY_LAUNCH_NAME, reminderName)
-      putExtra(Constants.KEY_REMINDER_ID, reminderId)
+      putExtra(Constants.KEY_REMINDER_ALARM_ID, reminderAlarmId)
     }
 
     val pendingIntent = PendingIntent.getBroadcast(
