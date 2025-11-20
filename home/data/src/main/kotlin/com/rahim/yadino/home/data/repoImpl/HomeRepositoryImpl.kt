@@ -95,7 +95,7 @@ class HomeRepositoryImpl(
     routineDao.addRoutine(routineModel.toRoutineEntity())
   }
 
-  override suspend fun getRoutine(id: Int): Routine = routineDao.getRoutine(id).toRoutine()
+  override suspend fun getRoutine(id: Int): Routine = routineDao.getRoutineById(id).toRoutine()
   override suspend fun checkedRoutine(routineModel: Routine) {
     Timber.Forest.tag("routineViewModel").d("checkedRoutine")
     sharedPreferencesRepository.setShowSampleRoutine(true)

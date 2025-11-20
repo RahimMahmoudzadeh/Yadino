@@ -21,7 +21,7 @@ class NotificationActionReceiver : BroadcastReceiver(),KoinComponent {
   override fun onReceive(context: Context, intent: Intent) {
     if (intent.action == ACTION_CANCEL_NOTIFICATION) {
       val notificationId = intent.getIntExtra(NOTIFICATION_ID, -1)
-      val routineId = intent.getLongExtra(KEY_REMINDER_ID, -1)
+      val routineId = intent.getIntExtra(KEY_REMINDER_ID, -1)
       if (notificationId != -1) {
         with(NotificationManagerCompat.from(context)) {
           if (ActivityCompat.checkSelfPermission(
