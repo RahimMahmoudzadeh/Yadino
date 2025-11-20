@@ -9,7 +9,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import com.rahim.data.reminder.alarm.ControlAlarm
 import com.rahim.yadino.Constants.ACTION_CANCEL_NOTIFICATION
-import com.rahim.yadino.Constants.KEY_REMINDER_ID
+import com.rahim.yadino.Constants.KEY_REMINDER_ALARM_ID
 import com.rahim.yadino.Constants.NOTIFICATION_ID
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -21,7 +21,7 @@ class NotificationActionReceiver : BroadcastReceiver(),KoinComponent {
   override fun onReceive(context: Context, intent: Intent) {
     if (intent.action == ACTION_CANCEL_NOTIFICATION) {
       val notificationId = intent.getIntExtra(NOTIFICATION_ID, -1)
-      val routineId = intent.getIntExtra(KEY_REMINDER_ID, -1)
+      val reminderAlarmId = intent.getIntExtra(KEY_REMINDER_ALARM_ID, -1)
       if (notificationId != -1) {
         with(NotificationManagerCompat.from(context)) {
           if (ActivityCompat.checkSelfPermission(
@@ -31,7 +31,7 @@ class NotificationActionReceiver : BroadcastReceiver(),KoinComponent {
           ) {
             return
           }
-          controlAlarm.cancelAlarm(context,routineId)
+          controlAlarm.stopRingtone(context,reminderAlarmId)
           cancel(notificationId)
         }
       }
