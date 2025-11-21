@@ -6,7 +6,6 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.essenty.lifecycle.doOnCreate
-import com.rahim.yadino.home.domain.useCase.AddReminderUseCase
 import com.rahim.yadino.home.domain.useCase.CancelReminderUseCase
 import com.rahim.yadino.home.domain.useCase.DeleteReminderUseCase
 import com.rahim.yadino.home.domain.useCase.GetCurrentDateUseCase
@@ -15,7 +14,7 @@ import com.rahim.yadino.home.domain.useCase.SearchRoutineUseCase
 import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.Resource
-import com.rahim.yadino.enums.error.ErrorMessageCode
+import com.rahim.yadino.enums.message.MessageCode
 import com.rahim.yadino.home.presentation.mapper.toCurrentDatePresentationLayer
 import com.rahim.yadino.home.presentation.mapper.toRoutine
 import com.rahim.yadino.home.presentation.mapper.toRoutineUiModel
@@ -23,8 +22,11 @@ import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
@@ -45,6 +47,9 @@ class HomeComponentImpl(
 
   private val _state = MutableValue(HomeComponent.State())
   override val state: Value<HomeComponent.State> = _state
+
+  private val _effect = Channel<HomeComponent.Effect>(Channel.BUFFERED)
+  override val effect: Flow<HomeComponent.Effect> = _effect.receiveAsFlow()
 
   init {
     lifecycle.doOnCreate {
@@ -74,6 +79,7 @@ class HomeComponentImpl(
       is HomeComponent.Event.SearchRoutine -> {
         searchRoutines(searchText = event.routineName)
       }
+
       is HomeComponent.Event.OnShowUpdateRoutineDialog -> onShowUpdateRoutineDialog(event.routine)
     }
   }
@@ -104,10 +110,9 @@ class HomeComponentImpl(
       }
       getTodayRoutinesUseCase().catch { exception ->
         _state.update {
-          it.copy(
-            routines = LoadableData.Error(error = ErrorMessageCode.ERROR_GET_PROCESS),
-          )
+          it.copy(routines = LoadableData.Initial)
         }
+        _effect.send(HomeComponent.Effect.ShowToast(MessageCode.ERROR_GET_PROCESS))
       }.collectLatest { routines ->
         Timber.tag("routineSearch").d("getNormalRoutines")
         _state.update {
@@ -117,7 +122,6 @@ class HomeComponentImpl(
                 it.timeInMillisecond
               }.toPersistentList(),
             ),
-            errorMessage = null,
           )
         }
       }
@@ -130,10 +134,13 @@ class HomeComponentImpl(
     }
     searchRoutineUseCase(searchText).catch {
       _state.update {
-        it.copy(
-          routines = LoadableData.Error(error = ErrorMessageCode.ERROR_GET_PROCESS),
-        )
+        it.copy(routines = LoadableData.Initial)
       }
+      _effect.send(
+        HomeComponent.Effect.ShowToast(
+          message = MessageCode.ERROR_SEARCH_ROUTINE,
+        ),
+      )
     }.collectLatest { searchItems ->
       Timber.tag("routineSearch").d("searchRoutine->$searchText")
       Timber.tag("routineSearch").d("searchItems->$searchItems")
@@ -146,7 +153,6 @@ class HomeComponentImpl(
               it.timeInMillisecond
             }.toPersistentList(),
           ),
-          errorMessage = null,
         )
       }
     }
@@ -160,18 +166,33 @@ class HomeComponentImpl(
 
   private fun updateRoutine(routineModel: RoutineUiModel) {
     Timber.tag("addRoutine").d("updateRoutine")
+    _state.update {
+      it.copy(routines = LoadableData.Loading)
+    }
     scope.launch {
       val response = updateReminderUseCase(routineModel.toRoutine())
       when (response) {
         is Resource.Error -> {
-          _state.update { state ->
-            state.copy(
-              errorMessage = response.error,
-            )
+          _state.update {
+            it.copy(routines = LoadableData.Initial)
           }
+          _effect.send(
+            HomeComponent.Effect.ShowToast(
+              message = response.error,
+            ),
+          )
         }
 
-        is Resource.Success -> {}
+        is Resource.Success -> {
+          _state.update {
+            it.copy(routines = LoadableData.Initial)
+          }
+          _effect.send(
+            HomeComponent.Effect.ShowToast(
+              message = response.data,
+            ),
+          )
+        }
       }
     }
   }

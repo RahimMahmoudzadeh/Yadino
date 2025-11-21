@@ -3,12 +3,12 @@ package com.rahim.yadino.home.presentation.component
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalComponent
-import com.rahim.yadino.enums.error.ErrorMessageCode
+import com.rahim.yadino.enums.message.MessageCode
 import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.PersistentList
 
-interface HomeComponent : UnidirectionalComponent<HomeComponent.Event, HomeComponent.State> {
+interface HomeComponent : UnidirectionalComponent<HomeComponent.Event, HomeComponent.State, HomeComponent.Effect> {
   @Immutable
   sealed class Event {
     data class CheckedRoutine(val routine: RoutineUiModel) : Event()
@@ -20,14 +20,14 @@ interface HomeComponent : UnidirectionalComponent<HomeComponent.Event, HomeCompo
   }
 
   @Immutable
-  sealed class HomeEffect {
-    data class OpenDialog(val isOpen: Boolean) : HomeEffect()
+  sealed class Effect{
+    data class ShowToast(val message: MessageCode) : Effect()
+    data class ShowSnackBar(val message: MessageCode) : Effect()
   }
 
   @Immutable
   data class State(
     val routines: LoadableData<PersistentList<RoutineUiModel>> = LoadableData.Initial,
     val currentDate: CurrentDateUiModel? = null,
-    val errorMessage: ErrorMessageCode? = null,
   )
 }
