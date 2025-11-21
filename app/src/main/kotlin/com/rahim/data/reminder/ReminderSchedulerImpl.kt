@@ -15,36 +15,37 @@ import com.rahim.yadino.base.reminder.ReminderState
 import com.rahim.yadino.Constants
 import com.rahim.yadino.enums.error.ErrorMessageCode
 import kotlinx.coroutines.delay
-import timber.log.Timber
 
 class ReminderSchedulerImpl(
-    private val alarmManager: AlarmManager,
-    private val context: Context,
+  private val alarmManager: AlarmManager,
+  private val context: Context,
 ) : ReminderScheduler {
 
-  override fun setReminder(reminderName: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Int): ReminderState {
+  override fun setReminder(reminderName: String, reminderExplanation: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Int): ReminderState {
     if (reminderTime < System.currentTimeMillis()) return ReminderState.NotSet(ErrorMessageCode.ERROR_TIME_PASSED)
 
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      checkPermissionAfterApiLevel33(reminderName, reminderTime, reminderIdAlarm)
+      checkPermissionAfterApiLevel33(reminderName = reminderName, reminderExplanation = reminderExplanation, reminderTime = reminderTime, reminderIdAlarm = reminderIdAlarm)
     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-      checkPermissionAfterApiLevel31(reminderName, reminderTime, reminderIdAlarm)
+      checkPermissionAfterApiLevel31(reminderName = reminderName, reminderExplanation = reminderExplanation, reminderTime = reminderTime, reminderIdAlarm = reminderIdAlarm)
     } else {
       setAlarm(
-        reminderName,
-        reminderTime,
-        reminderIdAlarm,
+        reminderName = reminderName,
+        reminderExplanation = reminderExplanation,
+        reminderTime = reminderTime,
+        reminderAlarmId = reminderIdAlarm,
       ).let { ReminderState.SetSuccessfully }
     }
   }
 
   @RequiresApi(Build.VERSION_CODES.S)
-  private fun checkPermissionAfterApiLevel31(reminderName: String, reminderTime: Long, reminderIdAlarm: Int): ReminderState {
+  private fun checkPermissionAfterApiLevel31(reminderName: String, reminderExplanation: String, reminderTime: Long, reminderIdAlarm: Int): ReminderState {
     return if (alarmManager.canScheduleExactAlarms()) {
       setAlarm(
-        reminderName,
-        reminderTime,
-        reminderIdAlarm,
+        reminderName = reminderName,
+        reminderExplanation = reminderExplanation,
+        reminderTime = reminderTime,
+        reminderAlarmId = reminderIdAlarm,
       )
       ReminderState.SetSuccessfully
     } else {
@@ -56,13 +57,14 @@ class ReminderSchedulerImpl(
   }
 
   @SuppressLint("NewApi")
-  private fun checkPermissionAfterApiLevel33(reminderName: String, reminderTime: Long, reminderIdAlarm: Int): ReminderState {
+  private fun checkPermissionAfterApiLevel33(reminderName: String, reminderExplanation: String, reminderTime: Long, reminderIdAlarm: Int): ReminderState {
     return when {
       alarmManager.canScheduleExactAlarms() && areNotificationsEnabled(context) -> {
         setAlarm(
-          reminderName,
-          reminderTime,
-          reminderIdAlarm,
+          reminderName = reminderName,
+          reminderExplanation = reminderExplanation,
+          reminderTime = reminderTime,
+          reminderAlarmId = reminderIdAlarm,
         ).let { ReminderState.SetSuccessfully }
       }
 
@@ -89,9 +91,10 @@ class ReminderSchedulerImpl(
     }
   }
 
-  private fun setAlarm(reminderName: String, reminderTime: Long, reminderAlarmId: Int) {
+  private fun setAlarm(reminderName: String, reminderExplanation: String, reminderTime: Long, reminderAlarmId: Int) {
     val alarmIntent = Intent(context, YadinoBroadCastReceiver::class.java).apply {
-      putExtra(Constants.KEY_LAUNCH_NAME, reminderName)
+      putExtra(Constants.REMINDER_NAME, reminderName)
+      putExtra(Constants.REMINDER_EXPLANATION_NAME, reminderExplanation)
       putExtra(Constants.KEY_REMINDER_ALARM_ID, reminderAlarmId)
     }
 
@@ -118,7 +121,7 @@ class ReminderSchedulerImpl(
     alarmManager.cancel(
       pendingIntent,
     )
-     delay(100)
+    delay(100)
   }
 
   @SuppressLint("InlinedApi")
