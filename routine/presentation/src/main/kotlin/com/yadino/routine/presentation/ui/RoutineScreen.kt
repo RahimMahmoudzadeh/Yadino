@@ -153,8 +153,8 @@ private fun RoutineScreen(
         onSearchText(query)
       }
   }
-  LaunchedEffect(state.errorMessageCode) {
-    state.errorMessageCode?.let { errorMessageCode ->
+  LaunchedEffect(state.messageCode) {
+    state.messageCode?.let { errorMessageCode ->
       context.showToastShort(stringId = errorMessageCode.toStringResource())
     }
   }
