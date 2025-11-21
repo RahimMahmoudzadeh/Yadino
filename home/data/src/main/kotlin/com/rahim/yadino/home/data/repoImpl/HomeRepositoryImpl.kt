@@ -73,11 +73,11 @@ class HomeRepositoryImpl(
     }
   }
 
-  override suspend fun getRoutineAlarmId(): Long {
+  override suspend fun getRoutineAlarmId(): Int {
     val existingAlarmIds = routineDao.getIdAlarms().toSet()
-    var potentialId: Long
+    var potentialId: Int
     do {
-      potentialId = Random.Default.nextLong(1L, Long.MAX_VALUE)
+      potentialId = Random.nextInt(1, Int.MAX_VALUE)
     } while (existingAlarmIds.contains(potentialId))
 
     return potentialId
@@ -95,7 +95,7 @@ class HomeRepositoryImpl(
     routineDao.addRoutine(routineModel.toRoutineEntity())
   }
 
-  override suspend fun getRoutine(id: Int): Routine = routineDao.getRoutine(id).toRoutine()
+  override suspend fun getRoutine(id: Int): Routine = routineDao.getRoutineById(id).toRoutine()
   override suspend fun checkedRoutine(routineModel: Routine) {
     Timber.Forest.tag("routineViewModel").d("checkedRoutine")
     sharedPreferencesRepository.setShowSampleRoutine(true)

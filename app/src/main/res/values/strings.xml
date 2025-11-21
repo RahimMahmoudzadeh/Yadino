@@ -40,4 +40,5 @@
     <string name="drawer_item_guide">راهنما</string>
     <string name="install_cafeBazaar">لطفا اپلیکیشن کافه بازار را نصب کنید!!!</string>
     <string name="install_myket">لطفا اپلیکیشن مایکت رو نصب کنید!!!</string>
+    <string name="cancel_routine">لغو روتین</string>
 </resources>

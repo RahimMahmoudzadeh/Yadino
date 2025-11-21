@@ -19,7 +19,7 @@ interface RoutineRepository {
   suspend fun checkedAllRoutinePastTime()
   suspend fun getAllRoutine(): List<Routine>
   fun haveAlarm(): Flow<Boolean>
-  suspend fun getRoutineAlarmId(): Long
+  suspend fun getRoutineAlarmId(): Int
   fun convertDateToMilSecond(yearNumber: Int?, monthNumber: Int?, dayNumber: Int?, timeHours: String?): Long
   suspend fun checkEqualRoutine(routine: Routine): Routine?
 }

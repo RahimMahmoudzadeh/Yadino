@@ -11,7 +11,7 @@ interface HomeRepository {
   suspend fun checkedRoutine(routineModel: Routine)
   suspend fun getRoutine(id: Int): Routine
   suspend fun checkEqualRoutine(routineModel: Routine): Routine?
-  suspend fun getRoutineAlarmId(): Long
+  suspend fun getRoutineAlarmId(): Int
   fun getCurrentDate(): CurrentDate
   fun getTodayRoutines(): Flow<List<Routine>>
   fun searchTodayRoutine(name: String): Flow<List<Routine>>
