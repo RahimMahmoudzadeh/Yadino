@@ -17,12 +17,11 @@ import com.rahim.yadino.Constants.ACTION_CANCEL_NOTIFICATION
 import com.rahim.yadino.Constants.KEY_REMINDER_ALARM_ID
 import com.rahim.yadino.Constants.KEY_REMINDER_ID
 import com.rahim.yadino.Constants.NOTIFICATION_ID
-
-const val NOTIFICATION_ID = 1
+import java.util.Random
 
 class NotificationManager(private val controlAlarm: ControlAlarm) {
   fun createFullNotification(context: Context, routineName: String, routineIdAlarm: Int, routineExplanation: String) {
-
+    val notificationId=Random().nextInt()
     val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {
       addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
       putExtra(Constants.KEY_LAUNCH_NAME, routineName)
@@ -31,7 +30,7 @@ class NotificationManager(private val controlAlarm: ControlAlarm) {
 
     val dismissIntent = Intent(context, NotificationActionReceiver::class.java).apply {
       action = ACTION_CANCEL_NOTIFICATION
-      putExtra(NOTIFICATION_ID, com.rahim.data.reminder.notification.NOTIFICATION_ID)
+      putExtra(NOTIFICATION_ID, notificationId)
       putExtra(KEY_REMINDER_ALARM_ID, routineIdAlarm)
     }
 
@@ -69,7 +68,12 @@ class NotificationManager(private val controlAlarm: ControlAlarm) {
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setCategory(NotificationCompat.CATEGORY_ALARM)
         .setFullScreenIntent(fullScreenPendingIntent, true)
-    notificationBuilder.setCustomBigContentView(customNotificationView)
+        .setDeleteIntent(dismissPendingIntent)
+        .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+        .setCustomContentView(customNotificationView)
+        .setCustomBigContentView(customNotificationView)
+        .setCustomHeadsUpContentView(customNotificationView)
+
     with(NotificationManagerCompat.from(context)) {
       if (ActivityCompat.checkSelfPermission(
           context,
@@ -78,7 +82,7 @@ class NotificationManager(private val controlAlarm: ControlAlarm) {
       ) {
         return
       }
-      notify(com.rahim.data.reminder.notification.NOTIFICATION_ID, notificationBuilder.build())
+      notify(notificationId, notificationBuilder.build())
     }
   }
 }
