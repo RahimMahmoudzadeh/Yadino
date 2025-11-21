@@ -1,6 +1,6 @@
-package com.rahim.yadino.enums.message.error
+package com.rahim.yadino.enums.message
 
-enum class ErrorMessageCode(val code: Int) {
+enum class MessageCode(val code: Int) {
   ERROR_GET_PROCESS(0),
   EQUAL_ROUTINE_MESSAGE(1),
   ERROR_SAVE_PROSES(2),
@@ -8,4 +8,7 @@ enum class ErrorMessageCode(val code: Int) {
   ERROR_REMINDER_PERMISSION(4),
   ERROR_NOTIFICATION_AND_REMINDER_PERMISSION(5),
   ERROR_TIME_PASSED(6),
+  ERROR_SEARCH_ROUTINE(7),
+  SUCCESS_SAVE_REMINDER(1),
+  SUCCESS_UPDATE_REMINDER(2),
 }
