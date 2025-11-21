@@ -1,7 +1,7 @@
 package com.rahim.yadino.base
 
 import androidx.compose.runtime.Composable
-import com.rahim.yadino.enums.error.ErrorMessageCode
+import com.rahim.yadino.enums.message.error.ErrorMessageCode
 
 @Composable
 fun <T> LoadableComponent(

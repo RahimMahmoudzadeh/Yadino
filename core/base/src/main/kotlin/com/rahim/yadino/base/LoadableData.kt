@@ -1,6 +1,6 @@
 package com.rahim.yadino.base
 
-import com.rahim.yadino.enums.error.ErrorMessageCode
+import com.rahim.yadino.enums.message.error.ErrorMessageCode
 
 sealed class LoadableData<out T> {
     abstract val data: T?
