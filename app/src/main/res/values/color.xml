@@ -2,5 +2,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="black">#000000</color>
     <color name="withe">#FFFFFF</color>
-    <color name="purple_500">#FF6200EE</color>
+    <color name="notification_text">@color/black</color>
 </resources>
