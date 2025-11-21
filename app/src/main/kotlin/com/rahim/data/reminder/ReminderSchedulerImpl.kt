@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat
 import com.rahim.yadino.base.reminder.ReminderScheduler
 import com.rahim.yadino.base.reminder.ReminderState
 import com.rahim.yadino.Constants
-import com.rahim.yadino.enums.error.ErrorMessageCode
+import com.rahim.yadino.enums.message.MessageCode
 import kotlinx.coroutines.delay
 
 class ReminderSchedulerImpl(
@@ -22,7 +22,7 @@ class ReminderSchedulerImpl(
 ) : ReminderScheduler {
 
   override fun setReminder(reminderName: String, reminderExplanation: String, reminderId: Int, reminderTime: Long, reminderIdAlarm: Int): ReminderState {
-    if (reminderTime < System.currentTimeMillis()) return ReminderState.NotSet(ErrorMessageCode.ERROR_TIME_PASSED)
+    if (reminderTime < System.currentTimeMillis()) return ReminderState.NotSet(MessageCode.ERROR_TIME_PASSED)
 
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       checkPermissionAfterApiLevel33(reminderName = reminderName, reminderExplanation = reminderExplanation, reminderTime = reminderTime, reminderIdAlarm = reminderIdAlarm)
