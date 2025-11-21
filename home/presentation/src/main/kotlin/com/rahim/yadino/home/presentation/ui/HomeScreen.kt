@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.arkivanov.decompose.Child
+import com.rahim.yadino.base.CollectEffect
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
@@ -57,12 +58,23 @@ fun HomeRoute(
   homeComponent: HomeComponent,
   dialogSlot: Child.Created<Any, AddRoutineDialogComponent>?,
 ) {
-  val (state, event) = use(component = homeComponent)
+
+  val context = LocalContext.current
+  val (state, effect, event) = use(component = homeComponent)
   dialogSlot?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       AddRoutineDialog(
         component = dialogComponent,
       )
+    }
+  }
+
+  CollectEffect(effect) { effect ->
+    when (effect) {
+      is HomeComponent.Effect.ShowSnackBar -> TODO()
+      is HomeComponent.Effect.ShowToast -> {
+        context.showToastShort(effect.message.toStringResource())
+      }
     }
   }
   HomeScreen(
@@ -103,9 +115,6 @@ private fun HomeScreen(
   val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
 
-  state.errorMessage?.let { errorMessage ->
-    context.showToastShort(errorMessage.toStringResource())
-  }
   LaunchedEffect(Unit) {
     snapshotFlow { searchText }
       .debounce(300)
@@ -159,10 +168,8 @@ private fun HomeScreen(
           )
         }
       },
-      error = { errorMessageCode ->
-        context.showToastShort(errorMessageCode.toStringResource())
-      },
-    )
+
+      )
   }
   when {
     routineModelDeleteDialog.value != null -> {
@@ -246,7 +253,6 @@ private fun HomeScreenPreview() {
           ),
         ),
         currentDate = CurrentDateUiModel("شنبه ۱ فروردین"),
-        errorMessage = null,
       ),
       clickSearch = false,
       onCheckedRoutine = {},
