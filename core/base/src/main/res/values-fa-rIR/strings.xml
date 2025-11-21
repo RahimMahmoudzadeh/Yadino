@@ -7,4 +7,7 @@
     <string name="errorTimePassed">زمان ثبت شده برای روتین باید از آینده باشد!!!</string>
     <string name="permission_reminder">لطفا برای ادامه روند کار دسترسی الارم به یادینو را بدهید!!!</string>
     <string name="permission_notification_reminder">لطفا برای ادامه روند کار دسترسی ارسال نوتیفیکیشن و الارم را به یادینو بدهید</string>
+    <string name="we_encountered_problem_during_search_routine">در هنگام سرچ روتین با مشکل مواجه شدیم</string>
+    <string name="your_routine_has_been_successfully_recorded">روتین شما با موفقیت ثبت شد</string>
+    <string name="your_routine_has_been_successfully_updated">روتین شما با موفقیت بروزرسانی شد</string>
 </resources>

@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.rahim.yadino.core.base.R
 import com.rahim.yadino.enums.MonthName
-import com.rahim.yadino.enums.message.error.ErrorMessageCode
+import com.rahim.yadino.enums.message.MessageCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -80,16 +80,19 @@ fun String.calculateTimeFormat(currentYear: Int, currentMonth: Int, currentDay: 
   return "$currentYear-$currentMonth-$currentDay"
 }
 
-fun ErrorMessageCode.toStringResource() = when (this@toStringResource) {
-  ErrorMessageCode.ERROR_GET_PROCESS -> R.string.errorGetProses
-  ErrorMessageCode.EQUAL_ROUTINE_MESSAGE -> R.string.equalRoutineMessage
+fun MessageCode.toStringResource() = when (this@toStringResource) {
+  MessageCode.ERROR_GET_PROCESS -> R.string.errorGetProses
+  MessageCode.EQUAL_ROUTINE_MESSAGE -> R.string.equalRoutineMessage
 
-  ErrorMessageCode.ERROR_SAVE_PROSES -> R.string.errorSaveProses
+  MessageCode.ERROR_SAVE_PROSES -> R.string.errorSaveProses
 
-  ErrorMessageCode.ERROR_NOTIFICATION_PERMISSION -> R.string.errorSaveProses
-  ErrorMessageCode.ERROR_REMINDER_PERMISSION -> R.string.errorSaveProses
-  ErrorMessageCode.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION -> R.string.errorSaveProses
-  ErrorMessageCode.ERROR_TIME_PASSED -> R.string.errorTimePassed
+  MessageCode.ERROR_NOTIFICATION_PERMISSION -> R.string.errorSaveProses
+  MessageCode.ERROR_REMINDER_PERMISSION -> R.string.errorSaveProses
+  MessageCode.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION -> R.string.errorSaveProses
+  MessageCode.ERROR_TIME_PASSED -> R.string.errorTimePassed
+  MessageCode.ERROR_SEARCH_ROUTINE -> R.string.we_encountered_problem_during_search_routine
+  MessageCode.SUCCESS_SAVE_REMINDER -> R.string.your_routine_has_been_successfully_recorded
+  MessageCode.SUCCESS_UPDATE_REMINDER -> R.string.your_routine_has_been_successfully_updated
 }
 
 fun String.toPersianDigits(): String {
