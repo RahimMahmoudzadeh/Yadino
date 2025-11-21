@@ -1,7 +1,7 @@
 package com.rahim.yadino.routine.domain.repo
 
 import com.rahim.yadino.base.Resource
-import com.rahim.yadino.enums.error.ErrorMessageCode
+import com.rahim.yadino.enums.message.MessageCode
 import com.rahim.yadino.routine.domain.model.Routine
 import kotlinx.coroutines.flow.Flow
 
@@ -10,7 +10,7 @@ interface RoutineRepository {
   suspend fun addRoutine(routine: Routine)
   suspend fun removeRoutine(routine: Routine): Int
   suspend fun removeAllRoutine(nameMonth: Int?, dayNumber: Int?, yearNumber: Int?)
-  fun updateRoutine(routine: Routine): Flow<Resource<Routine, ErrorMessageCode>>
+  fun updateRoutine(routine: Routine): Flow<Resource<Routine, MessageCode>>
   suspend fun checkedRoutine(routine: Routine)
   suspend fun getRoutine(id: Int): Routine
   fun getRoutines(monthNumber: Int, numberDay: Int, yearNumber: Int): Flow<List<Routine>>

@@ -5,7 +5,7 @@ import com.rahim.yadino.base.Resource
 import com.rahim.yadino.db.routine.dao.RoutineDao
 import com.rahim.yadino.db.routine.model.RoutineEntity
 import com.rahim.yadino.enums.RoutineExplanation
-import com.rahim.yadino.enums.error.ErrorMessageCode
+import com.rahim.yadino.enums.message.MessageCode
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
 import com.yadino.routine.data.mapper.toRoutineEntity
 import com.yadino.routine.data.mapper.toRoutineModelDomainLayer
@@ -122,7 +122,7 @@ class RoutineRepositoryImpl(
     routineDao.removeAllRoutine(nameMonth, dayNumber, yearNumber)
   }
 
-  override fun updateRoutine(routine: Routine): Flow<Resource<Routine, ErrorMessageCode>> = flow {
+  override fun updateRoutine(routine: Routine): Flow<Resource<Routine, MessageCode>> = flow {
       sharedPreferencesRepository.setShowSampleRoutine(true)
       val updateRoutine = routine.copy(
           timeInMillisecond = convertDateToMilSecond(
@@ -143,14 +143,14 @@ class RoutineRepositoryImpl(
               routineTimeMilSecond = timeInMillisecond ?: 0,
           )
           if (equalRoutine != null) {
-              emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
+              emit(Resource.Error(MessageCode.EQUAL_ROUTINE_MESSAGE))
           } else {
               runCatching {
                   routineDao.addRoutine(this.toRoutineEntity())
               }.onSuccess {
                   emit(Resource.Success(this))
               }.onFailure {
-                  emit(Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE))
+                  emit(Resource.Error(MessageCode.EQUAL_ROUTINE_MESSAGE))
               }
           }
       }
