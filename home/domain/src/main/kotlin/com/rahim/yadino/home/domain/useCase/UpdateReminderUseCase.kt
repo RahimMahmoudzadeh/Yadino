@@ -9,8 +9,8 @@ import com.rahim.yadino.enums.SuccessMessage
 import com.rahim.yadino.enums.error.ErrorMessageCode
 
 class UpdateReminderUseCase(
-    private val routineRepository: HomeRepository,
-    private val reminderScheduler: ReminderScheduler,
+  private val routineRepository: HomeRepository,
+  private val reminderScheduler: ReminderScheduler,
 ) {
   suspend operator fun invoke(routineModel: Routine): Resource<SuccessMessage, ErrorMessageCode> {
     try {
@@ -30,10 +30,11 @@ class UpdateReminderUseCase(
         return Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE)
       }
       val reminderState = reminderScheduler.setReminder(
-        routine.name,
-        routine.id ?: 0,
-        routine.timeInMillisecond ?: 0,
-        routine.idAlarm ?: 0,
+        reminderName = routine.name,
+        reminderExplanation = routine.explanation ?: "",
+        reminderId = routine.id ?: 0,
+        reminderTime = routine.timeInMillisecond ?: 0,
+        reminderIdAlarm = routine.idAlarm ?: 0,
       )
       return when (reminderState) {
         ReminderState.SetSuccessfully -> {
@@ -42,7 +43,7 @@ class UpdateReminderUseCase(
         }
 
         is ReminderState.NotSet -> {
-          Resource.Error(error = reminderState.errorMessage?: ErrorMessageCode.ERROR_SAVE_PROSES)
+          Resource.Error(error = reminderState.errorMessage ?: ErrorMessageCode.ERROR_SAVE_PROSES)
         }
 
         is ReminderState.PermissionsState -> {
