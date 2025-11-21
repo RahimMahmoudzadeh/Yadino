@@ -29,10 +29,11 @@ class AddReminderUseCase(
         return Resource.Error(ErrorMessageCode.EQUAL_ROUTINE_MESSAGE)
       }
       val reminderState = reminderScheduler.setReminder(
-        routine.name,
-        routine.id ?: 0,
-        routine.timeInMillisecond ?: 0,
-        routine.idAlarm ?: 0,
+        reminderName = routine.name,
+        reminderExplanation = routine.explanation ?: "",
+        reminderId = routine.id ?: 0,
+        reminderTime = routine.timeInMillisecond ?: 0,
+        reminderIdAlarm = routine.idAlarm ?: 0,
       )
       return when (reminderState) {
         ReminderState.SetSuccessfully -> {
@@ -41,7 +42,7 @@ class AddReminderUseCase(
         }
 
         is ReminderState.NotSet -> {
-          Resource.Error(reminderState.errorMessage?: ErrorMessageCode.ERROR_SAVE_PROSES)
+          Resource.Error(reminderState.errorMessage ?: ErrorMessageCode.ERROR_SAVE_PROSES)
         }
 
         is ReminderState.PermissionsState -> {
