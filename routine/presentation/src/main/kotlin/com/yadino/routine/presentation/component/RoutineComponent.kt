@@ -3,7 +3,7 @@ package com.yadino.routine.presentation.component
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalComponent
-import com.rahim.yadino.enums.error.ErrorMessageCode
+import com.rahim.yadino.enums.message.MessageCode
 import com.yadino.routine.presentation.model.IncreaseDecrease
 import com.yadino.routine.presentation.model.RoutineUiModel
 import com.yadino.routine.presentation.model.TimeDateUiModel
@@ -25,13 +25,13 @@ interface RoutineComponent : UnidirectionalComponent<RoutineComponent.Event, Rou
 
   @Immutable
   data class State(
-      val routines: LoadableData<PersistentList<RoutineUiModel>> = LoadableData.Initial,
-      val index: Int = 0,
-      val currentYear: Int = 0,
-      val currentMonth: Int = 0,
-      val currentDay: Int = 0,
-      val errorMessageCode: ErrorMessageCode? = null,
-      val times: PersistentList<TimeDateUiModel> = persistentListOf(),
-      val timesMonth: PersistentList<TimeDateUiModel> = persistentListOf(),
+    val routines: LoadableData<PersistentList<RoutineUiModel>> = LoadableData.Initial,
+    val index: Int = 0,
+    val currentYear: Int = 0,
+    val currentMonth: Int = 0,
+    val currentDay: Int = 0,
+    val messageCode: MessageCode? = null,
+    val times: PersistentList<TimeDateUiModel> = persistentListOf(),
+    val timesMonth: PersistentList<TimeDateUiModel> = persistentListOf(),
   )
 }
