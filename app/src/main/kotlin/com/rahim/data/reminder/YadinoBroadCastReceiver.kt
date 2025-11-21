@@ -18,7 +18,8 @@ class YadinoBroadCastReceiver : BroadcastReceiver(), KoinComponent {
 
   private fun sendNotificationAlarm(intent: Intent?, context: Context?) {
     intent?.extras?.let { extras ->
-      val reminderName = extras.getString(Constants.KEY_LAUNCH_NAME)
+      val reminderName = extras.getString(Constants.REMINDER_NAME)
+      val reminderExplanation = extras.getString(Constants.REMINDER_EXPLANATION_NAME)
       val reminderAlarmId = extras.getInt(Constants.KEY_REMINDER_ALARM_ID, 0)
 
       context?.let {
@@ -26,7 +27,7 @@ class YadinoBroadCastReceiver : BroadcastReceiver(), KoinComponent {
           it,
           reminderName ?: "",
           reminderAlarmId,
-          "",
+          reminderExplanation?:"",
         )
       }
     }

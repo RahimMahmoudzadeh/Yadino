@@ -15,7 +15,6 @@ import com.rahim.ui.wakeup.WakeupActivity
 import com.rahim.yadino.Constants
 import com.rahim.yadino.Constants.ACTION_CANCEL_NOTIFICATION
 import com.rahim.yadino.Constants.KEY_REMINDER_ALARM_ID
-import com.rahim.yadino.Constants.KEY_REMINDER_ID
 import com.rahim.yadino.Constants.NOTIFICATION_ID
 import java.util.Random
 
@@ -24,7 +23,7 @@ class NotificationManager(private val controlAlarm: ControlAlarm) {
     val notificationId=Random().nextInt()
     val fullScreenIntent = Intent(context, WakeupActivity::class.java).apply {
       addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
-      putExtra(Constants.KEY_LAUNCH_NAME, routineName)
+      putExtra(Constants.REMINDER_NAME, routineName)
       putExtra(KEY_REMINDER_ALARM_ID, routineIdAlarm)
     }
 
