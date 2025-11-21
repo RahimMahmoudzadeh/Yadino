@@ -6,30 +6,36 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.value.Value
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlin.contracts.Effect
 
-data class StateDispatch<EVENT, STATE>(
+data class StateDispatch<EVENT, STATE, EFFECT>(
   val state: STATE,
+  val effectFlow: Flow<EFFECT>,
   val event: (EVENT) -> Unit,
 )
 
 @Composable
-inline fun <reified EVENT, STATE: Any> use(component: UnidirectionalComponent<EVENT, STATE>): StateDispatch<EVENT, STATE> {
+inline fun <reified EVENT, STATE : Any, EFFECT> use(component: UnidirectionalComponent<EVENT, STATE, EFFECT>): StateDispatch<EVENT, STATE, EFFECT> {
   val state by component.state.subscribeAsState()
 
   val dispatch: (EVENT) -> Unit = { event ->
     component.event(event)
   }
+
   return StateDispatch(
     state = state,
     event = dispatch,
+    effectFlow = component.effect,
   )
 }
 
-interface UnidirectionalComponent<EVENT, STATE : Any> {
+interface UnidirectionalComponent<EVENT, STATE : Any, EFFECT> {
   val state: Value<STATE>
+  val effect: Flow<EFFECT>
   fun event(event: EVENT)
 }
 
@@ -50,7 +56,7 @@ data class StateEffectDispatch<EVENT, EFFECT, STATE>(
 
 
 @Composable
-inline fun <reified EVENT, STATE> use(viewModel: UnidirectionalViewModel<EVENT, STATE>): StateDispatch<EVENT, STATE> {
+inline fun <reified EVENT, STATE, EFFECT> use(viewModel: UnidirectionalViewModel<EVENT, STATE, EFFECT>): StateDispatch<EVENT, STATE, EFFECT> {
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   val dispatch: (EVENT) -> Unit = { event ->
@@ -59,6 +65,7 @@ inline fun <reified EVENT, STATE> use(viewModel: UnidirectionalViewModel<EVENT, 
   return StateDispatch(
     state = state,
     event = dispatch,
+    effectFlow = viewModel.effect,
   )
 }
 
@@ -76,8 +83,9 @@ inline fun <reified BASE_EVENT, BASE_EFFECT, BASE_STATE> useBase(viewModel: Base
   )
 }
 
-interface UnidirectionalViewModel<EVENT, STATE> {
+interface UnidirectionalViewModel<EVENT, STATE, EFFECT> {
   val state: StateFlow<STATE>
+  val effect: Flow<EFFECT>
   fun event(event: EVENT)
 }
 
