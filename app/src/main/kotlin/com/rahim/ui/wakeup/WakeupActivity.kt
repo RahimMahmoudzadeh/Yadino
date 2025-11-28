@@ -130,7 +130,7 @@ class WakeupActivity : ComponentActivity() {
   }
 
   private fun getIntentResult() {
-    routineName = intent.getStringExtra(Constants.KEY_LAUNCH_NAME)
+    routineName = intent.getStringExtra(Constants.REMINDER_NAME)
     routineId = intent.getIntExtra(Constants.KEY_REMINDER_ALARM_ID, 0)
   }
 
