@@ -3,7 +3,8 @@ package com.rahim.yadino.home.presentation.component
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalComponent
-import com.rahim.yadino.enums.message.MessageCode
+import com.rahim.yadino.enums.message.MessageUi
+import com.rahim.yadino.enums.message.error.ErrorMessage
 import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.PersistentList
@@ -21,8 +22,8 @@ interface HomeComponent : UnidirectionalComponent<HomeComponent.Event, HomeCompo
 
   @Immutable
   sealed class Effect{
-    data class ShowToast(val message: MessageCode) : Effect()
-    data class ShowSnackBar(val message: MessageCode) : Effect()
+    data class ShowToast(val message: MessageUi) : Effect()
+    data class ShowSnackBar(val message: MessageUi) : Effect()
   }
 
   @Immutable

@@ -14,6 +14,7 @@ import com.rahim.yadino.home.domain.useCase.SearchRoutineUseCase
 import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.Resource
+import com.rahim.yadino.base.toMessageUi
 import com.rahim.yadino.enums.message.error.ErrorMessage
 import com.rahim.yadino.home.presentation.mapper.toCurrentDatePresentationLayer
 import com.rahim.yadino.home.presentation.mapper.toRoutine
@@ -112,7 +113,7 @@ class HomeComponentImpl(
         _state.update {
           it.copy(routines = LoadableData.Initial)
         }
-        _effect.send(HomeComponent.Effect.ShowToast(ErrorMessage.GET_PROCESS))
+        _effect.send(HomeComponent.Effect.ShowToast(ErrorMessage.GET_PROCESS.toMessageUi()))
       }.collectLatest { routines ->
         Timber.tag("routineSearch").d("getNormalRoutines")
         _state.update {
@@ -138,7 +139,7 @@ class HomeComponentImpl(
       }
       _effect.send(
         HomeComponent.Effect.ShowToast(
-          message = ErrorMessage.SEARCH_ROUTINE,
+          message = ErrorMessage.SEARCH_ROUTINE.toMessageUi(),
         ),
       )
     }.collectLatest { searchItems ->
@@ -170,15 +171,14 @@ class HomeComponentImpl(
       it.copy(routines = LoadableData.Loading)
     }
     scope.launch {
-      val response = updateReminderUseCase(routineModel.toRoutine())
-      when (response) {
+      when (val response = updateReminderUseCase(routineModel.toRoutine())) {
         is Resource.Error -> {
           _state.update {
             it.copy(routines = LoadableData.Initial)
           }
           _effect.send(
             HomeComponent.Effect.ShowToast(
-              message = response.error,
+              message = response.error.toMessageUi(),
             ),
           )
         }
@@ -189,7 +189,7 @@ class HomeComponentImpl(
           }
           _effect.send(
             HomeComponent.Effect.ShowToast(
-              message = response.data,
+              message = response.data.toMessageUi(),
             ),
           )
         }
