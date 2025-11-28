@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.rahim.yadino.core.base.R
 import com.rahim.yadino.enums.MonthName
-import com.rahim.yadino.enums.message.MessageCode
+import com.rahim.yadino.enums.message.error.ErrorMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -80,19 +80,19 @@ fun String.calculateTimeFormat(currentYear: Int, currentMonth: Int, currentDay: 
   return "$currentYear-$currentMonth-$currentDay"
 }
 
-fun MessageCode.toStringResource() = when (this@toStringResource) {
-  MessageCode.ERROR_GET_PROCESS -> R.string.errorGetProses
-  MessageCode.EQUAL_ROUTINE_MESSAGE -> R.string.equalRoutineMessage
+fun ErrorMessage.toStringResource() = when (this@toStringResource) {
+  ErrorMessage.GET_PROCESS -> R.string.errorGetProses
+  ErrorMessage.EQUAL_ROUTINE_MESSAGE -> R.string.equalRoutineMessage
 
-  MessageCode.ERROR_SAVE_PROSES -> R.string.errorSaveProses
+  ErrorMessage.SAVE_PROSES -> R.string.errorSaveProses
 
-  MessageCode.ERROR_NOTIFICATION_PERMISSION -> R.string.errorSaveProses
-  MessageCode.ERROR_REMINDER_PERMISSION -> R.string.errorSaveProses
-  MessageCode.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION -> R.string.errorSaveProses
-  MessageCode.ERROR_TIME_PASSED -> R.string.errorTimePassed
-  MessageCode.ERROR_SEARCH_ROUTINE -> R.string.we_encountered_problem_during_search_routine
-  MessageCode.SUCCESS_SAVE_REMINDER -> R.string.your_routine_has_been_successfully_recorded
-  MessageCode.SUCCESS_UPDATE_REMINDER -> R.string.your_routine_has_been_successfully_updated
+  ErrorMessage.NOTIFICATION_PERMISSION -> R.string.errorSaveProses
+  ErrorMessage.REMINDER_PERMISSION -> R.string.errorSaveProses
+  ErrorMessage.NOTIFICATION_AND_REMINDER_PERMISSION -> R.string.errorSaveProses
+  ErrorMessage.TIME_PASSED -> R.string.errorTimePassed
+  ErrorMessage.SEARCH_ROUTINE -> R.string.we_encountered_problem_during_search_routine
+//  ErrorMessage.SUCCESS_SAVE_REMINDER -> R.string.your_routine_has_been_successfully_recorded
+//  ErrorMessage.SUCCESS_UPDATE_REMINDER -> R.string.your_routine_has_been_successfully_updated
 }
 
 fun String.toPersianDigits(): String {

@@ -14,7 +14,7 @@ import com.rahim.yadino.home.domain.useCase.SearchRoutineUseCase
 import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.Resource
-import com.rahim.yadino.enums.message.MessageCode
+import com.rahim.yadino.enums.message.error.ErrorMessage
 import com.rahim.yadino.home.presentation.mapper.toCurrentDatePresentationLayer
 import com.rahim.yadino.home.presentation.mapper.toRoutine
 import com.rahim.yadino.home.presentation.mapper.toRoutineUiModel
@@ -112,7 +112,7 @@ class HomeComponentImpl(
         _state.update {
           it.copy(routines = LoadableData.Initial)
         }
-        _effect.send(HomeComponent.Effect.ShowToast(MessageCode.ERROR_GET_PROCESS))
+        _effect.send(HomeComponent.Effect.ShowToast(ErrorMessage.GET_PROCESS))
       }.collectLatest { routines ->
         Timber.tag("routineSearch").d("getNormalRoutines")
         _state.update {
@@ -138,7 +138,7 @@ class HomeComponentImpl(
       }
       _effect.send(
         HomeComponent.Effect.ShowToast(
-          message = MessageCode.ERROR_SEARCH_ROUTINE,
+          message = ErrorMessage.SEARCH_ROUTINE,
         ),
       )
     }.collectLatest { searchItems ->

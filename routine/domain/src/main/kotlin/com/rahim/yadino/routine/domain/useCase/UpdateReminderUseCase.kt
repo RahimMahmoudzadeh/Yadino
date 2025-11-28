@@ -4,7 +4,7 @@ import com.rahim.yadino.base.Resource
 import com.rahim.yadino.base.reminder.ReminderScheduler
 import com.rahim.yadino.base.reminder.ReminderState
 import com.rahim.yadino.enums.message.success.SuccessMessage
-import com.rahim.yadino.enums.message.MessageCode
+import com.rahim.yadino.enums.message.error.ErrorMessage
 import com.rahim.yadino.routine.domain.model.Routine
 import com.rahim.yadino.routine.domain.repo.RoutineRepository
 
@@ -12,7 +12,7 @@ class UpdateReminderUseCase(
   private val routineRepository: RoutineRepository,
   private val reminderScheduler: ReminderScheduler,
 ) {
-  suspend operator fun invoke(routine: Routine): Resource<SuccessMessage, MessageCode> {
+  suspend operator fun invoke(routine: Routine): Resource<SuccessMessage, ErrorMessage> {
     try {
       reminderScheduler.cancelReminder(routine.idAlarm ?: 0)
       val routine = routine.copy(
@@ -27,7 +27,7 @@ class UpdateReminderUseCase(
       )
       val equalRoutine = routineRepository.checkEqualRoutine(routine)
       if (equalRoutine != null) {
-        return Resource.Error(MessageCode.EQUAL_ROUTINE_MESSAGE)
+        return Resource.Error(ErrorMessage.EQUAL_ROUTINE_MESSAGE)
       }
       val reminderState = reminderScheduler.setReminder(
         reminderName = routine.name,
@@ -43,33 +43,33 @@ class UpdateReminderUseCase(
         }
 
         is ReminderState.NotSet -> {
-          Resource.Error(reminderState.errorMessage ?: MessageCode.ERROR_SAVE_PROSES)
+          Resource.Error(reminderState.errorMessage ?: ErrorMessage.SAVE_PROSES)
         }
 
         is ReminderState.PermissionsState -> {
           when {
             reminderState.reminderPermission && !reminderState.notificationPermission -> {
               Resource.Error(
-                error = MessageCode.ERROR_NOTIFICATION_PERMISSION,
+                error = ErrorMessage.NOTIFICATION_PERMISSION,
               )
             }
 
             !reminderState.reminderPermission && reminderState.notificationPermission -> {
               Resource.Error(
-                error = MessageCode.ERROR_REMINDER_PERMISSION,
+                error = ErrorMessage.REMINDER_PERMISSION,
               )
             }
 
             else -> {
               Resource.Error(
-                error = MessageCode.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION,
+                error = ErrorMessage.NOTIFICATION_AND_REMINDER_PERMISSION,
               )
             }
           }
         }
       }
     } catch (e: Exception) {
-      return Resource.Error(error = MessageCode.ERROR_SAVE_PROSES)
+      return Resource.Error(error = ErrorMessage.SAVE_PROSES)
     }
   }
 }
