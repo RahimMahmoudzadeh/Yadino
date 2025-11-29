@@ -77,10 +77,11 @@ import com.yadino.routine.presentation.ui.RoutineRoute
 import com.yadino.routine.presentation.ui.alarmHistory.HistoryRoute
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
 
-  private val mainViewModel: MainComponent = get()
+  private val mainViewModel: MainViewModel by viewModel()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     installSplashScreen()
