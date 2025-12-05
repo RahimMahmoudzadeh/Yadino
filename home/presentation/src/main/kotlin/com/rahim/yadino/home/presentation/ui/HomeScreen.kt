@@ -1,6 +1,7 @@
 package com.rahim.yadino.home.presentation.ui
 
 import android.widget.Toast
+import androidx.activity.result.launch
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,11 +9,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -50,6 +55,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.collections.immutable.persistentListOf
 import com.rahim.yadino.base.LoadableData
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeRoute(
@@ -60,6 +66,9 @@ fun HomeRoute(
 ) {
 
   val context = LocalContext.current
+  val snackBarHostState = remember { SnackbarHostState() }
+  val scope = rememberCoroutineScope()
+
   val (state, effect, event) = use(component = homeComponent)
   dialogSlot?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
@@ -71,7 +80,15 @@ fun HomeRoute(
 
   CollectEffect(effect) { effect ->
     when (effect) {
-      is HomeComponent.Effect.ShowSnackBar -> TODO()
+      is HomeComponent.Effect.ShowSnackBar -> {
+        scope.launch {
+          snackBarHostState.showSnackbar(
+            message = context.getString(effect.message.toStringResource()),
+            duration = SnackbarDuration.Short,
+          )
+        }
+      }
+
       is HomeComponent.Effect.ShowToast -> {
         context.showToastShort(effect.message.toStringResource())
       }

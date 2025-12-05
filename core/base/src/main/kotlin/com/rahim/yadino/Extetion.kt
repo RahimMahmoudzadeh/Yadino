@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.rahim.yadino.core.base.R
 import com.rahim.yadino.enums.MonthName
+import com.rahim.yadino.enums.message.MessageUi
 import com.rahim.yadino.enums.message.error.ErrorMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -95,6 +96,19 @@ fun ErrorMessage.toStringResource() = when (this@toStringResource) {
 //  ErrorMessage.SUCCESS_UPDATE_REMINDER -> R.string.your_routine_has_been_successfully_updated
 }
 
+fun MessageUi.toStringResource(): Int = when (this) {
+  MessageUi.GET_PROCESS -> R.string.errorGetProses
+  MessageUi.EQUAL_ROUTINE_MESSAGE -> R.string.equalRoutineMessage
+  MessageUi.SAVE_PROSES -> R.string.errorSaveProses
+  MessageUi.NOTIFICATION_PERMISSION -> R.string.errorSaveProses
+  MessageUi.REMINDER_PERMISSION -> R.string.errorSaveProses
+  MessageUi.NOTIFICATION_AND_REMINDER_PERMISSION -> R.string.errorSaveProses
+  MessageUi.TIME_PASSED -> R.string.errorTimePassed
+  MessageUi.SEARCH_ROUTINE -> R.string.we_encountered_problem_during_search_routine
+  MessageUi.SAVE_REMINDER -> R.string.your_routine_has_been_successfully_recorded
+  MessageUi.UPDATE_REMINDER -> R.string.your_routine_has_been_successfully_updated
+}
+
 fun String.toPersianDigits(): String {
   val builder = StringBuilder(this.length) // Initialize with the same capacity
   for (ch in this) {
@@ -145,6 +159,7 @@ suspend fun <T> Flow<T>.collectWithoutHistory(collector: suspend (T) -> Unit) {
     firstEmission = false
   }
 }
+
 fun DrawScope.createOvalBottomPath(
   ovalHeight: Float,
 ): Path {
@@ -162,6 +177,7 @@ fun DrawScope.createOvalBottomPath(
   path.close()
   return path
 }
-fun Context.showToastShort(stringId: Int,duration:Int = Toast.LENGTH_SHORT) {
+
+fun Context.showToastShort(stringId: Int, duration: Int = Toast.LENGTH_SHORT) {
   Toast.makeText(this, this.resources.getString(stringId), duration).show()
 }
