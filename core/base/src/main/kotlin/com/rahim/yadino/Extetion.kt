@@ -67,46 +67,18 @@ fun Int.calculateMonthName(): String {
   }
 }
 
-fun String.calculateTimeFormat(currentYear: Int, currentMonth: Int, currentDay: String): String {
-  val currentMonth = if (currentMonth.toString().length == 1) {
-    "0$currentMonth"
-  } else {
-    currentMonth
-  }
-  val currentDay = if (currentDay.length == 1) {
-    "0$currentDay"
-  } else {
-    currentDay
-  }
-  return "$currentYear-$currentMonth-$currentDay"
-}
-
-fun ErrorMessage.toStringResource() = when (this@toStringResource) {
-  ErrorMessage.GET_PROCESS -> R.string.errorGetProses
-  ErrorMessage.EQUAL_ROUTINE_MESSAGE -> R.string.equalRoutineMessage
-
-  ErrorMessage.SAVE_PROSES -> R.string.errorSaveProses
-
-  ErrorMessage.NOTIFICATION_PERMISSION -> R.string.errorSaveProses
-  ErrorMessage.REMINDER_PERMISSION -> R.string.errorSaveProses
-  ErrorMessage.NOTIFICATION_AND_REMINDER_PERMISSION -> R.string.errorSaveProses
-  ErrorMessage.TIME_PASSED -> R.string.errorTimePassed
-  ErrorMessage.SEARCH_ROUTINE -> R.string.we_encountered_problem_during_search_routine
-//  ErrorMessage.SUCCESS_SAVE_REMINDER -> R.string.your_routine_has_been_successfully_recorded
-//  ErrorMessage.SUCCESS_UPDATE_REMINDER -> R.string.your_routine_has_been_successfully_updated
-}
-
 fun MessageUi.toStringResource(): Int = when (this) {
-  MessageUi.GET_PROCESS -> R.string.errorGetProses
-  MessageUi.EQUAL_ROUTINE_MESSAGE -> R.string.equalRoutineMessage
-  MessageUi.SAVE_PROSES -> R.string.errorSaveProses
-  MessageUi.NOTIFICATION_PERMISSION -> R.string.errorSaveProses
-  MessageUi.REMINDER_PERMISSION -> R.string.errorSaveProses
-  MessageUi.NOTIFICATION_AND_REMINDER_PERMISSION -> R.string.errorSaveProses
-  MessageUi.TIME_PASSED -> R.string.errorTimePassed
-  MessageUi.SEARCH_ROUTINE -> R.string.we_encountered_problem_during_search_routine
-  MessageUi.SAVE_REMINDER -> R.string.your_routine_has_been_successfully_recorded
-  MessageUi.UPDATE_REMINDER -> R.string.your_routine_has_been_successfully_updated
+  MessageUi.ERROR_GET_PROCESS -> R.string.errorGetProses
+  MessageUi.ERROR_EQUAL_ROUTINE_MESSAGE -> R.string.equalRoutineMessage
+  MessageUi.ERROR_SAVE_REMINDER -> R.string.errorSaveReminder
+  MessageUi.ERROR_NOTIFICATION_PERMISSION -> R.string.errorSaveProses
+  MessageUi.ERROR_REMINDER_PERMISSION -> R.string.errorSaveProses
+  MessageUi.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION -> R.string.errorSaveProses
+  MessageUi.ERROR_TIME_PASSED -> R.string.errorTimePassed
+  MessageUi.ERROR_SEARCH_ROUTINE -> R.string.we_encountered_problem_during_search_routine
+  MessageUi.SUCCESS_SAVE_REMINDER -> R.string.your_routine_has_been_successfully_recorded
+  MessageUi.SUCCESS_UPDATE_REMINDER -> R.string.your_routine_has_been_successfully_updated
+  MessageUi.ERROR_UPDATE_REMINDER -> R.string.errorUpdateReminder
 }
 
 fun String.toPersianDigits(): String {
@@ -136,27 +108,6 @@ fun String.isPackageInstalled(packageManager: PackageManager): Boolean {
     return true
   } catch (e: PackageManager.NameNotFoundException) {
     return false
-  }
-}
-
-fun <T> Flow<List<T>>.getMatchingItems(predicate: (T) -> Boolean): Flow<List<T>> {
-  return this.map { list ->
-    val matchingItems = list.filter(predicate)
-    Timber.tag("getMatchingItems").d("getMatchingItems list${list.map { it }}")
-    Timber.tag("getMatchingItems").d("getMatchingItems ${matchingItems.map { it }}")
-    matchingItems.ifEmpty {
-      emptyList()
-    }
-  }.flowOn(Dispatchers.IO)
-}
-
-suspend fun <T> Flow<T>.collectWithoutHistory(collector: suspend (T) -> Unit) {
-  var firstEmission = true
-  collect { value ->
-    if (!firstEmission) {
-      collector(value)
-    }
-    firstEmission = false
   }
 }
 
