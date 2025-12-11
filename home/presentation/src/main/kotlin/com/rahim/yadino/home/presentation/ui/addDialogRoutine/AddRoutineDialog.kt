@@ -22,6 +22,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -53,7 +55,9 @@ import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
 import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponent
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toPersianDigits
+import com.rahim.yadino.toStringResource
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
@@ -75,7 +79,16 @@ fun AddRoutineDialog(
   component: AddRoutineDialogComponent,
 ) {
 
-  val (state, event) = use(component)
+  val (state, effect, event) = use(component)
+  val context= LocalContext.current
+
+  LaunchedEffect(true) {
+    effect?.let {
+      when(effect){
+        is AddRoutineDialogComponent.EFFECT.ShowToast -> context.showToastShort(stringId = effect.messageUi.toStringResource())
+      }
+    }
+  }
 
   val size = LocalSize.current
   val space = LocalSpacing.current
@@ -102,22 +115,22 @@ fun AddRoutineDialog(
         dismissOnClickOutside = false,
       ),
       modifier = modifier
-        .fillMaxWidth(0.9f)
-        .clip(shape = RoundedCornerShape(size.size8))
-        .background(color = MaterialTheme.colorScheme.background)
-        .border(
-          size.size2,
-          brush = Brush.verticalGradient(gradientColors),
-          shape = RoundedCornerShape(size.size8),
-        ),
+          .fillMaxWidth(0.9f)
+          .clip(shape = RoundedCornerShape(size.size8))
+          .background(color = MaterialTheme.colorScheme.background)
+          .border(
+              size.size2,
+              brush = Brush.verticalGradient(gradientColors),
+              shape = RoundedCornerShape(size.size8),
+          ),
       onDismissRequest = {
         event.invoke(AddRoutineDialogComponent.Event.DismissDialog)
       },
     ) {
       Column(
         modifier = Modifier
-          .fillMaxWidth()
-          .padding(top = space.space16, end = space.space12, start = space.space12, bottom = space.space8),
+            .fillMaxWidth()
+            .padding(top = space.space16, end = space.space12, start = space.space12, bottom = space.space8),
       ) {
         Text(
           fontSize = fontSize.fontSize18,
@@ -133,15 +146,15 @@ fun AddRoutineDialog(
         )
         TextField(
           modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxWidth()
-            .padding(top = space.space18)
-            .height(size.size60)
-            .border(
-              width = size.size1,
-              brush = Brush.verticalGradient(gradientColors),
-              shape = RoundedCornerShape(size.size4),
-            ),
+              .background(MaterialTheme.colorScheme.background)
+              .fillMaxWidth()
+              .padding(top = space.space18)
+              .height(size.size60)
+              .border(
+                  width = size.size1,
+                  brush = Brush.verticalGradient(gradientColors),
+                  shape = RoundedCornerShape(size.size4),
+              ),
           value = routineName,
           onValueChange = {
             isErrorName = it.length >= MAX_NAME_LENGTH
@@ -180,15 +193,15 @@ fun AddRoutineDialog(
         }
         TextField(
           modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxWidth()
-            .padding(top = space.space18)
-            .height(size.size90)
-            .border(
-              width = size.size1,
-              brush = Brush.verticalGradient(gradientColors),
-              shape = RoundedCornerShape(size.size4),
-            ),
+              .background(MaterialTheme.colorScheme.background)
+              .fillMaxWidth()
+              .padding(top = space.space18)
+              .height(size.size90)
+              .border(
+                  width = size.size1,
+                  brush = Brush.verticalGradient(gradientColors),
+                  shape = RoundedCornerShape(size.size4),
+              ),
           value = routineExplanation ?: "",
           onValueChange = {
             isErrorExplanation = it.length >= MAX_EXPLANATION_LENGTH
@@ -222,11 +235,11 @@ fun AddRoutineDialog(
         Row(
           horizontalArrangement = Arrangement.SpaceBetween,
           modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-              top = space.space10,
-              start = space.space20,
-            ),
+              .fillMaxWidth()
+              .padding(
+                  top = space.space10,
+                  start = space.space20,
+              ),
         ) {
           Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -267,15 +280,15 @@ fun AddRoutineDialog(
         Spacer(modifier = Modifier.height(size.size22))
         Row(
           modifier = Modifier
-            .fillMaxWidth(1f)
-            .padding(space.space12),
+              .fillMaxWidth(1f)
+              .padding(space.space12),
         ) {
           DialogButtonBackground(
             text = stringResource(id = R.string.confirmation),
             gradient = Brush.verticalGradient(gradientColors),
             modifier = Modifier
-              .fillMaxWidth(0.3f)
-              .height(size.size40),
+                .fillMaxWidth(0.3f)
+                .height(size.size40),
             textStyle = MaterialTheme.typography.bodyMedium,
             size = size,
             space = space,
