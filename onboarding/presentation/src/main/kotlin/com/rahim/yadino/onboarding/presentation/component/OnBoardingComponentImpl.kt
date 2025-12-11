@@ -8,6 +8,10 @@ import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -15,18 +19,13 @@ class OnBoardingComponentImpl(
   componentContext: ComponentContext,
   mainContext: CoroutineContext,
   private val sharedPreferencesRepository: SharedPreferencesRepository,
+  private val onNavigateToHome: () -> Unit,
 ) : OnBoardingComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
 
   private val _state = MutableValue(OnBoardingComponent.WelcomeState())
   override val state: Value<OnBoardingComponent.WelcomeState> = _state
-
-  init {
-    lifecycle.doOnCreate {
-      isShowWelcomeScreen()
-    }
-  }
 
   override fun event(event: OnBoardingComponent.WelcomeEvent) = when (event) {
     is OnBoardingComponent.WelcomeEvent.SaveShowWelcome -> {
@@ -37,8 +36,7 @@ class OnBoardingComponentImpl(
   private fun saveShowWelcome(isShow: Boolean) {
     scope.launch {
       sharedPreferencesRepository.saveShowWelcome(isShow)
+      onNavigateToHome()
     }
   }
-
-  private fun isShowWelcomeScreen() = sharedPreferencesRepository.isShowWelcomeScreen()
 }
