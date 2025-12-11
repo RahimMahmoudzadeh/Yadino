@@ -27,7 +27,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.arkivanov.decompose.Child
-import com.rahim.yadino.base.CollectEffect
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
@@ -78,19 +77,21 @@ fun HomeRoute(
     }
   }
 
-  CollectEffect(effect) { effect ->
-    when (effect) {
-      is HomeComponent.Effect.ShowSnackBar -> {
-        scope.launch {
-          snackBarHostState.showSnackbar(
-            message = context.getString(effect.message.toStringResource()),
-            duration = SnackbarDuration.Short,
-          )
+  LaunchedEffect(true) {
+    effect?.let {
+      when (effect) {
+        is HomeComponent.Effect.ShowSnackBar -> {
+          scope.launch {
+            snackBarHostState.showSnackbar(
+              message = context.getString(effect.message.toStringResource()),
+              duration = SnackbarDuration.Short,
+            )
+          }
         }
-      }
 
-      is HomeComponent.Effect.ShowToast -> {
-        context.showToastShort(effect.message.toStringResource())
+        is HomeComponent.Effect.ShowToast -> {
+          context.showToastShort(effect.message.toStringResource())
+        }
       }
     }
   }
