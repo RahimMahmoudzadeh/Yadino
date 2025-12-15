@@ -10,7 +10,7 @@ import com.yadino.routine.presentation.model.TimeDateUiModel
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 
-interface RoutineComponent : UnidirectionalComponent<RoutineComponent.Event, RoutineComponent.State> {
+interface RoutineComponent : UnidirectionalComponent<RoutineComponent.Event, RoutineComponent.State, Nothing> {
   @Immutable
   sealed class Event {
     data class CheckedRoutine(val routine: RoutineUiModel) : Event()

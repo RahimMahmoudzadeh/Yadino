@@ -85,7 +85,7 @@ fun RoutineRoute(
   component: RoutineComponent,
   dialogSlot: Child.Created<Any, AddRoutineDialogComponent>?,
 ) {
-  val (state, event) = use(component)
+  val (state, _,event) = use(component)
 
   dialogSlot?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
@@ -153,11 +153,11 @@ private fun RoutineScreen(
         onSearchText(query)
       }
   }
-  LaunchedEffect(state.messageCode) {
-    state.messageCode?.let { errorMessageCode ->
-      context.showToastShort(stringId = errorMessageCode.toStringResource())
-    }
-  }
+//  LaunchedEffect(state.messageCode) {
+//    state.messageCode?.let { errorMessageCode ->
+//      context.showToastShort(stringId = errorMessageCode.toStringResource())
+//    }
+//  }
   Column(
     modifier = modifier.fillMaxSize(),
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -292,9 +292,6 @@ private fun GetRoutines(
 
     },
     loading = {},
-    error = { errorCode ->
-      context.showToastShort(stringId = errorCode.toStringResource())
-    },
   )
 }
 

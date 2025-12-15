@@ -13,6 +13,7 @@ import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import com.rahim.component.RootComponent.ChildStack.*
 import com.rahim.component.config.AddNoteDialog
@@ -52,7 +53,6 @@ import com.yadino.routine.presentation.component.RoutineComponentImpl
 import com.yadino.routine.presentation.component.history.HistoryRoutineComponent
 import com.yadino.routine.presentation.component.history.HistoryRoutineComponentImpl
 import kotlinx.coroutines.Dispatchers
-import kotlinx.serialization.builtins.serializer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
@@ -95,7 +95,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
         mainDispatcher = Dispatchers.Main,
         addReminderUseCase = addReminderUseCase,
         updateReminderUseCase = updateReminderUseCase,
-        routine = config.routine,
+        updateRoutine = config.routine,
         onDismissed = addRoutineDialogHomeScreenComponentNavigationSlot::dismiss,
       )
     }
@@ -188,6 +188,9 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
     sharedPreferencesRepository = sharedPreferencesRepository,
+    onNavigateToHome = {
+      navigation.replaceAll(ConfigChildComponent.Home)
+    }
   )
 
   private val getAllRoutineUseCase: GetAllRoutineUseCase = get()
