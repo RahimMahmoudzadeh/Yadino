@@ -49,7 +49,8 @@ fun NoteRoute(
   component: NoteComponent,
   dialogSlot: Child.Created<Any, AddNoteDialogComponent>?,
 ) {
-  val (state, event) = use(component)
+  val (state, effect, event) = use(component)
+
   dialogSlot?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       AddNoteDialog(
@@ -117,7 +118,6 @@ private fun NoteScreen(
     LoadableComponent(
       loadableData = state.notes,
       loading = {},
-      error = {},
       loaded = { notes ->
         if (notes.isEmpty()) {
           EmptyMessage(
