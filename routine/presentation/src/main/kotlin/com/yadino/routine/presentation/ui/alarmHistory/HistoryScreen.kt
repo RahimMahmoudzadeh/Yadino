@@ -49,7 +49,7 @@ fun HistoryRoute(
   modifier: Modifier = Modifier,
   component: HistoryRoutineComponent,
 ) {
-  val (state, event) = use(component)
+  val (state, _, _) = use(component)
 
   HistoryScreen(modifier = modifier, state = state)
 }
@@ -87,8 +87,8 @@ private fun HistoryScreen(
               }
             Text(
               modifier = Modifier
-                .fillMaxWidth()
-                .padding(15.dp),
+                  .fillMaxWidth()
+                  .padding(15.dp),
               text = text,
               textAlign = TextAlign.Center,
               style = MaterialTheme.typography.labelMedium,
@@ -133,9 +133,6 @@ private fun HistoryScreen(
       }
     },
     loading = {},
-    error = {
-
-    },
   )
 }
 
@@ -147,9 +144,9 @@ private fun RoutineCompleted(
 ) {
   Row(
     modifier = Modifier
-      .background(MaterialTheme.colorScheme.background)
-      .fillMaxWidth()
-      .padding(horizontal = 12.dp, vertical = 9.dp),
+        .background(MaterialTheme.colorScheme.background)
+        .fillMaxWidth()
+        .padding(horizontal = 12.dp, vertical = 9.dp),
     horizontalArrangement = Arrangement.End,
     verticalAlignment = Alignment.CenterVertically,
   ) {

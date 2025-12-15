@@ -35,10 +35,6 @@ class HistoryRoutineComponentImpl(
     }
   }
 
-  override fun event(event: HistoryRoutineComponent.HistoryEvent) = when (event) {
-    HistoryRoutineComponent.HistoryEvent.GetAllRoutine -> getAllRoutine()
-  }
-
   private fun getAllRoutine() {
     scope.launch {
       _state.update {
