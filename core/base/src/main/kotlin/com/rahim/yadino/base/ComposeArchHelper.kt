@@ -34,9 +34,9 @@ inline fun <reified EVENT, STATE : Any, EFFECT> use(component: UnidirectionalCom
 interface UnidirectionalComponent<EVENT, STATE : Any, EFFECT> {
   val state: Value<STATE>
   val effect: Flow<EFFECT>
-    get() = flow{}
+    get() = flow {}
 
-  fun event(event: EVENT)
+  fun event(event: EVENT) {}
 }
 
 
@@ -79,6 +79,8 @@ inline fun <reified BASE_EVENT, BASE_EFFECT, BASE_STATE> useBase(viewModel: Base
 interface UnidirectionalViewModel<EVENT, STATE, EFFECT> {
   val state: StateFlow<STATE>
   val effect: Flow<EFFECT>
+    get() = flow {}
+
   fun event(event: EVENT)
 }
 
