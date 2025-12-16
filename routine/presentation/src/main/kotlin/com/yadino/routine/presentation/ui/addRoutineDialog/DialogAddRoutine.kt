@@ -84,7 +84,7 @@ fun DialogAddRoutine(
   val space = LocalSpacing.current
   val persianData = PersianDate()
 
-  val (state, event) = use(componentComponent)
+  val (state, _,event) = use(componentComponent)
 
   var monthChecked by rememberSaveable { mutableIntStateOf(state.currentTime?.currentMonth ?: persianData.shMonth) }
   var yearChecked by rememberSaveable { mutableIntStateOf(state.currentTime?.currentYear ?: persianData.shYear) }
