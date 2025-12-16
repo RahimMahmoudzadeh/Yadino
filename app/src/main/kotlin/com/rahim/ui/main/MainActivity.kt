@@ -80,7 +80,7 @@ import org.koin.android.ext.android.get
 
 class MainActivity : ComponentActivity() {
 
-  private val mainViewModel: MainComponent = get()
+  private val mainViewModel: MainViewModel = get()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     installSplashScreen()
@@ -93,7 +93,7 @@ class MainActivity : ComponentActivity() {
     getTokenFirebase()
 
     setContent {
-      val (state, event) = use(mainViewModel)
+      val (state, _,event) = use(mainViewModel)
 
       changeTheme(state.isDarkTheme)
       checkStateOfClickItemDrawable(state.stateOfClickItemDrawable)

@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MainComponent(
+class MainViewModel(
   private val dateTimeRepository: DateTimeRepository,
   private val repositoryRoutine: RoutineRepository,
   private val noteRepository: NoteRepository,
