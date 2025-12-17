@@ -191,20 +191,7 @@ private fun HomeScreen(
   }
   when {
     routineModelDeleteDialog.value != null -> {
-      ErrorDialog(
-        isClickOk = {
-          if (it) {
-            routineModelDeleteDialog.value?.let {
-              onDeleteRoutine(it)
-            }
-          }
-          routineModelDeleteDialog.value = null
-        },
-        message = stringResource(id = R.string.can_you_delete),
-        okMessage = stringResource(
-          id = R.string.ok,
-        ),
-      )
+
     }
   }
 }

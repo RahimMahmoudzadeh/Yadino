@@ -27,6 +27,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.DialogButtonBorder
 import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.designsystem.dialog.error.component.ErrorComponent
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
@@ -36,9 +37,7 @@ import com.rahim.yadino.library.designsystem.R
 @Composable
 fun ErrorDialog(
   modifier: Modifier = Modifier,
-  message: String,
-  okMessage: String,
-  isClickOk: (Boolean) -> Unit,
+  errorComponent: ErrorComponent,
 ) {
   val space = LocalSpacing.current
   val size = LocalSize.current

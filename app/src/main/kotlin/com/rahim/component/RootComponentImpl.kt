@@ -32,6 +32,9 @@ import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineD
 import com.rahim.component.config.AddRoutineDialogHomeScreen
 import com.rahim.component.config.AddRoutineDialogRoutineScreen
 import com.rahim.component.config.ConfigChildComponent
+import com.rahim.component.config.ErrorDialog
+import com.rahim.yadino.designsystem.dialog.error.component.ErrorComponent
+import com.rahim.yadino.designsystem.dialog.error.component.ErrorComponentImpl
 import com.rahim.yadino.note.domain.useCase.AddNoteUseCase
 import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
 import com.rahim.yadino.note.domain.useCase.GetNotesUseCase
@@ -74,6 +77,9 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
 
   private val addNoteDialogComponentNavigationSlot =
     SlotNavigation<AddNoteDialog>()
+
+  private val errorDialogComponentNavigationSlot =
+    SlotNavigation<ErrorDialog>()
 
   override val stack: Value<ChildStack<*, RootComponent.ChildStack>> = childStack(
     source = navigation,
@@ -144,6 +150,21 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
       )
     }
 
+  override val errorDialog: Value<ChildSlot<ErrorDialog, ErrorComponent>> =
+    childSlot(
+      source = errorDialogComponentNavigationSlot,
+      serializer = ErrorDialog.serializer(),
+      handleBackButton = true,
+      key = "errorDialogComponentNavigationSlot",
+    ) { config, childComponentContext ->
+      ErrorComponentImpl(
+        componentContext = childComponentContext,
+        mainContext = Dispatchers.Main,
+        itemId = config.itemId,
+        onDissmiss = errorDialogComponentNavigationSlot::dismiss,
+      )
+    }
+
   override fun onTabClick(tab: ConfigChildComponent) {
     navigation.bringToFront(tab)
   }
@@ -190,7 +211,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     sharedPreferencesRepository = sharedPreferencesRepository,
     onNavigateToHome = {
       navigation.replaceAll(ConfigChildComponent.Home)
-    }
+    },
   )
 
   private val getAllRoutineUseCase: GetAllRoutineUseCase = get()

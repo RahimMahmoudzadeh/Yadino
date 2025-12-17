@@ -12,3 +12,6 @@ data class AddRoutineDialogRoutineScreen(val updateRoutine: com.yadino.routine.p
 
 @Serializable
 data class AddNoteDialog(val updateNote: NoteUiModel? = null) : ConfigChildComponent
+
+@Serializable
+data class ErrorDialog(val itemId: String) : ConfigChildComponent

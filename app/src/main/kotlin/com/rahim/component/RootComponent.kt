@@ -8,6 +8,9 @@ import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineD
 import com.rahim.component.config.AddRoutineDialogHomeScreen
 import com.rahim.component.config.AddRoutineDialogRoutineScreen
 import com.rahim.component.config.ConfigChildComponent
+import com.rahim.component.config.ErrorDialog
+import com.rahim.yadino.designsystem.dialog.error.component.ErrorComponent
+import com.rahim.yadino.designsystem.dialog.error.component.ErrorComponentImpl
 import com.rahim.yadino.note.presentation.component.NoteComponent
 import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
@@ -20,6 +23,7 @@ interface RootComponent {
   val addRoutineDialogHomeScreen: Value<ChildSlot<*, AddRoutineDialogComponent>>
   val addRoutineDialogRoutineScreen: Value<ChildSlot<AddRoutineDialogRoutineScreen, com.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent>>
   val addNoteDialog: Value<ChildSlot<AddNoteDialog, AddNoteDialogComponent>>
+  val errorDialog: Value<ChildSlot<ErrorDialog, ErrorComponent>>
 
   fun onTabClick(tab: ConfigChildComponent)
   fun onShowAddDialogRoutineHomeScreen(dialog: AddRoutineDialogHomeScreen)
