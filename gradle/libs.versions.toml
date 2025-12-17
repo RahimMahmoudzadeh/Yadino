@@ -4,7 +4,7 @@ kotlin = "2.2.21"
 kotlinxImmutableCollection = "0.4.0"
 
 #compose
-compose-bom = "2025.11.00"
+compose-bom = "2025.12.01"
 activity-compose = "1.11.0"
 
 #core
