@@ -46,7 +46,6 @@ class AddRoutineDialogComponentImpl(
         addReminderUseCase.invoke(routine.toRoutine())
       }.onSuccess {
         _effect.send(AddRoutineDialogComponent.EFFECT.ShowToast(MessageUi.SUCCESS_SAVE_REMINDER))
-        onDismissed()
       }.onFailure {
         _effect.send(AddRoutineDialogComponent.EFFECT.ShowToast(MessageUi.ERROR_SAVE_REMINDER))
       }
