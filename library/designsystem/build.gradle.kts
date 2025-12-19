@@ -3,6 +3,7 @@ plugins {
     alias(library)
     alias(library.compose)
     alias(decompose)
+    alias(kotlinx.serialization)
   }
 }
 
