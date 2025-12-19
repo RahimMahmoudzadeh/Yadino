@@ -79,6 +79,7 @@ fun MessageUi.toStringResource(): Int = when (this) {
   MessageUi.SUCCESS_SAVE_REMINDER -> R.string.your_routine_has_been_successfully_recorded
   MessageUi.SUCCESS_UPDATE_REMINDER -> R.string.your_routine_has_been_successfully_updated
   MessageUi.ERROR_UPDATE_REMINDER -> R.string.errorUpdateReminder
+  MessageUi.ERROR_REMOVE_REMINDER -> R.string.errorRemoveReminder
 }
 
 fun String.toPersianDigits(): String {

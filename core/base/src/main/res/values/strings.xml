@@ -3,6 +3,7 @@
     <string name="errorGetProses">مشکلی در دریافت اطلاعات پیش امده است! لطفا دوباره امتحان کنید</string>
     <string name="equalRoutineMessage">روتین یکسان نمی توان ساخت!!</string>
     <string name="errorSaveProses">مشکلی در ثبت اطلاعات پیش امده است! لطفا دوباره امتحان کنید</string>
+    <string name="errorRemoveReminder">مشکلی در حذف روتین پیش امده است! لطفا بعدا امتحان کنید</string>
     <string name="errorSaveReminder">مشکلی در ثبت روتین پیش امده است! لطفا دوباره امتحان کنید</string>
     <string name="errorUpdateReminder">مشکلی در بروزرسانی روتین پیش امده است! لطفا دوباره امتحان کنید</string>
     <string name="errorTimePassed">زمان ثبت شده برای روتین باید از آینده باشد!!!</string>
