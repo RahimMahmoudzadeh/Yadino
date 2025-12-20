@@ -4,13 +4,18 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import com.rahim.yadino.base.Resource
+import com.rahim.yadino.base.toMessageUi
 import com.rahim.yadino.enums.message.MessageUi
+import com.rahim.yadino.enums.message.error.ErrorMessage
+import com.rahim.yadino.enums.message.success.SuccessMessage
 import com.rahim.yadino.home.domain.useCase.AddReminderUseCase
 import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.home.presentation.mapper.toRoutine
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
@@ -43,9 +48,18 @@ class AddRoutineDialogComponentImpl(
   private fun addRoutine(routine: RoutineUiModel) {
     scope.launch {
       runCatching {
-        addReminderUseCase.invoke(routine.toRoutine())
+        addReminderUseCase(routine.toRoutine())
       }.onSuccess {
-        _effect.send(AddRoutineDialogComponent.EFFECT.ShowToast(MessageUi.SUCCESS_SAVE_REMINDER))
+        when(it){
+          is Resource.Error<ErrorMessage> -> {
+            _effect.send(AddRoutineDialogComponent.EFFECT.ShowToast(it.error.toMessageUi()))
+          }
+          is Resource.Success<SuccessMessage> ->  {
+            _effect.send(AddRoutineDialogComponent.EFFECT.ShowToast(it.data.toMessageUi()))
+            delay(100)
+            onDismissed()
+          }
+        }
       }.onFailure {
         _effect.send(AddRoutineDialogComponent.EFFECT.ShowToast(MessageUi.ERROR_SAVE_REMINDER))
       }

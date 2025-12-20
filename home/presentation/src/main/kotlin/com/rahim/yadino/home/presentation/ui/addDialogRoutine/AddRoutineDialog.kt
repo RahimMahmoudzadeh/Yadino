@@ -89,7 +89,6 @@ fun AddRoutineDialog(
           context.showToastShort(stringId = effect.messageUi.toStringResource())
         }
       }
-      event(AddRoutineDialogComponent.Event.DismissDialog)
     }
   }
 
