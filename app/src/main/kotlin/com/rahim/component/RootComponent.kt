@@ -8,21 +8,21 @@ import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineD
 import com.rahim.component.config.AddRoutineDialogHomeScreen
 import com.rahim.component.config.AddRoutineDialogRoutineScreen
 import com.rahim.component.config.ConfigChildComponent
-import com.rahim.component.config.ErrorDialog
+import com.rahim.component.config.ErrorDialogHome
+import com.rahim.component.config.ErrorDialogRoutine
 import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponent
 import com.rahim.yadino.note.presentation.component.NoteComponent
 import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
-import com.yadino.routine.presentation.component.RoutineComponent
-import com.yadino.routine.presentation.component.history.HistoryRoutineComponent
 
 interface RootComponent {
   val stack: Value<com.arkivanov.decompose.router.stack.ChildStack<*, ChildStack>>
 
   val addRoutineDialogHomeScreen: Value<ChildSlot<*, AddRoutineDialogComponent>>
-  val addRoutineDialogRoutineScreen: Value<ChildSlot<AddRoutineDialogRoutineScreen, com.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent>>
+  val addRoutineDialogRoutineScreen: Value<ChildSlot<AddRoutineDialogRoutineScreen, com.rahim.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent>>
   val addNoteDialog: Value<ChildSlot<AddNoteDialog, AddNoteDialogComponent>>
-  val errorDialog: Value<ChildSlot<ErrorDialog, ErrorDialogComponent>>
+  val errorDialogHomeHomeScreen: Value<ChildSlot<ErrorDialogHome, ErrorDialogComponent>>
+  val errorDialogRoutineScreen: Value<ChildSlot<ErrorDialogRoutine, com.rahim.yadino.routine.presentation.component.errorDialog.ErrorDialogComponent>>
 
   fun onTabClick(tab: ConfigChildComponent)
   fun onShowAddDialogRoutineHomeScreen(dialog: AddRoutineDialogHomeScreen)
@@ -36,8 +36,8 @@ interface RootComponent {
   sealed class ChildStack {
     class HomeStack(val component: HomeComponent) : ChildStack()
     class OnBoarding(val component: OnBoardingComponent) : ChildStack()
-    class Routine(val component: RoutineComponent) : ChildStack()
+    class Routine(val component: com.rahim.yadino.routine.presentation.component.RoutineComponent) : ChildStack()
     class Note(val component: NoteComponent) : ChildStack()
-    class HistoryRoutine(val component: HistoryRoutineComponent) : ChildStack()
+    class HistoryRoutine(val component: com.rahim.yadino.routine.presentation.component.history.HistoryRoutineComponent) : ChildStack()
   }
 }
