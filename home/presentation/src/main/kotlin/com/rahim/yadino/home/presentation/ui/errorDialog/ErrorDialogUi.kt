@@ -1,4 +1,4 @@
-package com.rahim.yadino.designsystem.dialog
+package com.rahim.yadino.home.presentation.ui.errorDialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,39 +9,53 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.DialogButtonBorder
 import com.rahim.yadino.designsystem.component.gradientColors
-import com.rahim.yadino.designsystem.dialog.error.component.ErrorComponent
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
+import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponent
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.showToastShort
+import com.rahim.yadino.toStringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ErrorDialog(
+fun ErrorDialogUi(
   modifier: Modifier = Modifier,
-  errorComponent: ErrorComponent,
+  component: ErrorDialogComponent,
 ) {
+
+  val (state, effect, event) = use(component)
+
   val space = LocalSpacing.current
   val size = LocalSize.current
   val fontSize = LocalFontSize.current
+  val context = LocalContext.current
+
+  LaunchedEffect(effect) {
+    effect?.let {
+      when (effect) {
+        is ErrorDialogComponent.Effect.ShowToast -> context.showToastShort(stringId = effect.message.toStringResource())
+      }
+    }
+  }
 
   BasicAlertDialog(
     properties = DialogProperties(
@@ -56,7 +70,7 @@ fun ErrorDialog(
         brush = Brush.verticalGradient(gradientColors),
         shape = RoundedCornerShape(space.space8),
       ),
-    onDismissRequest = { isClickOk(false) },
+    onDismissRequest = {},
   ) {
     Column(
       modifier = Modifier
@@ -70,7 +84,7 @@ fun ErrorDialog(
         modifier = Modifier
           .fillMaxWidth()
           .padding(top = space.space30, end = space.space50, start = space.space50),
-        text = message,
+        text = state.title,
         textAlign = TextAlign.Center,
         color = MaterialTheme.colorScheme.primary,
       )
@@ -92,11 +106,11 @@ fun ErrorDialog(
           size = size,
           height = size.size40,
           onClick = {
-            isClickOk(false)
+            event(ErrorDialogComponent.Event.CancelClicked)
           },
         )
         DialogButtonBackground(
-          text = okMessage,
+          text = state.submitTextButton,
           gradient = Brush.verticalGradient(gradientColors),
           modifier = Modifier
             .fillMaxWidth(0.3f)
@@ -105,7 +119,7 @@ fun ErrorDialog(
           size = size,
           space = space,
           onClick = {
-            isClickOk(true)
+            event(ErrorDialogComponent.Event.OkClicked)
           },
         )
       }
