@@ -33,8 +33,8 @@ import com.rahim.component.config.AddRoutineDialogHomeScreen
 import com.rahim.component.config.AddRoutineDialogRoutineScreen
 import com.rahim.component.config.ConfigChildComponent
 import com.rahim.component.config.ErrorDialog
-import com.rahim.yadino.designsystem.dialog.error.component.ErrorComponent
-import com.rahim.yadino.designsystem.dialog.error.component.ErrorComponentImpl
+import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponent
+import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponentImpl
 import com.rahim.yadino.note.domain.useCase.AddNoteUseCase
 import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
 import com.rahim.yadino.note.domain.useCase.GetNotesUseCase
@@ -150,18 +150,19 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
       )
     }
 
-  override val errorDialog: Value<ChildSlot<ErrorDialog, ErrorComponent>> =
+  override val errorDialog: Value<ChildSlot<ErrorDialog, ErrorDialogComponent>> =
     childSlot(
       source = errorDialogComponentNavigationSlot,
       serializer = ErrorDialog.serializer(),
       handleBackButton = true,
       key = "errorDialogComponentNavigationSlot",
     ) { config, childComponentContext ->
-      ErrorComponentImpl(
+      ErrorDialogComponentImpl(
         componentContext = childComponentContext,
         mainContext = Dispatchers.Main,
-        itemId = config.itemId,
-        onDissmiss = errorDialogComponentNavigationSlot::dismiss,
+        deleteReminderUseCase = deleteReminderUseCase,
+        errorDialogUiModel = config.errorDialogUiModel,
+        onDismissed = errorDialogComponentNavigationSlot::dismiss,
       )
     }
 
@@ -195,10 +196,12 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     mainContext = Dispatchers.Main,
     updateReminderUseCase = updateReminderUseCase,
     cancelReminderUseCase = cancelReminderUseCase,
-    deleteReminderUseCase = deleteReminderUseCase,
     getTodayRoutinesUseCase = getTodayRoutinesUseCase,
     searchRoutineUseCase = searchRoutineUseCase,
     getCurrentDateUseCase = getCurrentDateUseCase,
+    onShowErrorDialog = { errorDialog ->
+      errorDialogComponentNavigationSlot.activate(ErrorDialog(errorDialog))
+    },
     onShowUpdateRoutineDialog = { routineModel ->
       addRoutineDialogHomeScreenComponentNavigationSlot.activate(AddRoutineDialogHomeScreen(routineModel))
     },
