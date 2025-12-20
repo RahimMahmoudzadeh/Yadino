@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.ui
+package com.rahim.yadino.routine.presentation.ui
 
 import android.content.Context
 import android.widget.Toast
@@ -26,7 +26,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -39,7 +38,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -53,7 +51,6 @@ import com.rahim.yadino.calculateMonthName
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.component.gradientColors
-import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.utils.size.FontDimensions
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
@@ -62,16 +59,15 @@ import com.rahim.yadino.designsystem.utils.size.SizeDimensions
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.font_medium
 import com.rahim.yadino.routine.presentation.R
-import com.rahim.yadino.showToastShort
+import com.rahim.yadino.routine.presentation.component.RoutineComponent
+import com.rahim.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent
+import com.rahim.yadino.routine.presentation.model.ErrorDialogUiModel
+import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
+import com.rahim.yadino.routine.presentation.model.RoutineUiModel
+import com.rahim.yadino.routine.presentation.model.TimeDateUiModel
+import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.DialogAddRoutine
+import com.rahim.yadino.routine.presentation.ui.component.ListRoutines
 import com.rahim.yadino.toPersianDigits
-import com.rahim.yadino.toStringResource
-import com.yadino.routine.presentation.component.RoutineComponent
-import com.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent
-import com.yadino.routine.presentation.ui.addRoutineDialog.DialogAddRoutine
-import com.yadino.routine.presentation.ui.component.ListRoutines
-import com.yadino.routine.presentation.model.IncreaseDecrease
-import com.yadino.routine.presentation.model.RoutineUiModel
-import com.yadino.routine.presentation.model.TimeDateUiModel
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -85,7 +81,7 @@ fun RoutineRoute(
   component: RoutineComponent,
   dialogSlot: Child.Created<Any, AddRoutineDialogComponent>?,
 ) {
-  val (state, _,event) = use(component)
+  val (state, _, event) = use(component)
 
   dialogSlot?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
@@ -101,8 +97,8 @@ fun RoutineRoute(
     onShowUpdateDialog = {
       event.invoke(RoutineComponent.Event.OnShowUpdateDialog(it))
     },
-    onDeleteRoutine = {
-      event.invoke(RoutineComponent.Event.DeleteRoutine(it))
+    onShowErrorDialog = {
+      event.invoke(RoutineComponent.Event.OnShowErrorDialog(it))
     },
     onSearchText = {
       event.invoke(RoutineComponent.Event.SearchRoutineByName(it))
@@ -131,7 +127,7 @@ private fun RoutineScreen(
   checkedRoutine: (RoutineUiModel) -> Unit,
   dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
   onShowUpdateDialog: (routine: RoutineUiModel) -> Unit,
-  onDeleteRoutine: (RoutineUiModel) -> Unit,
+  onShowErrorDialog: (ErrorDialogUiModel) -> Unit,
   onSearchText: (String) -> Unit,
   increaseOrDecrease: (increaseDecrease: IncreaseDecrease) -> Unit,
   weekChange: (IncreaseDecrease) -> Unit,
@@ -142,7 +138,6 @@ private fun RoutineScreen(
   val space = LocalSpacing.current
   val size = LocalSize.current
 
-  val routineDeleteDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
   var searchQuery by remember { mutableStateOf("") }
 
   LaunchedEffect(Unit) {
@@ -153,11 +148,7 @@ private fun RoutineScreen(
         onSearchText(query)
       }
   }
-//  LaunchedEffect(state.messageCode) {
-//    state.messageCode?.let { errorMessageCode ->
-//      context.showToastShort(stringId = errorMessageCode.toStringResource())
-//    }
-//  }
+
   Column(
     modifier = modifier.fillMaxSize(),
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -206,8 +197,8 @@ private fun RoutineScreen(
         checkedRoutine(it)
         Timber.tag("routineGetNameDay").d("GetRoutines routineChecked->$it")
       },
-      routineDeleteDialog = {
-        if (it.isChecked) {
+      routineDeleteDialog = { deletedRoutine ->
+        if (deletedRoutine.isChecked) {
           Toast.makeText(
             context,
             R.string.not_removed_checked_routine,
@@ -215,27 +206,9 @@ private fun RoutineScreen(
           ).show()
           return@GetRoutines
         }
-        routineDeleteDialog.value = it
+        onShowErrorDialog(ErrorDialogUiModel(title = context.getString(com.rahim.yadino.library.designsystem.R.string.can_you_delete), submitTextButton = context.getString(com.rahim.yadino.library.designsystem.R.string.ok), routineUiModel = deletedRoutine))
       },
     )
-  }
-  when {
-    routineDeleteDialog.value != null -> {
-      ErrorDialog(
-        isClickOk = {
-          if (it) {
-            routineDeleteDialog.value?.let {
-              onDeleteRoutine(it)
-            }
-          }
-          routineDeleteDialog.value = null
-        },
-        message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.can_you_delete),
-        okMessage = stringResource(
-          id = com.rahim.yadino.library.designsystem.R.string.ok,
-        ),
-      )
-    }
   }
 }
 

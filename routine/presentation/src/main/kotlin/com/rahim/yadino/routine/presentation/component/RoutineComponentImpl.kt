@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.component
+package com.rahim.yadino.routine.presentation.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -10,19 +10,16 @@ import com.rahim.yadino.Constants.DAY_MIN
 import com.rahim.yadino.Constants.MONTH_MAX
 import com.rahim.yadino.Constants.MONTH_MIN
 import com.rahim.yadino.base.LoadableData
-import com.rahim.yadino.base.Resource
 import com.rahim.yadino.core.timeDate.repo.DateTimeRepository
-import com.rahim.yadino.routine.domain.useCase.AddReminderUseCase
 import com.rahim.yadino.routine.domain.useCase.CancelReminderUseCase
-import com.rahim.yadino.routine.domain.useCase.DeleteReminderUseCase
 import com.rahim.yadino.routine.domain.useCase.GetRemindersUseCase
 import com.rahim.yadino.routine.domain.useCase.SearchRoutineUseCase
-import com.rahim.yadino.routine.domain.useCase.UpdateReminderUseCase
-import com.yadino.routine.presentation.mapper.toRoutine
-import com.yadino.routine.presentation.mapper.toRoutineUiModel
-import com.yadino.routine.presentation.mapper.toTimeDateUiModel
-import com.yadino.routine.presentation.model.IncreaseDecrease
-import com.yadino.routine.presentation.model.RoutineUiModel
+import com.rahim.yadino.routine.presentation.mapper.toRoutine
+import com.rahim.yadino.routine.presentation.mapper.toRoutineUiModel
+import com.rahim.yadino.routine.presentation.mapper.toTimeDateUiModel
+import com.rahim.yadino.routine.presentation.model.ErrorDialogUiModel
+import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
+import com.rahim.yadino.routine.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -37,11 +34,11 @@ class RoutineComponentImpl(
   mainContext: CoroutineContext,
   ioContext: CoroutineContext,
   private val cancelReminderUseCase: CancelReminderUseCase,
-  private val deleteReminderUseCase: DeleteReminderUseCase,
   private val getRemindersUseCase: GetRemindersUseCase,
   private val searchRoutineUseCase: SearchRoutineUseCase,
   private val dateTimeRepository: DateTimeRepository,
   private val onShowUpdateDialog: (routineUpdate: RoutineUiModel) -> Unit,
+  private val onShowErrorDialog: (errorDialogUiModel: ErrorDialogUiModel) -> Unit,
 ) : RoutineComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
@@ -67,7 +64,7 @@ class RoutineComponentImpl(
   override fun event(event: RoutineComponent.Event) {
     when (event) {
       is RoutineComponent.Event.CheckedRoutine -> checkedRoutine(event.routine)
-      is RoutineComponent.Event.DeleteRoutine -> deleteRoutine(event.routine)
+      is RoutineComponent.Event.OnShowErrorDialog -> showErrorDialog(event.errorDialogUiModel)
       is RoutineComponent.Event.GetRoutines -> {
         event.run {
           updateLastTime(timeDate.yearNumber, timeDate.monthNumber, timeDate.dayNumber)
@@ -241,10 +238,8 @@ class RoutineComponentImpl(
     }
   }
 
-  private fun deleteRoutine(routine: RoutineUiModel) {
-    scope.launch {
-      deleteReminderUseCase(routine = routine.toRoutine())
-    }
+  private fun showErrorDialog(errorDialogUiModel: ErrorDialogUiModel) {
+    onShowErrorDialog(errorDialogUiModel)
   }
 
   private fun checkedRoutine(routine: RoutineUiModel) {
