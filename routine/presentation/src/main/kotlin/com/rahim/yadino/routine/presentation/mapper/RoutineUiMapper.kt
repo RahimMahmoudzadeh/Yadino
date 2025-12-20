@@ -1,11 +1,11 @@
-package com.yadino.routine.presentation.mapper
+package com.rahim.yadino.routine.presentation.mapper
 
 import com.rahim.yadino.core.timeDate.model.TimeDateModel
 import com.rahim.yadino.routine.domain.model.CurrentTimeModel
 import com.rahim.yadino.routine.domain.model.Routine
-import com.yadino.routine.presentation.model.CurrentTimeUiModel
-import com.yadino.routine.presentation.model.RoutineUiModel
-import com.yadino.routine.presentation.model.TimeDateUiModel
+import com.rahim.yadino.routine.presentation.model.CurrentTimeUiModel
+import com.rahim.yadino.routine.presentation.model.RoutineUiModel
+import com.rahim.yadino.routine.presentation.model.TimeDateUiModel
 
 fun TimeDateModel.toTimeDateUiModel(): TimeDateUiModel = TimeDateUiModel(
   dayNumber = this.dayNumber,

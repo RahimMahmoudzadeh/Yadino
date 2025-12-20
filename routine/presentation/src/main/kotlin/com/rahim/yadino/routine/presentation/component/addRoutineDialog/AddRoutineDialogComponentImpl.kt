@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.component.addRoutineDialog
+package com.rahim.yadino.routine.presentation.component.addRoutineDialog
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -13,11 +13,11 @@ import com.rahim.yadino.routine.domain.useCase.AddReminderUseCase
 import com.rahim.yadino.routine.domain.useCase.GetCurrentTimeUseCase
 import com.rahim.yadino.routine.domain.useCase.GetTimesMonthUseCase
 import com.rahim.yadino.routine.domain.useCase.UpdateReminderUseCase
-import com.yadino.routine.presentation.mapper.toCurrentTimeUiModel
-import com.yadino.routine.presentation.mapper.toRoutine
-import com.yadino.routine.presentation.mapper.toTimeDateUiModel
-import com.yadino.routine.presentation.model.IncreaseDecrease
-import com.yadino.routine.presentation.model.RoutineUiModel
+import com.rahim.yadino.routine.presentation.mapper.toCurrentTimeUiModel
+import com.rahim.yadino.routine.presentation.mapper.toRoutine
+import com.rahim.yadino.routine.presentation.mapper.toTimeDateUiModel
+import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
+import com.rahim.yadino.routine.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch

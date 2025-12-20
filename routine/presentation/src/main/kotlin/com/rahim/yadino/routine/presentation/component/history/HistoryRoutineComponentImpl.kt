@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.component.history
+package com.rahim.yadino.routine.presentation.component.history
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -8,9 +8,9 @@ import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.routine.domain.useCase.GetAllRoutineUseCase
-import com.yadino.routine.presentation.mapper.toRoutineUiModel
-import com.yadino.routine.presentation.model.IncompleteOrCompletedRoutinesUiModel
-import com.yadino.routine.presentation.model.RoutineUiModel
+import com.rahim.yadino.routine.presentation.mapper.toRoutineUiModel
+import com.rahim.yadino.routine.presentation.model.IncompleteOrCompletedRoutinesUiModel
+import com.rahim.yadino.routine.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope

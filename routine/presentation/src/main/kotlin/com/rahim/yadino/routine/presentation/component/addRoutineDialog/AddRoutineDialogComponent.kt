@@ -1,11 +1,11 @@
-package com.yadino.routine.presentation.component.addRoutineDialog
+package com.rahim.yadino.routine.presentation.component.addRoutineDialog
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.UnidirectionalComponent
-import com.yadino.routine.presentation.model.CurrentTimeUiModel
-import com.yadino.routine.presentation.model.IncreaseDecrease
-import com.yadino.routine.presentation.model.RoutineUiModel
-import com.yadino.routine.presentation.model.TimeDateUiModel
+import com.rahim.yadino.routine.presentation.model.CurrentTimeUiModel
+import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
+import com.rahim.yadino.routine.presentation.model.RoutineUiModel
+import com.rahim.yadino.routine.presentation.model.TimeDateUiModel
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 

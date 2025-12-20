@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.ui.alarmHistory
+package com.rahim.yadino.routine.presentation.ui.alarmHistory
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -40,9 +40,9 @@ import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
-import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.routine.presentation.R
-import com.yadino.routine.presentation.component.history.HistoryRoutineComponent
+import com.rahim.yadino.routine.presentation.component.history.HistoryRoutineComponent
+import com.rahim.yadino.toPersianDigits
 
 @Composable
 fun HistoryRoute(

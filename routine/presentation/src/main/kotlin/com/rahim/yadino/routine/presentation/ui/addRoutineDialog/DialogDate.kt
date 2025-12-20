@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.ui.addRoutineDialog
+package com.rahim.yadino.routine.presentation.ui.addRoutineDialog
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -51,8 +51,8 @@ import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.enums.HalfWeekName
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.routine.presentation.model.TimeDateUiModel
 import com.rahim.yadino.toPersianDigits
-import com.yadino.routine.presentation.model.TimeDateUiModel
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 

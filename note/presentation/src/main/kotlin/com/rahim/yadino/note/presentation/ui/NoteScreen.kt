@@ -19,13 +19,11 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import com.arkivanov.decompose.Child
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
-import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
@@ -164,19 +162,19 @@ private fun NoteScreen(
 
   when {
     noteDeleteDialog.value != null -> {
-      ErrorDialog(
-        modifier,
-        isClickOk = {
-          noteDeleteDialog.value = null
-          if (it) {
-            onDelete(noteDeleteDialog.value!!)
-          }
-        },
-        message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.can_you_delete),
-        okMessage = stringResource(
-          id = com.rahim.yadino.library.designsystem.R.string.ok,
-        ),
-      )
+//      ErrorDialog(
+//        modifier,
+//        isClickOk = {
+//          noteDeleteDialog.value = null
+//          if (it) {
+//            onDelete(noteDeleteDialog.value!!)
+//          }
+//        },
+//        message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.can_you_delete),
+//        okMessage = stringResource(
+//          id = com.rahim.yadino.library.designsystem.R.string.ok,
+//        ),
+//      )
     }
   }
 }

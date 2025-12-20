@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.ui.component
+package com.rahim.yadino.routine.presentation.ui.component
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rahim.yadino.designsystem.component.ItemRoutine
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
-import com.yadino.routine.presentation.model.RoutineUiModel
+import com.rahim.yadino.routine.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.PersistentList
 
 @Composable()

@@ -1,4 +1,4 @@
-package com.yadino.routine.presentation.model
+package com.rahim.yadino.routine.presentation.model
 
 data class CurrentTimeUiModel(
   val currentDay: Int,
