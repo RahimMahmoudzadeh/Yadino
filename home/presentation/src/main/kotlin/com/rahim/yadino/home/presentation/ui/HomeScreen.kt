@@ -1,7 +1,6 @@
 package com.rahim.yadino.home.presentation.ui
 
 import android.widget.Toast
-import androidx.activity.result.launch
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,7 +30,6 @@ import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
-import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.utils.size.FontDimensions
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
@@ -54,6 +52,9 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.collections.immutable.persistentListOf
 import com.rahim.yadino.base.LoadableData
+import com.rahim.yadino.home.presentation.ui.errorDialog.ErrorDialogUi
+import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponent
+import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -61,7 +62,8 @@ fun HomeRoute(
   modifier: Modifier = Modifier,
   clickSearch: Boolean,
   homeComponent: HomeComponent,
-  dialogSlot: Child.Created<Any, AddRoutineDialogComponent>?,
+  dialogSlotAddRoutineDialog: Child.Created<Any, AddRoutineDialogComponent>?,
+  dialogSlotErrorDialog: Child.Created<Any, ErrorDialogComponent>?,
 ) {
 
   val context = LocalContext.current
@@ -69,7 +71,8 @@ fun HomeRoute(
   val scope = rememberCoroutineScope()
 
   val (state, effect, event) = use(component = homeComponent)
-  dialogSlot?.let { dialogSlot ->
+
+  dialogSlotAddRoutineDialog?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       AddRoutineDialog(
         component = dialogComponent,
@@ -77,7 +80,13 @@ fun HomeRoute(
     }
   }
 
-  LaunchedEffect(true) {
+  dialogSlotErrorDialog?.let { dialogSlot ->
+    dialogSlot.instance.also { dialogComponent ->
+      ErrorDialogUi(component = dialogComponent)
+    }
+  }
+
+  LaunchedEffect(effect) {
     effect?.let {
       when (effect) {
         is HomeComponent.Effect.ShowSnackBar -> {
@@ -102,8 +111,8 @@ fun HomeRoute(
     onCheckedRoutine = {
       event.invoke(HomeComponent.Event.CheckedRoutine(it))
     },
-    onDeleteRoutine = {
-      event.invoke(HomeComponent.Event.DeleteRoutine(it))
+    onShowErrorDialog = {deleteUiModel ->
+      event.invoke(HomeComponent.Event.OnShowErrorDialog(errorDialogUiModel = deleteUiModel))
     },
     onUpdateRoutine = {
       event.invoke(HomeComponent.Event.OnShowUpdateRoutineDialog(it))
@@ -121,7 +130,7 @@ private fun HomeScreen(
   state: HomeComponent.State,
   clickSearch: Boolean,
   onCheckedRoutine: (RoutineUiModel) -> Unit,
-  onDeleteRoutine: (RoutineUiModel) -> Unit,
+  onShowErrorDialog: (errorDialogUiModel: ErrorDialogUiModel) -> Unit,
   onUpdateRoutine: (RoutineUiModel) -> Unit,
   onSearchText: (searchText: String) -> Unit,
 ) {
@@ -130,7 +139,6 @@ private fun HomeScreen(
   val size = LocalSize.current
   val fontSize = LocalFontSize.current
 
-  val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
 
   LaunchedEffect(Unit) {
@@ -180,19 +188,13 @@ private fun HomeScreen(
               }
               onUpdateRoutine(routineUpdate)
             },
-            { deleteRoutine ->
-              routineModelDeleteDialog.value = deleteRoutine
+            deleteRoutine = { deleteRoutine ->
+              onShowErrorDialog(ErrorDialogUiModel(title = context.getString(R.string.can_you_delete), submitTextButton = context.getString(R.string.ok), routineUiModel = deleteRoutine))
             },
           )
         }
       },
-
-      )
-  }
-  when {
-    routineModelDeleteDialog.value != null -> {
-
-    }
+    )
   }
 }
 
@@ -261,7 +263,7 @@ private fun HomeScreenPreview() {
       ),
       clickSearch = false,
       onCheckedRoutine = {},
-      onDeleteRoutine = {},
+      onShowErrorDialog = { _ -> },
       onUpdateRoutine = {},
       onSearchText = {},
     )

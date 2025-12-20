@@ -7,7 +7,6 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.rahim.yadino.home.domain.useCase.CancelReminderUseCase
-import com.rahim.yadino.home.domain.useCase.DeleteReminderUseCase
 import com.rahim.yadino.home.domain.useCase.GetCurrentDateUseCase
 import com.rahim.yadino.home.domain.useCase.GetTodayRoutinesUseCase
 import com.rahim.yadino.home.domain.useCase.SearchRoutineUseCase
@@ -19,6 +18,7 @@ import com.rahim.yadino.enums.message.error.ErrorMessage
 import com.rahim.yadino.home.presentation.mapper.toCurrentDatePresentationLayer
 import com.rahim.yadino.home.presentation.mapper.toRoutine
 import com.rahim.yadino.home.presentation.mapper.toRoutineUiModel
+import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
@@ -37,11 +37,11 @@ class HomeComponentImpl(
   mainContext: CoroutineContext,
   private val updateReminderUseCase: UpdateReminderUseCase,
   private val cancelReminderUseCase: CancelReminderUseCase,
-  private val deleteReminderUseCase: DeleteReminderUseCase,
   private val getTodayRoutinesUseCase: GetTodayRoutinesUseCase,
   private val searchRoutineUseCase: SearchRoutineUseCase,
   private val getCurrentDateUseCase: GetCurrentDateUseCase,
   private val onShowUpdateRoutineDialog: (RoutineUiModel) -> Unit,
+  private val onShowErrorDialog: (errorDialog: ErrorDialogUiModel) -> Unit,
 ) : HomeComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
@@ -73,8 +73,8 @@ class HomeComponentImpl(
         checkedRoutine(event.routine)
       }
 
-      is HomeComponent.Event.DeleteRoutine -> {
-        deleteRoutine(event.routine)
+      is HomeComponent.Event.OnShowErrorDialog -> {
+        showErrorDialog(event.errorDialogUiModel)
       }
 
       is HomeComponent.Event.SearchRoutine -> {
@@ -159,10 +159,8 @@ class HomeComponentImpl(
     }
   }
 
-  private fun deleteRoutine(routineModel: RoutineUiModel) {
-    scope.launch {
-      deleteReminderUseCase(routineModel.toRoutine())
-    }
+  private fun showErrorDialog(errorDialogUiModel: ErrorDialogUiModel) {
+    onShowErrorDialog(errorDialogUiModel)
   }
 
   private fun updateRoutine(routineModel: RoutineUiModel) {
