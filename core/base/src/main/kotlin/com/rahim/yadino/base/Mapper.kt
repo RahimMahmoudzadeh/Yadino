@@ -19,3 +19,10 @@ fun SuccessMessage.toMessageUi(): MessageUi = when (this) {
   SuccessMessage.SAVE_REMINDER -> MessageUi.SUCCESS_SAVE_REMINDER
   SuccessMessage.UPDATE_REMINDER -> MessageUi.SUCCESS_UPDATE_REMINDER
 }
+
+fun Resource<SuccessMessage, ErrorMessage>.toMessageUi(): MessageUi{
+  return when(this){
+    is Resource.Error<ErrorMessage> -> this.error.toMessageUi()
+    is Resource.Success<SuccessMessage> -> this.data.toMessageUi()
+  }
+}
