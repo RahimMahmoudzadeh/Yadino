@@ -50,7 +50,7 @@ fun ErrorDialogUi(
   val context = LocalContext.current
 
   LaunchedEffect(effect) {
-    effect?.let {
+    effect.collect {effect->
       when (effect) {
         is ErrorDialogComponent.Effect.ShowToast -> context.showToastShort(stringId = effect.message.toStringResource())
       }

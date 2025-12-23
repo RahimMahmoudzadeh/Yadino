@@ -87,12 +87,13 @@ fun HomeRoute(
   }
 
   LaunchedEffect(effect) {
-    effect?.let {
+    effect.collect { effect ->
       when (effect) {
         is HomeComponent.Effect.ShowSnackBar -> {
+          val messageSnackBar = context.getString(effect.message.toStringResource())
           scope.launch {
             snackBarHostState.showSnackbar(
-              message = context.getString(effect.message.toStringResource()),
+              message = messageSnackBar,
               duration = SnackbarDuration.Short,
             )
           }
@@ -111,7 +112,7 @@ fun HomeRoute(
     onCheckedRoutine = {
       event.invoke(HomeComponent.Event.CheckedRoutine(it))
     },
-    onShowErrorDialog = {deleteUiModel ->
+    onShowErrorDialog = { deleteUiModel ->
       event.invoke(HomeComponent.Event.OnShowErrorDialog(errorDialogUiModel = deleteUiModel))
     },
     onUpdateRoutine = {
@@ -138,6 +139,8 @@ private fun HomeScreen(
   val space = LocalSpacing.current
   val size = LocalSize.current
   val fontSize = LocalFontSize.current
+  val title = stringResource(R.string.can_you_delete)
+  val submitTextButton = stringResource(R.string.ok)
 
   var searchText by rememberSaveable { mutableStateOf("") }
 
@@ -189,7 +192,7 @@ private fun HomeScreen(
               onUpdateRoutine(routineUpdate)
             },
             deleteRoutine = { deleteRoutine ->
-              onShowErrorDialog(ErrorDialogUiModel(title = context.getString(R.string.can_you_delete), submitTextButton = context.getString(R.string.ok), routineUiModel = deleteRoutine))
+              onShowErrorDialog(ErrorDialogUiModel(title = title, submitTextButton = submitTextButton, routineUiModel = deleteRoutine))
             },
           )
         }
