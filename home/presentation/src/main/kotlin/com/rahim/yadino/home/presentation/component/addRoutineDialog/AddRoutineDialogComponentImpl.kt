@@ -18,6 +18,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -37,7 +38,7 @@ class AddRoutineDialogComponentImpl(
 
 
   private val _effect: Channel<AddRoutineDialogComponent.EFFECT> = Channel(Channel.BUFFERED)
-  override val effect: Flow<AddRoutineDialogComponent.EFFECT> = _effect.consumeAsFlow()
+  override val effect: Flow<AddRoutineDialogComponent.EFFECT> = _effect.receiveAsFlow()
 
   override fun event(event: AddRoutineDialogComponent.Event) = when (event) {
     AddRoutineDialogComponent.Event.DismissDialog -> onDismissed()

@@ -11,14 +11,14 @@ import kotlinx.coroutines.flow.flow
 
 data class StateDispatch<EVENT, STATE, EFFECT>(
   val state: STATE,
-  val effect: EFFECT?,
+  val effect: Flow<EFFECT>,
   val event: (EVENT) -> Unit,
 )
 
 @Composable
 inline fun <reified EVENT, STATE : Any, EFFECT> use(component: UnidirectionalComponent<EVENT, STATE, EFFECT>): StateDispatch<EVENT, STATE, EFFECT> {
   val state by component.state.subscribeAsState()
-  val effect by component.effect.collectAsStateWithLifecycle(initialValue = null)
+  val effect = component.effect
 
   val dispatch: (EVENT) -> Unit = { event ->
     component.event(event)
@@ -50,7 +50,7 @@ data class StateEffectDispatch<EVENT, EFFECT, STATE>(
 @Composable
 inline fun <reified EVENT, STATE, EFFECT> use(viewModel: UnidirectionalViewModel<EVENT, STATE, EFFECT>): StateDispatch<EVENT, STATE, EFFECT> {
   val state by viewModel.state.collectAsStateWithLifecycle()
-  val effect by viewModel.effect.collectAsStateWithLifecycle(initialValue = null)
+  val effect = viewModel.effect
 
   val dispatch: (EVENT) -> Unit = { event ->
     viewModel.event(event)

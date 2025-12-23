@@ -83,7 +83,7 @@ fun AddRoutineDialog(
   val context = LocalContext.current
 
   LaunchedEffect(effect) {
-    effect?.let {
+    effect.collect { effect ->
       when (effect) {
         is AddRoutineDialogComponent.EFFECT.ShowToast -> {
           context.showToastShort(stringId = effect.messageUi.toStringResource())
