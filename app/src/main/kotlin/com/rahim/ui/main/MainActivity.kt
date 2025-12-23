@@ -298,6 +298,7 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
   ) {
     val addRoutineDialogHome = component.addRoutineDialogHomeScreen.subscribeAsState().value.child
     val errorDialogHome = component.errorDialogHomeHomeScreen.subscribeAsState().value.child
+    val errorDialogRoutine = component.errorDialogRoutineScreen.subscribeAsState().value.child
     val addRoutineDialogRoutine = component.addRoutineDialogRoutineScreen.subscribeAsState().value.child
     val addNoteDialog = component.addNoteDialog.subscribeAsState().value.child
 
@@ -313,7 +314,12 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
         }
 
         is RootComponent.ChildStack.OnBoarding -> OnBoardingRoute(component = child.component)
-        is RootComponent.ChildStack.Routine -> RoutineRoute(component = child.component, showSearchBar = clickSearch, dialogSlot = addRoutineDialogRoutine)
+        is RootComponent.ChildStack.Routine -> RoutineRoute(
+          component = child.component, showSearchBar = clickSearch,
+          dialogSlotAddRoutine = addRoutineDialogRoutine,
+          dialogSlotErrorDialog = errorDialogRoutine,
+        )
+
         is RootComponent.ChildStack.HistoryRoutine -> HistoryRoute(component = child.component)
         is RootComponent.ChildStack.Note -> NoteRoute(component = child.component, clickSearch = clickSearch, dialogSlot = addNoteDialog)
       }

@@ -260,8 +260,8 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
       addRoutineDialogRoutineScreenComponentNavigationSlot.activate(AddRoutineDialogRoutineScreen(it))
     },
     onShowErrorDialog = {
-
-    }
+      errorDialogHomeRoutineComponentNavigationSlot.activate(ErrorDialogRoutine(it))
+    },
   )
 
   private val deleteNoteUseCase: DeleteNoteUseCase = get()
