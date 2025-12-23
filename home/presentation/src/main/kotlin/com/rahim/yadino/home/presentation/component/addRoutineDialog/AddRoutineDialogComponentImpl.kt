@@ -17,7 +17,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
@@ -37,8 +36,8 @@ class AddRoutineDialogComponentImpl(
   override val state: Value<AddRoutineDialogComponent.State> = _state
 
 
-  private val _effect: Channel<AddRoutineDialogComponent.EFFECT> = Channel(Channel.BUFFERED)
-  override val effect: Flow<AddRoutineDialogComponent.EFFECT> = _effect.receiveAsFlow()
+  private val _effect: Channel<AddRoutineDialogComponent.Effect> = Channel(Channel.BUFFERED)
+  override val effect: Flow<AddRoutineDialogComponent.Effect> = _effect.receiveAsFlow()
 
   override fun event(event: AddRoutineDialogComponent.Event) = when (event) {
     AddRoutineDialogComponent.Event.DismissDialog -> onDismissed()
@@ -53,16 +52,16 @@ class AddRoutineDialogComponentImpl(
       }.onSuccess {
         when(it){
           is Resource.Error<ErrorMessage> -> {
-            _effect.send(AddRoutineDialogComponent.EFFECT.ShowToast(it.error.toMessageUi()))
+            _effect.send(AddRoutineDialogComponent.Effect.ShowToast(it.error.toMessageUi()))
           }
           is Resource.Success<SuccessMessage> ->  {
-            _effect.send(AddRoutineDialogComponent.EFFECT.ShowToast(it.data.toMessageUi()))
+            _effect.send(AddRoutineDialogComponent.Effect.ShowToast(it.data.toMessageUi()))
             delay(100)
             onDismissed()
           }
         }
       }.onFailure {
-        _effect.send(AddRoutineDialogComponent.EFFECT.ShowToast(MessageUi.ERROR_SAVE_REMINDER))
+        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_SAVE_REMINDER))
       }
     }
   }
@@ -72,10 +71,10 @@ class AddRoutineDialogComponentImpl(
       runCatching {
         updateReminderUseCase.invoke(routine.toRoutine())
       }.onSuccess {
-        _effect.send(AddRoutineDialogComponent.EFFECT.ShowToast(MessageUi.SUCCESS_UPDATE_REMINDER))
+        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.SUCCESS_UPDATE_REMINDER))
         onDismissed()
       }.onFailure {
-        _effect.send(AddRoutineDialogComponent.EFFECT.ShowToast(MessageUi.ERROR_UPDATE_REMINDER))
+        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_UPDATE_REMINDER))
       }
     }
   }
