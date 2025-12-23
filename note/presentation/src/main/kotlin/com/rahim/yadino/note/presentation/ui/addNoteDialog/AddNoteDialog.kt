@@ -24,6 +24,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -56,6 +58,8 @@ import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.model.PriorityNote
+import com.rahim.yadino.showToastShort
+import com.rahim.yadino.toStringResource
 import saman.zamani.persiandate.PersianDate
 import kotlin.random.Random
 
@@ -69,11 +73,21 @@ fun AddNoteDialog(
   component: AddNoteDialogComponent,
 ) {
 
-  val (state, _,event) = use(component)
+  val (state, effect, event) = use(component)
 
   val space = LocalSpacing.current
   val size = LocalSize.current
   val fontSize = LocalFontSize.current
+  val context = LocalContext.current
+
+  LaunchedEffect(effect) {
+    effect.collect {
+      when (it) {
+        is AddNoteDialogComponent.Effect.ShowToast -> context.showToastShort(it.messageUi.toStringResource())
+      }
+    }
+  }
+
 
   var noteState by remember { mutableStateOf(state.updateNote?.state ?: PriorityNote.LOW_PRIORITY) }
   var nameNote by rememberSaveable { mutableStateOf(state.updateNote?.name ?: "") }
@@ -328,7 +342,7 @@ fun AddNoteDialog(
           Spacer(modifier = Modifier.width(size.size10))
           TextButton(
             onClick = {
-             event(AddNoteDialogComponent.Event.Dismiss)
+              event(AddNoteDialogComponent.Event.Dismiss)
             },
           ) {
             Text(
