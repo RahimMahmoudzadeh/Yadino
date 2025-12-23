@@ -33,6 +33,7 @@ import com.rahim.component.config.AddRoutineDialogHomeScreen
 import com.rahim.component.config.AddRoutineDialogRoutineScreen
 import com.rahim.component.config.ConfigChildComponent
 import com.rahim.component.config.ErrorDialogHome
+import com.rahim.component.config.ErrorDialogNote
 import com.rahim.component.config.ErrorDialogRoutine
 import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponent
 import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponentImpl
@@ -75,10 +76,13 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private val addNoteDialogComponentNavigationSlot =
     SlotNavigation<AddNoteDialog>()
 
-  private val errorDialogHomeHomeComponentNavigationSlot =
+  private val errorDialogHomeComponentNavigationSlot =
     SlotNavigation<ErrorDialogHome>()
 
-  private val errorDialogHomeRoutineComponentNavigationSlot =
+  private val errorDialogNoteComponentNavigationSlot =
+    SlotNavigation<ErrorDialogNote>()
+
+  private val errorDialogRoutineComponentNavigationSlot =
     SlotNavigation<ErrorDialogRoutine>()
 
   override val stack: Value<ChildStack<*, RootComponent.ChildStack>> = childStack(
@@ -150,9 +154,9 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
       )
     }
 
-  override val errorDialogHomeHomeScreen: Value<ChildSlot<ErrorDialogHome, ErrorDialogComponent>> =
+  override val errorDialogHomeScreen: Value<ChildSlot<ErrorDialogHome, ErrorDialogComponent>> =
     childSlot(
-      source = errorDialogHomeHomeComponentNavigationSlot,
+      source = errorDialogHomeComponentNavigationSlot,
       serializer = ErrorDialogHome.serializer(),
       handleBackButton = true,
       key = "errorDialogComponentNavigationSlot",
@@ -162,14 +166,14 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
         mainContext = Dispatchers.Main,
         deleteReminderUseCase = deleteReminderUseCase,
         errorDialogUiModel = config.errorDialogUiModel,
-        onDismissed = errorDialogHomeHomeComponentNavigationSlot::dismiss,
+        onDismissed = errorDialogHomeComponentNavigationSlot::dismiss,
       )
     }
   private val deleteReminderUseCaseRoutine: com.rahim.yadino.routine.domain.useCase.DeleteReminderUseCase = get()
 
   override val errorDialogRoutineScreen: Value<ChildSlot<ErrorDialogRoutine, com.rahim.yadino.routine.presentation.component.errorDialog.ErrorDialogComponent>> =
     childSlot(
-      source = errorDialogHomeRoutineComponentNavigationSlot,
+      source = errorDialogRoutineComponentNavigationSlot,
       serializer = ErrorDialogRoutine.serializer(),
       handleBackButton = true,
       key = "errorDialogRoutineComponentNavigationSlot",
@@ -179,7 +183,23 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
         mainContext = Dispatchers.Main,
         deleteReminderUseCase = deleteReminderUseCaseRoutine,
         errorDialogUiModel = config.errorDialogUiModel,
-        onDismissed = errorDialogHomeRoutineComponentNavigationSlot::dismiss,
+        onDismissed = errorDialogRoutineComponentNavigationSlot::dismiss,
+      )
+    }
+
+  override val errorDialogNoteScreen: Value<ChildSlot<ErrorDialogNote, com.rahim.yadino.note.presentation.component.errorDialog.ErrorDialogComponent>> =
+    childSlot(
+      source = errorDialogNoteComponentNavigationSlot,
+      serializer = ErrorDialogNote.serializer(),
+      handleBackButton = true,
+      key = "errorDialogNoteComponentNavigationSlot",
+    ) { config, childComponentContext ->
+      com.rahim.yadino.note.presentation.component.errorDialog.ErrorDialogComponentImpl(
+        componentContext = childComponentContext,
+        mainContext = Dispatchers.Main,
+        deleteNoteUseCase = deleteNoteUseCase,
+        errorDialogUiModel = config.errorDialogUiModel,
+        onDismissed = errorDialogNoteComponentNavigationSlot::dismiss,
       )
     }
 
@@ -217,7 +237,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     searchRoutineUseCase = searchRoutineUseCase,
     getCurrentDateUseCase = getCurrentDateUseCase,
     onShowErrorDialog = { errorDialog ->
-      errorDialogHomeHomeComponentNavigationSlot.activate(ErrorDialogHome(errorDialog))
+      errorDialogHomeComponentNavigationSlot.activate(ErrorDialogHome(errorDialog))
     },
     onShowUpdateRoutineDialog = { routineModel ->
       addRoutineDialogHomeScreenComponentNavigationSlot.activate(AddRoutineDialogHomeScreen(routineModel))
@@ -260,8 +280,8 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
       addRoutineDialogRoutineScreenComponentNavigationSlot.activate(AddRoutineDialogRoutineScreen(it))
     },
     onShowErrorDialog = {
-
-    }
+      errorDialogRoutineComponentNavigationSlot.activate(ErrorDialogRoutine(it))
+    },
   )
 
   private val deleteNoteUseCase: DeleteNoteUseCase = get()
@@ -271,12 +291,14 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private fun noteComponent(componentContext: ComponentContext): NoteComponent = NoteComponentImpl(
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
-    deleteNoteUseCase = deleteNoteUseCase,
     getNotesUseCase = getNotesUseCase,
     searchNoteUseCase = searchNoteUseCase,
     updateNoteUseCase = updateNoteUseCase,
     onOpenUpdateNoteDialog = { updateNote ->
       addNoteDialogComponentNavigationSlot.activate(AddNoteDialog(updateNote))
+    },
+    onShowErrorDialog = { errorDialogUiModel ->
+      errorDialogNoteComponentNavigationSlot.activate(ErrorDialogNote(errorDialogUiModel))
     },
   )
 

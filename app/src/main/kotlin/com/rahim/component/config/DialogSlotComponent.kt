@@ -19,3 +19,6 @@ data class ErrorDialogHome(val errorDialogUiModel: ErrorDialogUiModel) : ConfigC
 
 @Serializable
 data class ErrorDialogRoutine(val errorDialogUiModel: com.rahim.yadino.routine.presentation.model.ErrorDialogUiModel) : ConfigChildComponent
+
+@Serializable
+data class ErrorDialogNote(val errorDialogUiModel: com.rahim.yadino.note.presentation.model.ErrorDialogUiModel) : ConfigChildComponent

@@ -14,6 +14,7 @@ import com.rahim.yadino.note.domain.useCase.UpdateNoteUseCase
 import com.rahim.yadino.note.presentation.mapper.toNameNote
 import com.rahim.yadino.note.presentation.mapper.toNote
 import com.rahim.yadino.note.presentation.mapper.toNoteUiModel
+import com.rahim.yadino.note.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import kotlinx.collections.immutable.toPersistentList
@@ -31,11 +32,11 @@ import kotlin.coroutines.CoroutineContext
 class NoteComponentImpl(
   componentContext: ComponentContext,
   mainContext: CoroutineContext,
-  private val deleteNoteUseCase: DeleteNoteUseCase,
   private val getNotesUseCase: GetNotesUseCase,
   private val searchNoteUseCase: SearchNoteUseCase,
   private val updateNoteUseCase: UpdateNoteUseCase,
   private val onOpenUpdateNoteDialog: (updateNote: NoteUiModel) -> Unit,
+  private val onShowErrorDialog: (errorDialogUiModel: ErrorDialogUiModel) -> Unit,
 ) : NoteComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
@@ -56,7 +57,7 @@ class NoteComponentImpl(
   override fun event(event: NoteComponent.Event) = when (event) {
     is NoteComponent.Event.GetNotes -> getNotes()
     is NoteComponent.Event.Search -> searchItems(event.nameNoteUi)
-    is NoteComponent.Event.Delete -> delete(event.deleteNote)
+    is NoteComponent.Event.ShowErrorDialog -> showErrorDialog(event.errorDialogUiModel)
     is NoteComponent.Event.OnChecked -> updateNote(event.checkedNote)
     is NoteComponent.Event.OnOpenUpdateNoteDialog -> onOpenUpdateNoteDialog(event.updateNote)
   }
@@ -66,10 +67,9 @@ class NoteComponentImpl(
       updateNoteUseCase(note.toNote())
     }
   }
-  private fun delete(note: NoteUiModel) {
-    scope.launch {
-      deleteNoteUseCase(note.toNote())
-    }
+
+  private fun showErrorDialog(errorDialogUiModel: ErrorDialogUiModel) {
+    onShowErrorDialog(errorDialogUiModel)
   }
 
   private fun searchItems(nameNoteUi: NameNoteUi) {

@@ -50,16 +50,7 @@ class AddRoutineDialogComponentImpl(
       runCatching {
         addReminderUseCase(routine.toRoutine())
       }.onSuccess {
-        when(it){
-          is Resource.Error<ErrorMessage> -> {
-            _effect.send(AddRoutineDialogComponent.Effect.ShowToast(it.error.toMessageUi()))
-          }
-          is Resource.Success<SuccessMessage> ->  {
-            _effect.send(AddRoutineDialogComponent.Effect.ShowToast(it.data.toMessageUi()))
-            delay(100)
-            onDismissed()
-          }
-        }
+        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(it.toMessageUi(onDismissed)))
       }.onFailure {
         _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_SAVE_REMINDER))
       }
@@ -71,8 +62,7 @@ class AddRoutineDialogComponentImpl(
       runCatching {
         updateReminderUseCase.invoke(routine.toRoutine())
       }.onSuccess {
-        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.SUCCESS_UPDATE_REMINDER))
-        onDismissed()
+        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(it.toMessageUi(onDismissed)))
       }.onFailure {
         _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_UPDATE_REMINDER))
       }

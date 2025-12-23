@@ -5,6 +5,7 @@ import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalComponent
 import com.rahim.yadino.enums.message.MessageUi
 import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
+import com.rahim.yadino.note.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import kotlinx.collections.immutable.PersistentList
@@ -14,7 +15,7 @@ interface NoteComponent : UnidirectionalComponent<NoteComponent.Event, NoteCompo
   @Immutable
   sealed class Event() {
     data class Search(val nameNoteUi: NameNoteUi) : Event()
-    data class Delete(val deleteNote: NoteUiModel) : Event()
+    data class ShowErrorDialog(val errorDialogUiModel: ErrorDialogUiModel) : Event()
     data class OnChecked(val checkedNote: NoteUiModel) : Event()
     data class OnOpenUpdateNoteDialog(val updateNote: NoteUiModel) : Event()
     data object GetNotes : Event()

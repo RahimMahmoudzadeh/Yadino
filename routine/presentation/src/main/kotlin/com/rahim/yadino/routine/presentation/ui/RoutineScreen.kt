@@ -61,12 +61,14 @@ import com.rahim.yadino.designsystem.utils.theme.font_medium
 import com.rahim.yadino.routine.presentation.R
 import com.rahim.yadino.routine.presentation.component.RoutineComponent
 import com.rahim.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent
+import com.rahim.yadino.routine.presentation.component.errorDialog.ErrorDialogComponent
 import com.rahim.yadino.routine.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
 import com.rahim.yadino.routine.presentation.model.RoutineUiModel
 import com.rahim.yadino.routine.presentation.model.TimeDateUiModel
 import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.AddRoutineDialog
 import com.rahim.yadino.routine.presentation.ui.component.ListRoutines
+import com.rahim.yadino.routine.presentation.ui.errorDialog.ErrorDialogUi
 import com.rahim.yadino.toPersianDigits
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.FlowPreview
@@ -79,15 +81,21 @@ fun RoutineRoute(
   modifier: Modifier = Modifier,
   showSearchBar: Boolean,
   component: RoutineComponent,
-  dialogSlot: Child.Created<Any, AddRoutineDialogComponent>?,
+  dialogSlotAddRoutine: Child.Created<Any, AddRoutineDialogComponent>?,
+  dialogSlotErrorDialog: Child.Created<Any, ErrorDialogComponent>?,
 ) {
   val (state, _, event) = use(component)
 
-  dialogSlot?.let { dialogSlot ->
+  dialogSlotAddRoutine?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       AddRoutineDialog(
         componentComponent = dialogComponent,
       )
+    }
+  }
+  dialogSlotErrorDialog?.let { dialogSlot ->
+    dialogSlot.instance.also { dialogComponent ->
+      ErrorDialogUi(component = dialogComponent)
     }
   }
   RoutineScreen(

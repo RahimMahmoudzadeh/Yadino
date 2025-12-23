@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation.ui.errorDialog
+package com.rahim.yadino.note.presentation.ui.errorDialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,8 +30,8 @@ import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
-import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponent
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.note.presentation.component.errorDialog.ErrorDialogComponent
 import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toStringResource
 
@@ -50,7 +50,7 @@ fun ErrorDialogUi(
   val context = LocalContext.current
 
   LaunchedEffect(effect) {
-    effect.collect {effect->
+    effect.collect { effect ->
       when (effect) {
         is ErrorDialogComponent.Effect.ShowToast -> context.showToastShort(stringId = effect.message.toStringResource())
       }
