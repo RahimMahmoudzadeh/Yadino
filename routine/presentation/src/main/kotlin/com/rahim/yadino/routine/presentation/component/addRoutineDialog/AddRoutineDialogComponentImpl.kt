@@ -9,6 +9,10 @@ import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.rahim.yadino.Constants.DAY_MIN
 import com.rahim.yadino.Constants.MONTH_MAX
 import com.rahim.yadino.Constants.MONTH_MIN
+import com.rahim.yadino.base.Resource
+import com.rahim.yadino.base.toMessageUi
+import com.rahim.yadino.enums.message.MessageUi
+import com.rahim.yadino.enums.message.error.ErrorMessage
 import com.rahim.yadino.routine.domain.useCase.AddReminderUseCase
 import com.rahim.yadino.routine.domain.useCase.GetCurrentTimeUseCase
 import com.rahim.yadino.routine.domain.useCase.GetTimesMonthUseCase
@@ -20,6 +24,11 @@ import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
 import com.rahim.yadino.routine.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -41,6 +50,9 @@ class AddRoutineDialogComponentImpl(
   private val _state = MutableValue(AddRoutineDialogComponent.State(updateRoutine = updateRoutine))
   override val state: Value<AddRoutineDialogComponent.State> = _state
 
+  private val _effect = Channel<AddRoutineDialogComponent.Effect>(Channel.BUFFERED)
+  override val effect: Flow<AddRoutineDialogComponent.Effect> = _effect.consumeAsFlow()
+
   init {
     lifecycle.doOnCreate {
       getTimesCurrentMonth()
@@ -58,10 +70,11 @@ class AddRoutineDialogComponentImpl(
     scope.launch {
       runCatching {
         addReminderUseCase.invoke(routine.toRoutine())
-      }.onSuccess {
+      }.onSuccess { resource ->
+        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(resource.toMessageUi()))
         onDismissed()
       }.onFailure {
-
+        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_SAVE_REMINDER))
       }
     }
   }
@@ -70,10 +83,11 @@ class AddRoutineDialogComponentImpl(
     scope.launch {
       runCatching {
         updateReminderUseCase.invoke(routine.toRoutine())
-      }.onSuccess {
+      }.onSuccess {resource->
+        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(resource.toMessageUi()))
         onDismissed()
       }.onFailure {
-
+        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_UPDATE_REMINDER))
       }
     }
   }

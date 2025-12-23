@@ -23,6 +23,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -58,7 +60,9 @@ import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent
 import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
 import com.rahim.yadino.routine.presentation.model.RoutineUiModel
+import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toPersianDigits
+import com.rahim.yadino.toStringResource
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
@@ -75,16 +79,25 @@ const val MAX_EXPLANATION_LENGTH = 40
   ExperimentalMaterial3Api::class,
 )
 @Composable
-fun DialogAddRoutine(
+fun AddRoutineDialog(
   modifier: Modifier = Modifier,
   componentComponent: AddRoutineDialogComponent,
 ) {
   val size = LocalSize.current
   val fontSize = LocalFontSize.current
   val space = LocalSpacing.current
+  val context = LocalContext.current
   val persianData = PersianDate()
 
-  val (state, _,event) = use(componentComponent)
+  val (state, effect, event) = use(componentComponent)
+
+  LaunchedEffect(effect) {
+    effect.collect { effect ->
+      when (effect) {
+        is AddRoutineDialogComponent.Effect.ShowToast -> context.showToastShort(stringId = effect.messageUi.toStringResource())
+      }
+    }
+  }
 
   var monthChecked by rememberSaveable { mutableIntStateOf(state.currentTime?.currentMonth ?: persianData.shMonth) }
   var yearChecked by rememberSaveable { mutableIntStateOf(state.currentTime?.currentYear ?: persianData.shYear) }
@@ -112,13 +125,13 @@ fun DialogAddRoutine(
         dismissOnClickOutside = false,
       ),
       modifier = modifier
-        .fillMaxWidth()
-        .padding(horizontal = space.space22)
-        .border(
-          size.size2,
-          brush = Brush.verticalGradient(gradientColors),
-          shape = RoundedCornerShape(size.size8),
-        ),
+          .fillMaxWidth()
+          .padding(horizontal = space.space22)
+          .border(
+              size.size2,
+              brush = Brush.verticalGradient(gradientColors),
+              shape = RoundedCornerShape(size.size8),
+          ),
       onDismissRequest = {
         event.invoke(AddRoutineDialogComponent.Event.Dismiss)
       },
@@ -129,8 +142,8 @@ fun DialogAddRoutine(
       ) {
         Column(
           modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = space.space16, end = space.space12, start = space.space12, bottom = space.space8),
+              .fillMaxWidth()
+              .padding(top = space.space16, end = space.space12, start = space.space12, bottom = space.space8),
         ) {
           Text(
             fontSize = 18.sp,
@@ -146,15 +159,15 @@ fun DialogAddRoutine(
           )
           TextField(
             modifier = Modifier
-              .background(MaterialTheme.colorScheme.background)
-              .fillMaxWidth()
-              .padding(top = space.space18)
-              .height(size.size60)
-              .border(
-                width = size.size1,
-                brush = Brush.verticalGradient(gradientColors),
-                shape = RoundedCornerShape(4.dp),
-              ),
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxWidth()
+                .padding(top = space.space18)
+                .height(size.size60)
+                .border(
+                    width = size.size1,
+                    brush = Brush.verticalGradient(gradientColors),
+                    shape = RoundedCornerShape(4.dp),
+                ),
             value = routineName,
             onValueChange = {
               isErrorName = it.length >= MAX_NAME_LENGTH
@@ -193,15 +206,15 @@ fun DialogAddRoutine(
           }
           TextField(
             modifier = Modifier
-              .background(MaterialTheme.colorScheme.background)
-              .fillMaxWidth()
-              .padding(top = space.space18)
-              .height(size.size90)
-              .border(
-                width = size.size1,
-                brush = Brush.verticalGradient(gradientColors),
-                shape = RoundedCornerShape(size.size4),
-              ),
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxWidth()
+                .padding(top = space.space18)
+                .height(size.size90)
+                .border(
+                    width = size.size1,
+                    brush = Brush.verticalGradient(gradientColors),
+                    shape = RoundedCornerShape(size.size4),
+                ),
             value = routineExplanation ?: "",
             onValueChange = {
               isErrorExplanation = it.length >= MAX_EXPLANATION_LENGTH
@@ -235,11 +248,11 @@ fun DialogAddRoutine(
           Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-              .fillMaxWidth()
-              .padding(
-                top = space.space10,
-                start = space.space20,
-              ),
+                .fillMaxWidth()
+                .padding(
+                    top = space.space10,
+                    start = space.space20,
+                ),
           ) {
             Row(
               verticalAlignment = Alignment.CenterVertically,
@@ -281,11 +294,11 @@ fun DialogAddRoutine(
             Row(
               horizontalArrangement = Arrangement.SpaceBetween,
               modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                  top = if (state.timesMonth.isNotEmpty()) 0.dp else space.space10,
-                  start = space.space20,
-                ),
+                  .fillMaxWidth()
+                  .padding(
+                      top = if (state.timesMonth.isNotEmpty()) 0.dp else space.space10,
+                      start = space.space20,
+                  ),
             ) {
               Text(
                 modifier = Modifier.padding(top = space.space14),
@@ -313,15 +326,15 @@ fun DialogAddRoutine(
           Spacer(modifier = Modifier.height(size.size22))
           Row(
             modifier = Modifier
-              .fillMaxWidth(1f)
-              .padding(space.space12),
+                .fillMaxWidth(1f)
+                .padding(space.space12),
           ) {
             DialogButtonBackground(
               text = stringResource(id = R.string.confirmation),
               gradient = Brush.verticalGradient(gradientColors),
               modifier = Modifier
-                .fillMaxWidth(0.3f)
-                .height(size.size40),
+                  .fillMaxWidth(0.3f)
+                  .height(size.size40),
               textStyle = MaterialTheme.typography.bodyMedium,
               space = space,
               size = size,
