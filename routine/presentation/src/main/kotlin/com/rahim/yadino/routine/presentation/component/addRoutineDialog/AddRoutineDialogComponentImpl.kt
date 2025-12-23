@@ -71,8 +71,7 @@ class AddRoutineDialogComponentImpl(
       runCatching {
         addReminderUseCase.invoke(routine.toRoutine())
       }.onSuccess { resource ->
-        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(resource.toMessageUi()))
-        onDismissed()
+        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(resource.toMessageUi(onDismissed)))
       }.onFailure {
         _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_SAVE_REMINDER))
       }
@@ -84,8 +83,7 @@ class AddRoutineDialogComponentImpl(
       runCatching {
         updateReminderUseCase.invoke(routine.toRoutine())
       }.onSuccess {resource->
-        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(resource.toMessageUi()))
-        onDismissed()
+        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(resource.toMessageUi(onDismissed)))
       }.onFailure {
         _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_UPDATE_REMINDER))
       }
