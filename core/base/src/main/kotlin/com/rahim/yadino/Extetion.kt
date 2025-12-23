@@ -5,9 +5,12 @@ import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import com.rahim.yadino.base.Resource
 import com.rahim.yadino.core.base.R
 import com.rahim.yadino.enums.MonthName
-import com.rahim.yadino.enums.error.ErrorMessageCode
+import com.rahim.yadino.enums.message.MessageUi
+import com.rahim.yadino.enums.message.error.ErrorMessage
+import com.rahim.yadino.enums.message.success.SuccessMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -66,30 +69,19 @@ fun Int.calculateMonthName(): String {
   }
 }
 
-fun String.calculateTimeFormat(currentYear: Int, currentMonth: Int, currentDay: String): String {
-  val currentMonth = if (currentMonth.toString().length == 1) {
-    "0$currentMonth"
-  } else {
-    currentMonth
-  }
-  val currentDay = if (currentDay.length == 1) {
-    "0$currentDay"
-  } else {
-    currentDay
-  }
-  return "$currentYear-$currentMonth-$currentDay"
-}
-
-fun ErrorMessageCode.toStringResource() = when (this@toStringResource) {
-  ErrorMessageCode.ERROR_GET_PROCESS -> R.string.errorGetProses
-  ErrorMessageCode.EQUAL_ROUTINE_MESSAGE -> R.string.equalRoutineMessage
-
-  ErrorMessageCode.ERROR_SAVE_PROSES -> R.string.errorSaveProses
-
-  ErrorMessageCode.ERROR_NOTIFICATION_PERMISSION -> R.string.errorSaveProses
-  ErrorMessageCode.ERROR_REMINDER_PERMISSION -> R.string.errorSaveProses
-  ErrorMessageCode.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION -> R.string.errorSaveProses
-  ErrorMessageCode.ERROR_TIME_PASSED -> R.string.errorTimePassed
+fun MessageUi.toStringResource(): Int = when (this) {
+  MessageUi.ERROR_GET_PROCESS -> R.string.errorGetProses
+  MessageUi.ERROR_EQUAL_ROUTINE_MESSAGE -> R.string.equalRoutineMessage
+  MessageUi.ERROR_SAVE_REMINDER -> R.string.errorSaveReminder
+  MessageUi.ERROR_NOTIFICATION_PERMISSION -> R.string.errorSaveProses
+  MessageUi.ERROR_REMINDER_PERMISSION -> R.string.errorSaveProses
+  MessageUi.ERROR_NOTIFICATION_AND_REMINDER_PERMISSION -> R.string.errorSaveProses
+  MessageUi.ERROR_TIME_PASSED -> R.string.errorTimePassed
+  MessageUi.ERROR_SEARCH_ROUTINE -> R.string.we_encountered_problem_during_search_routine
+  MessageUi.SUCCESS_SAVE_REMINDER -> R.string.your_routine_has_been_successfully_recorded
+  MessageUi.SUCCESS_UPDATE_REMINDER -> R.string.your_routine_has_been_successfully_updated
+  MessageUi.ERROR_UPDATE_REMINDER -> R.string.errorUpdateReminder
+  MessageUi.ERROR_REMOVE_REMINDER -> R.string.errorRemoveReminder
 }
 
 fun String.toPersianDigits(): String {
@@ -122,26 +114,6 @@ fun String.isPackageInstalled(packageManager: PackageManager): Boolean {
   }
 }
 
-fun <T> Flow<List<T>>.getMatchingItems(predicate: (T) -> Boolean): Flow<List<T>> {
-  return this.map { list ->
-    val matchingItems = list.filter(predicate)
-    Timber.tag("getMatchingItems").d("getMatchingItems list${list.map { it }}")
-    Timber.tag("getMatchingItems").d("getMatchingItems ${matchingItems.map { it }}")
-    matchingItems.ifEmpty {
-      emptyList()
-    }
-  }.flowOn(Dispatchers.IO)
-}
-
-suspend fun <T> Flow<T>.collectWithoutHistory(collector: suspend (T) -> Unit) {
-  var firstEmission = true
-  collect { value ->
-    if (!firstEmission) {
-      collector(value)
-    }
-    firstEmission = false
-  }
-}
 fun DrawScope.createOvalBottomPath(
   ovalHeight: Float,
 ): Path {
@@ -159,6 +131,7 @@ fun DrawScope.createOvalBottomPath(
   path.close()
   return path
 }
-fun Context.showToastShort(stringId: Int,duration:Int = Toast.LENGTH_SHORT) {
+
+fun Context.showToastShort(stringId: Int, duration: Int = Toast.LENGTH_SHORT) {
   Toast.makeText(this, this.resources.getString(stringId), duration).show()
 }

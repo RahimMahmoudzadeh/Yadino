@@ -8,11 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -26,7 +30,6 @@ import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
-import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.utils.size.FontDimensions
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
@@ -49,20 +52,56 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.collections.immutable.persistentListOf
 import com.rahim.yadino.base.LoadableData
+import com.rahim.yadino.home.presentation.ui.errorDialog.ErrorDialogUi
+import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponent
+import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeRoute(
   modifier: Modifier = Modifier,
   clickSearch: Boolean,
   homeComponent: HomeComponent,
-  dialogSlot: Child.Created<Any, AddRoutineDialogComponent>?,
+  dialogSlotAddRoutineDialog: Child.Created<Any, AddRoutineDialogComponent>?,
+  dialogSlotErrorDialog: Child.Created<Any, ErrorDialogComponent>?,
 ) {
-  val (state, event) = use(component = homeComponent)
-  dialogSlot?.let { dialogSlot ->
+
+  val context = LocalContext.current
+  val snackBarHostState = remember { SnackbarHostState() }
+  val scope = rememberCoroutineScope()
+
+  val (state, effect, event) = use(component = homeComponent)
+
+  dialogSlotAddRoutineDialog?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       AddRoutineDialog(
         component = dialogComponent,
       )
+    }
+  }
+
+  dialogSlotErrorDialog?.let { dialogSlot ->
+    dialogSlot.instance.also { dialogComponent ->
+      ErrorDialogUi(component = dialogComponent)
+    }
+  }
+
+  LaunchedEffect(effect) {
+    effect?.let {
+      when (effect) {
+        is HomeComponent.Effect.ShowSnackBar -> {
+          scope.launch {
+            snackBarHostState.showSnackbar(
+              message = context.getString(effect.message.toStringResource()),
+              duration = SnackbarDuration.Short,
+            )
+          }
+        }
+
+        is HomeComponent.Effect.ShowToast -> {
+          context.showToastShort(effect.message.toStringResource())
+        }
+      }
     }
   }
   HomeScreen(
@@ -72,8 +111,8 @@ fun HomeRoute(
     onCheckedRoutine = {
       event.invoke(HomeComponent.Event.CheckedRoutine(it))
     },
-    onDeleteRoutine = {
-      event.invoke(HomeComponent.Event.DeleteRoutine(it))
+    onShowErrorDialog = {deleteUiModel ->
+      event.invoke(HomeComponent.Event.OnShowErrorDialog(errorDialogUiModel = deleteUiModel))
     },
     onUpdateRoutine = {
       event.invoke(HomeComponent.Event.OnShowUpdateRoutineDialog(it))
@@ -91,7 +130,7 @@ private fun HomeScreen(
   state: HomeComponent.State,
   clickSearch: Boolean,
   onCheckedRoutine: (RoutineUiModel) -> Unit,
-  onDeleteRoutine: (RoutineUiModel) -> Unit,
+  onShowErrorDialog: (errorDialogUiModel: ErrorDialogUiModel) -> Unit,
   onUpdateRoutine: (RoutineUiModel) -> Unit,
   onSearchText: (searchText: String) -> Unit,
 ) {
@@ -100,12 +139,8 @@ private fun HomeScreen(
   val size = LocalSize.current
   val fontSize = LocalFontSize.current
 
-  val routineModelDeleteDialog = rememberSaveable { mutableStateOf<RoutineUiModel?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
 
-  state.errorMessage?.let { errorMessage ->
-    context.showToastShort(errorMessage.toStringResource())
-  }
   LaunchedEffect(Unit) {
     snapshotFlow { searchText }
       .debounce(300)
@@ -153,34 +188,13 @@ private fun HomeScreen(
               }
               onUpdateRoutine(routineUpdate)
             },
-            { deleteRoutine ->
-              routineModelDeleteDialog.value = deleteRoutine
+            deleteRoutine = { deleteRoutine ->
+              onShowErrorDialog(ErrorDialogUiModel(title = context.getString(R.string.can_you_delete), submitTextButton = context.getString(R.string.ok), routineUiModel = deleteRoutine))
             },
           )
         }
       },
-      error = { errorMessageCode ->
-        context.showToastShort(errorMessageCode.toStringResource())
-      },
     )
-  }
-  when {
-    routineModelDeleteDialog.value != null -> {
-      ErrorDialog(
-        isClickOk = {
-          if (it) {
-            routineModelDeleteDialog.value?.let {
-              onDeleteRoutine(it)
-            }
-          }
-          routineModelDeleteDialog.value = null
-        },
-        message = stringResource(id = R.string.can_you_delete),
-        okMessage = stringResource(
-          id = R.string.ok,
-        ),
-      )
-    }
   }
 }
 
@@ -246,11 +260,10 @@ private fun HomeScreenPreview() {
           ),
         ),
         currentDate = CurrentDateUiModel("شنبه ۱ فروردین"),
-        errorMessage = null,
       ),
       clickSearch = false,
       onCheckedRoutine = {},
-      onDeleteRoutine = {},
+      onShowErrorDialog = { _ -> },
       onUpdateRoutine = {},
       onSearchText = {},
     )

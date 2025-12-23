@@ -6,7 +6,7 @@ import com.rahim.yadino.base.UnidirectionalComponent
 import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.navigation.component.DrawerItemType
 
-interface MainContract : UnidirectionalViewModel<MainContract.MainEvent, MainContract.MainState> {
+interface MainContract : UnidirectionalViewModel<MainContract.MainEvent, MainContract.MainState, Nothing> {
 
   @Immutable
   sealed interface MainEvent {

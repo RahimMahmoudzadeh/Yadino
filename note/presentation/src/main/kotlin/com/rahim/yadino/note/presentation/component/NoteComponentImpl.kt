@@ -19,8 +19,11 @@ import com.rahim.yadino.note.presentation.model.NoteUiModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
@@ -39,6 +42,10 @@ class NoteComponentImpl(
 
   private var _state = MutableValue(NoteComponent.State())
   override val state: Value<NoteComponent.State> = _state
+
+  private val _effect: Channel<NoteComponent.Effect> = Channel(Channel.BUFFERED)
+  override val effect: Flow<NoteComponent.Effect> = _effect.consumeAsFlow()
+
 
   init {
     lifecycle.doOnCreate {
@@ -70,9 +77,6 @@ class NoteComponentImpl(
       if (nameNoteUi.name.isNotEmpty()) {
         Timber.tag("searchRoutine").d("searchText:${nameNoteUi.name}")
         searchNoteUseCase(nameNoteUi.toNameNote()).catch {
-//          mutableState.update {
-//            it.copy(errorMessage = ErrorMessageCode.ERROR_GET_PROCESS)
-//          }
         }.collectLatest { notes ->
           _state.update {
             it.copy(notes = LoadableData.Loaded(notes.map { it.toNoteUiModel() }.toPersistentList()))
@@ -88,9 +92,7 @@ class NoteComponentImpl(
     scope.launch {
       getNotesUseCase()
         .catch {
-//          mutableState.update {
-//            it.copy(errorMessage = ErrorMessageCode.ERROR_GET_PROCESS)
-//          }
+
         }
         .collectLatest { notes ->
           _state.update {

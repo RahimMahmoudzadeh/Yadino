@@ -2,10 +2,11 @@ package com.rahim.yadino.onboarding.presentation.component
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.UnidirectionalComponent
+import com.rahim.yadino.enums.message.MessageUi
 import com.rahim.yadino.onboarding.presentation.R
 import com.rahim.yadino.onboarding.presentation.model.OnBoardingUiModel
 
-interface OnBoardingComponent : UnidirectionalComponent<OnBoardingComponent.WelcomeEvent, OnBoardingComponent.WelcomeState> {
+interface OnBoardingComponent : UnidirectionalComponent<OnBoardingComponent.WelcomeEvent, OnBoardingComponent.WelcomeState, Nothing> {
 
   @Immutable
   sealed class WelcomeEvent {
