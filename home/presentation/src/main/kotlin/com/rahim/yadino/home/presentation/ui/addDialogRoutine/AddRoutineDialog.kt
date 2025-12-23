@@ -22,6 +22,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -53,7 +55,9 @@ import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
 import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponent
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toPersianDigits
+import com.rahim.yadino.toStringResource
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.MaterialDialogState
 import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
@@ -75,7 +79,18 @@ fun AddRoutineDialog(
   component: AddRoutineDialogComponent,
 ) {
 
-  val (state, event) = use(component)
+  val (state, effect, event) = use(component)
+  val context = LocalContext.current
+
+  LaunchedEffect(effect) {
+    effect.collect { effect ->
+      when (effect) {
+        is AddRoutineDialogComponent.Effect.ShowToast -> {
+          context.showToastShort(stringId = effect.messageUi.toStringResource())
+        }
+      }
+    }
+  }
 
   val size = LocalSize.current
   val space = LocalSpacing.current

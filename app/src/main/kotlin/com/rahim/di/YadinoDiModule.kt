@@ -6,7 +6,7 @@ import com.rahim.data.reminder.notification.NotificationManager
 import com.rahim.data.reminder.ReminderSchedulerImpl
 import com.rahim.data.reminder.alarm.ControlAlarm
 import com.rahim.data.reminder.alarm.ControlAlarmImplementation
-import com.rahim.ui.main.MainComponent
+import com.rahim.ui.main.MainViewModel
 import com.rahim.yadino.base.reminder.ReminderScheduler
 import com.rahim.yadino.enums.DispatchersQualifier
 import org.koin.android.ext.koin.androidContext
@@ -19,5 +19,5 @@ val YadinoDiModule = module {
   single<ReminderScheduler> { ReminderSchedulerImpl(alarmManager = get(), context = androidContext()) }
   single { androidContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager }
   single { NotificationManager(get()) }
-  viewModel { MainComponent(dateTimeRepository = get(), repositoryRoutine = get(), noteRepository = get(), appDistributionActions = get(), ioDispatcher = get((named(DispatchersQualifier.IO))), sharedPreferencesRepository = get()) }
+  viewModel { MainViewModel(dateTimeRepository = get(), repositoryRoutine = get(), noteRepository = get(), appDistributionActions = get(), ioDispatcher = get((named(DispatchersQualifier.IO))), sharedPreferencesRepository = get()) }
 }

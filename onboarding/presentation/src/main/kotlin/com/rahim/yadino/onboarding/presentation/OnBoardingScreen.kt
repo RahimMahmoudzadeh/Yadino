@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.yadino.Constants.MAX_PAGE_SIZE_ONBOARDING
 import com.rahim.yadino.base.use
 import com.rahim.yadino.createOvalBottomPath
@@ -58,18 +60,16 @@ fun OnBoardingRoute(
   modifier: Modifier = Modifier,
   component: OnBoardingComponent,
 ) {
-  val (state, event) = use(component)
+  val (state,_, event) = use(component)
 
   OnBoardingScreens(
     modifier = modifier,
     listItemWelcome = state.listItemWelcome,
     navigateToHome = {
       event.invoke(OnBoardingComponent.WelcomeEvent.SaveShowWelcome(true))
-//      navigateToHome()
     },
     onClickSkip = {
       event.invoke(OnBoardingComponent.WelcomeEvent.SaveShowWelcome(true))
-//      navigateToHome()
     },
   )
 }

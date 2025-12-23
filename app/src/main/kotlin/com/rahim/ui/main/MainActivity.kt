@@ -56,9 +56,7 @@ import com.rahim.component.RootComponentImpl
 import com.rahim.data.distributionActions.StateOfClickItemDrawable
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
-import com.rahim.yadino.designsystem.component.goSettingPermission
 import com.rahim.yadino.designsystem.component.requestPermissionNotification
-import com.rahim.yadino.designsystem.dialog.ErrorDialog
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
@@ -73,14 +71,15 @@ import com.rahim.component.config.AddRoutineDialogRoutineScreen
 import com.rahim.component.config.ConfigChildComponent
 import com.rahim.yadino.note.presentation.ui.NoteRoute
 import com.rahim.yadino.onboarding.presentation.OnBoardingRoute
-import com.yadino.routine.presentation.ui.RoutineRoute
-import com.yadino.routine.presentation.ui.alarmHistory.HistoryRoute
+import com.rahim.yadino.routine.presentation.ui.RoutineRoute
+import com.rahim.yadino.routine.presentation.ui.alarmHistory.HistoryRoute
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
 
-  private val mainViewModel: MainComponent = get()
+  private val mainViewModel: MainViewModel by viewModel()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     installSplashScreen()
@@ -93,7 +92,7 @@ class MainActivity : ComponentActivity() {
     getTokenFirebase()
 
     setContent {
-      val (state, event) = use(mainViewModel)
+      val (state, _, event) = use(mainViewModel)
 
       changeTheme(state.isDarkTheme)
       checkStateOfClickItemDrawable(state.stateOfClickItemDrawable)
@@ -276,16 +275,16 @@ fun YadinoApp(
     }
     when {
       errorClick -> {
-        ErrorDialog(
-          message = stringResource(id = R.string.better_performance_access),
-          okMessage = stringResource(id = R.string.setting),
-          isClickOk = {
-            if (it) {
-              goSettingPermission(context)
-            }
-            errorClick = false
-          },
-        )
+//        ErrorDialog(
+//          message = stringResource(id = R.string.better_performance_access),
+//          okMessage = stringResource(id = R.string.setting),
+//          isClickOk = {
+//            if (it) {
+//              goSettingPermission(context)
+//            }
+//            errorClick = false
+//          },
+//        )
       }
     }
   }
@@ -299,6 +298,7 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
     animation = stackAnimation(fade()),
   ) {
     val addRoutineDialogHome = component.addRoutineDialogHomeScreen.subscribeAsState().value.child
+    val errorDialogHome = component.errorDialogHomeHomeScreen.subscribeAsState().value.child
     val addRoutineDialogRoutine = component.addRoutineDialogRoutineScreen.subscribeAsState().value.child
     val addNoteDialog = component.addNoteDialog.subscribeAsState().value.child
 
@@ -308,7 +308,8 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
           HomeRoute(
             homeComponent = child.component,
             clickSearch = clickSearch,
-            dialogSlot = addRoutineDialogHome,
+            dialogSlotAddRoutineDialog = addRoutineDialogHome,
+            dialogSlotErrorDialog = errorDialogHome,
           )
         }
 

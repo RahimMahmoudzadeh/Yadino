@@ -1,0 +1,12 @@
+package com.rahim.yadino.enums.message.error
+
+enum class ErrorMessage(val code: Int) {
+  GET_PROCESS(0),
+  EQUAL_ROUTINE_MESSAGE(1),
+  SAVE_PROSES(2),
+  NOTIFICATION_PERMISSION(3),
+  REMINDER_PERMISSION(4),
+  NOTIFICATION_AND_REMINDER_PERMISSION(5),
+  TIME_PASSED(6),
+  SEARCH_ROUTINE(7),
+}

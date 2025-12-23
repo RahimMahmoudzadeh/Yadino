@@ -13,6 +13,7 @@ import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import com.rahim.component.RootComponent.ChildStack.*
 import com.rahim.component.config.AddNoteDialog
@@ -31,6 +32,10 @@ import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineD
 import com.rahim.component.config.AddRoutineDialogHomeScreen
 import com.rahim.component.config.AddRoutineDialogRoutineScreen
 import com.rahim.component.config.ConfigChildComponent
+import com.rahim.component.config.ErrorDialogHome
+import com.rahim.component.config.ErrorDialogRoutine
+import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponent
+import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponentImpl
 import com.rahim.yadino.note.domain.useCase.AddNoteUseCase
 import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
 import com.rahim.yadino.note.domain.useCase.GetNotesUseCase
@@ -47,12 +52,7 @@ import com.rahim.yadino.routine.domain.useCase.GetAllRoutineUseCase
 import com.rahim.yadino.routine.domain.useCase.GetCurrentTimeUseCase
 import com.rahim.yadino.routine.domain.useCase.GetRemindersUseCase
 import com.rahim.yadino.routine.domain.useCase.GetTimesMonthUseCase
-import com.yadino.routine.presentation.component.RoutineComponent
-import com.yadino.routine.presentation.component.RoutineComponentImpl
-import com.yadino.routine.presentation.component.history.HistoryRoutineComponent
-import com.yadino.routine.presentation.component.history.HistoryRoutineComponentImpl
 import kotlinx.coroutines.Dispatchers
-import kotlinx.serialization.builtins.serializer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
@@ -75,6 +75,12 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private val addNoteDialogComponentNavigationSlot =
     SlotNavigation<AddNoteDialog>()
 
+  private val errorDialogHomeHomeComponentNavigationSlot =
+    SlotNavigation<ErrorDialogHome>()
+
+  private val errorDialogHomeRoutineComponentNavigationSlot =
+    SlotNavigation<ErrorDialogRoutine>()
+
   override val stack: Value<ChildStack<*, RootComponent.ChildStack>> = childStack(
     source = navigation,
     serializer = ConfigChildComponent.serializer(),
@@ -95,7 +101,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
         mainDispatcher = Dispatchers.Main,
         addReminderUseCase = addReminderUseCase,
         updateReminderUseCase = updateReminderUseCase,
-        routine = config.routine,
+        updateRoutine = config.routine,
         onDismissed = addRoutineDialogHomeScreenComponentNavigationSlot::dismiss,
       )
     }
@@ -103,14 +109,14 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private val getTimesMonthUseCase: GetTimesMonthUseCase = get()
   private val getCurrentTimeUseCase: GetCurrentTimeUseCase = get()
 
-  override val addRoutineDialogRoutineScreen: Value<ChildSlot<AddRoutineDialogRoutineScreen, com.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent>> =
+  override val addRoutineDialogRoutineScreen: Value<ChildSlot<AddRoutineDialogRoutineScreen, com.rahim.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent>> =
     childSlot(
       source = addRoutineDialogRoutineScreenComponentNavigationSlot,
       serializer = AddRoutineDialogRoutineScreen.serializer(),
       handleBackButton = true,
       key = "addRoutineDialogRoutineScreenComponentNavigationSlot",
     ) { config, childComponentContext ->
-      com.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponentImpl(
+      _root_ide_package_.com.rahim.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponentImpl(
         componentContext = childComponentContext,
         mainDispatcher = Dispatchers.Main,
         ioDispatcher = Dispatchers.IO,
@@ -144,6 +150,39 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
       )
     }
 
+  override val errorDialogHomeHomeScreen: Value<ChildSlot<ErrorDialogHome, ErrorDialogComponent>> =
+    childSlot(
+      source = errorDialogHomeHomeComponentNavigationSlot,
+      serializer = ErrorDialogHome.serializer(),
+      handleBackButton = true,
+      key = "errorDialogComponentNavigationSlot",
+    ) { config, childComponentContext ->
+      ErrorDialogComponentImpl(
+        componentContext = childComponentContext,
+        mainContext = Dispatchers.Main,
+        deleteReminderUseCase = deleteReminderUseCase,
+        errorDialogUiModel = config.errorDialogUiModel,
+        onDismissed = errorDialogHomeHomeComponentNavigationSlot::dismiss,
+      )
+    }
+  private val deleteReminderUseCaseRoutine: com.rahim.yadino.routine.domain.useCase.DeleteReminderUseCase = get()
+
+  override val errorDialogRoutineScreen: Value<ChildSlot<ErrorDialogRoutine, com.rahim.yadino.routine.presentation.component.errorDialog.ErrorDialogComponent>> =
+    childSlot(
+      source = errorDialogHomeRoutineComponentNavigationSlot,
+      serializer = ErrorDialogRoutine.serializer(),
+      handleBackButton = true,
+      key = "errorDialogRoutineComponentNavigationSlot",
+    ) { config, childComponentContext ->
+      com.rahim.yadino.routine.presentation.component.errorDialog.ErrorDialogComponentImpl(
+        componentContext = childComponentContext,
+        mainContext = Dispatchers.Main,
+        deleteReminderUseCase = deleteReminderUseCaseRoutine,
+        errorDialogUiModel = config.errorDialogUiModel,
+        onDismissed = errorDialogHomeRoutineComponentNavigationSlot::dismiss,
+      )
+    }
+
   override fun onTabClick(tab: ConfigChildComponent) {
     navigation.bringToFront(tab)
   }
@@ -174,10 +213,12 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     mainContext = Dispatchers.Main,
     updateReminderUseCase = updateReminderUseCase,
     cancelReminderUseCase = cancelReminderUseCase,
-    deleteReminderUseCase = deleteReminderUseCase,
     getTodayRoutinesUseCase = getTodayRoutinesUseCase,
     searchRoutineUseCase = searchRoutineUseCase,
     getCurrentDateUseCase = getCurrentDateUseCase,
+    onShowErrorDialog = { errorDialog ->
+      errorDialogHomeHomeComponentNavigationSlot.activate(ErrorDialogHome(errorDialog))
+    },
     onShowUpdateRoutineDialog = { routineModel ->
       addRoutineDialogHomeScreenComponentNavigationSlot.activate(AddRoutineDialogHomeScreen(routineModel))
     },
@@ -188,10 +229,13 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
     sharedPreferencesRepository = sharedPreferencesRepository,
+    onNavigateToHome = {
+      navigation.replaceAll(ConfigChildComponent.Home)
+    },
   )
 
   private val getAllRoutineUseCase: GetAllRoutineUseCase = get()
-  private fun historyRoutineComponent(componentContext: ComponentContext): HistoryRoutineComponent = HistoryRoutineComponentImpl(
+  private fun historyRoutineComponent(componentContext: ComponentContext): com.rahim.yadino.routine.presentation.component.history.HistoryRoutineComponent = _root_ide_package_.com.rahim.yadino.routine.presentation.component.history.HistoryRoutineComponentImpl(
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
     getAllRoutineUseCase = getAllRoutineUseCase,
@@ -200,23 +244,24 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private val addReminderUseCaseRoutine: com.rahim.yadino.routine.domain.useCase.AddReminderUseCase = get()
   private val updateReminderUseCaseRoutine: com.rahim.yadino.routine.domain.useCase.UpdateReminderUseCase = get()
   private val cancelReminderUseCaseRoutine: com.rahim.yadino.routine.domain.useCase.CancelReminderUseCase = get()
-  private val deleteReminderUseCaseRoutine: com.rahim.yadino.routine.domain.useCase.DeleteReminderUseCase = get()
   private val getTodayRoutinesUseCaseRoutine: GetRemindersUseCase = get()
   private val searchRoutineUseCaseRoutine: com.rahim.yadino.routine.domain.useCase.SearchRoutineUseCase = get()
   private val dateTimeRepository: DateTimeRepository = get()
 
-  private fun routineComponent(componentContext: ComponentContext): RoutineComponent = RoutineComponentImpl(
+  private fun routineComponent(componentContext: ComponentContext): com.rahim.yadino.routine.presentation.component.RoutineComponent = _root_ide_package_.com.rahim.yadino.routine.presentation.component.RoutineComponentImpl(
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
     ioContext = Dispatchers.IO,
     cancelReminderUseCase = cancelReminderUseCaseRoutine,
-    deleteReminderUseCase = deleteReminderUseCaseRoutine,
     getRemindersUseCase = getTodayRoutinesUseCaseRoutine,
     searchRoutineUseCase = searchRoutineUseCaseRoutine,
     dateTimeRepository = dateTimeRepository,
     onShowUpdateDialog = {
       addRoutineDialogRoutineScreenComponentNavigationSlot.activate(AddRoutineDialogRoutineScreen(it))
     },
+    onShowErrorDialog = {
+
+    }
   )
 
   private val deleteNoteUseCase: DeleteNoteUseCase = get()
