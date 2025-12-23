@@ -19,6 +19,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.arkivanov.decompose.Child
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
@@ -31,10 +32,13 @@ import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.note.presentation.R
 import com.rahim.yadino.note.presentation.component.NoteComponent
 import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
+import com.rahim.yadino.note.presentation.component.errorDialog.ErrorDialogComponent
+import com.rahim.yadino.note.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.ui.addNoteDialog.AddNoteDialog
 import com.rahim.yadino.note.presentation.ui.component.ItemListNote
+import com.rahim.yadino.note.presentation.ui.errorDialog.ErrorDialogUi
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -45,25 +49,35 @@ fun NoteRoute(
   modifier: Modifier = Modifier,
   clickSearch: Boolean,
   component: NoteComponent,
-  dialogSlot: Child.Created<Any, AddNoteDialogComponent>?,
+  dialogSlotAddNote: Child.Created<Any, AddNoteDialogComponent>?,
+  dialogSlotErrorDialog: Child.Created<Any, ErrorDialogComponent>?,
 ) {
   val (state, effect, event) = use(component)
 
-  dialogSlot?.let { dialogSlot ->
+  dialogSlotAddNote?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       AddNoteDialog(
         component = dialogComponent,
       )
     }
   }
+
+  dialogSlotErrorDialog?.let { dialogSlot ->
+    dialogSlot.instance.also { dialogComponent ->
+      ErrorDialogUi(
+        component = dialogComponent,
+      )
+    }
+  }
+
   NoteScreen(
     modifier = modifier,
     state = state,
     onUpdateNote = { updateNote ->
       event(NoteComponent.Event.OnOpenUpdateNoteDialog(updateNote))
     },
-    onDelete = {
-      event(NoteComponent.Event.Delete(it))
+    onShowErrorDialog = {
+      event(NoteComponent.Event.ShowErrorDialog(it))
     },
     onSearchText = {
       event(NoteComponent.Event.Search(it))
@@ -82,17 +96,18 @@ private fun NoteScreen(
   state: NoteComponent.State,
   clickSearch: Boolean,
   onUpdateNote: (note: NoteUiModel) -> Unit,
-  onDelete: (NoteUiModel) -> Unit,
+  onShowErrorDialog: (errorDialogUiModel: ErrorDialogUiModel) -> Unit,
   onCheckedNote: (NoteUiModel) -> Unit,
   onSearchText: (NameNoteUi) -> Unit,
 ) {
-  val noteDeleteDialog = rememberSaveable { mutableStateOf<NoteUiModel?>(null) }
   var searchText by rememberSaveable { mutableStateOf("") }
 
   val context = LocalContext.current
   val size = LocalSize.current
   val space = LocalSpacing.current
   val fontSize = LocalFontSize.current
+  val title = stringResource(com.rahim.yadino.library.designsystem.R.string.can_you_delete)
+  val submitTextButton = stringResource(com.rahim.yadino.library.designsystem.R.string.ok)
 
   LaunchedEffect(Unit) {
     snapshotFlow { searchText }
@@ -152,30 +167,14 @@ private fun NoteScreen(
                 ).show()
                 return@ItemsNote
               }
-              noteDeleteDialog.value = it
+              onShowErrorDialog(
+                ErrorDialogUiModel(title = title, submitTextButton = submitTextButton, noteUiModel = it),
+              )
             },
           )
         }
       },
     )
-  }
-
-  when {
-    noteDeleteDialog.value != null -> {
-//      ErrorDialog(
-//        modifier,
-//        isClickOk = {
-//          noteDeleteDialog.value = null
-//          if (it) {
-//            onDelete(noteDeleteDialog.value!!)
-//          }
-//        },
-//        message = stringResource(id = com.rahim.yadino.library.designsystem.R.string.can_you_delete),
-//        okMessage = stringResource(
-//          id = com.rahim.yadino.library.designsystem.R.string.ok,
-//        ),
-//      )
-    }
   }
 }
 

@@ -297,8 +297,9 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
     animation = stackAnimation(fade()),
   ) {
     val addRoutineDialogHome = component.addRoutineDialogHomeScreen.subscribeAsState().value.child
-    val errorDialogHome = component.errorDialogHomeHomeScreen.subscribeAsState().value.child
+    val errorDialogHome = component.errorDialogHomeScreen.subscribeAsState().value.child
     val errorDialogRoutine = component.errorDialogRoutineScreen.subscribeAsState().value.child
+    val errorDialogNote = component.errorDialogNoteScreen.subscribeAsState().value.child
     val addRoutineDialogRoutine = component.addRoutineDialogRoutineScreen.subscribeAsState().value.child
     val addNoteDialog = component.addNoteDialog.subscribeAsState().value.child
 
@@ -321,7 +322,7 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
         )
 
         is RootComponent.ChildStack.HistoryRoutine -> HistoryRoute(component = child.component)
-        is RootComponent.ChildStack.Note -> NoteRoute(component = child.component, clickSearch = clickSearch, dialogSlot = addNoteDialog)
+        is RootComponent.ChildStack.Note -> NoteRoute(component = child.component, clickSearch = clickSearch, dialogSlotAddNote = addNoteDialog, dialogSlotErrorDialog = errorDialogNote)
       }
     }
   }
