@@ -65,7 +65,7 @@ import com.rahim.yadino.routine.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
 import com.rahim.yadino.routine.presentation.model.RoutineUiModel
 import com.rahim.yadino.routine.presentation.model.TimeDateUiModel
-import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.DialogAddRoutine
+import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.AddRoutineDialog
 import com.rahim.yadino.routine.presentation.ui.component.ListRoutines
 import com.rahim.yadino.toPersianDigits
 import kotlinx.collections.immutable.PersistentList
@@ -85,7 +85,7 @@ fun RoutineRoute(
 
   dialogSlot?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
-      DialogAddRoutine(
+      AddRoutineDialog(
         componentComponent = dialogComponent,
       )
     }
