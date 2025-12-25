@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation.ui.addDialogRoutine
+package com.rahim.yadino.home.presentation.ui.updateDialogRoutine
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -53,6 +53,7 @@ import com.rahim.yadino.designsystem.utils.theme.Onahau
 import com.rahim.yadino.designsystem.utils.theme.Purple
 import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
 import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponent
+import com.rahim.yadino.home.presentation.component.updateRoutineDialog.UpdateRoutineDialogComponent
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.showToastShort
@@ -74,9 +75,9 @@ const val MAX_EXPLANATION_LENGTH = 40
   ExperimentalMaterial3Api::class,
 )
 @Composable
-fun AddRoutineDialog(
+fun UpdateRoutineDialog(
   modifier: Modifier = Modifier,
-  component: AddRoutineDialogComponent,
+  component: UpdateRoutineDialogComponent,
 ) {
 
   val (state, effect, event) = use(component)
@@ -85,7 +86,7 @@ fun AddRoutineDialog(
   LaunchedEffect(effect) {
     effect.collect { effect ->
       when (effect) {
-        is AddRoutineDialogComponent.Effect.ShowToast -> {
+        is UpdateRoutineDialogComponent.Effect.ShowToast -> {
           context.showToastShort(stringId = effect.messageUi.toStringResource())
         }
       }
@@ -96,9 +97,9 @@ fun AddRoutineDialog(
   val space = LocalSpacing.current
   val fontSize = LocalFontSize.current
 
-  var routineName by rememberSaveable { mutableStateOf("") }
-  var routineExplanation by rememberSaveable { mutableStateOf("") }
-  var time by rememberSaveable { mutableStateOf("12:00") }
+  var routineName by rememberSaveable { mutableStateOf(if (state.updateRoutine?.name.isNullOrBlank()) "" else state.updateRoutine.name) }
+  var routineExplanation by rememberSaveable { mutableStateOf(if (state.updateRoutine?.explanation.isNullOrBlank()) "" else state.updateRoutine.explanation) }
+  var time by rememberSaveable { mutableStateOf(if (state.updateRoutine?.timeHours.isNullOrBlank()) "12:00" else state.updateRoutine.timeHours) }
 
   var isErrorName by remember { mutableStateOf(false) }
   var isErrorExplanation by remember { mutableStateOf(false) }
@@ -106,9 +107,9 @@ fun AddRoutineDialog(
 
   val persianData = PersianDate()
   val date = persianData.initJalaliDate(
-    persianData.shYear,
-    persianData.shMonth,
-    persianData.shDay,
+    state.updateRoutine?.yearNumber ?: persianData.shYear,
+    state.updateRoutine?.monthNumber ?: persianData.shMonth,
+    state.updateRoutine?.dayNumber ?: persianData.shDay,
   )
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
     BasicAlertDialog(
@@ -126,7 +127,7 @@ fun AddRoutineDialog(
           shape = RoundedCornerShape(size.size8),
         ),
       onDismissRequest = {
-        event.invoke(AddRoutineDialogComponent.Event.DismissDialog)
+        event.invoke(UpdateRoutineDialogComponent.Event.DismissDialog)
       },
     ) {
       Column(
@@ -300,6 +301,7 @@ fun AddRoutineDialog(
                 isErrorName = true
               } else {
                 val routine = RoutineUiModel(
+                  id = state.updateRoutine?.id,
                   name = routineName,
                   explanation = routineExplanation,
                   timeHours = time,
@@ -309,14 +311,14 @@ fun AddRoutineDialog(
                   dayName = date.dayName(),
                   colorTask = null,
                 )
-                event.invoke(AddRoutineDialogComponent.Event.CreateRoutine(routine))
+                event.invoke(UpdateRoutineDialogComponent.Event.UpdateRoutine(routine))
               }
             },
           )
           Spacer(modifier = Modifier.width(size.size10))
           TextButton(
             onClick = {
-              event.invoke(AddRoutineDialogComponent.Event.DismissDialog)
+              event.invoke(UpdateRoutineDialogComponent.Event.DismissDialog)
             },
           ) {
             Text(

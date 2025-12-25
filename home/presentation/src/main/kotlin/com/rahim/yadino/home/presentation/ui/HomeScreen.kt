@@ -54,7 +54,9 @@ import kotlinx.collections.immutable.persistentListOf
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.home.presentation.ui.errorDialog.ErrorDialogUi
 import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponent
+import com.rahim.yadino.home.presentation.component.updateRoutineDialog.UpdateRoutineDialogComponent
 import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
+import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.UpdateRoutineDialog
 import kotlinx.coroutines.launch
 
 @Composable
@@ -63,6 +65,7 @@ fun HomeRoute(
   clickSearch: Boolean,
   homeComponent: HomeComponent,
   dialogSlotAddRoutineDialog: Child.Created<Any, AddRoutineDialogComponent>?,
+  dialogSlotUpdateRoutineDialog: Child.Created<Any, UpdateRoutineDialogComponent>?,
   dialogSlotErrorDialog: Child.Created<Any, ErrorDialogComponent>?,
 ) {
 
@@ -75,6 +78,14 @@ fun HomeRoute(
   dialogSlotAddRoutineDialog?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       AddRoutineDialog(
+        component = dialogComponent,
+      )
+    }
+  }
+
+  dialogSlotUpdateRoutineDialog?.let { dialogSlot ->
+    dialogSlot.instance.also { dialogComponent ->
+      UpdateRoutineDialog(
         component = dialogComponent,
       )
     }

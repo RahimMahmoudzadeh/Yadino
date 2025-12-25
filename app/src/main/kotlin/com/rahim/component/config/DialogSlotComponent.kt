@@ -6,13 +6,22 @@ import com.rahim.yadino.note.presentation.model.NoteUiModel
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AddRoutineDialogHomeScreen(val routine: RoutineUiModel? = null) : ConfigChildComponent
+data object AddRoutineDialogHomeScreen : ConfigChildComponent
 
 @Serializable
-data class AddRoutineDialogRoutineScreen(val updateRoutine: com.rahim.yadino.routine.presentation.model.RoutineUiModel? = null) : ConfigChildComponent
+data class UpdateRoutineDialogHomeScreen(val updateRoutine: RoutineUiModel) : ConfigChildComponent
 
 @Serializable
-data class AddNoteDialog(val updateNote: NoteUiModel? = null) : ConfigChildComponent
+data object AddRoutineDialogRoutineScreen : ConfigChildComponent
+
+@Serializable
+data class UpdateRoutineDialogRoutineScreen(val updateRoutine: com.rahim.yadino.routine.presentation.model.RoutineUiModel) : ConfigChildComponent
+
+@Serializable
+data object AddNoteDialog : ConfigChildComponent
+
+@Serializable
+data class UpdateNoteDialog(val updateNote: NoteUiModel) : ConfigChildComponent
 
 @Serializable
 data class ErrorDialogHome(val errorDialogUiModel: ErrorDialogUiModel) : ConfigChildComponent

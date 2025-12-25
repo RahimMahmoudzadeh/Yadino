@@ -1,4 +1,4 @@
-package com.rahim.yadino.note.presentation.component.addNoteDialog
+package com.rahim.yadino.note.presentation.component.updateNoteDialog
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -13,45 +13,38 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class AddNoteDialogComponentImpl(
+class UpdateNoteDialogComponentImpl(
   componentContext: ComponentContext,
   mainDispatcher: CoroutineContext,
   ioDispatcher: CoroutineContext,
-  private val addNoteUseCase: AddNoteUseCase,
+  private val updateNoteUseCase: UpdateNoteUseCase,
+  private val updateNote: NoteUiModel?,
   private val onDismissed: () -> Unit,
-) : AddNoteDialogComponent, ComponentContext by componentContext {
+) : UpdateNoteDialogComponent, ComponentContext by componentContext {
 
   private val mainScope: CoroutineScope = coroutineScope(mainDispatcher + SupervisorJob())
   private val ioScope: CoroutineScope = coroutineScope(ioDispatcher + SupervisorJob())
 
 
-  final override val state: Value<AddNoteDialogComponent.State>
-    field = MutableValue(AddNoteDialogComponent.State())
+  final override val state: Value<UpdateNoteDialogComponent.State>
+    field = MutableValue(UpdateNoteDialogComponent.State(updateNote = updateNote))
 
-  private val _effect = Channel<AddNoteDialogComponent.Effect>(Channel.BUFFERED)
-  override val effect: Flow<AddNoteDialogComponent.Effect> = _effect.consumeAsFlow()
+  private val _effect = Channel<UpdateNoteDialogComponent.Effect>(Channel.BUFFERED)
+  override val effect: Flow<UpdateNoteDialogComponent.Effect> = _effect.consumeAsFlow()
 
-  override fun event(event: AddNoteDialogComponent.Event) = when (event) {
-    is AddNoteDialogComponent.Event.CreateNote -> addNote(event.note)
-    AddNoteDialogComponent.Event.Dismiss -> onDismissed()
+  override fun event(event: UpdateNoteDialogComponent.Event) = when (event) {
+    UpdateNoteDialogComponent.Event.Dismiss -> onDismissed()
+    is UpdateNoteDialogComponent.Event.UpdateNote -> updateNote(event.note)
   }
 
-  private fun addNote(note: NoteUiModel) {
+  private fun updateNote(note: NoteUiModel) {
     mainScope.launch {
-      runCatching {
-        addNoteUseCase(note.toNote())
-      }.onSuccess {
-        _effect.send(AddNoteDialogComponent.Effect.ShowToast(MessageUi.SUCCESS_ADD_NOTE))
-        onDismissed()
-      }.onFailure {
-        _effect.send(AddNoteDialogComponent.Effect.ShowToast(MessageUi.ERROR_ADD_NOTE))
-      }
+      updateNoteUseCase(note.toNote())
+      onDismissed()
     }
   }
 }

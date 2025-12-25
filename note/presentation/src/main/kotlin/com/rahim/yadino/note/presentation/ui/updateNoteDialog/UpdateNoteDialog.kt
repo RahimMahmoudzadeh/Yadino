@@ -1,4 +1,4 @@
-package com.rahim.yadino.note.presentation.ui.addNoteDialog
+package com.rahim.yadino.note.presentation.ui.updateNoteDialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,7 +41,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
@@ -55,7 +54,7 @@ import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueDark
 import com.rahim.yadino.designsystem.utils.theme.Mantis
 import com.rahim.yadino.designsystem.utils.theme.Punch
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
+import com.rahim.yadino.note.presentation.component.updateNoteDialog.UpdateNoteDialogComponent
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.model.PriorityNote
 import com.rahim.yadino.showToastShort
@@ -68,9 +67,9 @@ const val maxExplanation = 40
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddNoteDialog(
+fun UpdateNoteDialog(
   modifier: Modifier = Modifier,
-  component: AddNoteDialogComponent,
+  component: UpdateNoteDialogComponent,
 ) {
 
   val (state, effect, event) = use(component)
@@ -83,15 +82,15 @@ fun AddNoteDialog(
   LaunchedEffect(effect) {
     effect.collect {
       when (it) {
-        is AddNoteDialogComponent.Effect.ShowToast -> context.showToastShort(it.messageUi.toStringResource())
+        is UpdateNoteDialogComponent.Effect.ShowToast -> context.showToastShort(it.messageUi.toStringResource())
       }
     }
   }
 
 
-  var noteState by remember { mutableStateOf(PriorityNote.LOW_PRIORITY) }
-  var nameNote by rememberSaveable { mutableStateOf( "") }
-  var description by rememberSaveable { mutableStateOf("") }
+  var noteState by remember { mutableStateOf(state.updateNote?.state ?: PriorityNote.LOW_PRIORITY) }
+  var nameNote by rememberSaveable { mutableStateOf(state.updateNote?.name ?: "") }
+  var description by rememberSaveable { mutableStateOf(state.updateNote?.description ?: "") }
   val persianDate = PersianDate()
   var isErrorName by remember { mutableStateOf(false) }
   var isErrorExplanation by remember { mutableStateOf(false) }
@@ -112,7 +111,7 @@ fun AddNoteDialog(
           shape = RoundedCornerShape(size.size8),
         ),
       onDismissRequest = {
-        event(AddNoteDialogComponent.Event.Dismiss)
+        event(UpdateNoteDialogComponent.Event.Dismiss)
       },
     ) {
       Column(
@@ -316,12 +315,12 @@ fun AddNoteDialog(
                 isErrorName = true
               } else {
                 val note = NoteUiModel(
-                  id = Random.nextInt(),
+                  id = state.updateNote?.id ?: Random.nextInt(),
                   name = nameNote,
                   description = description,
                   state = noteState,
-                  isChecked = false,
-                  timeNote = NoteUiModel.TimeNoteUiModel(
+                  isChecked = state.updateNote?.isChecked ?: false,
+                  timeNote = state.updateNote?.timeNote ?: NoteUiModel.TimeNoteUiModel(
                     monthNumber = persianDate.shMonth,
                     dayNumber = persianDate.shDay,
                     yearNumber = persianDate.shYear,
@@ -329,7 +328,7 @@ fun AddNoteDialog(
                     timeCreateMillSecond = System.currentTimeMillis(),
                   ),
                 )
-                event.invoke(AddNoteDialogComponent.Event.CreateNote(note))
+                event.invoke(UpdateNoteDialogComponent.Event.UpdateNote(note))
               }
             },
           )
@@ -337,7 +336,7 @@ fun AddNoteDialog(
           Spacer(modifier = Modifier.width(size.size10))
           TextButton(
             onClick = {
-              event(AddNoteDialogComponent.Event.Dismiss)
+              event(UpdateNoteDialogComponent.Event.Dismiss)
             },
           ) {
             Text(

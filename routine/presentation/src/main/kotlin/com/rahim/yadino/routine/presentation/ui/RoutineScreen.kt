@@ -62,6 +62,7 @@ import com.rahim.yadino.routine.presentation.R
 import com.rahim.yadino.routine.presentation.component.RoutineComponent
 import com.rahim.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent
 import com.rahim.yadino.routine.presentation.component.errorDialog.ErrorDialogComponent
+import com.rahim.yadino.routine.presentation.component.updateRoutineDialog.UpdateRoutineDialogComponent
 import com.rahim.yadino.routine.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
 import com.rahim.yadino.routine.presentation.model.RoutineUiModel
@@ -69,6 +70,7 @@ import com.rahim.yadino.routine.presentation.model.TimeDateUiModel
 import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.AddRoutineDialog
 import com.rahim.yadino.routine.presentation.ui.component.ListRoutines
 import com.rahim.yadino.routine.presentation.ui.errorDialog.ErrorDialogUi
+import com.rahim.yadino.routine.presentation.ui.updateDialogRoutine.UpdateRoutineDialog
 import com.rahim.yadino.toPersianDigits
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.FlowPreview
@@ -82,6 +84,7 @@ fun RoutineRoute(
   showSearchBar: Boolean,
   component: RoutineComponent,
   dialogSlotAddRoutine: Child.Created<Any, AddRoutineDialogComponent>?,
+  dialogSlotUpdateRoutine: Child.Created<Any, UpdateRoutineDialogComponent>?,
   dialogSlotErrorDialog: Child.Created<Any, ErrorDialogComponent>?,
 ) {
   val (state, _, event) = use(component)
@@ -96,6 +99,13 @@ fun RoutineRoute(
   dialogSlotErrorDialog?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       ErrorDialogUi(component = dialogComponent)
+    }
+  }
+  dialogSlotUpdateRoutine?.let { dialogSlot ->
+    dialogSlot.instance.also { dialogComponent ->
+      UpdateRoutineDialog(
+        component = dialogComponent,
+      )
     }
   }
   RoutineScreen(
@@ -256,8 +266,8 @@ private fun GetRoutines(
       } else {
         ListRoutines(
           modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = space.space16),
+              .fillMaxWidth()
+              .padding(top = space.space16),
           routines = routines,
           checkedRoutine = {
             routineChecked(it)
@@ -308,8 +318,8 @@ private fun ItemTimeDate(
     }
     Text(
       modifier = Modifier
-        .padding(top = space.space12)
-        .fillMaxWidth(0.3f),
+          .padding(top = space.space12)
+          .fillMaxWidth(0.3f),
       text = "${yearChecked.toString().toPersianDigits()} ${monthChecked.calculateMonthName()}",
       color = MaterialTheme.colorScheme.primary,
       textAlign = TextAlign.Center,
@@ -329,8 +339,8 @@ private fun ItemTimeDate(
 
   Row(
     modifier = Modifier
-      .padding(top = space.space18, end = space.space50, start = space.space50)
-      .fillMaxWidth(),
+        .padding(top = space.space18, end = space.space50, start = space.space50)
+        .fillMaxWidth(),
     horizontalArrangement = Arrangement.SpaceBetween,
   ) {
     arrayString.reversed().forEachIndexed { index, nameDay ->
@@ -349,8 +359,8 @@ private fun ItemTimeDate(
   Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
     IconButton(
       modifier = Modifier
-        .weight(1f)
-        .padding(top = space.space10),
+          .weight(1f)
+          .padding(top = space.space10),
       onClick = {
         weekChange(IncreaseDecrease.INCREASE)
       },
@@ -363,8 +373,8 @@ private fun ItemTimeDate(
     }
     ListTimes(
       modifier = Modifier
-        .weight(8f)
-        .padding(top = space.space8),
+          .weight(8f)
+          .padding(top = space.space8),
       times = times,
       screenWidth = screenWidth,
       dayCheckedNumber = dayCheckedNumber,
@@ -375,8 +385,8 @@ private fun ItemTimeDate(
     )
     IconButton(
       modifier = Modifier
-        .weight(1f)
-        .padding(top = space.space10),
+          .weight(1f)
+          .padding(top = space.space10),
       onClick = {
         weekChange(IncreaseDecrease.DECREASE)
       },
@@ -447,38 +457,38 @@ private fun DayItems(
 ) {
   Text(
     modifier = Modifier
-      .padding(
-        top = space.space4,
-        start = if (timeDate.isChecked) if (screenWidth <= 420) space.space5 else space.space7 else space.space6,
-      )
-      .clickable(
-        onClick = {
-          if (timeDate.dayNumber > 0) {
-            dayCheckedNumber(
-              timeDate,
-            )
-          }
-        },
-      )
-      .size(if (screenWidth <= 400) size.size36 else if (screenWidth in 400..420) size.size39 else size.size43)
-      .clip(CircleShape)
-      .background(
-        brush = if (timeDate.isChecked) {
-          Brush.verticalGradient(
-            gradientColors,
-          )
-        } else {
-          Brush.horizontalGradient(
-            listOf(
-              MaterialTheme.colorScheme.background,
-              MaterialTheme.colorScheme.background,
-            ),
-          )
-        },
-      )
-      .padding(
-        top = if (screenWidth <= 400) space.space8 else if (screenWidth in 400..420) space.space9 else space.space10,
-      ),
+        .padding(
+            top = space.space4,
+            start = if (timeDate.isChecked) if (screenWidth <= 420) space.space5 else space.space7 else space.space6,
+        )
+        .clickable(
+            onClick = {
+                if (timeDate.dayNumber > 0) {
+                    dayCheckedNumber(
+                        timeDate,
+                    )
+                }
+            },
+        )
+        .size(if (screenWidth <= 400) size.size36 else if (screenWidth in 400..420) size.size39 else size.size43)
+        .clip(CircleShape)
+        .background(
+            brush = if (timeDate.isChecked) {
+                Brush.verticalGradient(
+                    gradientColors,
+                )
+            } else {
+                Brush.horizontalGradient(
+                    listOf(
+                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.background,
+                    ),
+                )
+            },
+        )
+        .padding(
+            top = if (screenWidth <= 400) space.space8 else if (screenWidth in 400..420) space.space9 else space.space10,
+        ),
     text = AnnotatedString(
       if (timeDate.dayNumber > 0) timeDate.dayNumber.toString().toPersianDigits() else "",
     ),
