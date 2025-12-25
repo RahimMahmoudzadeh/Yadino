@@ -237,7 +237,7 @@ fun YadinoApp(
                           }
 
                           else -> {
-                            rootComponent.onShowAddNoteDialog(AddNoteDialog())
+                            rootComponent.onShowAddNoteDialog(AddNoteDialog)
                           }
                         }
                       } else {
@@ -304,6 +304,7 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
     val addRoutineDialogRoutine = component.addRoutineDialogRoutineScreen.subscribeAsState().value.child
     val updateRoutineDialogRoutine = component.updateRoutineDialogRoutineScreen.subscribeAsState().value.child
     val addNoteDialog = component.addNoteDialog.subscribeAsState().value.child
+    val updateNoteDialog = component.updateNoteDialog.subscribeAsState().value.child
 
     Surface(color = MaterialTheme.colorScheme.background) {
       when (val child = it.instance) {
@@ -326,7 +327,13 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
         )
 
         is RootComponent.ChildStack.HistoryRoutine -> HistoryRoute(component = child.component)
-        is RootComponent.ChildStack.Note -> NoteRoute(component = child.component, clickSearch = clickSearch, dialogSlotAddNote = addNoteDialog, dialogSlotErrorDialog = errorDialogNote)
+        is RootComponent.ChildStack.Note -> NoteRoute(
+          component = child.component,
+          clickSearch = clickSearch,
+          dialogSlotAddNote = addNoteDialog,
+          dialogSlotUpdateNote = updateNoteDialog,
+          dialogSlotErrorDialog = errorDialogNote,
+        )
       }
     }
   }
