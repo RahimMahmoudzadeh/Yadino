@@ -96,9 +96,9 @@ fun AddRoutineDialog(
   val space = LocalSpacing.current
   val fontSize = LocalFontSize.current
 
-  var routineName by rememberSaveable { mutableStateOf(if (state.updateRoutine?.name.isNullOrBlank()) "" else state.updateRoutine.name) }
-  var routineExplanation by rememberSaveable { mutableStateOf(if (state.updateRoutine?.explanation.isNullOrBlank()) "" else state.updateRoutine.explanation) }
-  var time by rememberSaveable { mutableStateOf(if (state.updateRoutine?.timeHours.isNullOrBlank()) "12:00" else state.updateRoutine.timeHours) }
+  var routineName by rememberSaveable { mutableStateOf("") }
+  var routineExplanation by rememberSaveable { mutableStateOf("") }
+  var time by rememberSaveable { mutableStateOf("12:00") }
 
   var isErrorName by remember { mutableStateOf(false) }
   var isErrorExplanation by remember { mutableStateOf(false) }
@@ -106,9 +106,9 @@ fun AddRoutineDialog(
 
   val persianData = PersianDate()
   val date = persianData.initJalaliDate(
-    state.updateRoutine?.yearNumber ?: persianData.shYear,
-    state.updateRoutine?.monthNumber ?: persianData.shMonth,
-    state.updateRoutine?.dayNumber ?: persianData.shDay,
+    persianData.shYear,
+    persianData.shMonth,
+    persianData.shDay,
   )
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
     BasicAlertDialog(
@@ -300,7 +300,6 @@ fun AddRoutineDialog(
                 isErrorName = true
               } else {
                 val routine = RoutineUiModel(
-                  id = state.updateRoutine?.id,
                   name = routineName,
                   explanation = routineExplanation,
                   timeHours = time,
@@ -310,12 +309,7 @@ fun AddRoutineDialog(
                   dayName = date.dayName(),
                   colorTask = null,
                 )
-                val eventToSend = if (state.updateRoutine != null) {
-                  AddRoutineDialogComponent.Event.UpdateRoutine(routine)
-                } else {
-                  AddRoutineDialogComponent.Event.CreateRoutine(routine)
-                }
-                event.invoke(eventToSend)
+                event.invoke(AddRoutineDialogComponent.Event.CreateRoutine(routine))
               }
             },
           )
