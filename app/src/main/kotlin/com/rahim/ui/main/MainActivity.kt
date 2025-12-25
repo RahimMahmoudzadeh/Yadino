@@ -229,11 +229,11 @@ fun YadinoApp(
                       if (it) {
                         when (configurationState) {
                           ConfigChildComponent.Home -> {
-                            rootComponent.onShowAddDialogRoutineHomeScreen(AddRoutineDialogHomeScreen())
+                            rootComponent.onShowAddDialogRoutineHomeScreen(AddRoutineDialogHomeScreen)
                           }
 
                           ConfigChildComponent.Routine -> {
-                            rootComponent.onShowAddDialogRoutineRoutineScreen(AddRoutineDialogRoutineScreen())
+                            rootComponent.onShowAddDialogRoutineRoutineScreen(AddRoutineDialogRoutineScreen)
                           }
 
                           else -> {
@@ -297,10 +297,12 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
     animation = stackAnimation(fade()),
   ) {
     val addRoutineDialogHome = component.addRoutineDialogHomeScreen.subscribeAsState().value.child
+    val updateRoutineDialogHome = component.updateRoutineDialogHomeScreen.subscribeAsState().value.child
     val errorDialogHome = component.errorDialogHomeScreen.subscribeAsState().value.child
     val errorDialogRoutine = component.errorDialogRoutineScreen.subscribeAsState().value.child
     val errorDialogNote = component.errorDialogNoteScreen.subscribeAsState().value.child
     val addRoutineDialogRoutine = component.addRoutineDialogRoutineScreen.subscribeAsState().value.child
+    val updateRoutineDialogRoutine = component.updateRoutineDialogRoutineScreen.subscribeAsState().value.child
     val addNoteDialog = component.addNoteDialog.subscribeAsState().value.child
 
     Surface(color = MaterialTheme.colorScheme.background) {
@@ -311,6 +313,7 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
             clickSearch = clickSearch,
             dialogSlotAddRoutineDialog = addRoutineDialogHome,
             dialogSlotErrorDialog = errorDialogHome,
+            dialogSlotUpdateRoutineDialog = updateRoutineDialogHome,
           )
         }
 
