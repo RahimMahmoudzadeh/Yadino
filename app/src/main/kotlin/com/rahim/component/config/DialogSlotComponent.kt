@@ -18,7 +18,10 @@ data object AddRoutineDialogRoutineScreen : ConfigChildComponent
 data class UpdateRoutineDialogRoutineScreen(val updateRoutine: com.rahim.yadino.routine.presentation.model.RoutineUiModel) : ConfigChildComponent
 
 @Serializable
-data class AddNoteDialog(val updateNote: NoteUiModel? = null) : ConfigChildComponent
+data object AddNoteDialog : ConfigChildComponent
+
+@Serializable
+data class UpdateNoteDialog(val updateNote: NoteUiModel) : ConfigChildComponent
 
 @Serializable
 data class ErrorDialogHome(val errorDialogUiModel: ErrorDialogUiModel) : ConfigChildComponent

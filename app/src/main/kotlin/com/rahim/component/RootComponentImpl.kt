@@ -35,6 +35,7 @@ import com.rahim.component.config.ConfigChildComponent
 import com.rahim.component.config.ErrorDialogHome
 import com.rahim.component.config.ErrorDialogNote
 import com.rahim.component.config.ErrorDialogRoutine
+import com.rahim.component.config.UpdateNoteDialog
 import com.rahim.component.config.UpdateRoutineDialogHomeScreen
 import com.rahim.component.config.UpdateRoutineDialogRoutineScreen
 import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponent
@@ -50,6 +51,8 @@ import com.rahim.yadino.note.presentation.component.NoteComponent
 import com.rahim.yadino.note.presentation.component.NoteComponentImpl
 import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
 import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponentImpl
+import com.rahim.yadino.note.presentation.component.updateNoteDialog.UpdateNoteDialogComponent
+import com.rahim.yadino.note.presentation.component.updateNoteDialog.UpdateNoteDialogComponentImpl
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponentImpl
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
@@ -85,6 +88,9 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
 
   private val addNoteDialogComponentNavigationSlot =
     SlotNavigation<AddNoteDialog>()
+
+  private val updateNoteDialogComponentNavigationSlot =
+    SlotNavigation<UpdateNoteDialog>()
 
   private val errorDialogHomeComponentNavigationSlot =
     SlotNavigation<ErrorDialogHome>()
@@ -189,9 +195,23 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
         mainDispatcher = Dispatchers.Main,
         ioDispatcher = Dispatchers.IO,
         addNoteUseCase = addNoteUseCase,
+        onDismissed = addNoteDialogComponentNavigationSlot::dismiss,
+      )
+    }
+  override val updateNoteDialog: Value<ChildSlot<UpdateNoteDialog, UpdateNoteDialogComponent>> =
+    childSlot(
+      source = updateNoteDialogComponentNavigationSlot,
+      serializer = UpdateNoteDialog.serializer(),
+      handleBackButton = true,
+      key = "updateNoteDialogComponentNavigationSlot",
+    ) { config, childComponentContext ->
+      UpdateNoteDialogComponentImpl(
+        componentContext = childComponentContext,
+        mainDispatcher = Dispatchers.Main,
+        ioDispatcher = Dispatchers.IO,
         updateNoteUseCase = updateNoteUseCase,
         updateNote = config.updateNote,
-        onDismissed = addNoteDialogComponentNavigationSlot::dismiss,
+        onDismissed = updateNoteDialogComponentNavigationSlot::dismiss,
       )
     }
 
@@ -335,7 +355,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     searchNoteUseCase = searchNoteUseCase,
     updateNoteUseCase = updateNoteUseCase,
     onOpenUpdateNoteDialog = { updateNote ->
-      addNoteDialogComponentNavigationSlot.activate(AddNoteDialog(updateNote))
+      updateNoteDialogComponentNavigationSlot.activate(UpdateNoteDialog(updateNote))
     },
     onShowErrorDialog = { errorDialogUiModel ->
       errorDialogNoteComponentNavigationSlot.activate(ErrorDialogNote(errorDialogUiModel))
