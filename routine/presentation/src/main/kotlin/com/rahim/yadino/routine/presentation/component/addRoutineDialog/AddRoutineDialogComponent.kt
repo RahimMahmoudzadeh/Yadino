@@ -16,7 +16,6 @@ interface AddRoutineDialogComponent : UnidirectionalComponent<AddRoutineDialogCo
   sealed class Event {
     data object Dismiss : Event()
     data class CreateRoutine(val routine: RoutineUiModel) : Event()
-    data class UpdateRoutine(val routine: RoutineUiModel) : Event()
     data class MonthChange(val yearNumber: Int, val monthNumber: Int, val increaseDecrease: IncreaseDecrease) : Event()
   }
 
@@ -28,8 +27,6 @@ interface AddRoutineDialogComponent : UnidirectionalComponent<AddRoutineDialogCo
   @Immutable
   data class State(
     val timesMonth: PersistentList<TimeDateUiModel> = persistentListOf(),
-    val updateRoutine: RoutineUiModel? = null,
     val currentTime: CurrentTimeUiModel? = null,
   )
-
 }
