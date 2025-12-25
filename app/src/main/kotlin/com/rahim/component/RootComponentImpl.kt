@@ -171,7 +171,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
         updateRoutine = config.updateRoutine,
         getTimesMonthUseCase = getTimesMonthUseCase,
         getCurrentTimeUseCase = getCurrentTimeUseCase,
-        onDismissed = addRoutineDialogRoutineScreenComponentNavigationSlot::dismiss,
+        onDismissed = updateRoutineDialogRoutineScreenComponentNavigationSlot::dismiss,
       )
     }
   private val addNoteUseCase: AddNoteUseCase = get()
