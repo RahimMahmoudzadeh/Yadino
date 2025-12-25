@@ -321,6 +321,7 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
         is RootComponent.ChildStack.Routine -> RoutineRoute(
           component = child.component, showSearchBar = clickSearch,
           dialogSlotAddRoutine = addRoutineDialogRoutine,
+          dialogSlotUpdateRoutine = updateRoutineDialogRoutine,
           dialogSlotErrorDialog = errorDialogRoutine,
         )
 
