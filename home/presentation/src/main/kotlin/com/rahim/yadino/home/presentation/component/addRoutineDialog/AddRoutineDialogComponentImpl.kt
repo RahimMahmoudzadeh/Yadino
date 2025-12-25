@@ -25,14 +25,12 @@ class AddRoutineDialogComponentImpl(
   componentContext: ComponentContext,
   mainDispatcher: CoroutineContext,
   private val addReminderUseCase: AddReminderUseCase,
-  private val updateReminderUseCase: UpdateReminderUseCase,
-  private val updateRoutine: RoutineUiModel?,
   private val onDismissed: () -> Unit,
 ) : AddRoutineDialogComponent, ComponentContext by componentContext {
 
   private val scope = coroutineScope(mainDispatcher + SupervisorJob())
 
-  private val _state = MutableValue(AddRoutineDialogComponent.State(updateRoutine = updateRoutine))
+  private val _state = MutableValue(AddRoutineDialogComponent.State())
   override val state: Value<AddRoutineDialogComponent.State> = _state
 
 
@@ -42,7 +40,6 @@ class AddRoutineDialogComponentImpl(
   override fun event(event: AddRoutineDialogComponent.Event) = when (event) {
     AddRoutineDialogComponent.Event.DismissDialog -> onDismissed()
     is AddRoutineDialogComponent.Event.CreateRoutine -> addRoutine(event.routine)
-    is AddRoutineDialogComponent.Event.UpdateRoutine -> updateRoutine(event.routine)
   }
 
   private fun addRoutine(routine: RoutineUiModel) {
@@ -53,18 +50,6 @@ class AddRoutineDialogComponentImpl(
         _effect.send(AddRoutineDialogComponent.Effect.ShowToast(it.toMessageUi(onDismissed)))
       }.onFailure {
         _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_SAVE_REMINDER))
-      }
-    }
-  }
-
-  private fun updateRoutine(routine: RoutineUiModel) {
-    scope.launch {
-      runCatching {
-        updateReminderUseCase.invoke(routine.toRoutine())
-      }.onSuccess {
-        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(it.toMessageUi(onDismissed)))
-      }.onFailure {
-        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_UPDATE_REMINDER))
       }
     }
   }

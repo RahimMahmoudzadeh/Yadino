@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.presentation.component.addRoutineDialog
+package com.rahim.yadino.routine.presentation.component.updateRoutineDialog
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -14,6 +14,7 @@ import com.rahim.yadino.enums.message.MessageUi
 import com.rahim.yadino.routine.domain.useCase.AddReminderUseCase
 import com.rahim.yadino.routine.domain.useCase.GetCurrentTimeUseCase
 import com.rahim.yadino.routine.domain.useCase.GetTimesMonthUseCase
+import com.rahim.yadino.routine.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.routine.presentation.mapper.toCurrentTimeUiModel
 import com.rahim.yadino.routine.presentation.mapper.toRoutine
 import com.rahim.yadino.routine.presentation.mapper.toTimeDateUiModel
@@ -27,24 +28,25 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class AddRoutineDialogComponentImpl(
+class UpdateRoutineDialogComponentImpl(
   componentContext: ComponentContext,
   mainDispatcher: CoroutineContext,
   ioDispatcher: CoroutineContext,
-  private val addReminderUseCase: AddReminderUseCase,
+  private val updateRoutine: RoutineUiModel,
+  private val updateReminderUseCase: UpdateReminderUseCase,
   private val getTimesMonthUseCase: GetTimesMonthUseCase,
   private val getCurrentTimeUseCase: GetCurrentTimeUseCase,
   private val onDismissed: () -> Unit,
-) : AddRoutineDialogComponent, ComponentContext by componentContext {
+) : UpdateRoutineDialogComponent, ComponentContext by componentContext {
 
   private val scope = coroutineScope(mainDispatcher + SupervisorJob())
   private val ioScope = coroutineScope(ioDispatcher + SupervisorJob())
 
-  private val _state = MutableValue(AddRoutineDialogComponent.State())
-  override val state: Value<AddRoutineDialogComponent.State> = _state
+  private val _state = MutableValue(UpdateRoutineDialogComponent.State(updateRoutine = updateRoutine))
+  override val state: Value<UpdateRoutineDialogComponent.State> = _state
 
-  private val _effect = Channel<AddRoutineDialogComponent.Effect>(Channel.BUFFERED)
-  override val effect: Flow<AddRoutineDialogComponent.Effect> = _effect.consumeAsFlow()
+  private val _effect = Channel<UpdateRoutineDialogComponent.Effect>(Channel.BUFFERED)
+  override val effect: Flow<UpdateRoutineDialogComponent.Effect> = _effect.consumeAsFlow()
 
   init {
     lifecycle.doOnCreate {
@@ -52,20 +54,20 @@ class AddRoutineDialogComponentImpl(
     }
   }
 
-  override fun event(event: AddRoutineDialogComponent.Event) = when (event) {
-    AddRoutineDialogComponent.Event.Dismiss -> onDismissed()
-    is AddRoutineDialogComponent.Event.CreateRoutine -> addRoutine(event.routine)
-    is AddRoutineDialogComponent.Event.MonthChange -> checkDialogMonthChange(monthNumber = event.monthNumber, yearNumber = event.yearNumber, increaseDecrease = event.increaseDecrease)
+  override fun event(event: UpdateRoutineDialogComponent.Event) = when (event) {
+    UpdateRoutineDialogComponent.Event.Dismiss -> onDismissed()
+    is UpdateRoutineDialogComponent.Event.UpdateRoutine -> updateRoutine(event.routine)
+    is UpdateRoutineDialogComponent.Event.MonthChange -> checkDialogMonthChange(monthNumber = event.monthNumber, yearNumber = event.yearNumber, increaseDecrease = event.increaseDecrease)
   }
 
-  private fun addRoutine(routine: RoutineUiModel) {
+  private fun updateRoutine(routine: RoutineUiModel) {
     scope.launch {
       runCatching {
-        addReminderUseCase.invoke(routine.toRoutine())
-      }.onSuccess { resource ->
-        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(resource.toMessageUi(onDismissed)))
+        updateReminderUseCase.invoke(routine.toRoutine())
+      }.onSuccess {resource->
+        _effect.send(UpdateRoutineDialogComponent.Effect.ShowToast(resource.toMessageUi(onDismissed)))
       }.onFailure {
-        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_SAVE_REMINDER))
+        _effect.send(UpdateRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_UPDATE_REMINDER))
       }
     }
   }

@@ -33,12 +33,14 @@ import com.rahim.yadino.note.presentation.R
 import com.rahim.yadino.note.presentation.component.NoteComponent
 import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
 import com.rahim.yadino.note.presentation.component.errorDialog.ErrorDialogComponent
+import com.rahim.yadino.note.presentation.component.updateNoteDialog.UpdateNoteDialogComponent
 import com.rahim.yadino.note.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.ui.addNoteDialog.AddNoteDialog
 import com.rahim.yadino.note.presentation.ui.component.ItemListNote
 import com.rahim.yadino.note.presentation.ui.errorDialog.ErrorDialogUi
+import com.rahim.yadino.note.presentation.ui.updateNoteDialog.UpdateNoteDialog
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -50,13 +52,22 @@ fun NoteRoute(
   clickSearch: Boolean,
   component: NoteComponent,
   dialogSlotAddNote: Child.Created<Any, AddNoteDialogComponent>?,
+  dialogSlotUpdateNote: Child.Created<Any, UpdateNoteDialogComponent>?,
   dialogSlotErrorDialog: Child.Created<Any, ErrorDialogComponent>?,
 ) {
-  val (state, effect, event) = use(component)
+  val (state, _ , event) = use(component)
 
   dialogSlotAddNote?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       AddNoteDialog(
+        component = dialogComponent,
+      )
+    }
+  }
+
+  dialogSlotUpdateNote?.let { dialogSlot ->
+    dialogSlot.instance.also { dialogComponent ->
+      UpdateNoteDialog(
         component = dialogComponent,
       )
     }
