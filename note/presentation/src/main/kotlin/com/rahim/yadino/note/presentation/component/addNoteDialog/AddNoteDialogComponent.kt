@@ -9,7 +9,6 @@ interface AddNoteDialogComponent : UnidirectionalComponent<AddNoteDialogComponen
   @Immutable
   sealed class Event {
     data class CreateNote(val note: NoteUiModel) : Event()
-    data class UpdateNote(val note: NoteUiModel) : Event()
     data object Dismiss : Event()
   }
 
@@ -19,5 +18,5 @@ interface AddNoteDialogComponent : UnidirectionalComponent<AddNoteDialogComponen
   }
 
   @Immutable
-  data class State(val updateNote: NoteUiModel? = null)
+  data class State(val date: String = "")
 }

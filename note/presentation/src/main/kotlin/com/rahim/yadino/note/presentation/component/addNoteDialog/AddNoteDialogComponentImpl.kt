@@ -24,8 +24,6 @@ class AddNoteDialogComponentImpl(
   mainDispatcher: CoroutineContext,
   ioDispatcher: CoroutineContext,
   private val addNoteUseCase: AddNoteUseCase,
-  private val updateNoteUseCase: UpdateNoteUseCase,
-  private val updateNote: NoteUiModel?,
   private val onDismissed: () -> Unit,
 ) : AddNoteDialogComponent, ComponentContext by componentContext {
 
@@ -34,7 +32,7 @@ class AddNoteDialogComponentImpl(
 
 
   final override val state: Value<AddNoteDialogComponent.State>
-    field = MutableValue(AddNoteDialogComponent.State(updateNote = updateNote))
+    field = MutableValue(AddNoteDialogComponent.State())
 
   private val _effect = Channel<AddNoteDialogComponent.Effect>(Channel.BUFFERED)
   override val effect: Flow<AddNoteDialogComponent.Effect> = _effect.consumeAsFlow()
@@ -42,7 +40,6 @@ class AddNoteDialogComponentImpl(
   override fun event(event: AddNoteDialogComponent.Event) = when (event) {
     is AddNoteDialogComponent.Event.CreateNote -> addNote(event.note)
     AddNoteDialogComponent.Event.Dismiss -> onDismissed()
-    is AddNoteDialogComponent.Event.UpdateNote -> updateNote(event.note)
   }
 
   private fun addNote(note: NoteUiModel) {
@@ -55,13 +52,6 @@ class AddNoteDialogComponentImpl(
       }.onFailure {
         _effect.send(AddNoteDialogComponent.Effect.ShowToast(MessageUi.ERROR_ADD_NOTE))
       }
-    }
-  }
-
-  private fun updateNote(note: NoteUiModel) {
-    mainScope.launch {
-      updateNoteUseCase(note.toNote())
-      onDismissed()
     }
   }
 }

@@ -89,9 +89,9 @@ fun AddNoteDialog(
   }
 
 
-  var noteState by remember { mutableStateOf(state.updateNote?.state ?: PriorityNote.LOW_PRIORITY) }
-  var nameNote by rememberSaveable { mutableStateOf(state.updateNote?.name ?: "") }
-  var description by rememberSaveable { mutableStateOf(state.updateNote?.description ?: "") }
+  var noteState by remember { mutableStateOf(PriorityNote.LOW_PRIORITY) }
+  var nameNote by rememberSaveable { mutableStateOf( "") }
+  var description by rememberSaveable { mutableStateOf("") }
   val persianDate = PersianDate()
   var isErrorName by remember { mutableStateOf(false) }
   var isErrorExplanation by remember { mutableStateOf(false) }
@@ -316,12 +316,12 @@ fun AddNoteDialog(
                 isErrorName = true
               } else {
                 val note = NoteUiModel(
-                  id = state.updateNote?.id ?: Random.nextInt(),
+                  id = Random.nextInt(),
                   name = nameNote,
                   description = description,
                   state = noteState,
-                  isChecked = state.updateNote?.isChecked ?: false,
-                  timeNote = state.updateNote?.timeNote ?: NoteUiModel.TimeNoteUiModel(
+                  isChecked = false,
+                  timeNote = NoteUiModel.TimeNoteUiModel(
                     monthNumber = persianDate.shMonth,
                     dayNumber = persianDate.shDay,
                     yearNumber = persianDate.shYear,
@@ -329,12 +329,7 @@ fun AddNoteDialog(
                     timeCreateMillSecond = System.currentTimeMillis(),
                   ),
                 )
-                val eventToSend = if (state.updateNote != null) {
-                  AddNoteDialogComponent.Event.UpdateNote(note)
-                } else {
-                  AddNoteDialogComponent.Event.CreateNote(note)
-                }
-                event.invoke(eventToSend)
+                event.invoke(AddNoteDialogComponent.Event.CreateNote(note))
               }
             },
           )
