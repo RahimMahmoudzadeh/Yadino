@@ -101,10 +101,12 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private val errorDialogRoutineComponentNavigationSlot =
     SlotNavigation<ErrorDialogRoutine>()
 
+  private val sharedPreferencesRepository: SharedPreferencesRepository = get()
+
   override val stack: Value<ChildStack<*, RootComponent.ChildStack>> = childStack(
     source = navigation,
     serializer = ConfigChildComponent.serializer(),
-    initialConfiguration = ConfigChildComponent.Home,
+    initialConfiguration = ConfigChildComponent.OnBoarding,
     handleBackButton = true,
     childFactory = ::childComponent,
   )
@@ -305,7 +307,6 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     },
   )
 
-  private val sharedPreferencesRepository: SharedPreferencesRepository = get()
   private fun onBoardingComponent(componentContext: ComponentContext): OnBoardingComponent = OnBoardingComponentImpl(
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
