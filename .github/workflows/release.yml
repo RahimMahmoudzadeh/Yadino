@@ -47,7 +47,6 @@ jobs:
               state: 'closed'
             });
 
-            let body = `##${tagName}\n\n`;
             body += `### Fixed Issues & Tasks\n`;
 
             if (issues.data.length === 0) {
@@ -68,7 +67,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body: ${{ steps.milestone_notes.outputs.body }}
-          name: Release ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
           draft: false
           prerelease: false
         env:
