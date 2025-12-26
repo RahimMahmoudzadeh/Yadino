@@ -78,10 +78,10 @@ jobs:
             core.setOutput('body', body + issueList);
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v1
         with:
-          body: ${{ steps.generate_body.outputs.body }}
+          body_path: release_body.md
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
