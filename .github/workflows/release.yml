@@ -67,7 +67,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body: ${{ steps.milestone_notes.outputs.body }}
-          name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
         env:
