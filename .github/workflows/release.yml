@@ -1,125 +1,31 @@
-name: Build & Publish App
-
+name: "Generate Release"
 on:
   push:
-    branches:
-      - release
-
-permissions:
-  contents: write
-
-env:
-  APP_MODULE: app
-  APP_NAME_PREFIX: Yadino
+    tags:
+      - '*' # Triggers on any tag push
 
 jobs:
-  build:
+  build-release:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write # Needed to update the release notes
     steps:
-      - name: 🔁 Checkout Full Repo
+      - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Build Changelog
+        id: build_changelog
+        uses: mikepenz/release-changelog-builder-action@v4
         with:
-          fetch-depth: 0
+          configuration: ".github/changelog_config.json"
+          ignorePreReleases: true
+          # This is the key: it looks for closed issues
+          mode: "COMMIT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🔎 Fetch All Tags
-        run: git fetch --tags --prune
-
-      - name: 🆔 Extract Version From Latest Tag
-        id: version
-        run: |
-          set -e
-          TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          if [ -z "$TAG" ]; then
-            echo "❌ No tag found! Create and push one first."
-            exit 1
-          fi
-          VERSION="${TAG#v}"
-          TIMESTAMP=$(date -u +"%A, %Y-%m-%d %H:%M UTC")
-          LAST_COMMIT=$(git log -1 --pretty=format:"%s (%h)")
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
-          echo "commit_title=$LAST_COMMIT" >> $GITHUB_OUTPUT
-
-      - name: 🧰 Setup JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: 🔧 Gradle Permissions
-        run: chmod +x ./gradlew
-
-      - name: 📱 Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: 🔨 Build Debug APK + AAB
-        run: |
-          ./gradlew clean :${APP_MODULE}:assembleDebug :${APP_MODULE}:bundleDebug --stacktrace
-
-      - name: 📦 Find and Rename Artifacts
-        id: artifacts
-        run: |
-          VERSION=${{ steps.version.outputs.version }}
-          APK=$(find $APP_MODULE/build/outputs -name "*debug*.apk" | head -n 1)
-          AAB=$(find $APP_MODULE/build/outputs -name "*debug*.aab" | head -n 1)
-
-          if [ -z "$APK" ]; then echo "APK not found! ❌"; exit 1; fi
-          if [ -z "$AAB" ]; then echo "AAB not found! ❌"; exit 1; fi
-
-          APK_NAME="${APP_NAME_PREFIX}_v${VERSION}.apk"
-          AAB_NAME="${APP_NAME_PREFIX}_v${VERSION}.aab"
-
-          cp "$APK" "$APK_NAME"
-          cp "$AAB" "$AAB_NAME"
-
-          echo "apk=$APK_NAME" >> $GITHUB_OUTPUT
-          echo "aab=$AAB_NAME" >> $GITHUB_OUTPUT
-
-      - name: 📋 Commit List + Graph
-        id: commits
-        run: |
-          TAG=${{ steps.version.outputs.tag }}
-          PREV=$(git tag --sort=-creatordate | sed -n '2p')
-          
-          if [ -z "$PREV" ]; then
-            LOG=$(git log -n 10 --pretty=format:"• %s (%h)")
-          else
-            LOG=$(git log $PREV..$TAG -n 10 --pretty=format:"• %s (%h)")
-          fi
-
-          GRAPH=$(git log --oneline --graph --decorate --all | head -n 25)
-
-          echo "log<<EOF" >> $GITHUB_OUTPUT
-          echo "$LOG" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-          echo "graph<<EOF" >> $GITHUB_OUTPUT
-          echo "$GRAPH" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: 🏷 Create Or Update Release
+      - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          name: ${{ steps.version.outputs.tag }}
-          body: |
-            # ${{ steps.version.outputs.commit_title }}
-
-            ### 🔥 What is Changed?
-            ${{ steps.commits.outputs.log }}
-
-            ### 🧩 Commit Graph View
-            ${{ steps.commits.outputs.graph }}
-
-            ### 🕒 Build Time
-            **${{ steps.version.outputs.timestamp }}**
-
-      - name: 📤 Upload APK + AAB
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          files: |
-            ${{ steps.artifacts.outputs.apk }}
-            ${{ steps.artifacts.outputs.aab }}
+          body: ${{steps.build_changelog.outputs.changelog}}
+          tag_name: ${{ github.ref_name }}
