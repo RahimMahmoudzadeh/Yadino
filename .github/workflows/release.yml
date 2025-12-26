@@ -1,31 +1,56 @@
-name: "Generate Release"
+name: Android Release Notifier
+
 on:
   push:
     tags:
-      - '*' # Triggers on any tag push
+      - 'v*' # Triggers on any tag starting with 'v'
 
 jobs:
   build-release:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Needed to update the release notes
+      contents: write
+      issues: read
+      pull-requests: read
+
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v4
-
-      - name: Build Changelog
-        id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@v4
         with:
-          configuration: ".github/changelog_config.json"
-          ignorePreReleases: true
-          # This is the key: it looks for closed issues
-          mode: "COMMIT"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 # Important: Fetch all history for tags and commits
 
-      - name: Create Release
+      - name: Generate Release Notes
+        id: generate_notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 1. Get current and previous tags
+          CURRENT_TAG=${GITHUB_REF#refs/tags/}
+          PREVIOUS_TAG=$(git describe --abbrev=0 --tags $CURRENT_TAG^ 2>/dev/null || echo "")
+          
+          # 2. Extract version number for Milestone (e.g., v1.6.7 -> 1.6.7)
+          MILESTONE_NAME=${CURRENT_TAG#v}
+          
+          echo "## 🚀 Release $CURRENT_TAG" > release_body.md
+          
+          # 3. Fetch Issues from Milestone
+          echo -e "\n### 🛠 Issues Fixed in this Milestone ($MILESTONE_NAME)" >> release_body.md
+          gh issue list --milestone "$MILESTONE_NAME" --state closed --json number,title,assignees --template \
+          '{{range .}}* #{{.number}} {{.title}} (Fixed by: {{range .assignees}}{{.login}} {{else}}Unassigned{{end}}){{"\n"}}{{end}}' >> release_body.md
+          
+          # 4. Fetch Commits since previous tag
+          echo -e "\n### 📝 Commits" >> release_body.md
+          if [ -z "$PREVIOUS_TAG" ]; then
+            git log --pretty=format:"* %s (by %an)" >> release_body.md
+          else
+            git log ${PREVIOUS_TAG}..${CURRENT_TAG} --pretty=format:"* %s (by %an)" >> release_body.md
+          fi
+
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          body: ${{steps.build_changelog.outputs.changelog}}
+          body_path: release_body.md
           tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
