@@ -1,56 +1,87 @@
-name: Android Release Notifier
+name: Create Release Notes
 
 on:
   push:
     tags:
-      - 'v*' # Triggers on any tag starting with 'v'
+      - 'v*' # Triggers on any tag starting with 'v' (e.g., v1.6.7)
 
 jobs:
   build-release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      issues: read
       pull-requests: read
+      issues: read
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Important: Fetch all history for tags and commits
+          fetch-depth: 0 # Necessary to find the previous tag
 
-      - name: Generate Release Notes
-        id: generate_notes
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # 1. Get current and previous tags
-          CURRENT_TAG=${GITHUB_REF#refs/tags/}
-          PREVIOUS_TAG=$(git describe --abbrev=0 --tags $CURRENT_TAG^ 2>/dev/null || echo "")
-          
-          # 2. Extract version number for Milestone (e.g., v1.6.7 -> 1.6.7)
-          MILESTONE_NAME=${CURRENT_TAG#v}
-          
-          echo "## 🚀 Release $CURRENT_TAG" > release_body.md
-          
-          # 3. Fetch Issues from Milestone
-          echo -e "\n### 🛠 Issues Fixed in this Milestone ($MILESTONE_NAME)" >> release_body.md
-          gh issue list --milestone "$MILESTONE_NAME" --state closed --json number,title,assignees --template \
-          '{{range .}}* #{{.number}} {{.title}} (Fixed by: {{range .assignees}}{{.login}} {{else}}Unassigned{{end}}){{"\n"}}{{end}}' >> release_body.md
-          
-          # 4. Fetch Commits since previous tag
-          echo -e "\n### 📝 Commits" >> release_body.md
-          if [ -z "$PREVIOUS_TAG" ]; then
-            git log --pretty=format:"* %s (by %an)" >> release_body.md
-          else
-            git log ${PREVIOUS_TAG}..${CURRENT_TAG} --pretty=format:"* %s (by %an)" >> release_body.md
-          fi
+      - name: Generate Release Body
+        id: generate_body
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const currentTag = context.ref.replace('refs/tags/', '');
+            
+            // 1. Get all tags to find the previous one
+            const tags = execSync('git tag --sort=-v:refname').toString().split('\n').filter(t => t);
+            const prevTag = tags[1]; // The tag before the one just pushed
+
+            console.log(`Comparing ${prevTag} to ${currentTag}`);
+
+            let body = `## 🚀 Release ${currentTag}\n\n`;
+            
+            // 2. Get the list of commits between tags
+            // We look for merged PRs which usually follow the "Merge pull request #XX" format
+            const comparison = await github.rest.repos.compareCommits({
+              owner,
+              repo,
+              base: prevTag,
+              head: currentTag,
+            });
+
+            const processedIssues = new Set();
+            let issueList = "### Fixed Issues & Improvements\n";
+
+            for (const commit of comparison.data.commits) {
+              // Extract PR number from merge commits or squash commits
+              // Matches patterns like "(#123)" or "Merge pull request #123"
+              const prMatch = commit.commit.message.match(/#(\d+)/);
+              if (prMatch) {
+                const prNumber = prMatch[1];
+            
+                if (!processedIssues.has(prNumber)) {
+                  try {
+                    const { data: pr } = await github.rest.pulls.get({
+                      owner,
+                      repo,
+                      pull_number: prNumber,
+                    });
+
+                    issueList += `* [#${pr.number}] ${pr.title} - **Fixed by @${pr.user.login}**\n`;
+                    processedIssues.add(prNumber);
+                  } catch (e) {
+                    console.log(`Could not fetch PR #${prNumber}: ${e.message}`);
+                  }
+                }
+              }
+            }
+
+            if (processedIssues.size === 0) {
+              issueList += "_No specific issues identified for this release._";
+            }
+
+            core.setOutput('body', body + issueList);
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
-          body_path: release_body.md
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
+          body: ${{ steps.generate_body.outputs.body }}
           draft: false
           prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
