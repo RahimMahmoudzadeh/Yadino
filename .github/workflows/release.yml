@@ -47,7 +47,7 @@ jobs:
               state: 'closed'
             });
 
-            let body = `## 🚀 Release ${tagName}\n\n`;
+            let body = `##${tagName}\n\n`;
             body += `### Fixed Issues & Tasks\n`;
 
             if (issues.data.length === 0) {
