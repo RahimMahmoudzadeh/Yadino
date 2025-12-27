@@ -65,7 +65,7 @@ jobs:
               state: 'all'
             });
 
-            let body = `## 📋 Changes\n\n`;
+            let body = `## What's Changes\n\n`;
             for (const issue of issues.data) {
               const fixer = issue.assignee ? issue.assignee.login : issue.user.login;
               body += `#${issue.number} ${issue.title} - Fixed by @${fixer}\n`;
