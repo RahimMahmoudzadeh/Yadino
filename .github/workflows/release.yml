@@ -3,7 +3,7 @@ name: Android Release Build & Publish
 on:
   push:
     tags:
-      - 'v*'
+      - '*'
 
 jobs:
   build-and-release:
