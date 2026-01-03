@@ -1,4 +1,4 @@
-name: Android Release Build & Publish
+name: CafeBazaar Release Build
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      # This step recreates the local.properties and Keystore file
+      # Recreating your local environment using Secrets
       - name: Prepare Signing Environment
         run: |
           echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> local.properties
@@ -35,8 +35,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build Signed Release APK
-        run: ./gradlew assembleRelease
+      # CHANGED: Target the specific CafeBazaar flavor
+      - name: Build CafeBazaar Release APK
+        run: ./gradlew assembleCafeBazaarRelease
 
       - name: Generate Release Notes
         id: milestone_notes
@@ -65,7 +66,7 @@ jobs:
               state: 'all'
             });
 
-            let body = `## What's Changes\n\n`;
+            let body = `## 📋 Changes\n\n`;
             for (const issue of issues.data) {
               const fixer = issue.assignee ? issue.assignee.login : issue.user.login;
               body += `#${issue.number} ${issue.title} - Fixed by @${fixer}\n`;
@@ -78,8 +79,8 @@ jobs:
         with:
           body: ${{ steps.milestone_notes.outputs.body }}
           name: Release ${{ github.ref_name }}
-          # Path to the signed APK
-          files: app/build/outputs/apk/release/*.apk
+          # CHANGED: Updated path to include the 'cafeBazaar' folder
+          files: app/build/outputs/apk/cafeBazaar/release/*.apk
           draft: false
           prerelease: false
         env:
