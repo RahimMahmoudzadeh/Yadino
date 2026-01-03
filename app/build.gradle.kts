@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 import convention.YadinoBuildType
 import java.io.FileInputStream
 import java.util.Properties
@@ -28,7 +29,13 @@ android {
       keyPassword = keystoreProperties.getProperty("keyPassword")
     }
   }
-
+  applicationVariants.all {
+    outputs.forEach { output ->
+      if (output is ApkVariantOutputImpl) {
+        output.outputFileName = "yadino.apk"
+      }
+    }
+  }
   buildFeatures {
     buildConfig = true
   }
