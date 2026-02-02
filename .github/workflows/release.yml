@@ -41,7 +41,7 @@ jobs:
 
       - name: Generate Release Notes
         id: milestone_notes
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const { owner, repo } = context.repo;
