@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation.component.addRoutineDialog
+package com.rahim.yadino.home.presentation.ui.addDialogRoutine.component
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.UnidirectionalComponent

@@ -1,10 +1,9 @@
-package com.rahim.yadino.home.presentation.component.errorDialog
+package com.rahim.yadino.home.presentation.ui.errorDialog.component
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.rahim.yadino.base.UnidirectionalComponent
 import com.rahim.yadino.enums.message.MessageUi
-import com.rahim.yadino.enums.message.success.SuccessMessage
 
 interface ErrorDialogComponent : UnidirectionalComponent<ErrorDialogComponent.Event, ErrorDialogComponent.State, ErrorDialogComponent.Effect> {
   @Immutable

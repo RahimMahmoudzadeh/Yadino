@@ -1,15 +1,26 @@
-package com.rahim.yadino.home.presentation.component
+package com.rahim.yadino.home.presentation.ui.root.component
 
 import androidx.compose.runtime.Immutable
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.value.Value
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalComponent
 import com.rahim.yadino.enums.message.MessageUi
 import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
 import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
+import com.rahim.yadino.home.presentation.ui.addDialogRoutine.component.AddRoutineDialogComponent
+import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponent
+import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import kotlinx.collections.immutable.PersistentList
 
-interface HomeComponent : UnidirectionalComponent<HomeComponent.Event, HomeComponent.State, HomeComponent.Effect> {
+interface RootHomeComponent : UnidirectionalComponent<RootHomeComponent.Event, RootHomeComponent.State, RootHomeComponent.Effect> {
+
+
+  val addRoutineDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.AddRoutineDialogHome, AddRoutineDialogComponent>>
+  val updateRoutineDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.UpdateRoutineDialogHome, UpdateRoutineDialogComponent>>
+  val errorDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialogHome, ErrorDialogComponent>>
+
   @Immutable
   sealed class Event {
     data class CheckedRoutine(val routine: RoutineUiModel) : Event()
@@ -31,4 +42,6 @@ interface HomeComponent : UnidirectionalComponent<HomeComponent.Event, HomeCompo
     val routines: LoadableData<PersistentList<RoutineUiModel>> = LoadableData.Initial,
     val currentDate: CurrentDateUiModel? = null,
   )
+
+  fun onShowAddDialogRoutineHomeScreen(dialog: DialogSlotHomeComponent.AddRoutineDialogHome)
 }

@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation.component.updateRoutineDialog
+package com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue

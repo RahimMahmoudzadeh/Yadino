@@ -1,6 +1,8 @@
-package com.rahim.yadino.home.presentation.component
+package com.rahim.yadino.home.presentation.ui.root.component
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
@@ -32,7 +34,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
-class HomeComponentImpl(
+class RootHomeComponentImpl(
   componentContext: ComponentContext,
   mainContext: CoroutineContext,
   private val updateReminderUseCase: UpdateReminderUseCase,
@@ -42,15 +44,25 @@ class HomeComponentImpl(
   private val getCurrentDateUseCase: GetCurrentDateUseCase,
   private val onShowUpdateRoutineDialog: (RoutineUiModel) -> Unit,
   private val onShowErrorDialog: (errorDialog: ErrorDialogUiModel) -> Unit,
-) : HomeComponent, ComponentContext by componentContext {
+) : RootHomeComponent, ComponentContext by componentContext {
+
+  private val addRoutineDialogHomeScreenComponentNavigationSlot =
+    SlotNavigation<DialogSlotHomeComponent.AddRoutineDialogHome>()
+
+  private val updateRoutineDialogHomeScreenComponentNavigationSlot =
+    SlotNavigation<DialogSlotHomeComponent.UpdateRoutineDialogHome>()
+
+  private val errorDialogHomeComponentNavigationSlot =
+    SlotNavigation<DialogSlotHomeComponent.ErrorDialogHome>()
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
 
-  private val _state = MutableValue(HomeComponent.State())
-  override val state: Value<HomeComponent.State> = _state
+  private val _state = MutableValue(RootHomeComponent.State())
+  override val state: Value<RootHomeComponent.State> = _state
 
-  private val _effect = Channel<HomeComponent.Effect>(Channel.BUFFERED)
-  override val effect: Flow<HomeComponent.Effect> = _effect.receiveAsFlow()
+  private val _effect = Channel<RootHomeComponent.Effect>(Channel.BUFFERED)
+  override val effect: Flow<RootHomeComponent.Effect> = _effect.receiveAsFlow()
+
 
   init {
     lifecycle.doOnCreate {
@@ -59,29 +71,29 @@ class HomeComponentImpl(
     }
   }
 
-  override fun event(event: HomeComponent.Event) {
+  override fun event(event: RootHomeComponent.Event) {
     when (event) {
-      HomeComponent.Event.GetRoutines -> {
+      RootHomeComponent.Event.GetRoutines -> {
         getRoutines()
       }
 
-      is HomeComponent.Event.UpdateRoutine -> {
+      is RootHomeComponent.Event.UpdateRoutine -> {
         updateRoutine(event.routine)
       }
 
-      is HomeComponent.Event.CheckedRoutine -> {
+      is RootHomeComponent.Event.CheckedRoutine -> {
         checkedRoutine(event.routine)
       }
 
-      is HomeComponent.Event.OnShowErrorDialog -> {
+      is RootHomeComponent.Event.OnShowErrorDialog -> {
         showErrorDialog(event.errorDialogUiModel)
       }
 
-      is HomeComponent.Event.SearchRoutine -> {
+      is RootHomeComponent.Event.SearchRoutine -> {
         searchRoutines(searchText = event.routineName)
       }
 
-      is HomeComponent.Event.OnShowUpdateRoutineDialog -> onShowUpdateRoutineDialog(event.routine)
+      is RootHomeComponent.Event.OnShowUpdateRoutineDialog -> onShowUpdateRoutineDialog(event.routine)
     }
   }
 
@@ -113,7 +125,7 @@ class HomeComponentImpl(
         _state.update {
           it.copy(routines = LoadableData.Initial)
         }
-        _effect.send(HomeComponent.Effect.ShowToast(ErrorMessage.GET_PROCESS.toMessageUi()))
+        _effect.send(RootHomeComponent.Effect.ShowToast(ErrorMessage.GET_PROCESS.toMessageUi()))
       }.collectLatest { routines ->
         Timber.tag("routineSearch").d("getNormalRoutines")
         _state.update {
@@ -138,7 +150,7 @@ class HomeComponentImpl(
         it.copy(routines = LoadableData.Initial)
       }
       _effect.send(
-        HomeComponent.Effect.ShowToast(
+        RootHomeComponent.Effect.ShowToast(
           message = ErrorMessage.SEARCH_ROUTINE.toMessageUi(),
         ),
       )
@@ -175,7 +187,7 @@ class HomeComponentImpl(
             it.copy(routines = LoadableData.Initial)
           }
           _effect.send(
-            HomeComponent.Effect.ShowToast(
+            RootHomeComponent.Effect.ShowToast(
               message = response.error.toMessageUi(),
             ),
           )
@@ -186,7 +198,7 @@ class HomeComponentImpl(
             it.copy(routines = LoadableData.Initial)
           }
           _effect.send(
-            HomeComponent.Effect.ShowToast(
+            RootHomeComponent.Effect.ShowToast(
               message = response.data.toMessageUi(),
             ),
           )
@@ -200,4 +212,9 @@ class HomeComponentImpl(
       cancelReminderUseCase(routineModel.toRoutine())
     }
   }
+
+  override fun onShowAddDialogRoutineHomeScreen(dialog: DialogSlotHomeComponent.AddRoutineDialogHome) {
+    addRoutineDialogHomeScreenComponentNavigationSlot.activate(dialog)
+  }
+
 }

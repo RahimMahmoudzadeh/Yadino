@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation.ui
+package com.rahim.yadino.home.presentation.ui.root
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -36,8 +36,8 @@ import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
-import com.rahim.yadino.home.presentation.component.HomeComponent
-import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponent
+import com.rahim.yadino.home.presentation.ui.root.component.RootHomeComponent
+import com.rahim.yadino.home.presentation.ui.addDialogRoutine.component.AddRoutineDialogComponent
 import com.rahim.yadino.home.presentation.ui.addDialogRoutine.AddRoutineDialog
 import com.rahim.yadino.home.presentation.ui.component.ListRoutines
 import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
@@ -53,8 +53,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.collections.immutable.persistentListOf
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.home.presentation.ui.errorDialog.ErrorDialogUi
-import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponent
-import com.rahim.yadino.home.presentation.component.updateRoutineDialog.UpdateRoutineDialogComponent
+import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponent
+import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.UpdateRoutineDialog
 import kotlinx.coroutines.launch
@@ -63,7 +63,7 @@ import kotlinx.coroutines.launch
 fun HomeRoute(
   modifier: Modifier = Modifier,
   clickSearch: Boolean,
-  homeComponent: HomeComponent,
+  rootHomeComponent: RootHomeComponent,
   dialogSlotAddRoutineDialog: Child.Created<Any, AddRoutineDialogComponent>?,
   dialogSlotUpdateRoutineDialog: Child.Created<Any, UpdateRoutineDialogComponent>?,
   dialogSlotErrorDialog: Child.Created<Any, ErrorDialogComponent>?,
@@ -73,7 +73,7 @@ fun HomeRoute(
   val snackBarHostState = remember { SnackbarHostState() }
   val scope = rememberCoroutineScope()
 
-  val (state, effect, event) = use(component = homeComponent)
+  val (state, effect, event) = use(component = rootHomeComponent)
 
   dialogSlotAddRoutineDialog?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
@@ -100,7 +100,7 @@ fun HomeRoute(
   LaunchedEffect(effect) {
     effect.collect { effect ->
       when (effect) {
-        is HomeComponent.Effect.ShowSnackBar -> {
+        is RootHomeComponent.Effect.ShowSnackBar -> {
           val messageSnackBar = context.getString(effect.message.toStringResource())
           scope.launch {
             snackBarHostState.showSnackbar(
@@ -110,7 +110,7 @@ fun HomeRoute(
           }
         }
 
-        is HomeComponent.Effect.ShowToast -> {
+        is RootHomeComponent.Effect.ShowToast -> {
           context.showToastShort(effect.message.toStringResource())
         }
       }
@@ -121,16 +121,16 @@ fun HomeRoute(
     state = state,
     clickSearch = clickSearch,
     onCheckedRoutine = {
-      event.invoke(HomeComponent.Event.CheckedRoutine(it))
+      event.invoke(RootHomeComponent.Event.CheckedRoutine(it))
     },
     onShowErrorDialog = { deleteUiModel ->
-      event.invoke(HomeComponent.Event.OnShowErrorDialog(errorDialogUiModel = deleteUiModel))
+      event.invoke(RootHomeComponent.Event.OnShowErrorDialog(errorDialogUiModel = deleteUiModel))
     },
     onUpdateRoutine = {
-      event.invoke(HomeComponent.Event.OnShowUpdateRoutineDialog(it))
+      event.invoke(RootHomeComponent.Event.OnShowUpdateRoutineDialog(it))
     },
     onSearchText = {
-      event.invoke(HomeComponent.Event.SearchRoutine(it))
+      event.invoke(RootHomeComponent.Event.SearchRoutine(it))
     },
   )
 }
@@ -139,7 +139,7 @@ fun HomeRoute(
 @Composable
 private fun HomeScreen(
   modifier: Modifier = Modifier,
-  state: HomeComponent.State,
+  state: RootHomeComponent.State,
   clickSearch: Boolean,
   onCheckedRoutine: (RoutineUiModel) -> Unit,
   onShowErrorDialog: (errorDialogUiModel: ErrorDialogUiModel) -> Unit,
@@ -249,7 +249,7 @@ fun ItemsHome(
 private fun HomeScreenPreview() {
   YadinoTheme {
     HomeScreen(
-      state = HomeComponent.State(
+      state = RootHomeComponent.State(
         routines = LoadableData.Loaded(
           persistentListOf(
             RoutineUiModel(
