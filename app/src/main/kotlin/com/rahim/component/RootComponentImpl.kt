@@ -25,10 +25,10 @@ import com.rahim.yadino.home.domain.useCase.GetCurrentDateUseCase
 import com.rahim.yadino.home.domain.useCase.GetTodayRoutinesUseCase
 import com.rahim.yadino.home.domain.useCase.SearchRoutineUseCase
 import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
-import com.rahim.yadino.home.presentation.component.HomeComponent
-import com.rahim.yadino.home.presentation.component.HomeComponentImpl
-import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponent
-import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponentImpl
+import com.rahim.yadino.home.presentation.ui.root.component.RootHomeComponent
+import com.rahim.yadino.home.presentation.ui.root.component.RootHomeComponentImpl
+import com.rahim.yadino.home.presentation.ui.addDialogRoutine.component.AddRoutineDialogComponent
+import com.rahim.yadino.home.presentation.ui.addDialogRoutine.component.AddRoutineDialogComponentImpl
 import com.rahim.component.config.AddRoutineDialogHomeScreen
 import com.rahim.component.config.AddRoutineDialogRoutineScreen
 import com.rahim.component.config.ConfigChildComponent
@@ -38,10 +38,10 @@ import com.rahim.component.config.ErrorDialogRoutine
 import com.rahim.component.config.UpdateNoteDialog
 import com.rahim.component.config.UpdateRoutineDialogHomeScreen
 import com.rahim.component.config.UpdateRoutineDialogRoutineScreen
-import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponent
-import com.rahim.yadino.home.presentation.component.errorDialog.ErrorDialogComponentImpl
-import com.rahim.yadino.home.presentation.component.updateRoutineDialog.UpdateRoutineDialogComponent
-import com.rahim.yadino.home.presentation.component.updateRoutineDialog.UpdateRoutineDialogComponentImpl
+import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponent
+import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponentImpl
+import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
+import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponentImpl
 import com.rahim.yadino.note.domain.useCase.AddNoteUseCase
 import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
 import com.rahim.yadino.note.domain.useCase.GetNotesUseCase
@@ -74,11 +74,6 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private val getTodayRoutinesUseCase: GetTodayRoutinesUseCase = get()
   private val searchRoutineUseCase: SearchRoutineUseCase = get()
   private val getCurrentDateUseCase: GetCurrentDateUseCase = get()
-  private val addRoutineDialogHomeScreenComponentNavigationSlot =
-    SlotNavigation<AddRoutineDialogHomeScreen>()
-
-  private val updateRoutineDialogHomeScreenComponentNavigationSlot =
-    SlotNavigation<UpdateRoutineDialogHomeScreen>()
 
   private val addRoutineDialogRoutineScreenComponentNavigationSlot =
     SlotNavigation<AddRoutineDialogRoutineScreen>()
@@ -91,9 +86,6 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
 
   private val updateNoteDialogComponentNavigationSlot =
     SlotNavigation<UpdateNoteDialog>()
-
-  private val errorDialogHomeComponentNavigationSlot =
-    SlotNavigation<ErrorDialogHome>()
 
   private val errorDialogNoteComponentNavigationSlot =
     SlotNavigation<ErrorDialogNote>()
@@ -268,9 +260,6 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     navigation.bringToFront(tab)
   }
 
-  override fun onShowAddDialogRoutineHomeScreen(dialog: AddRoutineDialogHomeScreen) {
-    addRoutineDialogHomeScreenComponentNavigationSlot.activate(dialog)
-  }
 
   override fun onShowAddDialogRoutineRoutineScreen(dialog: AddRoutineDialogRoutineScreen) {
     addRoutineDialogRoutineScreenComponentNavigationSlot.activate(dialog)
@@ -289,7 +278,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     navigation.pop()
   }
 
-  private fun homeComponent(componentContext: ComponentContext): HomeComponent = HomeComponentImpl(
+  private fun homeComponent(componentContext: ComponentContext): RootHomeComponent = RootHomeComponentImpl(
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
     updateReminderUseCase = updateReminderUseCase,

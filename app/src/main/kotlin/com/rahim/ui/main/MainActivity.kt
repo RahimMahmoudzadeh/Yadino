@@ -60,7 +60,7 @@ import com.rahim.yadino.designsystem.component.requestPermissionNotification
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
-import com.rahim.yadino.home.presentation.ui.HomeRoute
+import com.rahim.yadino.home.presentation.ui.root.HomeRoute
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.component.BottomNavigationBar
 import com.rahim.component.config.AddNoteDialog
@@ -74,7 +74,6 @@ import com.rahim.yadino.onboarding.presentation.OnBoardingRoute
 import com.rahim.yadino.routine.presentation.ui.RoutineRoute
 import com.rahim.yadino.routine.presentation.ui.alarmHistory.HistoryRoute
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -311,7 +310,7 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
       when (val child = it.instance) {
         is RootComponent.ChildStack.HomeStack -> {
           HomeRoute(
-            homeComponent = child.component,
+            rootHomeComponent = child.component,
             clickSearch = clickSearch,
             dialogSlotAddRoutineDialog = addRoutineDialogHome,
             dialogSlotErrorDialog = errorDialogHome,
