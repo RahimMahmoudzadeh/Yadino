@@ -250,7 +250,7 @@ fun YadinoApp(
                   )
                 },
               ) {
-                Icon(imageVector = ImageVector.vectorResource(com.rahim.R.drawable.ic_add), "add item")
+                Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_add), "add item")
               }
             }
           },
