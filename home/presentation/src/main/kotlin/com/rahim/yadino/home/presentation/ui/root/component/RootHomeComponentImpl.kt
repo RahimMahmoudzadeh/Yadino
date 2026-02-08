@@ -31,6 +31,7 @@ import com.rahim.yadino.home.presentation.ui.addDialogRoutine.component.AddRouti
 import com.rahim.yadino.home.presentation.ui.addDialogRoutine.component.AddRoutineDialogComponentImpl
 import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponent
 import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponentImpl
+import com.rahim.yadino.home.presentation.ui.root.component.DialogSlotHomeComponent.*
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponentImpl
 import kotlinx.collections.immutable.toPersistentList
@@ -153,7 +154,8 @@ class RootHomeComponentImpl(
         searchRoutines(searchText = event.routineName)
       }
 
-      is RootHomeComponent.Event.OnShowUpdateRoutineDialog -> showUpdateDialogRoutine(DialogSlotHomeComponent.UpdateRoutineDialog(event.routine))
+      is RootHomeComponent.Event.OnShowUpdateRoutineDialog -> showUpdateDialogRoutine(event.routine)
+      RootHomeComponent.Event.OnShowAddRoutineDialog -> showAddDialogRoutine()
     }
   }
 
@@ -273,12 +275,12 @@ class RootHomeComponentImpl(
     }
   }
 
-  private fun showAddDialogRoutine(dialog: DialogSlotHomeComponent.AddRoutineDialogHome) {
-    addRoutineDialogNavigationSlot.activate(dialog)
+  private fun showAddDialogRoutine() {
+    addRoutineDialogNavigationSlot.activate(AddRoutineDialogHome)
   }
 
-  private fun showUpdateDialogRoutine(dialog: DialogSlotHomeComponent.UpdateRoutineDialog) {
-    updateRoutineDialogNavigationSlot.activate(dialog)
+  private fun showUpdateDialogRoutine(updateRoutine: RoutineUiModel) {
+    updateRoutineDialogNavigationSlot.activate(UpdateRoutineDialog(updateRoutine))
   }
 
 }

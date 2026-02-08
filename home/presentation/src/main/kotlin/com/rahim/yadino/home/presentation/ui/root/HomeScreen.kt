@@ -1,5 +1,6 @@
 package com.rahim.yadino.home.presentation.ui.root
 
+import android.Manifest
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,7 +8,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -22,10 +26,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
@@ -51,11 +60,14 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.collections.immutable.persistentListOf
 import com.rahim.yadino.base.LoadableData
+import com.rahim.yadino.designsystem.component.requestPermissionNotification
+import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.home.presentation.ui.errorDialog.ErrorDialogUi
 import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.UpdateRoutineDialog
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomeRoute(
   modifier: Modifier = Modifier,
@@ -114,23 +126,51 @@ fun HomeRoute(
       }
     }
   }
-  HomeScreen(
-    modifier = modifier,
-    state = state,
-    clickSearch = clickSearch,
-    onCheckedRoutine = {
-      event.invoke(RootHomeComponent.Event.CheckedRoutine(it))
+  val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
+
+  Scaffold(
+    floatingActionButton = {
+      FloatingActionButton(
+        containerColor = CornflowerBlueLight,
+        contentColor = Color.White,
+        onClick = {
+          requestPermissionNotification(
+            isGranted = {
+              if (it) {
+                event(RootHomeComponent.Event.OnShowAddRoutineDialog)
+              } else {
+//                event(RootHomeComponent.Event.OnShowErrorDialog(ErrorDialogUiModel())
+              }
+            },
+            permissionState = {
+              it.launchPermissionRequest()
+            },
+            notificationPermission = notificationPermissionState,
+          )
+        },
+      ) {
+        Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_add), "add item")
+      }
     },
-    onShowErrorDialog = { deleteUiModel ->
-      event.invoke(RootHomeComponent.Event.OnShowErrorDialog(errorDialogUiModel = deleteUiModel))
-    },
-    onUpdateRoutine = {
-      event.invoke(RootHomeComponent.Event.OnShowUpdateRoutineDialog(it))
-    },
-    onSearchText = {
-      event.invoke(RootHomeComponent.Event.SearchRoutine(it))
-    },
-  )
+  ) { innerPadding ->
+    HomeScreen(
+      modifier = modifier.padding(innerPadding),
+      state = state,
+      clickSearch = clickSearch,
+      onCheckedRoutine = {
+        event.invoke(RootHomeComponent.Event.CheckedRoutine(it))
+      },
+      onShowErrorDialog = { deleteUiModel ->
+        event.invoke(RootHomeComponent.Event.OnShowErrorDialog(errorDialogUiModel = deleteUiModel))
+      },
+      onUpdateRoutine = {
+        event.invoke(RootHomeComponent.Event.OnShowUpdateRoutineDialog(it))
+      },
+      onSearchText = {
+        event.invoke(RootHomeComponent.Event.SearchRoutine(it))
+      },
+    )
+  }
 }
 
 @OptIn(FlowPreview::class)
