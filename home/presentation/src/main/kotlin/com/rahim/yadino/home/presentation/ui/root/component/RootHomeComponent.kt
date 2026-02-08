@@ -18,8 +18,8 @@ interface RootHomeComponent : UnidirectionalComponent<RootHomeComponent.Event, R
 
 
   val addRoutineDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.AddRoutineDialogHome, AddRoutineDialogComponent>>
-  val updateRoutineDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.UpdateRoutineDialogHome, UpdateRoutineDialogComponent>>
-  val errorDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialogHome, ErrorDialogComponent>>
+  val updateRoutineDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.UpdateRoutineDialog, UpdateRoutineDialogComponent>>
+  val errorDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialog, ErrorDialogComponent>>
 
   @Immutable
   sealed class Event {
@@ -42,6 +42,4 @@ interface RootHomeComponent : UnidirectionalComponent<RootHomeComponent.Event, R
     val routines: LoadableData<PersistentList<RoutineUiModel>> = LoadableData.Initial,
     val currentDate: CurrentDateUiModel? = null,
   )
-
-  fun onShowAddDialogRoutineHomeScreen(dialog: DialogSlotHomeComponent.AddRoutineDialogHome)
 }
