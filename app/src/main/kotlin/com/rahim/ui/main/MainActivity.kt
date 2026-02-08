@@ -169,7 +169,6 @@ fun YadinoApp(
 
   val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
 
-  var errorClick by rememberSaveable { mutableStateOf(false) }
   var clickSearch by rememberSaveable { mutableStateOf(false) }
 
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -240,7 +239,7 @@ fun YadinoApp(
                           }
                         }
                       } else {
-                        errorClick = true
+//                        errorClick = true
                       }
                     },
                     permissionState = {
@@ -272,7 +271,7 @@ fun YadinoApp(
       }
     }
     when {
-      errorClick -> {
+//      errorClick -> {
 //        ErrorDialog(
 //          message = stringResource(id = R.string.better_performance_access),
 //          okMessage = stringResource(id = R.string.setting),
@@ -283,7 +282,7 @@ fun YadinoApp(
 //            errorClick = false
 //          },
 //        )
-      }
+//      }
     }
   }
 }

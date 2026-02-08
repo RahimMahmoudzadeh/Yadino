@@ -63,6 +63,7 @@ import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.designsystem.component.requestPermissionNotification
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.ErrorDialogUi
+import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
 import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.UpdateRoutineDialog
 import kotlinx.coroutines.launch
@@ -80,6 +81,7 @@ fun HomeRoute(
   val errorDialogHome = component.errorDialogRemoveRoutineScreen.subscribeAsState().value.child
 
   val context = LocalContext.current
+
   val snackBarHostState = remember { SnackbarHostState() }
   val scope = rememberCoroutineScope()
 
@@ -127,7 +129,8 @@ fun HomeRoute(
     }
   }
   val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
-
+  val title = stringResource(R.string.ok)
+  val submitTextButton = stringResource(R.string.ok)
   Scaffold(
     floatingActionButton = {
       FloatingActionButton(
@@ -139,7 +142,14 @@ fun HomeRoute(
               if (it) {
                 event(RootHomeComponent.Event.OnShowAddRoutineDialog)
               } else {
-                event(RootHomeComponent.Event.OnShowErrorDialogRemoveRoutine(ErrorDialogUiModel(title = stringResource(R.string.ok), submitTextButton = stringResource(R.string.ok)))
+                event(
+                  RootHomeComponent.Event.OnShowErrorDialog(
+                    ErrorDialogUiModel(
+                      title = title,
+                      submitTextButton = submitTextButton,
+                    ),
+                  ),
+                )
               }
             },
             permissionState = {
@@ -161,7 +171,7 @@ fun HomeRoute(
         event.invoke(RootHomeComponent.Event.CheckedRoutine(it))
       },
       onShowErrorDialog = { deleteUiModel ->
-        event.invoke(RootHomeComponent.Event.OnShowErrorDialogRemoveRoutine(errorDialogUiModel = deleteUiModel))
+        event.invoke(RootHomeComponent.Event.OnShowErrorDialogRemoveRoutine(errorDialogRemoveUiModel = deleteUiModel))
       },
       onUpdateRoutine = {
         event.invoke(RootHomeComponent.Event.OnShowUpdateRoutineDialog(it))
@@ -180,7 +190,7 @@ private fun HomeScreen(
   state: RootHomeComponent.State,
   clickSearch: Boolean,
   onCheckedRoutine: (RoutineUiModel) -> Unit,
-  onShowErrorDialog: (errorDialogUiModel: ErrorDialogUiModel) -> Unit,
+  onShowErrorDialog: (errorDialogRemoveUiModel: ErrorDialogRemoveUiModel) -> Unit,
   onUpdateRoutine: (RoutineUiModel) -> Unit,
   onSearchText: (searchText: String) -> Unit,
 ) {
@@ -241,7 +251,7 @@ private fun HomeScreen(
               onUpdateRoutine(routineUpdate)
             },
             deleteRoutine = { deleteRoutine ->
-              onShowErrorDialog(ErrorDialogUiModel(title = title, submitTextButton = submitTextButton, routineUiModel = deleteRoutine))
+              onShowErrorDialog(ErrorDialogRemoveUiModel(title = title, submitTextButton = submitTextButton, routineUiModel = deleteRoutine))
             },
           )
         }

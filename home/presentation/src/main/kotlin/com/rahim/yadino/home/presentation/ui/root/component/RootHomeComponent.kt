@@ -11,6 +11,7 @@ import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
 import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.home.presentation.ui.addDialogRoutine.component.AddRoutineDialogComponent
+import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponent
 import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponent
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import kotlinx.collections.immutable.PersistentList
@@ -21,7 +22,7 @@ interface RootHomeComponent : UnidirectionalComponent<RootHomeComponent.Event, R
   val addRoutineDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.AddRoutineDialog, AddRoutineDialogComponent>>
   val updateRoutineDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.UpdateRoutineDialog, UpdateRoutineDialogComponent>>
   val errorDialogRemoveRoutineScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialogRemoveRoutine, ErrorDialogRemoveRoutineComponent>>
-  val errorDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialog, ErrorDialogRemoveRoutineComponent>>
+  val errorDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialog, ErrorDialogComponent>>
 
   @Immutable
   sealed class Event {
