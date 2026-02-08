@@ -29,8 +29,8 @@ import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.home.presentation.ui.addDialogRoutine.component.AddRoutineDialogComponent
 import com.rahim.yadino.home.presentation.ui.addDialogRoutine.component.AddRoutineDialogComponentImpl
-import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponent
-import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponentImpl
+import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponent
+import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponentImpl
 import com.rahim.yadino.home.presentation.ui.root.component.DialogSlotHomeComponent.*
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponentImpl
@@ -60,19 +60,19 @@ class RootHomeComponentImpl(
 ) : RootHomeComponent, ComponentContext by componentContext {
 
   private val addRoutineDialogNavigationSlot =
-    SlotNavigation<DialogSlotHomeComponent.AddRoutineDialogHome>()
+    SlotNavigation<DialogSlotHomeComponent.AddRoutineDialog>()
 
   private val updateRoutineDialogNavigationSlot =
     SlotNavigation<DialogSlotHomeComponent.UpdateRoutineDialog>()
 
-  private val errorDialogNavigationSlot =
-    SlotNavigation<DialogSlotHomeComponent.ErrorDialog>()
+  private val errorDialogRemoveRoutineNavigationSlot =
+    SlotNavigation<DialogSlotHomeComponent.ErrorDialogRemoveRoutine>()
 
 
-  override val addRoutineDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.AddRoutineDialogHome, AddRoutineDialogComponent>> =
+  override val addRoutineDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.AddRoutineDialog, AddRoutineDialogComponent>> =
     childSlot(
       source = addRoutineDialogNavigationSlot,
-      serializer = DialogSlotHomeComponent.AddRoutineDialogHome.serializer(),
+      serializer = DialogSlotHomeComponent.AddRoutineDialog.serializer(),
       handleBackButton = true,
       key = "addRoutineDialogNavigationSlot",
     ) { config, childComponentContext ->
@@ -100,19 +100,19 @@ class RootHomeComponentImpl(
       )
     }
 
-  override val errorDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialog, ErrorDialogComponent>> =
+  override val errorDialogRemoveRoutineScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialogRemoveRoutine, ErrorDialogRemoveRoutineComponent>> =
     childSlot(
-      source = errorDialogNavigationSlot,
-      serializer = DialogSlotHomeComponent.ErrorDialog.serializer(),
+      source = errorDialogRemoveRoutineNavigationSlot,
+      serializer = DialogSlotHomeComponent.ErrorDialogRemoveRoutine.serializer(),
       handleBackButton = true,
       key = "errorDialogComponentNavigationSlot",
     ) { config, childComponentContext ->
-      ErrorDialogComponentImpl(
+      ErrorDialogRemoveRoutineComponentImpl(
         componentContext = childComponentContext,
         mainContext = Dispatchers.Main,
         deleteReminderUseCase = deleteReminderUseCase,
         errorDialogUiModel = config.errorDialogUiModel,
-        onDismissed = errorDialogNavigationSlot::dismiss,
+        onDismissed = errorDialogRemoveRoutineNavigationSlot::dismiss,
       )
     }
 
@@ -146,7 +146,7 @@ class RootHomeComponentImpl(
         checkedRoutine(event.routine)
       }
 
-      is RootHomeComponent.Event.OnShowErrorDialog -> {
+      is RootHomeComponent.Event.OnShowErrorDialogRemoveRoutine -> {
         showErrorDialog(event.errorDialogUiModel)
       }
 
@@ -233,10 +233,6 @@ class RootHomeComponentImpl(
     }
   }
 
-  private fun showErrorDialog(errorDialogUiModel: ErrorDialogUiModel) {
-    errorDialogNavigationSlot.activate(DialogSlotHomeComponent.ErrorDialog(errorDialogUiModel))
-  }
-
   private fun updateRoutine(routineModel: RoutineUiModel) {
     Timber.tag("addRoutine").d("updateRoutine")
     _state.update {
@@ -275,8 +271,12 @@ class RootHomeComponentImpl(
     }
   }
 
+  private fun showErrorDialog(errorDialogUiModel: ErrorDialogUiModel) {
+    errorDialogRemoveRoutineNavigationSlot.activate(ErrorDialogRemoveRoutine(errorDialogUiModel))
+  }
+
   private fun showAddDialogRoutine() {
-    addRoutineDialogNavigationSlot.activate(AddRoutineDialogHome)
+    addRoutineDialogNavigationSlot.activate(AddRoutineDialog)
   }
 
   private fun showUpdateDialogRoutine(updateRoutine: RoutineUiModel) {

@@ -10,22 +10,22 @@ import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
 import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.home.presentation.ui.addDialogRoutine.component.AddRoutineDialogComponent
-import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponent
+import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponent
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import kotlinx.collections.immutable.PersistentList
 
 interface RootHomeComponent : UnidirectionalComponent<RootHomeComponent.Event, RootHomeComponent.State, RootHomeComponent.Effect> {
 
 
-  val addRoutineDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.AddRoutineDialogHome, AddRoutineDialogComponent>>
+  val addRoutineDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.AddRoutineDialog, AddRoutineDialogComponent>>
   val updateRoutineDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.UpdateRoutineDialog, UpdateRoutineDialogComponent>>
-  val errorDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialog, ErrorDialogComponent>>
+  val errorDialogRemoveRoutineScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialogRemoveRoutine, ErrorDialogRemoveRoutineComponent>>
 
   @Immutable
   sealed class Event {
     data class CheckedRoutine(val routine: RoutineUiModel) : Event()
     data class UpdateRoutine(val routine: RoutineUiModel) : Event()
-    data class OnShowErrorDialog(val errorDialogUiModel: ErrorDialogUiModel) : Event()
+    data class OnShowErrorDialogRemoveRoutine(val errorDialogUiModel: ErrorDialogUiModel) : Event()
     data class SearchRoutine(val routineName: String) : Event()
     data class OnShowUpdateRoutineDialog(val routine: RoutineUiModel) : Event()
     data object OnShowAddRoutineDialog : Event()

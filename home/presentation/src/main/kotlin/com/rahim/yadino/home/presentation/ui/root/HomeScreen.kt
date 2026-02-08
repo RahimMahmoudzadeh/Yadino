@@ -62,7 +62,7 @@ import kotlinx.collections.immutable.persistentListOf
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.designsystem.component.requestPermissionNotification
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
-import com.rahim.yadino.home.presentation.ui.errorDialog.ErrorDialogUi
+import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.ErrorDialogUi
 import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.UpdateRoutineDialog
 import kotlinx.coroutines.launch
@@ -77,7 +77,7 @@ fun HomeRoute(
 
   val addRoutineDialogHome = component.addRoutineDialogHomeScreen.subscribeAsState().value.child
   val updateRoutineDialogHome = component.updateRoutineDialogScreen.subscribeAsState().value.child
-  val errorDialogHome = component.errorDialogScreen.subscribeAsState().value.child
+  val errorDialogHome = component.errorDialogRemoveRoutineScreen.subscribeAsState().value.child
 
   val context = LocalContext.current
   val snackBarHostState = remember { SnackbarHostState() }
@@ -139,7 +139,7 @@ fun HomeRoute(
               if (it) {
                 event(RootHomeComponent.Event.OnShowAddRoutineDialog)
               } else {
-//                event(RootHomeComponent.Event.OnShowErrorDialog(ErrorDialogUiModel())
+                event(RootHomeComponent.Event.OnShowErrorDialogRemoveRoutine(ErrorDialogUiModel(title = stringResource(R.string.ok), submitTextButton = stringResource(R.string.ok)))
               }
             },
             permissionState = {
@@ -161,7 +161,7 @@ fun HomeRoute(
         event.invoke(RootHomeComponent.Event.CheckedRoutine(it))
       },
       onShowErrorDialog = { deleteUiModel ->
-        event.invoke(RootHomeComponent.Event.OnShowErrorDialog(errorDialogUiModel = deleteUiModel))
+        event.invoke(RootHomeComponent.Event.OnShowErrorDialogRemoveRoutine(errorDialogUiModel = deleteUiModel))
       },
       onUpdateRoutine = {
         event.invoke(RootHomeComponent.Event.OnShowUpdateRoutineDialog(it))

@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation.ui.errorDialog
+package com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,7 +30,7 @@ import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
-import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponent
+import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponent
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toStringResource
@@ -39,7 +39,7 @@ import com.rahim.yadino.toStringResource
 @Composable
 fun ErrorDialogUi(
   modifier: Modifier = Modifier,
-  component: ErrorDialogComponent,
+  component: ErrorDialogRemoveRoutineComponent,
 ) {
 
   val (state, effect, event) = use(component)
@@ -52,7 +52,7 @@ fun ErrorDialogUi(
   LaunchedEffect(effect) {
     effect.collect {effect->
       when (effect) {
-        is ErrorDialogComponent.Effect.ShowToast -> context.showToastShort(stringId = effect.message.toStringResource())
+        is ErrorDialogRemoveRoutineComponent.Effect.ShowToast -> context.showToastShort(stringId = effect.message.toStringResource())
       }
     }
   }
@@ -106,7 +106,7 @@ fun ErrorDialogUi(
           size = size,
           height = size.size40,
           onClick = {
-            event(ErrorDialogComponent.Event.CancelClicked)
+            event(ErrorDialogRemoveRoutineComponent.Event.CancelClicked)
           },
         )
         DialogButtonBackground(
@@ -119,7 +119,7 @@ fun ErrorDialogUi(
           size = size,
           space = space,
           onClick = {
-            event(ErrorDialogComponent.Event.OkClicked)
+            event(ErrorDialogRemoveRoutineComponent.Event.OkClicked)
           },
         )
       }

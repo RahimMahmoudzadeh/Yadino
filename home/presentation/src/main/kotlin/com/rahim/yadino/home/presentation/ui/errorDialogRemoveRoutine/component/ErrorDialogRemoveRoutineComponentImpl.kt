@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation.ui.errorDialog.component
+package com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -16,25 +16,25 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class ErrorDialogComponentImpl(
+class ErrorDialogRemoveRoutineComponentImpl(
   mainContext: CoroutineContext,
   componentContext: ComponentContext,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val errorDialogUiModel: ErrorDialogUiModel,
   private val onDismissed: () -> Unit,
-) : ErrorDialogComponent, ComponentContext by componentContext {
+) : ErrorDialogRemoveRoutineComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
 
-  private val _state = MutableValue(ErrorDialogComponent.State(title = errorDialogUiModel.title, submitTextButton = errorDialogUiModel.submitTextButton))
-  override val state: Value<ErrorDialogComponent.State> = _state
+  private val _state = MutableValue(ErrorDialogRemoveRoutineComponent.State(title = errorDialogUiModel.title, submitTextButton = errorDialogUiModel.submitTextButton))
+  override val state: Value<ErrorDialogRemoveRoutineComponent.State> = _state
 
-  private val _effect = Channel<ErrorDialogComponent.Effect>(Channel.BUFFERED)
-  override val effect: Flow<ErrorDialogComponent.Effect> = _effect.receiveAsFlow()
+  private val _effect = Channel<ErrorDialogRemoveRoutineComponent.Effect>(Channel.BUFFERED)
+  override val effect: Flow<ErrorDialogRemoveRoutineComponent.Effect> = _effect.receiveAsFlow()
 
-  override fun event(event: ErrorDialogComponent.Event) = when (event) {
-    ErrorDialogComponent.Event.CancelClicked -> onDismissed()
-    ErrorDialogComponent.Event.OkClicked -> {
+  override fun event(event: ErrorDialogRemoveRoutineComponent.Event) = when (event) {
+    ErrorDialogRemoveRoutineComponent.Event.CancelClicked -> onDismissed()
+    ErrorDialogRemoveRoutineComponent.Event.OkClicked -> {
       okClickedButton()
     }
   }
@@ -46,7 +46,7 @@ class ErrorDialogComponentImpl(
       }.onSuccess {
         onDismissed()
       }.onFailure {
-        _effect.send(ErrorDialogComponent.Effect.ShowToast(MessageUi.ERROR_REMOVE_REMINDER))
+        _effect.send(ErrorDialogRemoveRoutineComponent.Effect.ShowToast(MessageUi.ERROR_REMOVE_REMINDER))
       }
     }
   }

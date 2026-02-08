@@ -6,12 +6,12 @@ import kotlinx.serialization.Serializable
 
 sealed interface DialogSlotHomeComponent {
   @Serializable
-  data object AddRoutineDialogHome : DialogSlotHomeComponent
+  data object AddRoutineDialog : DialogSlotHomeComponent
 
   @Serializable
   data class UpdateRoutineDialog(val updateRoutine: RoutineUiModel) : DialogSlotHomeComponent
 
   @Serializable
-  data class ErrorDialog(val errorDialogUiModel: ErrorDialogUiModel) : DialogSlotHomeComponent
+  data class ErrorDialogRemoveRoutine(val errorDialogUiModel: ErrorDialogUiModel) : DialogSlotHomeComponent
 
 }
