@@ -25,6 +25,7 @@ import com.rahim.yadino.home.domain.useCase.DeleteReminderUseCase
 import com.rahim.yadino.home.presentation.mapper.toCurrentDatePresentationLayer
 import com.rahim.yadino.home.presentation.mapper.toRoutine
 import com.rahim.yadino.home.presentation.mapper.toRoutineUiModel
+import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
 import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.home.presentation.ui.addDialogRoutine.component.AddRoutineDialogComponent
@@ -60,19 +61,22 @@ class RootHomeComponentImpl(
 ) : RootHomeComponent, ComponentContext by componentContext {
 
   private val addRoutineDialogNavigationSlot =
-    SlotNavigation<DialogSlotHomeComponent.AddRoutineDialog>()
+    SlotNavigation<AddRoutineDialog>()
 
   private val updateRoutineDialogNavigationSlot =
-    SlotNavigation<DialogSlotHomeComponent.UpdateRoutineDialog>()
+    SlotNavigation<UpdateRoutineDialog>()
 
   private val errorDialogRemoveRoutineNavigationSlot =
-    SlotNavigation<DialogSlotHomeComponent.ErrorDialogRemoveRoutine>()
+    SlotNavigation<ErrorDialog>()
+
+  private val errorDialogNavigationSlot =
+    SlotNavigation<ErrorDialog>()
 
 
-  override val addRoutineDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.AddRoutineDialog, AddRoutineDialogComponent>> =
+  override val addRoutineDialogHomeScreen: Value<ChildSlot<AddRoutineDialog, AddRoutineDialogComponent>> =
     childSlot(
       source = addRoutineDialogNavigationSlot,
-      serializer = DialogSlotHomeComponent.AddRoutineDialog.serializer(),
+      serializer = AddRoutineDialog.serializer(),
       handleBackButton = true,
       key = "addRoutineDialogNavigationSlot",
     ) { config, childComponentContext ->
@@ -100,10 +104,10 @@ class RootHomeComponentImpl(
       )
     }
 
-  override val errorDialogRemoveRoutineScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialogRemoveRoutine, ErrorDialogRemoveRoutineComponent>> =
+  override val errorDialogRemoveRoutineScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialog, ErrorDialogRemoveRoutineComponent>> =
     childSlot(
       source = errorDialogRemoveRoutineNavigationSlot,
-      serializer = DialogSlotHomeComponent.ErrorDialogRemoveRoutine.serializer(),
+      serializer = DialogSlotHomeComponent.ErrorDialog.serializer(),
       handleBackButton = true,
       key = "errorDialogComponentNavigationSlot",
     ) { config, childComponentContext ->
@@ -111,7 +115,7 @@ class RootHomeComponentImpl(
         componentContext = childComponentContext,
         mainContext = Dispatchers.Main,
         deleteReminderUseCase = deleteReminderUseCase,
-        errorDialogUiModel = config.errorDialogUiModel,
+        errorDialogRemoveUiModel = config.errorDialogRemoveUiModel,
         onDismissed = errorDialogRemoveRoutineNavigationSlot::dismiss,
       )
     }
@@ -147,7 +151,7 @@ class RootHomeComponentImpl(
       }
 
       is RootHomeComponent.Event.OnShowErrorDialogRemoveRoutine -> {
-        showErrorDialog(event.errorDialogUiModel)
+        showErrorDialog(event.errorDialogRemoveUiModel)
       }
 
       is RootHomeComponent.Event.SearchRoutine -> {
@@ -156,6 +160,7 @@ class RootHomeComponentImpl(
 
       is RootHomeComponent.Event.OnShowUpdateRoutineDialog -> showUpdateDialogRoutine(event.routine)
       RootHomeComponent.Event.OnShowAddRoutineDialog -> showAddDialogRoutine()
+      is RootHomeComponent.Event.OnShowErrorDialog -> showErrorDialog()
     }
   }
 
@@ -271,8 +276,12 @@ class RootHomeComponentImpl(
     }
   }
 
+  private fun showErrorDialog(errorDialogRemoveUiModel: ErrorDialogRemoveUiModel) {
+    errorDialogRemoveRoutineNavigationSlot.activate(ErrorDialog(errorDialogRemoveUiModel))
+  }
+
   private fun showErrorDialog(errorDialogUiModel: ErrorDialogUiModel) {
-    errorDialogRemoveRoutineNavigationSlot.activate(ErrorDialogRemoveRoutine(errorDialogUiModel))
+    errorDialogRemoveRoutineNavigationSlot.activate(ErrorDialog(errorDialogRemoveUiModel))
   }
 
   private fun showAddDialogRoutine() {

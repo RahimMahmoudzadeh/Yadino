@@ -1,7 +1,5 @@
 package com.rahim.component.config
 
-import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
-import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import kotlinx.serialization.Serializable
 

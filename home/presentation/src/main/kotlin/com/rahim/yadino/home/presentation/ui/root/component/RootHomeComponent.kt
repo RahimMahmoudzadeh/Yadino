@@ -7,6 +7,7 @@ import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalComponent
 import com.rahim.yadino.enums.message.MessageUi
 import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
+import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
 import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.home.presentation.ui.addDialogRoutine.component.AddRoutineDialogComponent
@@ -20,12 +21,14 @@ interface RootHomeComponent : UnidirectionalComponent<RootHomeComponent.Event, R
   val addRoutineDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.AddRoutineDialog, AddRoutineDialogComponent>>
   val updateRoutineDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.UpdateRoutineDialog, UpdateRoutineDialogComponent>>
   val errorDialogRemoveRoutineScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialogRemoveRoutine, ErrorDialogRemoveRoutineComponent>>
+  val errorDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialog, ErrorDialogRemoveRoutineComponent>>
 
   @Immutable
   sealed class Event {
     data class CheckedRoutine(val routine: RoutineUiModel) : Event()
     data class UpdateRoutine(val routine: RoutineUiModel) : Event()
-    data class OnShowErrorDialogRemoveRoutine(val errorDialogUiModel: ErrorDialogUiModel) : Event()
+    data class OnShowErrorDialogRemoveRoutine(val errorDialogRemoveUiModel: ErrorDialogRemoveUiModel) : Event()
+    data class OnShowErrorDialog(val errorDialogUiModel: ErrorDialogUiModel) : Event()
     data class SearchRoutine(val routineName: String) : Event()
     data class OnShowUpdateRoutineDialog(val routine: RoutineUiModel) : Event()
     data object OnShowAddRoutineDialog : Event()

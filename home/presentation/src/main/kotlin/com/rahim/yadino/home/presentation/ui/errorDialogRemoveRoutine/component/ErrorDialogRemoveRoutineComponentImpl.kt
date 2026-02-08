@@ -7,7 +7,7 @@ import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.rahim.yadino.enums.message.MessageUi
 import com.rahim.yadino.home.domain.useCase.DeleteReminderUseCase
 import com.rahim.yadino.home.presentation.mapper.toRoutine
-import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
+import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
@@ -20,13 +20,13 @@ class ErrorDialogRemoveRoutineComponentImpl(
   mainContext: CoroutineContext,
   componentContext: ComponentContext,
   private val deleteReminderUseCase: DeleteReminderUseCase,
-  private val errorDialogUiModel: ErrorDialogUiModel,
+  private val errorDialogRemoveUiModel: ErrorDialogRemoveUiModel,
   private val onDismissed: () -> Unit,
 ) : ErrorDialogRemoveRoutineComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
 
-  private val _state = MutableValue(ErrorDialogRemoveRoutineComponent.State(title = errorDialogUiModel.title, submitTextButton = errorDialogUiModel.submitTextButton))
+  private val _state = MutableValue(ErrorDialogRemoveRoutineComponent.State(title = errorDialogRemoveUiModel.title, submitTextButton = errorDialogRemoveUiModel.submitTextButton))
   override val state: Value<ErrorDialogRemoveRoutineComponent.State> = _state
 
   private val _effect = Channel<ErrorDialogRemoveRoutineComponent.Effect>(Channel.BUFFERED)
@@ -42,7 +42,7 @@ class ErrorDialogRemoveRoutineComponentImpl(
   private fun okClickedButton() {
     scope.launch {
       runCatching {
-        deleteReminderUseCase(errorDialogUiModel.routineUiModel.toRoutine())
+        deleteReminderUseCase(errorDialogRemoveUiModel.routineUiModel.toRoutine())
       }.onSuccess {
         onDismissed()
       }.onFailure {
