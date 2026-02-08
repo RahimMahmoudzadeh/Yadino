@@ -51,8 +51,12 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.BuildConfig
+import com.rahim.component.BottomNavigationBar
 import com.rahim.component.RootComponent
 import com.rahim.component.RootComponentImpl
+import com.rahim.component.config.AddNoteDialog
+import com.rahim.component.config.AddRoutineDialogRoutineScreen
+import com.rahim.component.config.ConfigChildComponent
 import com.rahim.data.distributionActions.StateOfClickItemDrawable
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
@@ -62,13 +66,8 @@ import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.home.presentation.ui.root.HomeRoute
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.component.BottomNavigationBar
-import com.rahim.component.config.AddNoteDialog
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
-import com.rahim.component.config.AddRoutineDialogHomeScreen
-import com.rahim.component.config.AddRoutineDialogRoutineScreen
-import com.rahim.component.config.ConfigChildComponent
 import com.rahim.yadino.note.presentation.ui.NoteRoute
 import com.rahim.yadino.onboarding.presentation.OnBoardingRoute
 import com.rahim.yadino.routine.presentation.ui.RoutineRoute
@@ -219,7 +218,7 @@ fun YadinoApp(
             }
           },
           floatingActionButton = {
-            if (configurationState !is ConfigChildComponent.OnBoarding && configurationState !is ConfigChildComponent.HistoryRoutine) {
+            if (configurationState !is ConfigChildComponent.OnBoarding && configurationState !is ConfigChildComponent.Home && configurationState !is ConfigChildComponent.HistoryRoutine) {
               FloatingActionButton(
                 containerColor = CornflowerBlueLight,
                 contentColor = Color.White,
@@ -229,7 +228,7 @@ fun YadinoApp(
                       if (it) {
                         when (configurationState) {
                           ConfigChildComponent.Home -> {
-                            rootComponent.onShowAddDialogRoutineHomeScreen(AddRoutineDialogHomeScreen)
+//                            rootComponent.onShowAddDialogRoutineHomeScreen(AddRoutineDialogHomeScreen)
                           }
 
                           ConfigChildComponent.Routine -> {
@@ -296,9 +295,6 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
     modifier = modifier.fillMaxSize(),
     animation = stackAnimation(fade()),
   ) {
-    val addRoutineDialogHome = component.addRoutineDialogHomeScreen.subscribeAsState().value.child
-    val updateRoutineDialogHome = component.updateRoutineDialogHomeScreen.subscribeAsState().value.child
-    val errorDialogHome = component.errorDialogHomeScreen.subscribeAsState().value.child
     val errorDialogRoutine = component.errorDialogRoutineScreen.subscribeAsState().value.child
     val errorDialogNote = component.errorDialogNoteScreen.subscribeAsState().value.child
     val addRoutineDialogRoutine = component.addRoutineDialogRoutineScreen.subscribeAsState().value.child
@@ -310,11 +306,8 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
       when (val child = it.instance) {
         is RootComponent.ChildStack.HomeStack -> {
           HomeRoute(
-            rootHomeComponent = child.component,
+            component = child.component,
             clickSearch = clickSearch,
-            dialogSlotAddRoutineDialog = addRoutineDialogHome,
-            dialogSlotErrorDialog = errorDialogHome,
-            dialogSlotUpdateRoutineDialog = updateRoutineDialogHome,
           )
         }
 

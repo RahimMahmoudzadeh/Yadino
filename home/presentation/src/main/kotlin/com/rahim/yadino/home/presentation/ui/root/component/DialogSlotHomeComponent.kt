@@ -9,9 +9,9 @@ sealed interface DialogSlotHomeComponent {
   data object AddRoutineDialogHome : DialogSlotHomeComponent
 
   @Serializable
-  data class UpdateRoutineDialogHome(val updateRoutine: RoutineUiModel) : DialogSlotHomeComponent
+  data class UpdateRoutineDialog(val updateRoutine: RoutineUiModel) : DialogSlotHomeComponent
 
   @Serializable
-  data class ErrorDialogHome(val errorDialogUiModel: ErrorDialogUiModel) : DialogSlotHomeComponent
+  data class ErrorDialog(val errorDialogUiModel: ErrorDialogUiModel) : DialogSlotHomeComponent
 
 }

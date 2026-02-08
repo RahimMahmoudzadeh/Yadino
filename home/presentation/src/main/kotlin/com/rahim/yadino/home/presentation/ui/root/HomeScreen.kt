@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
@@ -37,7 +37,6 @@ import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.home.presentation.ui.root.component.RootHomeComponent
-import com.rahim.yadino.home.presentation.ui.addDialogRoutine.component.AddRoutineDialogComponent
 import com.rahim.yadino.home.presentation.ui.addDialogRoutine.AddRoutineDialog
 import com.rahim.yadino.home.presentation.ui.component.ListRoutines
 import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
@@ -53,8 +52,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.collections.immutable.persistentListOf
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.home.presentation.ui.errorDialog.ErrorDialogUi
-import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponent
-import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.UpdateRoutineDialog
 import kotlinx.coroutines.launch
@@ -63,19 +60,20 @@ import kotlinx.coroutines.launch
 fun HomeRoute(
   modifier: Modifier = Modifier,
   clickSearch: Boolean,
-  rootHomeComponent: RootHomeComponent,
-  dialogSlotAddRoutineDialog: Child.Created<Any, AddRoutineDialogComponent>?,
-  dialogSlotUpdateRoutineDialog: Child.Created<Any, UpdateRoutineDialogComponent>?,
-  dialogSlotErrorDialog: Child.Created<Any, ErrorDialogComponent>?,
+  component: RootHomeComponent,
 ) {
+
+  val addRoutineDialogHome = component.addRoutineDialogHomeScreen.subscribeAsState().value.child
+  val updateRoutineDialogHome = component.updateRoutineDialogScreen.subscribeAsState().value.child
+  val errorDialogHome = component.errorDialogScreen.subscribeAsState().value.child
 
   val context = LocalContext.current
   val snackBarHostState = remember { SnackbarHostState() }
   val scope = rememberCoroutineScope()
 
-  val (state, effect, event) = use(component = rootHomeComponent)
+  val (state, effect, event) = use(component = component)
 
-  dialogSlotAddRoutineDialog?.let { dialogSlot ->
+  addRoutineDialogHome?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       AddRoutineDialog(
         component = dialogComponent,
@@ -83,7 +81,7 @@ fun HomeRoute(
     }
   }
 
-  dialogSlotUpdateRoutineDialog?.let { dialogSlot ->
+  updateRoutineDialogHome?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       UpdateRoutineDialog(
         component = dialogComponent,
@@ -91,7 +89,7 @@ fun HomeRoute(
     }
   }
 
-  dialogSlotErrorDialog?.let { dialogSlot ->
+  errorDialogHome?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       ErrorDialogUi(component = dialogComponent)
     }
