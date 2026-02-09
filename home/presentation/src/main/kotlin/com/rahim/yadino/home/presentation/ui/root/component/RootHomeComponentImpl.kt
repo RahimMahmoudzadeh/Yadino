@@ -93,7 +93,7 @@ class RootHomeComponentImpl(
   override val updateRoutineDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.UpdateRoutineDialog, UpdateRoutineDialogComponent>> =
     childSlot(
       source = updateRoutineDialogNavigationSlot,
-      serializer = DialogSlotHomeComponent.UpdateRoutineDialog.serializer(),
+      serializer = UpdateRoutineDialog.serializer(),
       handleBackButton = true,
       key = "updateRoutineDialogNavigationSlot",
     ) { config, childComponentContext ->
@@ -109,9 +109,9 @@ class RootHomeComponentImpl(
   override val errorDialogRemoveRoutineScreen: Value<ChildSlot<ErrorDialogRemoveRoutine, ErrorDialogRemoveRoutineComponent>> =
     childSlot(
       source = errorDialogRemoveRoutineNavigationSlot,
-      serializer = DialogSlotHomeComponent.ErrorDialogRemoveRoutine.serializer(),
+      serializer = ErrorDialogRemoveRoutine.serializer(),
       handleBackButton = true,
-      key = "errorDialogComponentNavigationSlot",
+      key = "errorDialogRemoveRoutineComponentNavigationSlot",
     ) { config, childComponentContext ->
       ErrorDialogRemoveRoutineComponentImpl(
         componentContext = childComponentContext,
