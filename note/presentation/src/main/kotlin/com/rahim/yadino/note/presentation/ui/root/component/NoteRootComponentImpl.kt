@@ -1,4 +1,4 @@
-package com.rahim.yadino.note.presentation.component
+package com.rahim.yadino.note.presentation.ui.root.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -7,7 +7,6 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.rahim.yadino.base.LoadableData
-import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
 import com.rahim.yadino.note.domain.useCase.GetNotesUseCase
 import com.rahim.yadino.note.domain.useCase.SearchNoteUseCase
 import com.rahim.yadino.note.domain.useCase.UpdateNoteUseCase
@@ -29,7 +28,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
-class NoteComponentImpl(
+class NoteRootComponentImpl(
   componentContext: ComponentContext,
   mainContext: CoroutineContext,
   private val getNotesUseCase: GetNotesUseCase,
@@ -37,15 +36,15 @@ class NoteComponentImpl(
   private val updateNoteUseCase: UpdateNoteUseCase,
   private val onOpenUpdateNoteDialog: (updateNote: NoteUiModel) -> Unit,
   private val onShowErrorDialog: (errorDialogUiModel: ErrorDialogUiModel) -> Unit,
-) : NoteComponent, ComponentContext by componentContext {
+) : NoteRootComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
 
-  private var _state = MutableValue(NoteComponent.State())
-  override val state: Value<NoteComponent.State> = _state
+  private var _state = MutableValue(NoteRootComponent.State())
+  override val state: Value<NoteRootComponent.State> = _state
 
-  private val _effect: Channel<NoteComponent.Effect> = Channel(Channel.BUFFERED)
-  override val effect: Flow<NoteComponent.Effect> = _effect.consumeAsFlow()
+  private val _effect: Channel<NoteRootComponent.Effect> = Channel(Channel.BUFFERED)
+  override val effect: Flow<NoteRootComponent.Effect> = _effect.consumeAsFlow()
 
 
   init {
@@ -54,12 +53,12 @@ class NoteComponentImpl(
     }
   }
 
-  override fun event(event: NoteComponent.Event) = when (event) {
-    is NoteComponent.Event.GetNotes -> getNotes()
-    is NoteComponent.Event.Search -> searchItems(event.nameNoteUi)
-    is NoteComponent.Event.ShowErrorDialog -> showErrorDialog(event.errorDialogUiModel)
-    is NoteComponent.Event.OnChecked -> updateNote(event.checkedNote)
-    is NoteComponent.Event.OnOpenUpdateNoteDialog -> onOpenUpdateNoteDialog(event.updateNote)
+  override fun event(event: NoteRootComponent.Event) = when (event) {
+    is NoteRootComponent.Event.GetNotes -> getNotes()
+    is NoteRootComponent.Event.Search -> searchItems(event.nameNoteUi)
+    is NoteRootComponent.Event.ShowErrorDialog -> showErrorDialog(event.errorDialogUiModel)
+    is NoteRootComponent.Event.OnChecked -> updateNote(event.checkedNote)
+    is NoteRootComponent.Event.OnOpenUpdateNoteDialog -> onOpenUpdateNoteDialog(event.updateNote)
   }
 
   private fun updateNote(note: NoteUiModel){

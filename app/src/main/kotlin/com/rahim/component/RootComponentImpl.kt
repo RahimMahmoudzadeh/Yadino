@@ -38,12 +38,14 @@ import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
 import com.rahim.yadino.note.domain.useCase.GetNotesUseCase
 import com.rahim.yadino.note.domain.useCase.SearchNoteUseCase
 import com.rahim.yadino.note.domain.useCase.UpdateNoteUseCase
-import com.rahim.yadino.note.presentation.component.NoteComponent
-import com.rahim.yadino.note.presentation.component.NoteComponentImpl
-import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
-import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponentImpl
-import com.rahim.yadino.note.presentation.component.updateNoteDialog.UpdateNoteDialogComponent
-import com.rahim.yadino.note.presentation.component.updateNoteDialog.UpdateNoteDialogComponentImpl
+import com.rahim.yadino.note.presentation.ui.root.component.NoteRootComponent
+import com.rahim.yadino.note.presentation.ui.root.component.NoteRootComponentImpl
+import com.rahim.yadino.note.presentation.ui.addNoteDialog.component.AddNoteDialogComponent
+import com.rahim.yadino.note.presentation.ui.addNoteDialog.component.AddNoteDialogComponentImpl
+import com.rahim.yadino.note.presentation.ui.updateNoteDialog.component.UpdateNoteDialogComponent
+import com.rahim.yadino.note.presentation.ui.updateNoteDialog.component.UpdateNoteDialogComponentImpl
+import com.rahim.yadino.note.presentation.ui.errorDialog.component.ErrorDialogComponent
+import com.rahim.yadino.note.presentation.ui.errorDialog.component.ErrorDialogComponentImpl
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponentImpl
 import com.rahim.yadino.routine.domain.useCase.GetAllRoutineUseCase
@@ -187,14 +189,14 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
       )
     }
 
-  override val errorDialogNoteScreen: Value<ChildSlot<ErrorDialogNote, com.rahim.yadino.note.presentation.component.errorDialog.ErrorDialogComponent>> =
+  override val errorDialogNoteScreen: Value<ChildSlot<ErrorDialogNote, ErrorDialogComponent>> =
     childSlot(
       source = errorDialogNoteComponentNavigationSlot,
       serializer = ErrorDialogNote.serializer(),
       handleBackButton = true,
       key = "errorDialogNoteComponentNavigationSlot",
     ) { config, childComponentContext ->
-      com.rahim.yadino.note.presentation.component.errorDialog.ErrorDialogComponentImpl(
+      ErrorDialogComponentImpl(
         componentContext = childComponentContext,
         mainContext = Dispatchers.Main,
         deleteNoteUseCase = deleteNoteUseCase,
@@ -280,7 +282,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private val getNotesUseCase: GetNotesUseCase = get()
   private val searchNoteUseCase: SearchNoteUseCase = get()
 
-  private fun noteComponent(componentContext: ComponentContext): NoteComponent = NoteComponentImpl(
+  private fun noteComponent(componentContext: ComponentContext): NoteRootComponent = NoteRootComponentImpl(
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
     getNotesUseCase = getNotesUseCase,

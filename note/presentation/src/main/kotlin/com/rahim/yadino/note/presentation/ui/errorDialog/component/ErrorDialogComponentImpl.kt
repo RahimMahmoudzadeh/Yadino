@@ -1,4 +1,4 @@
-package com.rahim.yadino.note.presentation.component.errorDialog
+package com.rahim.yadino.note.presentation.ui.errorDialog.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue

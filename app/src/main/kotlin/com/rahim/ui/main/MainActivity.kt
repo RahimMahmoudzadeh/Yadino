@@ -68,7 +68,7 @@ import com.rahim.yadino.home.presentation.ui.root.HomeRoute
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
-import com.rahim.yadino.note.presentation.ui.NoteRoute
+import com.rahim.yadino.note.presentation.ui.root.NoteRoute
 import com.rahim.yadino.onboarding.presentation.OnBoardingRoute
 import com.rahim.yadino.routine.presentation.ui.RoutineRoute
 import com.rahim.yadino.routine.presentation.ui.alarmHistory.HistoryRoute

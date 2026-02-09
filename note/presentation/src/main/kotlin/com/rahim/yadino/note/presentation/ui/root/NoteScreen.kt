@@ -1,4 +1,4 @@
-package com.rahim.yadino.note.presentation.ui
+package com.rahim.yadino.note.presentation.ui.root
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -30,10 +30,10 @@ import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.note.presentation.R
-import com.rahim.yadino.note.presentation.component.NoteComponent
-import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
-import com.rahim.yadino.note.presentation.component.errorDialog.ErrorDialogComponent
-import com.rahim.yadino.note.presentation.component.updateNoteDialog.UpdateNoteDialogComponent
+import com.rahim.yadino.note.presentation.ui.root.component.NoteRootComponent
+import com.rahim.yadino.note.presentation.ui.addNoteDialog.component.AddNoteDialogComponent
+import com.rahim.yadino.note.presentation.ui.errorDialog.component.ErrorDialogComponent
+import com.rahim.yadino.note.presentation.ui.updateNoteDialog.component.UpdateNoteDialogComponent
 import com.rahim.yadino.note.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
@@ -50,7 +50,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 fun NoteRoute(
   modifier: Modifier = Modifier,
   clickSearch: Boolean,
-  component: NoteComponent,
+  component: NoteRootComponent,
   dialogSlotAddNote: Child.Created<Any, AddNoteDialogComponent>?,
   dialogSlotUpdateNote: Child.Created<Any, UpdateNoteDialogComponent>?,
   dialogSlotErrorDialog: Child.Created<Any, ErrorDialogComponent>?,
@@ -85,16 +85,16 @@ fun NoteRoute(
     modifier = modifier,
     state = state,
     onUpdateNote = { updateNote ->
-      event(NoteComponent.Event.OnOpenUpdateNoteDialog(updateNote))
+      event(NoteRootComponent.Event.OnOpenUpdateNoteDialog(updateNote))
     },
     onShowErrorDialog = {
-      event(NoteComponent.Event.ShowErrorDialog(it))
+      event(NoteRootComponent.Event.ShowErrorDialog(it))
     },
     onSearchText = {
-      event(NoteComponent.Event.Search(it))
+      event(NoteRootComponent.Event.Search(it))
     },
     onCheckedNote = {
-      event(NoteComponent.Event.OnChecked(it))
+      event(NoteRootComponent.Event.OnChecked(it))
     },
     clickSearch = clickSearch,
   )
@@ -104,7 +104,7 @@ fun NoteRoute(
 @Composable
 private fun NoteScreen(
   modifier: Modifier = Modifier,
-  state: NoteComponent.State,
+  state: NoteRootComponent.State,
   clickSearch: Boolean,
   onUpdateNote: (note: NoteUiModel) -> Unit,
   onShowErrorDialog: (errorDialogUiModel: ErrorDialogUiModel) -> Unit,

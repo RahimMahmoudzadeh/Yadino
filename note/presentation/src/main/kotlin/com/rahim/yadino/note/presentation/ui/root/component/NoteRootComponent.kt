@@ -1,16 +1,15 @@
-package com.rahim.yadino.note.presentation.component
+package com.rahim.yadino.note.presentation.ui.root.component
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalComponent
 import com.rahim.yadino.enums.message.MessageUi
-import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
 import com.rahim.yadino.note.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import kotlinx.collections.immutable.PersistentList
 
-interface NoteComponent : UnidirectionalComponent<NoteComponent.Event, NoteComponent.State, NoteComponent.Effect> {
+interface NoteRootComponent : UnidirectionalComponent<NoteRootComponent.Event, NoteRootComponent.State, NoteRootComponent.Effect> {
 
   @Immutable
   sealed class Event() {

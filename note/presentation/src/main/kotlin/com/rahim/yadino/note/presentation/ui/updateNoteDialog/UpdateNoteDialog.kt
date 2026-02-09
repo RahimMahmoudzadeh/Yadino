@@ -54,7 +54,7 @@ import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueDark
 import com.rahim.yadino.designsystem.utils.theme.Mantis
 import com.rahim.yadino.designsystem.utils.theme.Punch
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.note.presentation.component.updateNoteDialog.UpdateNoteDialogComponent
+import com.rahim.yadino.note.presentation.ui.updateNoteDialog.component.UpdateNoteDialogComponent
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.model.PriorityNote
 import com.rahim.yadino.showToastShort

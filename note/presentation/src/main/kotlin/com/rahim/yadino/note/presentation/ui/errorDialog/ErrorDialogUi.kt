@@ -31,7 +31,7 @@ import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.note.presentation.component.errorDialog.ErrorDialogComponent
+import com.rahim.yadino.note.presentation.ui.errorDialog.component.ErrorDialogComponent
 import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toStringResource
 
