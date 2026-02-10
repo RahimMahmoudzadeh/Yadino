@@ -76,7 +76,7 @@ fun HomeRoute(
   component: RootHomeComponent,
 ) {
 
-  val addRoutineDialogHome = component.addRoutineDialogHomeScreen.subscribeAsState().value.child
+  val addRoutineDialogHome = component.addRoutineDialogScreen.subscribeAsState().value.child
   val updateRoutineDialogHome = component.updateRoutineDialogScreen.subscribeAsState().value.child
   val errorDialogHome = component.errorDialogRemoveRoutineScreen.subscribeAsState().value.child
 

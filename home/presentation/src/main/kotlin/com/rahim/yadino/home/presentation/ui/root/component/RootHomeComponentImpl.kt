@@ -75,7 +75,7 @@ class RootHomeComponentImpl(
     SlotNavigation<ErrorDialog>()
 
 
-  override val addRoutineDialogHomeScreen: Value<ChildSlot<AddRoutineDialog, AddRoutineDialogComponent>> =
+  override val addRoutineDialogScreen: Value<ChildSlot<AddRoutineDialog, AddRoutineDialogComponent>> =
     childSlot(
       source = addRoutineDialogNavigationSlot,
       serializer = AddRoutineDialog.serializer(),

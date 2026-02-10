@@ -1,6 +1,8 @@
 package com.rahim.yadino.note.presentation.ui.root.component
 
 import androidx.compose.runtime.Immutable
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.value.Value
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalComponent
 import com.rahim.yadino.enums.message.MessageUi
@@ -10,6 +12,12 @@ import com.rahim.yadino.note.presentation.model.NoteUiModel
 import kotlinx.collections.immutable.PersistentList
 
 interface NoteRootComponent : UnidirectionalComponent<NoteRootComponent.Event, NoteRootComponent.State, NoteRootComponent.Effect> {
+
+  val addRoutineDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.AddRoutineDialog, AddRoutineDialogComponent>>
+  val updateRoutineDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.UpdateRoutineDialog, UpdateRoutineDialogComponent>>
+  val errorDialogRemoveRoutineScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialogRemoveRoutine, ErrorDialogRemoveRoutineComponent>>
+  val errorDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialog, ErrorDialogComponent>>
+
 
   @Immutable
   sealed class Event() {
