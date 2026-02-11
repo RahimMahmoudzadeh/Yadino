@@ -16,12 +16,9 @@ import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
 import com.rahim.component.RootComponent.ChildStack.*
-import com.rahim.component.config.AddNoteDialog
 import com.rahim.component.config.AddRoutineDialogRoutineScreen
 import com.rahim.component.config.ConfigChildComponent
-import com.rahim.component.config.ErrorDialogNote
 import com.rahim.component.config.ErrorDialogRoutine
-import com.rahim.component.config.UpdateNoteDialog
 import com.rahim.component.config.UpdateRoutineDialogRoutineScreen
 import com.rahim.yadino.core.timeDate.repo.DateTimeRepository
 import com.rahim.yadino.home.domain.useCase.AddReminderUseCase
@@ -40,12 +37,6 @@ import com.rahim.yadino.note.domain.useCase.SearchNoteUseCase
 import com.rahim.yadino.note.domain.useCase.UpdateNoteUseCase
 import com.rahim.yadino.note.presentation.ui.root.component.NoteRootComponent
 import com.rahim.yadino.note.presentation.ui.root.component.NoteRootComponentImpl
-import com.rahim.yadino.note.presentation.ui.addNoteDialog.component.AddNoteDialogComponent
-import com.rahim.yadino.note.presentation.ui.addNoteDialog.component.AddNoteDialogComponentImpl
-import com.rahim.yadino.note.presentation.ui.updateNoteDialog.component.UpdateNoteDialogComponent
-import com.rahim.yadino.note.presentation.ui.updateNoteDialog.component.UpdateNoteDialogComponentImpl
-import com.rahim.yadino.note.presentation.ui.errorDialog.component.ErrorDialogComponent
-import com.rahim.yadino.note.presentation.ui.errorDialog.component.ErrorDialogComponentImpl
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponentImpl
 import com.rahim.yadino.routine.domain.useCase.GetAllRoutineUseCase
@@ -73,15 +64,6 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
 
   private val updateRoutineDialogRoutineScreenComponentNavigationSlot =
     SlotNavigation<UpdateRoutineDialogRoutineScreen>()
-
-  private val addNoteDialogComponentNavigationSlot =
-    SlotNavigation<AddNoteDialog>()
-
-  private val updateNoteDialogComponentNavigationSlot =
-    SlotNavigation<UpdateNoteDialog>()
-
-  private val errorDialogNoteComponentNavigationSlot =
-    SlotNavigation<ErrorDialogNote>()
 
   private val errorDialogRoutineComponentNavigationSlot =
     SlotNavigation<ErrorDialogRoutine>()
@@ -115,6 +97,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
         onDismissed = addRoutineDialogRoutineScreenComponentNavigationSlot::dismiss,
       )
     }
+
   private val updateReminderUseCaseRoutine: com.rahim.yadino.routine.domain.useCase.UpdateReminderUseCase = get()
 
   override val updateRoutineDialogRoutineScreen: Value<ChildSlot<UpdateRoutineDialogRoutineScreen, com.rahim.yadino.routine.presentation.component.updateRoutineDialog.UpdateRoutineDialogComponent>> =
@@ -135,41 +118,6 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
         onDismissed = updateRoutineDialogRoutineScreenComponentNavigationSlot::dismiss,
       )
     }
-  private val addNoteUseCase: AddNoteUseCase = get()
-  private val updateNoteUseCase: UpdateNoteUseCase = get()
-
-  override val addNoteDialog: Value<ChildSlot<AddNoteDialog, AddNoteDialogComponent>> =
-    childSlot(
-      source = addNoteDialogComponentNavigationSlot,
-      serializer = AddNoteDialog.serializer(),
-      handleBackButton = true,
-      key = "addNoteDialogComponentNavigationSlot",
-    ) { config, childComponentContext ->
-      AddNoteDialogComponentImpl(
-        componentContext = childComponentContext,
-        mainDispatcher = Dispatchers.Main,
-        ioDispatcher = Dispatchers.IO,
-        addNoteUseCase = addNoteUseCase,
-        onDismissed = addNoteDialogComponentNavigationSlot::dismiss,
-      )
-    }
-  override val updateNoteDialog: Value<ChildSlot<UpdateNoteDialog, UpdateNoteDialogComponent>> =
-    childSlot(
-      source = updateNoteDialogComponentNavigationSlot,
-      serializer = UpdateNoteDialog.serializer(),
-      handleBackButton = true,
-      key = "updateNoteDialogComponentNavigationSlot",
-    ) { config, childComponentContext ->
-      UpdateNoteDialogComponentImpl(
-        componentContext = childComponentContext,
-        mainDispatcher = Dispatchers.Main,
-        ioDispatcher = Dispatchers.IO,
-        updateNoteUseCase = updateNoteUseCase,
-        updateNote = config.updateNote,
-        onDismissed = updateNoteDialogComponentNavigationSlot::dismiss,
-      )
-    }
-
 
   private val deleteReminderUseCaseRoutine: com.rahim.yadino.routine.domain.useCase.DeleteReminderUseCase = get()
 
@@ -189,21 +137,6 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
       )
     }
 
-  override val errorDialogNoteScreen: Value<ChildSlot<ErrorDialogNote, ErrorDialogComponent>> =
-    childSlot(
-      source = errorDialogNoteComponentNavigationSlot,
-      serializer = ErrorDialogNote.serializer(),
-      handleBackButton = true,
-      key = "errorDialogNoteComponentNavigationSlot",
-    ) { config, childComponentContext ->
-      ErrorDialogComponentImpl(
-        componentContext = childComponentContext,
-        mainContext = Dispatchers.Main,
-        deleteNoteUseCase = deleteNoteUseCase,
-        errorDialogUiModel = config.errorDialogUiModel,
-        onDismissed = errorDialogNoteComponentNavigationSlot::dismiss,
-      )
-    }
 
   override fun onTabClick(tab: ConfigChildComponent) {
     navigation.bringToFront(tab)
@@ -214,9 +147,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     addRoutineDialogRoutineScreenComponentNavigationSlot.activate(dialog)
   }
 
-  override fun onShowAddNoteDialog(dialog: AddNoteDialog) {
-    addNoteDialogComponentNavigationSlot.activate(dialog)
-  }
+
 
   @OptIn(DelicateDecomposeApi::class)
   override fun showHistoryRoutine() {
@@ -281,6 +212,8 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private val deleteNoteUseCase: DeleteNoteUseCase = get()
   private val getNotesUseCase: GetNotesUseCase = get()
   private val searchNoteUseCase: SearchNoteUseCase = get()
+  private val addNoteUseCase: AddNoteUseCase = get()
+  private val updateNoteUseCase: UpdateNoteUseCase = get()
 
   private fun noteComponent(componentContext: ComponentContext): NoteRootComponent = NoteRootComponentImpl(
     componentContext = componentContext,
@@ -288,12 +221,8 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     getNotesUseCase = getNotesUseCase,
     searchNoteUseCase = searchNoteUseCase,
     updateNoteUseCase = updateNoteUseCase,
-    onOpenUpdateNoteDialog = { updateNote ->
-      updateNoteDialogComponentNavigationSlot.activate(UpdateNoteDialog(updateNote))
-    },
-    onShowErrorDialog = { errorDialogUiModel ->
-      errorDialogNoteComponentNavigationSlot.activate(ErrorDialogNote(errorDialogUiModel))
-    },
+    deleteNoteUseCase = deleteNoteUseCase,
+    addNoteUseCase = addNoteUseCase,
   )
 
   private fun childComponent(
