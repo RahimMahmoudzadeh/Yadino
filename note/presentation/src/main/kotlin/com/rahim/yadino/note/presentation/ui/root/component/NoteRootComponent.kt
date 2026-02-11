@@ -9,15 +9,12 @@ import com.rahim.yadino.enums.message.MessageUi
 import com.rahim.yadino.note.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
+import com.rahim.yadino.note.presentation.ui.addNoteDialog.component.AddNoteDialogComponent
+import com.rahim.yadino.note.presentation.ui.errorDialog.component.ErrorDialogComponent
+import com.rahim.yadino.note.presentation.ui.updateNoteDialog.component.UpdateNoteDialogComponent
 import kotlinx.collections.immutable.PersistentList
 
 interface NoteRootComponent : UnidirectionalComponent<NoteRootComponent.Event, NoteRootComponent.State, NoteRootComponent.Effect> {
-
-  val addRoutineDialogHomeScreen: Value<ChildSlot<DialogSlotHomeComponent.AddRoutineDialog, AddRoutineDialogComponent>>
-  val updateRoutineDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.UpdateRoutineDialog, UpdateRoutineDialogComponent>>
-  val errorDialogRemoveRoutineScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialogRemoveRoutine, ErrorDialogRemoveRoutineComponent>>
-  val errorDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.ErrorDialog, ErrorDialogComponent>>
-
 
   @Immutable
   sealed class Event() {
@@ -37,4 +34,10 @@ interface NoteRootComponent : UnidirectionalComponent<NoteRootComponent.Event, N
   data class State(
     val notes: LoadableData<PersistentList<NoteUiModel>> = LoadableData.Initial,
   )
+
+  val addNoteDialogHomeScreen: Value<ChildSlot<DialogSlotNoteComponent.AddNoteDialog, AddNoteDialogComponent>>
+  val updateNoteDialogScreen: Value<ChildSlot<DialogSlotNoteComponent.UpdateNoteDialog, UpdateNoteDialogComponent>>
+  val errorDialogRemoveNoteScreen: Value<ChildSlot<DialogSlotNoteComponent.ErrorDialogNote, ErrorDialogComponent>>
+
+  fun onShowAddNoteDialog()
 }
