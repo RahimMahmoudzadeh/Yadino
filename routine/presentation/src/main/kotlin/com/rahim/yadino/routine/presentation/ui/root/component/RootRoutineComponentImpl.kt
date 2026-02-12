@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.presentation.component
+package com.rahim.yadino.routine.presentation.ui.root.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
-class RoutineComponentImpl(
+class RootRoutineComponentImpl(
   componentContext: ComponentContext,
   mainContext: CoroutineContext,
   ioContext: CoroutineContext,
@@ -39,7 +39,7 @@ class RoutineComponentImpl(
   private val dateTimeRepository: DateTimeRepository,
   private val onShowUpdateDialog: (routineUpdate: RoutineUiModel) -> Unit,
   private val onShowErrorDialog: (errorDialogUiModel: ErrorDialogUiModel) -> Unit,
-) : RoutineComponent, ComponentContext by componentContext {
+) : RootRoutineComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
   private val ioScope: CoroutineScope = coroutineScope(ioContext + SupervisorJob())
@@ -48,8 +48,8 @@ class RoutineComponentImpl(
   private var lastMonthNumber = dateTimeRepository.currentTimeMonth
   private var lastDayNumber = dateTimeRepository.currentTimeDay
 
-  private var _state = MutableValue(RoutineComponent.State())
-  override val state: Value<RoutineComponent.State> = _state
+  private var _state = MutableValue(RootRoutineComponent.State())
+  override val state: Value<RootRoutineComponent.State> = _state
 
   init {
     lifecycle.doOnCreate {
@@ -61,11 +61,11 @@ class RoutineComponentImpl(
   }
 
   private var searchNameRoutine = ""
-  override fun event(event: RoutineComponent.Event) {
+  override fun event(event: RootRoutineComponent.Event) {
     when (event) {
-      is RoutineComponent.Event.CheckedRoutine -> checkedRoutine(event.routine)
-      is RoutineComponent.Event.OnShowErrorDialog -> showErrorDialog(event.errorDialogUiModel)
-      is RoutineComponent.Event.GetRoutines -> {
+      is RootRoutineComponent.Event.CheckedRoutine -> checkedRoutine(event.routine)
+      is RootRoutineComponent.Event.OnShowErrorDialog -> showErrorDialog(event.errorDialogUiModel)
+      is RootRoutineComponent.Event.GetRoutines -> {
         event.run {
           updateLastTime(timeDate.yearNumber, timeDate.monthNumber, timeDate.dayNumber)
           updateDayChecked(timeDate.yearNumber, timeDate.monthNumber, timeDate.dayNumber)
@@ -73,14 +73,14 @@ class RoutineComponentImpl(
         }
       }
 
-      is RoutineComponent.Event.SearchRoutineByName -> {
+      is RootRoutineComponent.Event.SearchRoutineByName -> {
         getRoutines(searchText = event.routineName)
       }
 
-      is RoutineComponent.Event.OnShowUpdateDialog -> onShowUpdateDialog(event.routine)
-      is RoutineComponent.Event.GetAllTimes -> getTimes()
-      is RoutineComponent.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.increaseDecrease)
-      is RoutineComponent.Event.WeekChange -> checkWeekIncreaseOrDecrease(event.increaseDecrease)
+      is RootRoutineComponent.Event.OnShowUpdateDialog -> onShowUpdateDialog(event.routine)
+      is RootRoutineComponent.Event.GetAllTimes -> getTimes()
+      is RootRoutineComponent.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.increaseDecrease)
+      is RootRoutineComponent.Event.WeekChange -> checkWeekIncreaseOrDecrease(event.increaseDecrease)
     }
   }
 

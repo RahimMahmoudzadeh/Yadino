@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.presentation.component.errorDialog
+package com.rahim.yadino.routine.presentation.ui.errorDialog.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue

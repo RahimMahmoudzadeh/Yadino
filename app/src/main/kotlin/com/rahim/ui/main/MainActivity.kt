@@ -18,8 +18,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -32,12 +30,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
@@ -54,14 +49,11 @@ import com.rahim.BuildConfig
 import com.rahim.component.BottomNavigationBar
 import com.rahim.component.RootComponent
 import com.rahim.component.RootComponentImpl
-import com.rahim.component.config.AddRoutineDialogRoutineScreen
 import com.rahim.component.config.ConfigChildComponent
 import com.rahim.data.distributionActions.StateOfClickItemDrawable
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
-import com.rahim.yadino.designsystem.component.requestPermissionNotification
 import com.rahim.yadino.designsystem.utils.size.LocalSize
-import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.home.presentation.ui.root.HomeRoute
 import com.rahim.yadino.library.designsystem.R
@@ -69,7 +61,7 @@ import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
 import com.rahim.yadino.note.presentation.ui.root.NoteRoute
 import com.rahim.yadino.onboarding.presentation.OnBoardingRoute
-import com.rahim.yadino.routine.presentation.ui.RoutineRoute
+import com.rahim.yadino.routine.presentation.ui.root.RoutineRoute
 import com.rahim.yadino.routine.presentation.ui.alarmHistory.HistoryRoute
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel

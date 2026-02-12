@@ -14,7 +14,7 @@ import com.rahim.yadino.note.presentation.ui.errorDialog.component.ErrorDialogCo
 import com.rahim.yadino.note.presentation.ui.updateNoteDialog.component.UpdateNoteDialogComponent
 import kotlinx.collections.immutable.PersistentList
 
-interface NoteRootComponent : UnidirectionalComponent<NoteRootComponent.Event, NoteRootComponent.State, NoteRootComponent.Effect> {
+interface RootNoteComponent : UnidirectionalComponent<RootNoteComponent.Event, RootNoteComponent.State, RootNoteComponent.Effect> {
 
   @Immutable
   sealed class Event() {

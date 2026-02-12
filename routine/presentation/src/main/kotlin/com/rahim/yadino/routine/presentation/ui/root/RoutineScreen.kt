@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.presentation.ui
+package com.rahim.yadino.routine.presentation.ui.root
 
 import android.content.Context
 import android.widget.Toast
@@ -59,10 +59,10 @@ import com.rahim.yadino.designsystem.utils.size.SizeDimensions
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.font_medium
 import com.rahim.yadino.routine.presentation.R
-import com.rahim.yadino.routine.presentation.component.RoutineComponent
-import com.rahim.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent
-import com.rahim.yadino.routine.presentation.component.errorDialog.ErrorDialogComponent
-import com.rahim.yadino.routine.presentation.component.updateRoutineDialog.UpdateRoutineDialogComponent
+import com.rahim.yadino.routine.presentation.ui.root.component.RootRoutineComponent
+import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.component.AddRoutineDialogComponent
+import com.rahim.yadino.routine.presentation.ui.errorDialog.component.ErrorDialogComponent
+import com.rahim.yadino.routine.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import com.rahim.yadino.routine.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
 import com.rahim.yadino.routine.presentation.model.RoutineUiModel
@@ -82,7 +82,7 @@ import timber.log.Timber
 fun RoutineRoute(
   modifier: Modifier = Modifier,
   showSearchBar: Boolean,
-  component: RoutineComponent,
+  component: RootRoutineComponent,
   dialogSlotAddRoutine: Child.Created<Any, AddRoutineDialogComponent>?,
   dialogSlotUpdateRoutine: Child.Created<Any, UpdateRoutineDialogComponent>?,
   dialogSlotErrorDialog: Child.Created<Any, ErrorDialogComponent>?,
@@ -113,25 +113,25 @@ fun RoutineRoute(
     state = state,
     showSearchBar = showSearchBar,
     onShowUpdateDialog = {
-      event.invoke(RoutineComponent.Event.OnShowUpdateDialog(it))
+      event.invoke(RootRoutineComponent.Event.OnShowUpdateDialog(it))
     },
     onShowErrorDialog = {
-      event.invoke(RoutineComponent.Event.OnShowErrorDialog(it))
+      event.invoke(RootRoutineComponent.Event.OnShowErrorDialog(it))
     },
     onSearchText = {
-      event.invoke(RoutineComponent.Event.SearchRoutineByName(it))
+      event.invoke(RootRoutineComponent.Event.SearchRoutineByName(it))
     },
     checkedRoutine = {
-      event.invoke(RoutineComponent.Event.CheckedRoutine(it))
+      event.invoke(RootRoutineComponent.Event.CheckedRoutine(it))
     },
     dayCheckedNumber = { timeDate ->
-      event.invoke(RoutineComponent.Event.GetRoutines(timeDate))
+      event.invoke(RootRoutineComponent.Event.GetRoutines(timeDate))
     },
     increaseOrDecrease = { increaseDecrease ->
-      event.invoke(RoutineComponent.Event.MonthChange(increaseDecrease = increaseDecrease))
+      event.invoke(RootRoutineComponent.Event.MonthChange(increaseDecrease = increaseDecrease))
     },
     weekChange = { increaseDecrease ->
-      event.invoke(RoutineComponent.Event.WeekChange(increaseDecrease = increaseDecrease))
+      event.invoke(RootRoutineComponent.Event.WeekChange(increaseDecrease = increaseDecrease))
     },
   )
 }
@@ -140,7 +140,7 @@ fun RoutineRoute(
 @Composable
 private fun RoutineScreen(
   modifier: Modifier,
-  state: RoutineComponent.State,
+  state: RootRoutineComponent.State,
   showSearchBar: Boolean,
   checkedRoutine: (RoutineUiModel) -> Unit,
   dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
@@ -232,7 +232,7 @@ private fun RoutineScreen(
 
 @Composable
 private fun GetRoutines(
-  state: RoutineComponent.State,
+  state: RootRoutineComponent.State,
   searchText: String,
   context: Context,
   size: SizeDimensions,

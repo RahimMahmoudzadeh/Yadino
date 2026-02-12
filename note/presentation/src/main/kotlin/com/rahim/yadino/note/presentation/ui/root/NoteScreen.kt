@@ -43,7 +43,7 @@ import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.ui.addNoteDialog.AddNoteDialog
 import com.rahim.yadino.note.presentation.ui.component.ItemListNote
 import com.rahim.yadino.note.presentation.ui.errorDialog.ErrorDialogUi
-import com.rahim.yadino.note.presentation.ui.root.component.NoteRootComponent
+import com.rahim.yadino.note.presentation.ui.root.component.RootNoteComponent
 import com.rahim.yadino.note.presentation.ui.updateNoteDialog.UpdateNoteDialog
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.FlowPreview
@@ -54,7 +54,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 fun NoteRoute(
   modifier: Modifier = Modifier,
   clickSearch: Boolean,
-  component: NoteRootComponent,
+  component: RootNoteComponent,
 ) {
   val (state, _, event) = use(component)
 
@@ -93,7 +93,7 @@ fun NoteRoute(
         containerColor = CornflowerBlueLight,
         contentColor = Color.White,
         onClick = {
-          event(NoteRootComponent.Event.OnShowAddNoteDialog)
+          event(RootNoteComponent.Event.OnShowAddNoteDialog)
         },
       ) {
         Icon(imageVector = ImageVector.vectorResource(com.rahim.yadino.library.designsystem.R.drawable.ic_add), "add item")
@@ -104,16 +104,16 @@ fun NoteRoute(
       modifier = modifier.padding(innerPadding),
       state = state,
       onUpdateNote = { updateNote ->
-        event(NoteRootComponent.Event.OnOpenUpdateNoteDialog(updateNote))
+        event(RootNoteComponent.Event.OnOpenUpdateNoteDialog(updateNote))
       },
       onShowErrorDialog = {
-        event(NoteRootComponent.Event.ShowErrorRemoveNoteDialog(it))
+        event(RootNoteComponent.Event.ShowErrorRemoveNoteDialog(it))
       },
       onSearchText = {
-        event(NoteRootComponent.Event.Search(it))
+        event(RootNoteComponent.Event.Search(it))
       },
       onCheckedNote = {
-        event(NoteRootComponent.Event.OnChecked(it))
+        event(RootNoteComponent.Event.OnChecked(it))
       },
       clickSearch = clickSearch,
     )
@@ -124,7 +124,7 @@ fun NoteRoute(
 @Composable
 private fun NoteScreen(
   modifier: Modifier = Modifier,
-  state: NoteRootComponent.State,
+  state: RootNoteComponent.State,
   clickSearch: Boolean,
   onUpdateNote: (note: NoteUiModel) -> Unit,
   onShowErrorDialog: (errorDialogRemoveNoteUiModel: ErrorDialogRemoveNoteUiModel) -> Unit,

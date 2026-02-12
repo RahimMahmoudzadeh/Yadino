@@ -53,7 +53,7 @@ import com.rahim.yadino.designsystem.utils.theme.Onahau
 import com.rahim.yadino.designsystem.utils.theme.Purple
 import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.routine.presentation.component.updateRoutineDialog.UpdateRoutineDialogComponent
+import com.rahim.yadino.routine.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import com.rahim.yadino.routine.presentation.model.RoutineUiModel
 import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toPersianDigits

@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.presentation.component.history
+package com.rahim.yadino.routine.presentation.ui.alarmHistory.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue

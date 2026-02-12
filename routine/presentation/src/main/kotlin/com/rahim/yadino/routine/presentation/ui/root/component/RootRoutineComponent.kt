@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.presentation.component
+package com.rahim.yadino.routine.presentation.ui.root.component
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.LoadableData
@@ -11,7 +11,7 @@ import com.rahim.yadino.routine.presentation.model.TimeDateUiModel
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 
-interface RoutineComponent : UnidirectionalComponent<RoutineComponent.Event, RoutineComponent.State, Nothing> {
+interface RootRoutineComponent : UnidirectionalComponent<RootRoutineComponent.Event, RootRoutineComponent.State, Nothing> {
   @Immutable
   sealed class Event {
     data class CheckedRoutine(val routine: RoutineUiModel) : Event()

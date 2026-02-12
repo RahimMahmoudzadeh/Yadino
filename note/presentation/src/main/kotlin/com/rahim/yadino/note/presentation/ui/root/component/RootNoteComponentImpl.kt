@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
-class NoteRootComponentImpl(
+class RootNoteComponentImpl(
   componentContext: ComponentContext,
   mainContext: CoroutineContext,
   private val getNotesUseCase: GetNotesUseCase,
@@ -50,15 +50,15 @@ class NoteRootComponentImpl(
   private val addNoteUseCase: AddNoteUseCase,
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val updateNoteUseCase: UpdateNoteUseCase,
-) : NoteRootComponent, ComponentContext by componentContext {
+) : RootNoteComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
 
-  private var _state = MutableValue(NoteRootComponent.State())
-  override val state: Value<NoteRootComponent.State> = _state
+  private var _state = MutableValue(RootNoteComponent.State())
+  override val state: Value<RootNoteComponent.State> = _state
 
-  private val _effect: Channel<NoteRootComponent.Effect> = Channel(Channel.BUFFERED)
-  override val effect: Flow<NoteRootComponent.Effect> = _effect.consumeAsFlow()
+  private val _effect: Channel<RootNoteComponent.Effect> = Channel(Channel.BUFFERED)
+  override val effect: Flow<RootNoteComponent.Effect> = _effect.consumeAsFlow()
 
   private val addNoteDialogComponentNavigationSlot =
     SlotNavigation<DialogSlotNoteComponent.AddNoteDialog>()
@@ -75,13 +75,13 @@ class NoteRootComponentImpl(
     }
   }
 
-  override fun event(event: NoteRootComponent.Event) = when (event) {
-    is NoteRootComponent.Event.GetNotes -> getNotes()
-    is NoteRootComponent.Event.Search -> searchItems(event.nameNoteUi)
-    is NoteRootComponent.Event.ShowErrorRemoveNoteDialog -> showErrorDialog(event.errorDialogRemoveNoteUiModel)
-    is NoteRootComponent.Event.OnChecked -> updateNote(event.checkedNote)
-    is NoteRootComponent.Event.OnOpenUpdateNoteDialog -> showUpdateNoteDialog(event.updateNote)
-    NoteRootComponent.Event.OnShowAddNoteDialog -> onShowAddNoteDialog()
+  override fun event(event: RootNoteComponent.Event) = when (event) {
+    is RootNoteComponent.Event.GetNotes -> getNotes()
+    is RootNoteComponent.Event.Search -> searchItems(event.nameNoteUi)
+    is RootNoteComponent.Event.ShowErrorRemoveNoteDialog -> showErrorDialog(event.errorDialogRemoveNoteUiModel)
+    is RootNoteComponent.Event.OnChecked -> updateNote(event.checkedNote)
+    is RootNoteComponent.Event.OnOpenUpdateNoteDialog -> showUpdateNoteDialog(event.updateNote)
+    RootNoteComponent.Event.OnShowAddNoteDialog -> onShowAddNoteDialog()
   }
 
   private fun updateNote(note: NoteUiModel) {

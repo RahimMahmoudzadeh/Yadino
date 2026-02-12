@@ -1,4 +1,4 @@
-package com.rahim.yadino.routine.presentation.component.history
+package com.rahim.yadino.routine.presentation.ui.alarmHistory.component
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.LoadableData

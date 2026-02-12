@@ -7,16 +7,21 @@ import com.rahim.component.config.ConfigChildComponent
 import com.rahim.component.config.ErrorDialogRoutine
 import com.rahim.component.config.UpdateRoutineDialogRoutineScreen
 import com.rahim.yadino.home.presentation.ui.root.component.RootHomeComponent
-import com.rahim.yadino.note.presentation.ui.root.component.NoteRootComponent
+import com.rahim.yadino.note.presentation.ui.root.component.RootNoteComponent
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
+import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.component.AddRoutineDialogComponent
+import com.rahim.yadino.routine.presentation.ui.alarmHistory.component.HistoryRoutineComponent
+import com.rahim.yadino.routine.presentation.ui.errorDialog.component.ErrorDialogComponent
+import com.rahim.yadino.routine.presentation.ui.root.component.RootRoutineComponent
+import com.rahim.yadino.routine.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 
 interface RootComponent {
   val stack: Value<com.arkivanov.decompose.router.stack.ChildStack<*, ChildStack>>
 
 
-  val addRoutineDialogRoutineScreen: Value<ChildSlot<AddRoutineDialogRoutineScreen, com.rahim.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent>>
-  val updateRoutineDialogRoutineScreen: Value<ChildSlot<UpdateRoutineDialogRoutineScreen, com.rahim.yadino.routine.presentation.component.updateRoutineDialog.UpdateRoutineDialogComponent>>
-  val errorDialogRoutineScreen: Value<ChildSlot<ErrorDialogRoutine, com.rahim.yadino.routine.presentation.component.errorDialog.ErrorDialogComponent>>
+  val addRoutineDialogRoutineScreen: Value<ChildSlot<AddRoutineDialogRoutineScreen, AddRoutineDialogComponent>>
+  val updateRoutineDialogRoutineScreen: Value<ChildSlot<UpdateRoutineDialogRoutineScreen, UpdateRoutineDialogComponent>>
+  val errorDialogRoutineScreen: Value<ChildSlot<ErrorDialogRoutine, ErrorDialogComponent>>
 
   fun onTabClick(tab: ConfigChildComponent)
   fun onShowAddDialogRoutineRoutineScreen(dialog: AddRoutineDialogRoutineScreen)
@@ -27,8 +32,8 @@ interface RootComponent {
   sealed class ChildStack {
     class HomeStack(val component: RootHomeComponent) : ChildStack()
     class OnBoarding(val component: OnBoardingComponent) : ChildStack()
-    class Routine(val component: com.rahim.yadino.routine.presentation.component.RoutineComponent) : ChildStack()
-    class Note(val component: NoteRootComponent) : ChildStack()
-    class HistoryRoutine(val component: com.rahim.yadino.routine.presentation.component.history.HistoryRoutineComponent) : ChildStack()
+    class Routine(val component: RootRoutineComponent) : ChildStack()
+    class Note(val component: RootNoteComponent) : ChildStack()
+    class HistoryRoutine(val component: HistoryRoutineComponent) : ChildStack()
   }
 }
