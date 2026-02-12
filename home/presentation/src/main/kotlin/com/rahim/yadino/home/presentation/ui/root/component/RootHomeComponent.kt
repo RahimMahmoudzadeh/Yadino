@@ -31,8 +31,8 @@ interface RootHomeComponent : UnidirectionalComponent<RootHomeComponent.Event, R
     data class OnShowErrorDialogRemoveRoutine(val errorDialogRemoveUiModel: ErrorDialogRemoveUiModel) : Event()
     data class OnShowErrorDialog(val errorDialogUiModel: ErrorDialogUiModel) : Event()
     data class SearchRoutine(val routineName: String) : Event()
-    data class OnShowUpdateRoutineDialog(val routine: RoutineUiModel) : Event()
-    data object OnShowAddRoutineDialog : Event()
+    data class ShowUpdateRoutineDialog(val routine: RoutineUiModel) : Event()
+    data object ShowAddRoutineDialog : Event()
     data object GetRoutines : Event()
   }
 

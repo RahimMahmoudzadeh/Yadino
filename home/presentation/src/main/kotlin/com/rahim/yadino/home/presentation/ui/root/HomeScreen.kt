@@ -140,7 +140,7 @@ fun HomeRoute(
           requestPermissionNotification(
             isGranted = {
               if (it) {
-                event(RootHomeComponent.Event.OnShowAddRoutineDialog)
+                event(RootHomeComponent.Event.ShowAddRoutineDialog)
               } else {
                 event(
                   RootHomeComponent.Event.OnShowErrorDialog(
@@ -174,7 +174,7 @@ fun HomeRoute(
         event.invoke(RootHomeComponent.Event.OnShowErrorDialogRemoveRoutine(errorDialogRemoveUiModel = deleteUiModel))
       },
       onUpdateRoutine = {
-        event.invoke(RootHomeComponent.Event.OnShowUpdateRoutineDialog(it))
+        event.invoke(RootHomeComponent.Event.ShowUpdateRoutineDialog(it))
       },
       onSearchText = {
         event.invoke(RootHomeComponent.Event.SearchRoutine(it))

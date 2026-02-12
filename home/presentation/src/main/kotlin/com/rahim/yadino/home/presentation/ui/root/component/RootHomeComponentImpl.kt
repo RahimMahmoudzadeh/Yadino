@@ -175,8 +175,8 @@ class RootHomeComponentImpl(
         searchRoutines(searchText = event.routineName)
       }
 
-      is RootHomeComponent.Event.OnShowUpdateRoutineDialog -> showUpdateDialogRoutine(event.routine)
-      RootHomeComponent.Event.OnShowAddRoutineDialog -> showAddDialogRoutine()
+      is RootHomeComponent.Event.ShowUpdateRoutineDialog -> showUpdateDialogRoutine(event.routine)
+      RootHomeComponent.Event.ShowAddRoutineDialog -> showAddDialogRoutine()
       is RootHomeComponent.Event.OnShowErrorDialog -> showErrorDialog(event.errorDialogUiModel)
     }
   }
