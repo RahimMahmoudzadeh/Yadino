@@ -248,9 +248,6 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
     modifier = modifier.fillMaxSize(),
     animation = stackAnimation(fade()),
   ) {
-    val errorDialogRoutine = component.errorDialogRoutineScreen.subscribeAsState().value.child
-    val addRoutineDialogRoutine = component.addRoutineDialogRoutineScreen.subscribeAsState().value.child
-    val updateRoutineDialogRoutine = component.updateRoutineDialogRoutineScreen.subscribeAsState().value.child
 
     Surface(color = MaterialTheme.colorScheme.background) {
       when (val child = it.instance) {
@@ -264,9 +261,6 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
         is RootComponent.ChildStack.OnBoarding -> OnBoardingRoute(component = child.component)
         is RootComponent.ChildStack.Routine -> RoutineRoute(
           component = child.component, showSearchBar = clickSearch,
-          dialogSlotAddRoutine = addRoutineDialogRoutine,
-          dialogSlotUpdateRoutine = updateRoutineDialogRoutine,
-          dialogSlotErrorDialog = errorDialogRoutine,
         )
 
         is RootComponent.ChildStack.HistoryRoutine -> HistoryRoute(component = child.component)
