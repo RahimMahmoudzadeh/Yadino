@@ -17,5 +17,6 @@ dependencies {
 
   libs.run {
     implementation(swipe)
+    implementation(accompanist.permissions)
   }
 }
