@@ -12,6 +12,7 @@ import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
 import com.rahim.yadino.routine.presentation.model.RoutineUiModel
 import com.rahim.yadino.routine.presentation.model.TimeDateUiModel
 import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.component.AddRoutineDialogComponent
+import com.rahim.yadino.routine.presentation.ui.errorDialog.component.ErrorDialogComponent
 import com.rahim.yadino.routine.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponent
 import com.rahim.yadino.routine.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import kotlinx.collections.immutable.PersistentList
@@ -22,6 +23,7 @@ interface RootRoutineComponent : UnidirectionalComponent<RootRoutineComponent.Ev
   val addRoutineDialogScreen: Value<ChildSlot<DialogSlotComponent.AddRoutineDialog, AddRoutineDialogComponent>>
   val updateRoutineDialogScreen: Value<ChildSlot<DialogSlotComponent.UpdateRoutineDialog, UpdateRoutineDialogComponent>>
   val errorDialogRemoveRoutineScreen: Value<ChildSlot<DialogSlotComponent.ErrorDialogRemoveRoutine, ErrorDialogRemoveRoutineComponent>>
+  val errorDialogScreen: Value<ChildSlot<DialogSlotComponent.ErrorDialog, ErrorDialogComponent>>
 
   @Immutable
   sealed class Event {
@@ -34,6 +36,7 @@ interface RootRoutineComponent : UnidirectionalComponent<RootRoutineComponent.Ev
     data class WeekChange(val increaseDecrease: IncreaseDecrease) : Event()
     data class MonthChange(val increaseDecrease: IncreaseDecrease) : Event()
     data object GetAllTimes : Event()
+    data object ShowAddRoutineDialog : Event()
   }
 
   @Immutable

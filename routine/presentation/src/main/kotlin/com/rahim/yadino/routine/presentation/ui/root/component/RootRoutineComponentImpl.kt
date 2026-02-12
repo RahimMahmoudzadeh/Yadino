@@ -28,10 +28,13 @@ import com.rahim.yadino.routine.presentation.mapper.toRoutine
 import com.rahim.yadino.routine.presentation.mapper.toRoutineUiModel
 import com.rahim.yadino.routine.presentation.mapper.toTimeDateUiModel
 import com.rahim.yadino.routine.presentation.model.ErrorDialogRemoveRoutineUiModel
+import com.rahim.yadino.routine.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
 import com.rahim.yadino.routine.presentation.model.RoutineUiModel
 import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.component.AddRoutineDialogComponent
 import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.component.AddRoutineDialogComponentImpl
+import com.rahim.yadino.routine.presentation.ui.errorDialog.component.ErrorDialogComponent
+import com.rahim.yadino.routine.presentation.ui.errorDialog.component.ErrorDialogComponentImpl
 import com.rahim.yadino.routine.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponent
 import com.rahim.yadino.routine.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponentImpl
 import com.rahim.yadino.routine.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
@@ -69,6 +72,9 @@ class RootRoutineComponentImpl(
 
   private val errorDialogRemoveRoutineNavigationSlot =
     SlotNavigation<DialogSlotComponent.ErrorDialogRemoveRoutine>()
+
+  private val errorDialogNavigationSlot =
+    SlotNavigation<DialogSlotComponent.ErrorDialog>()
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
   private val ioScope: CoroutineScope = coroutineScope(ioContext + SupervisorJob())
@@ -133,7 +139,7 @@ class RootRoutineComponentImpl(
       source = errorDialogRemoveRoutineNavigationSlot,
       serializer = DialogSlotComponent.ErrorDialogRemoveRoutine.serializer(),
       handleBackButton = true,
-      key = "errorDialogNavigationSlot",
+      key = "errorDialogRemoveRoutineNavigationSlot",
     ) { config, childComponentContext ->
       ErrorDialogRemoveRoutineComponentImpl(
         componentContext = childComponentContext,
@@ -144,10 +150,25 @@ class RootRoutineComponentImpl(
       )
     }
 
+  override val errorDialogScreen: Value<ChildSlot<DialogSlotComponent.ErrorDialog, ErrorDialogComponent>> =
+    childSlot(
+      source = errorDialogNavigationSlot,
+      serializer = DialogSlotComponent.ErrorDialog.serializer(),
+      handleBackButton = true,
+      key = "errorDialogNavigationSlot",
+    ) { config, childComponentContext ->
+      ErrorDialogComponentImpl(
+        componentContext = childComponentContext,
+        mainContext = Dispatchers.Main,
+        errorDialogUiModel = config.errorDialogUiModel,
+        onDismissed = errorDialogNavigationSlot::dismiss,
+      )
+    }
+
   override fun event(event: RootRoutineComponent.Event) {
     when (event) {
       is RootRoutineComponent.Event.CheckedRoutine -> checkedRoutine(event.routine)
-      is RootRoutineComponent.Event.ShowErrorRemoveRoutineDialog -> showErrorDialog(event.errorDialogRemoveRoutineUiModel)
+      is RootRoutineComponent.Event.ShowErrorRemoveRoutineDialog -> showErrorDialogRemoveRoutine(event.errorDialogRemoveRoutineUiModel)
       is RootRoutineComponent.Event.GetRoutines -> {
         event.run {
           updateLastTime(timeDate.yearNumber, timeDate.monthNumber, timeDate.dayNumber)
@@ -164,7 +185,8 @@ class RootRoutineComponentImpl(
       is RootRoutineComponent.Event.GetAllTimes -> getTimes()
       is RootRoutineComponent.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.increaseDecrease)
       is RootRoutineComponent.Event.WeekChange -> checkWeekIncreaseOrDecrease(event.increaseDecrease)
-      is RootRoutineComponent.Event.ShowErrorDialog -> TODO()
+      is RootRoutineComponent.Event.ShowErrorDialog -> showErrorDialog(event.errorDialogUiModel)
+      RootRoutineComponent.Event.ShowAddRoutineDialog -> showAddDialog()
     }
   }
 
@@ -322,12 +344,20 @@ class RootRoutineComponentImpl(
     }
   }
 
-  private fun showErrorDialog(errorDialogRemoveRoutineUiModel: ErrorDialogRemoveRoutineUiModel) {
+  private fun showErrorDialogRemoveRoutine(errorDialogRemoveRoutineUiModel: ErrorDialogRemoveRoutineUiModel) {
     errorDialogRemoveRoutineNavigationSlot.activate(DialogSlotComponent.ErrorDialogRemoveRoutine(errorDialogRemoveRoutineUiModel))
   }
 
   private fun showUpdateDialog(routine: RoutineUiModel) {
     updateRoutineDialogNavigationSlot.activate(DialogSlotComponent.UpdateRoutineDialog(routine))
+  }
+
+  private fun showAddDialog() {
+    addRoutineDialogNavigationSlot.activate(DialogSlotComponent.AddRoutineDialog)
+  }
+
+  private fun showErrorDialog(errorDialogUiModel: ErrorDialogUiModel) {
+    errorDialogNavigationSlot.activate(DialogSlotComponent.ErrorDialog(errorDialogUiModel))
   }
 
   private fun checkedRoutine(routine: RoutineUiModel) {
