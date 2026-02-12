@@ -1,7 +1,7 @@
 package com.rahim.yadino.note.presentation.ui.root.component
 
 
-import com.rahim.yadino.note.presentation.model.ErrorDialogUiModel
+import com.rahim.yadino.note.presentation.model.ErrorDialogRemoveNoteUiModel
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import kotlinx.serialization.Serializable
 
@@ -13,6 +13,6 @@ sealed interface DialogSlotNoteComponent {
   data class UpdateNoteDialog(val updateNote: NoteUiModel) : DialogSlotNoteComponent
 
   @Serializable
-  data class ErrorDialogNote(val errorDialogUiModel: ErrorDialogUiModel) : DialogSlotNoteComponent
+  data class ErrorDialogNote(val errorDialogRemoveNoteUiModel: ErrorDialogRemoveNoteUiModel) : DialogSlotNoteComponent
 
 }

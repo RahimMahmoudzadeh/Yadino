@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,9 +21,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.arkivanov.decompose.Child
+import androidx.compose.ui.res.vectorResource
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
@@ -29,17 +35,15 @@ import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
+import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.note.presentation.R
-import com.rahim.yadino.note.presentation.ui.root.component.NoteRootComponent
-import com.rahim.yadino.note.presentation.ui.addNoteDialog.component.AddNoteDialogComponent
-import com.rahim.yadino.note.presentation.ui.errorDialog.component.ErrorDialogComponent
-import com.rahim.yadino.note.presentation.ui.updateNoteDialog.component.UpdateNoteDialogComponent
-import com.rahim.yadino.note.presentation.model.ErrorDialogUiModel
+import com.rahim.yadino.note.presentation.model.ErrorDialogRemoveNoteUiModel
 import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.ui.addNoteDialog.AddNoteDialog
 import com.rahim.yadino.note.presentation.ui.component.ItemListNote
 import com.rahim.yadino.note.presentation.ui.errorDialog.ErrorDialogUi
+import com.rahim.yadino.note.presentation.ui.root.component.NoteRootComponent
 import com.rahim.yadino.note.presentation.ui.updateNoteDialog.UpdateNoteDialog
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.coroutines.FlowPreview
@@ -51,13 +55,14 @@ fun NoteRoute(
   modifier: Modifier = Modifier,
   clickSearch: Boolean,
   component: NoteRootComponent,
-  dialogSlotAddNote: Child.Created<Any, AddNoteDialogComponent>?,
-  dialogSlotUpdateNote: Child.Created<Any, UpdateNoteDialogComponent>?,
-  dialogSlotErrorDialog: Child.Created<Any, ErrorDialogComponent>?,
 ) {
-  val (state, _ , event) = use(component)
+  val (state, _, event) = use(component)
 
-  dialogSlotAddNote?.let { dialogSlot ->
+  val addNoteDialog = component.addNoteDialogScreen.subscribeAsState().value.child
+  val updateNoteDialog = component.updateNoteDialogScreen.subscribeAsState().value.child
+  val errorDialogNote = component.errorDialogRemoveNoteScreen.subscribeAsState().value.child
+
+  addNoteDialog?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       AddNoteDialog(
         component = dialogComponent,
@@ -65,7 +70,7 @@ fun NoteRoute(
     }
   }
 
-  dialogSlotUpdateNote?.let { dialogSlot ->
+  updateNoteDialog?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       UpdateNoteDialog(
         component = dialogComponent,
@@ -73,7 +78,7 @@ fun NoteRoute(
     }
   }
 
-  dialogSlotErrorDialog?.let { dialogSlot ->
+  errorDialogNote?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       ErrorDialogUi(
         component = dialogComponent,
@@ -81,23 +86,38 @@ fun NoteRoute(
     }
   }
 
-  NoteScreen(
-    modifier = modifier,
-    state = state,
-    onUpdateNote = { updateNote ->
-      event(NoteRootComponent.Event.OnOpenUpdateNoteDialog(updateNote))
+
+  Scaffold(
+    floatingActionButton = {
+      FloatingActionButton(
+        containerColor = CornflowerBlueLight,
+        contentColor = Color.White,
+        onClick = {
+          event(NoteRootComponent.Event.OnShowAddNoteDialog)
+        },
+      ) {
+        Icon(imageVector = ImageVector.vectorResource(com.rahim.yadino.library.designsystem.R.drawable.ic_add), "add item")
+      }
     },
-    onShowErrorDialog = {
-      event(NoteRootComponent.Event.ShowErrorDialog(it))
-    },
-    onSearchText = {
-      event(NoteRootComponent.Event.Search(it))
-    },
-    onCheckedNote = {
-      event(NoteRootComponent.Event.OnChecked(it))
-    },
-    clickSearch = clickSearch,
-  )
+  ) { innerPadding ->
+    NoteScreen(
+      modifier = modifier.padding(innerPadding),
+      state = state,
+      onUpdateNote = { updateNote ->
+        event(NoteRootComponent.Event.OnOpenUpdateNoteDialog(updateNote))
+      },
+      onShowErrorDialog = {
+        event(NoteRootComponent.Event.ShowErrorRemoveNoteDialog(it))
+      },
+      onSearchText = {
+        event(NoteRootComponent.Event.Search(it))
+      },
+      onCheckedNote = {
+        event(NoteRootComponent.Event.OnChecked(it))
+      },
+      clickSearch = clickSearch,
+    )
+  }
 }
 
 @OptIn(FlowPreview::class)
@@ -107,7 +127,7 @@ private fun NoteScreen(
   state: NoteRootComponent.State,
   clickSearch: Boolean,
   onUpdateNote: (note: NoteUiModel) -> Unit,
-  onShowErrorDialog: (errorDialogUiModel: ErrorDialogUiModel) -> Unit,
+  onShowErrorDialog: (errorDialogRemoveNoteUiModel: ErrorDialogRemoveNoteUiModel) -> Unit,
   onCheckedNote: (NoteUiModel) -> Unit,
   onSearchText: (NameNoteUi) -> Unit,
 ) {
@@ -179,7 +199,7 @@ private fun NoteScreen(
                 return@ItemsNote
               }
               onShowErrorDialog(
-                ErrorDialogUiModel(title = title, submitTextButton = submitTextButton, noteUiModel = it),
+                ErrorDialogRemoveNoteUiModel(title = title, submitTextButton = submitTextButton, noteUiModel = it),
               )
             },
           )

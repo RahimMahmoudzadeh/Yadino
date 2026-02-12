@@ -7,7 +7,7 @@ import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.rahim.yadino.enums.message.MessageUi
 import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
 import com.rahim.yadino.note.presentation.mapper.toNote
-import com.rahim.yadino.note.presentation.model.ErrorDialogUiModel
+import com.rahim.yadino.note.presentation.model.ErrorDialogRemoveNoteUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
@@ -20,13 +20,13 @@ class ErrorDialogComponentImpl(
   mainContext: CoroutineContext,
   componentContext: ComponentContext,
   private val deleteNoteUseCase: DeleteNoteUseCase,
-  private val errorDialogUiModel: ErrorDialogUiModel,
+  private val errorDialogRemoveNoteUiModel: ErrorDialogRemoveNoteUiModel,
   private val onDismissed: () -> Unit,
 ) : ErrorDialogComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
 
-  private val _state = MutableValue(ErrorDialogComponent.State(title = errorDialogUiModel.title, submitTextButton = errorDialogUiModel.submitTextButton))
+  private val _state = MutableValue(ErrorDialogComponent.State(title = errorDialogRemoveNoteUiModel.title, submitTextButton = errorDialogRemoveNoteUiModel.submitTextButton))
   override val state: Value<ErrorDialogComponent.State> = _state
 
   private val _effect = Channel<ErrorDialogComponent.Effect>(Channel.BUFFERED)
@@ -42,7 +42,7 @@ class ErrorDialogComponentImpl(
   private fun okClickedButton() {
     scope.launch {
       runCatching {
-        deleteNoteUseCase(errorDialogUiModel.noteUiModel.toNote())
+        deleteNoteUseCase(errorDialogRemoveNoteUiModel.noteUiModel.toNote())
       }.onSuccess {
         onDismissed()
       }.onFailure {

@@ -6,7 +6,7 @@ import com.arkivanov.decompose.value.Value
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalComponent
 import com.rahim.yadino.enums.message.MessageUi
-import com.rahim.yadino.note.presentation.model.ErrorDialogUiModel
+import com.rahim.yadino.note.presentation.model.ErrorDialogRemoveNoteUiModel
 import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.ui.addNoteDialog.component.AddNoteDialogComponent
@@ -19,10 +19,11 @@ interface NoteRootComponent : UnidirectionalComponent<NoteRootComponent.Event, N
   @Immutable
   sealed class Event() {
     data class Search(val nameNoteUi: NameNoteUi) : Event()
-    data class ShowErrorDialog(val errorDialogUiModel: ErrorDialogUiModel) : Event()
+    data class ShowErrorRemoveNoteDialog(val errorDialogRemoveNoteUiModel: ErrorDialogRemoveNoteUiModel) : Event()
     data class OnChecked(val checkedNote: NoteUiModel) : Event()
     data class OnOpenUpdateNoteDialog(val updateNote: NoteUiModel) : Event()
     data object GetNotes : Event()
+    data object OnShowAddNoteDialog : Event()
   }
 
   @Immutable
@@ -35,7 +36,7 @@ interface NoteRootComponent : UnidirectionalComponent<NoteRootComponent.Event, N
     val notes: LoadableData<PersistentList<NoteUiModel>> = LoadableData.Initial,
   )
 
-  val addNoteDialogHomeScreen: Value<ChildSlot<DialogSlotNoteComponent.AddNoteDialog, AddNoteDialogComponent>>
+  val addNoteDialogScreen: Value<ChildSlot<DialogSlotNoteComponent.AddNoteDialog, AddNoteDialogComponent>>
   val updateNoteDialogScreen: Value<ChildSlot<DialogSlotNoteComponent.UpdateNoteDialog, UpdateNoteDialogComponent>>
   val errorDialogRemoveNoteScreen: Value<ChildSlot<DialogSlotNoteComponent.ErrorDialogNote, ErrorDialogComponent>>
 
