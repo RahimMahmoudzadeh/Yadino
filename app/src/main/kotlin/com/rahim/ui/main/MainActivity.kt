@@ -215,43 +215,6 @@ fun YadinoApp(
               )
             }
           },
-          floatingActionButton = {
-            if (configurationState !is ConfigChildComponent.OnBoarding && configurationState !is ConfigChildComponent.Home && configurationState !is ConfigChildComponent.Note && configurationState !is ConfigChildComponent.HistoryRoutine) {
-              FloatingActionButton(
-                containerColor = CornflowerBlueLight,
-                contentColor = Color.White,
-                onClick = {
-                  requestPermissionNotification(
-                    isGranted = {
-                      if (it) {
-                        when (configurationState) {
-                          ConfigChildComponent.Home -> {
-//                            rootComponent.onShowAddDialogRoutineHomeScreen(AddRoutineDialogHomeScreen)
-                          }
-
-                          ConfigChildComponent.Routine -> {
-                            rootComponent.onShowAddDialogRoutineRoutineScreen(AddRoutineDialogRoutineScreen)
-                          }
-
-                          else -> {
-//                            rootComponent.onShowAddNoteDialog(AddNoteDialog)
-                          }
-                        }
-                      } else {
-//                        errorClick = true
-                      }
-                    },
-                    permissionState = {
-                      it.launchPermissionRequest()
-                    },
-                    notificationPermission = notificationPermissionState,
-                  )
-                },
-              ) {
-                Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_add), "add item")
-              }
-            }
-          },
           bottomBar = {
             AnimatedVisibility(
               visible = configurationState !is ConfigChildComponent.OnBoarding && configurationState !is ConfigChildComponent.HistoryRoutine,
