@@ -1,5 +1,6 @@
 package com.rahim.yadino.routine.presentation.ui.root
 
+import android.Manifest
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -16,9 +17,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -33,43 +36,47 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.Child
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.calculateMonthName
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.component.gradientColors
+import com.rahim.yadino.designsystem.component.requestPermissionNotification
 import com.rahim.yadino.designsystem.utils.size.FontDimensions
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SizeDimensions
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
+import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.font_medium
 import com.rahim.yadino.routine.presentation.R
 import com.rahim.yadino.routine.presentation.ui.root.component.RootRoutineComponent
-import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.component.AddRoutineDialogComponent
-import com.rahim.yadino.routine.presentation.ui.errorDialog.component.ErrorDialogComponent
-import com.rahim.yadino.routine.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
+import com.rahim.yadino.routine.presentation.model.ErrorDialogRemoveRoutineUiModel
 import com.rahim.yadino.routine.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
 import com.rahim.yadino.routine.presentation.model.RoutineUiModel
 import com.rahim.yadino.routine.presentation.model.TimeDateUiModel
 import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.AddRoutineDialog
 import com.rahim.yadino.routine.presentation.ui.component.ListRoutines
-import com.rahim.yadino.routine.presentation.ui.errorDialog.ErrorDialogUi
+import com.rahim.yadino.routine.presentation.ui.errorDialogRemoveRoutine.ErrorDialogUi
 import com.rahim.yadino.routine.presentation.ui.updateDialogRoutine.UpdateRoutineDialog
 import com.rahim.yadino.toPersianDigits
 import kotlinx.collections.immutable.PersistentList
@@ -78,62 +85,99 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import timber.log.Timber
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun RoutineRoute(
   modifier: Modifier = Modifier,
   showSearchBar: Boolean,
   component: RootRoutineComponent,
-  dialogSlotAddRoutine: Child.Created<Any, AddRoutineDialogComponent>?,
-  dialogSlotUpdateRoutine: Child.Created<Any, UpdateRoutineDialogComponent>?,
-  dialogSlotErrorDialog: Child.Created<Any, ErrorDialogComponent>?,
 ) {
   val (state, _, event) = use(component)
 
-  dialogSlotAddRoutine?.let { dialogSlot ->
+  val dialogSlotAddRoutine by component.addRoutineDialogScreen.subscribeAsState()
+  val dialogSlotErrorDialog by component.errorDialogRemoveRoutineScreen.subscribeAsState()
+  val dialogSlotUpdateRoutine by component.updateRoutineDialogScreen.subscribeAsState()
+
+  dialogSlotAddRoutine.child?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       AddRoutineDialog(
         componentComponent = dialogComponent,
       )
     }
   }
-  dialogSlotErrorDialog?.let { dialogSlot ->
+  dialogSlotErrorDialog.child?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       ErrorDialogUi(component = dialogComponent)
     }
   }
-  dialogSlotUpdateRoutine?.let { dialogSlot ->
+  dialogSlotUpdateRoutine.child?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       UpdateRoutineDialog(
         component = dialogComponent,
       )
     }
   }
-  RoutineScreen(
-    modifier = modifier,
-    state = state,
-    showSearchBar = showSearchBar,
-    onShowUpdateDialog = {
-      event.invoke(RootRoutineComponent.Event.OnShowUpdateDialog(it))
+
+  val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
+  Scaffold(
+    floatingActionButton = {
+      FloatingActionButton(
+        containerColor = CornflowerBlueLight,
+        contentColor = Color.White,
+        onClick = {
+          requestPermissionNotification(
+            isGranted = {
+              if (it) {
+                event(RootRoutineComponent.Event.ShowAddRoutineDialog)
+              } else {
+//                event(
+//                  RootRoutineComponent.Event.ShowErrorDialog(
+//                    ErrorDialogUiModel(
+//                      title = title,
+//                      submitTextButton = submitTextButton,
+//                    ),
+//                  ),
+//                )
+              }
+            },
+            permissionState = {
+              it.launchPermissionRequest()
+            },
+            notificationPermission = notificationPermissionState,
+          )
+        },
+      ) {
+        Icon(imageVector = ImageVector.vectorResource(com.rahim.yadino.library.designsystem.R.drawable.ic_add), "add item")
+      }
     },
-    onShowErrorDialog = {
-      event.invoke(RootRoutineComponent.Event.OnShowErrorDialog(it))
-    },
-    onSearchText = {
-      event.invoke(RootRoutineComponent.Event.SearchRoutineByName(it))
-    },
-    checkedRoutine = {
-      event.invoke(RootRoutineComponent.Event.CheckedRoutine(it))
-    },
-    dayCheckedNumber = { timeDate ->
-      event.invoke(RootRoutineComponent.Event.GetRoutines(timeDate))
-    },
-    increaseOrDecrease = { increaseDecrease ->
-      event.invoke(RootRoutineComponent.Event.MonthChange(increaseDecrease = increaseDecrease))
-    },
-    weekChange = { increaseDecrease ->
-      event.invoke(RootRoutineComponent.Event.WeekChange(increaseDecrease = increaseDecrease))
-    },
-  )
+  ) { innerPadding ->
+    RoutineScreen(
+      modifier = modifier.padding(innerPadding),
+      state = state,
+      showSearchBar = showSearchBar,
+      onShowUpdateDialog = {
+        event.invoke(RootRoutineComponent.Event.ShowUpdateDialog(it))
+      },
+      onShowErrorDialog = {
+        event.invoke(RootRoutineComponent.Event.ShowErrorRemoveRoutineDialog(it))
+      },
+      onSearchText = {
+        event.invoke(RootRoutineComponent.Event.SearchRoutineByName(it))
+      },
+      checkedRoutine = {
+        event.invoke(RootRoutineComponent.Event.CheckedRoutine(it))
+      },
+      dayCheckedNumber = { timeDate ->
+        event.invoke(RootRoutineComponent.Event.GetRoutines(timeDate))
+      },
+      increaseOrDecrease = { increaseDecrease ->
+        event.invoke(RootRoutineComponent.Event.MonthChange(increaseDecrease = increaseDecrease))
+      },
+      weekChange = { increaseDecrease ->
+        event.invoke(RootRoutineComponent.Event.WeekChange(increaseDecrease = increaseDecrease))
+      },
+    )
+  }
 }
 
 @OptIn(FlowPreview::class)
@@ -145,7 +189,7 @@ private fun RoutineScreen(
   checkedRoutine: (RoutineUiModel) -> Unit,
   dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
   onShowUpdateDialog: (routine: RoutineUiModel) -> Unit,
-  onShowErrorDialog: (ErrorDialogUiModel) -> Unit,
+  onShowErrorDialog: (ErrorDialogRemoveRoutineUiModel) -> Unit,
   onSearchText: (String) -> Unit,
   increaseOrDecrease: (increaseDecrease: IncreaseDecrease) -> Unit,
   weekChange: (IncreaseDecrease) -> Unit,
@@ -224,7 +268,7 @@ private fun RoutineScreen(
           ).show()
           return@GetRoutines
         }
-        onShowErrorDialog(ErrorDialogUiModel(title = context.getString(com.rahim.yadino.library.designsystem.R.string.can_you_delete), submitTextButton = context.getString(com.rahim.yadino.library.designsystem.R.string.ok), routineUiModel = deletedRoutine))
+        onShowErrorDialog(ErrorDialogRemoveRoutineUiModel(title = context.getString(com.rahim.yadino.library.designsystem.R.string.can_you_delete), submitTextButton = context.getString(com.rahim.yadino.library.designsystem.R.string.ok), routineUiModel = deletedRoutine))
       },
     )
   }
@@ -266,8 +310,8 @@ private fun GetRoutines(
       } else {
         ListRoutines(
           modifier = Modifier
-              .fillMaxWidth()
-              .padding(top = space.space16),
+            .fillMaxWidth()
+            .padding(top = space.space16),
           routines = routines,
           checkedRoutine = {
             routineChecked(it)
@@ -302,9 +346,7 @@ private fun ItemTimeDate(
 ) {
   val arrayString = stringArrayResource(id = com.rahim.yadino.library.designsystem.R.array.half_week_name)
 
-  Row(
-    modifier = Modifier.padding(top = space.space28),
-  ) {
+  Row() {
     IconButton(
       onClick = {
         monthChange(IncreaseDecrease.INCREASE)
@@ -318,8 +360,8 @@ private fun ItemTimeDate(
     }
     Text(
       modifier = Modifier
-          .padding(top = space.space12)
-          .fillMaxWidth(0.3f),
+        .padding(top = space.space12)
+        .fillMaxWidth(0.3f),
       text = "${yearChecked.toString().toPersianDigits()} ${monthChecked.calculateMonthName()}",
       color = MaterialTheme.colorScheme.primary,
       textAlign = TextAlign.Center,
@@ -339,8 +381,8 @@ private fun ItemTimeDate(
 
   Row(
     modifier = Modifier
-        .padding(top = space.space18, end = space.space50, start = space.space50)
-        .fillMaxWidth(),
+      .padding(top = space.space18, end = space.space50, start = space.space50)
+      .fillMaxWidth(),
     horizontalArrangement = Arrangement.SpaceBetween,
   ) {
     arrayString.reversed().forEachIndexed { index, nameDay ->
@@ -359,8 +401,8 @@ private fun ItemTimeDate(
   Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
     IconButton(
       modifier = Modifier
-          .weight(1f)
-          .padding(top = space.space10),
+        .weight(1f)
+        .padding(top = space.space10),
       onClick = {
         weekChange(IncreaseDecrease.INCREASE)
       },
@@ -373,8 +415,8 @@ private fun ItemTimeDate(
     }
     ListTimes(
       modifier = Modifier
-          .weight(8f)
-          .padding(top = space.space8),
+        .weight(8f)
+        .padding(top = space.space8),
       times = times,
       screenWidth = screenWidth,
       dayCheckedNumber = dayCheckedNumber,
@@ -385,8 +427,8 @@ private fun ItemTimeDate(
     )
     IconButton(
       modifier = Modifier
-          .weight(1f)
-          .padding(top = space.space10),
+        .weight(1f)
+        .padding(top = space.space10),
       onClick = {
         weekChange(IncreaseDecrease.DECREASE)
       },
@@ -457,38 +499,38 @@ private fun DayItems(
 ) {
   Text(
     modifier = Modifier
-        .padding(
-            top = space.space4,
-            start = if (timeDate.isChecked) if (screenWidth <= 420) space.space5 else space.space7 else space.space6,
-        )
-        .clickable(
-            onClick = {
-                if (timeDate.dayNumber > 0) {
-                    dayCheckedNumber(
-                        timeDate,
-                    )
-                }
-            },
-        )
-        .size(if (screenWidth <= 400) size.size36 else if (screenWidth in 400..420) size.size39 else size.size43)
-        .clip(CircleShape)
-        .background(
-            brush = if (timeDate.isChecked) {
-                Brush.verticalGradient(
-                    gradientColors,
-                )
-            } else {
-                Brush.horizontalGradient(
-                    listOf(
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.background,
-                    ),
-                )
-            },
-        )
-        .padding(
-            top = if (screenWidth <= 400) space.space8 else if (screenWidth in 400..420) space.space9 else space.space10,
-        ),
+      .padding(
+        top = space.space4,
+        start = if (timeDate.isChecked) if (screenWidth <= 420) space.space5 else space.space7 else space.space6,
+      )
+      .clickable(
+        onClick = {
+          if (timeDate.dayNumber > 0) {
+            dayCheckedNumber(
+              timeDate,
+            )
+          }
+        },
+      )
+      .size(if (screenWidth <= 400) size.size36 else if (screenWidth in 400..420) size.size39 else size.size43)
+      .clip(CircleShape)
+      .background(
+        brush = if (timeDate.isChecked) {
+          Brush.verticalGradient(
+            gradientColors,
+          )
+        } else {
+          Brush.horizontalGradient(
+            listOf(
+              MaterialTheme.colorScheme.background,
+              MaterialTheme.colorScheme.background,
+            ),
+          )
+        },
+      )
+      .padding(
+        top = if (screenWidth <= 400) space.space8 else if (screenWidth in 400..420) space.space9 else space.space10,
+      ),
     text = AnnotatedString(
       if (timeDate.dayNumber > 0) timeDate.dayNumber.toString().toPersianDigits() else "",
     ),
