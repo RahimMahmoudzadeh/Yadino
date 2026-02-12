@@ -1,6 +1,6 @@
 package com.rahim.yadino.routine.presentation.ui.root.component
 
-import com.rahim.yadino.routine.presentation.model.ErrorDialogUiModel
+import com.rahim.yadino.routine.presentation.model.ErrorDialogRemoveRoutineUiModel
 import com.rahim.yadino.routine.presentation.model.RoutineUiModel
 import kotlinx.serialization.Serializable
 
@@ -13,5 +13,5 @@ sealed interface DialogSlotComponent{
   data class UpdateRoutineDialog(val updateRoutine: RoutineUiModel) : DialogSlotComponent
 
   @Serializable
-  data class ErrorDialog(val errorDialogUiModel: ErrorDialogUiModel) : DialogSlotComponent
+  data class ErrorDialogRemoveRoutine(val errorDialogRemoveRoutineUiModel: ErrorDialogRemoveRoutineUiModel) : DialogSlotComponent
 }
