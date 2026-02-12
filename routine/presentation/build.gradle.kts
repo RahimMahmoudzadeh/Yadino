@@ -18,5 +18,6 @@ dependencies {
   libs.run {
     implementation(androidx.core.splashscreen)
     implementation(datetime)
+    implementation(accompanist.permissions)
   }
 }
