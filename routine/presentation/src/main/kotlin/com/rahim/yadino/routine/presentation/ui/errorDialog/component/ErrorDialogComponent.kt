@@ -1,22 +1,20 @@
 package com.rahim.yadino.routine.presentation.ui.errorDialog.component
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import com.rahim.yadino.base.UnidirectionalComponent
 import com.rahim.yadino.enums.message.MessageUi
 
-interface ErrorDialogComponent : UnidirectionalComponent<ErrorDialogComponent.Event, ErrorDialogComponent.State, ErrorDialogComponent.Effect> {
+interface ErrorDialogComponent : UnidirectionalComponent<ErrorDialogComponent.Event, ErrorDialogComponent.State, ErrorDialogComponent.State> {
   @Immutable
   sealed class Event {
-    object OkClicked : Event()
-    object CancelClicked : Event()
+    data object DismissDialog : Event()
   }
 
   @Immutable
   sealed class Effect {
-    data class ShowToast(val message: MessageUi) : Effect()
+    data class ShowToast(val messageUi: MessageUi) : Effect()
   }
 
-  @Stable
-  data class State(val title: String,val submitTextButton: String)
+  @Immutable
+  data class State(val data: String = "")
 }
