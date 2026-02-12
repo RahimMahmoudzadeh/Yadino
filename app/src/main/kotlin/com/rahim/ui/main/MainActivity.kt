@@ -54,7 +54,6 @@ import com.rahim.BuildConfig
 import com.rahim.component.BottomNavigationBar
 import com.rahim.component.RootComponent
 import com.rahim.component.RootComponentImpl
-import com.rahim.component.config.AddNoteDialog
 import com.rahim.component.config.AddRoutineDialogRoutineScreen
 import com.rahim.component.config.ConfigChildComponent
 import com.rahim.data.distributionActions.StateOfClickItemDrawable
@@ -217,7 +216,7 @@ fun YadinoApp(
             }
           },
           floatingActionButton = {
-            if (configurationState !is ConfigChildComponent.OnBoarding && configurationState !is ConfigChildComponent.Home && configurationState !is ConfigChildComponent.HistoryRoutine) {
+            if (configurationState !is ConfigChildComponent.OnBoarding && configurationState !is ConfigChildComponent.Home && configurationState !is ConfigChildComponent.Note && configurationState !is ConfigChildComponent.HistoryRoutine) {
               FloatingActionButton(
                 containerColor = CornflowerBlueLight,
                 contentColor = Color.White,
@@ -235,7 +234,7 @@ fun YadinoApp(
                           }
 
                           else -> {
-                            rootComponent.onShowAddNoteDialog(AddNoteDialog)
+//                            rootComponent.onShowAddNoteDialog(AddNoteDialog)
                           }
                         }
                       } else {
@@ -295,11 +294,8 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
     animation = stackAnimation(fade()),
   ) {
     val errorDialogRoutine = component.errorDialogRoutineScreen.subscribeAsState().value.child
-    val errorDialogNote = component.errorDialogNoteScreen.subscribeAsState().value.child
     val addRoutineDialogRoutine = component.addRoutineDialogRoutineScreen.subscribeAsState().value.child
     val updateRoutineDialogRoutine = component.updateRoutineDialogRoutineScreen.subscribeAsState().value.child
-    val addNoteDialog = component.addNoteDialog.subscribeAsState().value.child
-    val updateNoteDialog = component.updateNoteDialog.subscribeAsState().value.child
 
     Surface(color = MaterialTheme.colorScheme.background) {
       when (val child = it.instance) {
@@ -322,9 +318,6 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
         is RootComponent.ChildStack.Note -> NoteRoute(
           component = child.component,
           clickSearch = clickSearch,
-          dialogSlotAddNote = addNoteDialog,
-          dialogSlotUpdateNote = updateNoteDialog,
-          dialogSlotErrorDialog = errorDialogNote,
         )
       }
     }
