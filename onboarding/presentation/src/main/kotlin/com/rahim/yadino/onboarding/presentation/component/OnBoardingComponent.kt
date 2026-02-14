@@ -6,7 +6,7 @@ import com.rahim.yadino.enums.message.MessageUi
 import com.rahim.yadino.onboarding.presentation.R
 import com.rahim.yadino.onboarding.presentation.model.OnBoardingUiModel
 
-interface OnBoardingComponent : UnidirectionalComponent<OnBoardingComponent.WelcomeEvent, OnBoardingComponent.WelcomeState, Nothing> {
+interface OnBoardingComponent : UnidirectionalComponent<OnBoardingComponent.WelcomeEvent, OnBoardingComponent.WelcomeState, Unit> {
 
   @Immutable
   sealed class WelcomeEvent {

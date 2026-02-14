@@ -26,9 +26,9 @@ class ErrorDialogComponentImpl(
   override val state: Value<ErrorDialogComponent.State> = _state
 
   private val _effect = Channel<ErrorDialogComponent.Effect>(Channel.BUFFERED)
-  override val effect: Flow<ErrorDialogComponent.Effect> = _effect.receiveAsFlow()
+  override val effects: Flow<ErrorDialogComponent.Effect> = _effect.receiveAsFlow()
 
-  override fun event(event: ErrorDialogComponent.Event) = when (event) {
+  override fun onEvent(event: ErrorDialogComponent.Event) = when (event) {
     ErrorDialogComponent.Event.CancelClicked -> onDismissed()
     ErrorDialogComponent.Event.OkClicked -> {
       okClickedButton()

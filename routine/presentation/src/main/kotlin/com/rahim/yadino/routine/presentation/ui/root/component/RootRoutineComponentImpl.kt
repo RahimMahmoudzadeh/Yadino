@@ -43,8 +43,12 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
@@ -85,6 +89,9 @@ class RootRoutineComponentImpl(
 
   private var _state = MutableValue(RootRoutineComponent.State())
   override val state: Value<RootRoutineComponent.State> = _state
+
+  override val effects: Flow<Unit>
+    get() = Channel<Unit>(BUFFERED).consumeAsFlow()
 
   init {
     lifecycle.doOnCreate {
@@ -165,7 +172,7 @@ class RootRoutineComponentImpl(
       )
     }
 
-  override fun event(event: RootRoutineComponent.Event) {
+  override fun onEvent(event: RootRoutineComponent.Event) {
     when (event) {
       is RootRoutineComponent.Event.CheckedRoutine -> checkedRoutine(event.routine)
       is RootRoutineComponent.Event.ShowErrorRemoveRoutineDialog -> showErrorDialogRemoveRoutine(event.errorDialogRemoveRoutineUiModel)

@@ -28,13 +28,13 @@ class UpdateNoteDialogComponentImpl(
   private val ioScope: CoroutineScope = coroutineScope(ioDispatcher + SupervisorJob())
 
 
-  final override val state: Value<UpdateNoteDialogComponent.State>
-    field = MutableValue(UpdateNoteDialogComponent.State(updateNote = updateNote))
+  private val _state=MutableValue(UpdateNoteDialogComponent.State(updateNote = updateNote))
+  final override val state: Value<UpdateNoteDialogComponent.State> = _state
 
-  private val _effect = Channel<UpdateNoteDialogComponent.Effect>(Channel.BUFFERED)
-  override val effect: Flow<UpdateNoteDialogComponent.Effect> = _effect.consumeAsFlow()
+  private val _effects = Channel<UpdateNoteDialogComponent.Effect>(Channel.BUFFERED)
+  override val effects: Flow<UpdateNoteDialogComponent.Effect> = _effects.consumeAsFlow()
 
-  override fun event(event: UpdateNoteDialogComponent.Event) = when (event) {
+  override fun onEvent(event: UpdateNoteDialogComponent.Event) = when (event) {
     UpdateNoteDialogComponent.Event.Dismiss -> onDismissed()
     is UpdateNoteDialogComponent.Event.UpdateNote -> updateNote(event.note)
   }

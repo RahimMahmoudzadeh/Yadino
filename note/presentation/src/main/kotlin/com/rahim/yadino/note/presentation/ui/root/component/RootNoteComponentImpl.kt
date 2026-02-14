@@ -57,8 +57,8 @@ class RootNoteComponentImpl(
   private var _state = MutableValue(RootNoteComponent.State())
   override val state: Value<RootNoteComponent.State> = _state
 
-  private val _effect: Channel<RootNoteComponent.Effect> = Channel(Channel.BUFFERED)
-  override val effect: Flow<RootNoteComponent.Effect> = _effect.consumeAsFlow()
+  private val _effects: Channel<RootNoteComponent.Effect> = Channel(Channel.BUFFERED)
+  override val effects: Flow<RootNoteComponent.Effect> = _effects.consumeAsFlow()
 
   private val addNoteDialogComponentNavigationSlot =
     SlotNavigation<DialogSlotNoteComponent.AddNoteDialog>()
@@ -75,7 +75,7 @@ class RootNoteComponentImpl(
     }
   }
 
-  override fun event(event: RootNoteComponent.Event) = when (event) {
+  override fun onEvent(event: RootNoteComponent.Event) = when (event) {
     is RootNoteComponent.Event.GetNotes -> getNotes()
     is RootNoteComponent.Event.Search -> searchItems(event.nameNoteUi)
     is RootNoteComponent.Event.ShowErrorRemoveNoteDialog -> showErrorDialog(event.errorDialogRemoveNoteUiModel)

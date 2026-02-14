@@ -31,9 +31,9 @@ class UpdateRoutineDialogComponentImpl(
 
 
   private val _effect: Channel<UpdateRoutineDialogComponent.Effect> = Channel(Channel.BUFFERED)
-  override val effect: Flow<UpdateRoutineDialogComponent.Effect> = _effect.receiveAsFlow()
+  override val effects: Flow<UpdateRoutineDialogComponent.Effect> = _effect.receiveAsFlow()
 
-  override fun event(event: UpdateRoutineDialogComponent.Event) = when (event) {
+  override fun onEvent(event: UpdateRoutineDialogComponent.Event) = when (event) {
     UpdateRoutineDialogComponent.Event.DismissDialog -> onDismissed()
     is UpdateRoutineDialogComponent.Event.UpdateRoutine -> updateRoutine(event.routine)
   }
