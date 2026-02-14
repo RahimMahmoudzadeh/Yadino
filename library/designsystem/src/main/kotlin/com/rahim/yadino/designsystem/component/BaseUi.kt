@@ -8,6 +8,7 @@ import android.provider.Settings
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -37,6 +38,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -163,29 +165,22 @@ fun DialogButtonBorder(
   height: Dp,
   onClick: () -> Unit = { },
 ) {
-  Button(
-    colors = ButtonDefaults.buttonColors(Color.Transparent),
-    contentPadding = PaddingValues(),
-    modifier = modifier
-        .fillMaxWidth(width)
-        .height(height),
-    onClick = { onClick() },
-    shape = RoundedCornerShape(size.size12),
+  OutlinedButton(
+      colors = ButtonDefaults.buttonColors(Color.Transparent),
+      contentPadding = PaddingValues(),
+      modifier = modifier
+          .fillMaxWidth(width)
+          .height(height),
+      onClick = { onClick() },
+      shape = RoundedCornerShape(size.size12),
+      border = BorderStroke(1.dp, brush = gradient),
   ) {
-    Box(
-      modifier = Modifier
-          .border(size.size1, brush = gradient, RoundedCornerShape(size.size12))
-          .padding(vertical = space.space10)
-          .fillMaxWidth(),
-      contentAlignment = Alignment.Center,
-    ) {
-      Text(
-        text = text,
-        fontSize = textSize,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(horizontal = space.space4),
-      )
-    }
+    Text(
+      text = text,
+      fontSize = textSize,
+      color = MaterialTheme.colorScheme.primary,
+      modifier = Modifier.padding(horizontal = space.space4),
+    )
   }
 }
 
@@ -468,8 +463,8 @@ fun TimeItems(
   } else if (dayNumberChecked == dayNumber) {
     Box(
       modifier = Modifier
-        .size(size.size46)
-        .padding(space.space2)
+          .size(size.size46)
+          .padding(space.space2)
           .background(
               brush = Brush.verticalGradient(gradientColors),
               shape = RoundedCornerShape(size.size4),
@@ -486,8 +481,8 @@ fun TimeItems(
   } else {
     Box(
       modifier = Modifier
-        .size(size.size46)
-        .padding(space.space2)
+          .size(size.size46)
+          .padding(space.space2)
           .background(
               color = MaterialTheme.colorScheme.onTertiaryContainer,
               shape = RoundedCornerShape(size.size4),

@@ -53,7 +53,7 @@ fun ErrorDialogUi(
   LaunchedEffect(effect) {
     effect.collect {effect->
       when (effect) {
-        is ErrorDialogRemoveRoutineComponent.Effect.ShowToast -> context.showToastShort(stringId = effect.message.toStringResource())
+        is ErrorDialogComponent.Effect.ShowToast -> context.showToastShort(stringId = effect.messageUi.toStringResource())
       }
     }
   }

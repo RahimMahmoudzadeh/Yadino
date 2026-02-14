@@ -36,38 +36,37 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.rahim.yadino.base.LoadableComponent
+import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
+import com.rahim.yadino.designsystem.component.requestNotificationPermission
 import com.rahim.yadino.designsystem.utils.size.FontDimensions
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
+import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
-import com.rahim.yadino.home.presentation.ui.root.component.RootHomeComponent
+import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
+import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
+import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
+import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.home.presentation.ui.addDialogRoutine.AddRoutineDialog
 import com.rahim.yadino.home.presentation.ui.component.ListRoutines
-import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
-import com.rahim.yadino.home.presentation.model.RoutineUiModel
+import com.rahim.yadino.home.presentation.ui.errorDialog.ErrorDialogUi
+import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.ErrorDialogRemoveRoutineUi
+import com.rahim.yadino.home.presentation.ui.root.component.RootHomeComponent
+import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.UpdateRoutineDialog
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toPersianDigits
 import com.rahim.yadino.toStringResource
 import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.collections.immutable.persistentListOf
-import com.rahim.yadino.base.LoadableData
-import com.rahim.yadino.designsystem.component.requestNotificationPermission
-import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
-import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.ErrorDialogUi
-import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
-import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
-import com.rahim.yadino.home.presentation.ui.errorDialog.ErrorDialogUi
-import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.ErrorDialogRemoveRoutineUi
-import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.UpdateRoutineDialog
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -138,8 +137,9 @@ fun HomeRoute(
     }
   }
   val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
-  val title = stringResource(R.string.ok)
-  val submitTextButton = stringResource(R.string.ok)
+  val title = stringResource(com.rahim.yadino.core.base.R.string.permission_notification)
+  val submitTextButton = stringResource(R.string.setting)
+
   Scaffold(
     floatingActionButton = {
       FloatingActionButton(

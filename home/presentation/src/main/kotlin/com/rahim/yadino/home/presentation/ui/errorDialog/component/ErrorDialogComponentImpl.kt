@@ -41,14 +41,7 @@ class ErrorDialogComponentImpl(
 
   private fun okClickedButton() {
     scope.launch {
-//      runCatching {
-//        deleteReminderUseCase(errorDialogRemoveUiModel.routineUiModel.toRoutine())
-//      }.onSuccess {
-//        onDismissed()
-//      }.onFailure {
-//        _effect.send(ErrorDialogRemoveRoutineComponent.Effect.ShowToast(MessageUi.ERROR_REMOVE_REMINDER))
-//      }
+
     }
   }
-
 }
