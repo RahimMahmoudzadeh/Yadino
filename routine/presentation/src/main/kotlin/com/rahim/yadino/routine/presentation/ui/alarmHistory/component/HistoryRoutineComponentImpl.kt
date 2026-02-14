@@ -32,9 +32,6 @@ class HistoryRoutineComponentImpl(
   private val _state = MutableValue(HistoryRoutineComponent.HistoryState())
   override val state: Value<HistoryRoutineComponent.HistoryState> = _state
 
-  override val effects: Flow<Unit>
-    get() = Channel<Unit>(Channel.BUFFERED).consumeAsFlow()
-
   init {
     lifecycle.doOnCreate {
       getAllRoutine()
