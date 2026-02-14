@@ -42,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -58,7 +59,7 @@ import com.rahim.yadino.calculateMonthName
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.component.gradientColors
-import com.rahim.yadino.designsystem.component.requestPermissionNotification
+import com.rahim.yadino.designsystem.component.requestNotificationPermission
 import com.rahim.yadino.designsystem.utils.size.FontDimensions
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
@@ -68,7 +69,6 @@ import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.font_medium
 import com.rahim.yadino.routine.presentation.R
-import com.rahim.yadino.routine.presentation.ui.root.component.RootRoutineComponent
 import com.rahim.yadino.routine.presentation.model.ErrorDialogRemoveRoutineUiModel
 import com.rahim.yadino.routine.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
@@ -77,6 +77,7 @@ import com.rahim.yadino.routine.presentation.model.TimeDateUiModel
 import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.AddRoutineDialog
 import com.rahim.yadino.routine.presentation.ui.component.ListRoutines
 import com.rahim.yadino.routine.presentation.ui.errorDialogRemoveRoutine.ErrorDialogUi
+import com.rahim.yadino.routine.presentation.ui.root.component.RootRoutineComponent
 import com.rahim.yadino.routine.presentation.ui.updateDialogRoutine.UpdateRoutineDialog
 import com.rahim.yadino.toPersianDigits
 import kotlinx.collections.immutable.PersistentList
@@ -119,31 +120,33 @@ fun RoutineRoute(
   }
 
   val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
+  val title = stringResource(com.rahim.yadino.library.designsystem.R.string.ok)
+  val submitTextButton = stringResource(com.rahim.yadino.library.designsystem.R.string.ok)
+
   Scaffold(
     floatingActionButton = {
       FloatingActionButton(
         containerColor = CornflowerBlueLight,
         contentColor = Color.White,
         onClick = {
-          requestPermissionNotification(
-            isGranted = {
-              if (it) {
-                event(RootRoutineComponent.Event.ShowAddRoutineDialog)
-              } else {
-//                event(
-//                  RootRoutineComponent.Event.ShowErrorDialog(
-//                    ErrorDialogUiModel(
-//                      title = title,
-//                      submitTextButton = submitTextButton,
-//                    ),
-//                  ),
-//                )
-              }
-            },
-            permissionState = {
-              it.launchPermissionRequest()
-            },
-            notificationPermission = notificationPermissionState,
+          val onPermissionGranted = {
+            event(RootRoutineComponent.Event.ShowAddRoutineDialog)
+          }
+
+          val onPermissionDenied = {
+            event(
+              RootRoutineComponent.Event.ShowErrorDialog(
+                ErrorDialogUiModel(
+                  title = title,
+                  submitTextButton = submitTextButton,
+                ),
+              ),
+            )
+          }
+
+          notificationPermissionState.requestNotificationPermission(
+            onGranted = { onPermissionGranted() },
+            onShowRationale = { onPermissionDenied() }
           )
         },
       ) {
