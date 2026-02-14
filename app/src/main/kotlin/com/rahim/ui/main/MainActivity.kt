@@ -55,7 +55,7 @@ import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
-import com.rahim.yadino.home.presentation.ui.root.HomeRoute
+import com.rahim.yadino.home.presentation.ui.root.HomeRoot
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
@@ -252,7 +252,7 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
     Surface(color = MaterialTheme.colorScheme.background) {
       when (val child = it.instance) {
         is RootComponent.ChildStack.HomeStack -> {
-          HomeRoute(
+          HomeRoot(
             component = child.component,
             clickSearch = clickSearch,
           )
