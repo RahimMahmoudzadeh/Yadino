@@ -6,11 +6,18 @@ import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.slot.dismiss
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.home.domain.useCase.AddReminderUseCase
+import com.rahim.yadino.home.domain.useCase.CancelReminderUseCase
 import com.rahim.yadino.home.domain.useCase.DeleteReminderUseCase
+import com.rahim.yadino.home.domain.useCase.GetCurrentDateUseCase
+import com.rahim.yadino.home.domain.useCase.GetTodayRoutinesUseCase
+import com.rahim.yadino.home.domain.useCase.SearchRoutineUseCase
 import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
 import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
@@ -20,7 +27,10 @@ import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogCo
 import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponentImpl
 import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponent
 import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponentImpl
+import com.rahim.yadino.home.presentation.ui.main.component.MainComponentImpl
+import com.rahim.yadino.home.presentation.ui.main.component.MainHomeComponent
 import com.rahim.yadino.home.presentation.ui.root.component.DialogSlotHomeComponent.*
+import com.rahim.yadino.home.presentation.ui.root.component.config.ChildConfigHomeComponent
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponentImpl
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +43,10 @@ class RootHomeComponentImpl(
   componentContext: ComponentContext,
   mainContext: CoroutineContext,
   private val updateReminderUseCase: UpdateReminderUseCase,
-
+  private val cancelReminderUseCase: CancelReminderUseCase,
+  private val getTodayRoutinesUseCase: GetTodayRoutinesUseCase,
+  private val searchRoutineUseCase: SearchRoutineUseCase,
+  private val getCurrentDateUseCase: GetCurrentDateUseCase,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val addReminderUseCase: AddReminderUseCase,
 ) : RootHomeComponent, ComponentContext by componentContext {
@@ -113,22 +126,35 @@ class RootHomeComponentImpl(
       )
     }
 
-  private val _state= MutableValue(Unit)
-  override val state: Value<Unit> = _state
+  private val navigation = StackNavigation<ChildConfigHomeComponent>()
 
-  private val _effects = Channel<RootHomeComponent.Effect>(Channel.BUFFERED)
-  override val effects: Flow<RootHomeComponent.Effect> =  _effects.receiveAsFlow()
-
-  override fun onEvent(event: RootHomeComponent.Event) {
-    when (event) {
-      is RootHomeComponent.Event.ShowErrorDialogRemoveRoutine -> {
-        showErrorDialog(event.errorDialogRemoveUiModel)
-      }
-      is RootHomeComponent.Event.ShowUpdateRoutineDialog -> showUpdateDialogRoutine(event.routine)
-      RootHomeComponent.Event.ShowAddRoutineDialog -> showAddDialogRoutine()
-      is RootHomeComponent.Event.ShowErrorDialog -> showErrorDialog(event.errorDialogUiModel)
-    }
+  override val stack: Value<ChildStack<*, RootHomeComponent.ChildStack>> = childStack(
+    source = navigation,
+    serializer = ChildConfigHomeComponent.serializer(),
+    initialConfiguration = ChildConfigHomeComponent.HomeMain,
+    handleBackButton = true,
+    childFactory = ::childComponent,
+  )
+  private fun childComponent(
+    config: ChildConfigHomeComponent,
+    childComponentContext: ComponentContext,
+  ): RootHomeComponent.ChildStack = when (config) {
+    ChildConfigHomeComponent.HomeMain -> RootHomeComponent.ChildStack.HomeMainStack(component = homeComponent(componentContext = childComponentContext))
   }
+
+  private fun homeComponent(componentContext: ComponentContext): MainHomeComponent = MainComponentImpl(
+    componentContext = componentContext,
+    mainContext = Dispatchers.Main,
+    cancelReminderUseCase = cancelReminderUseCase,
+    getTodayRoutinesUseCase = getTodayRoutinesUseCase,
+    searchRoutineUseCase = searchRoutineUseCase,
+    getCurrentDateUseCase = getCurrentDateUseCase,
+    updateReminderUseCase = updateReminderUseCase,
+    showErrorRemoveRoutineDialog = ::showErrorDialog,
+    showUpdateRoutineDialog = ::showUpdateDialogRoutine,
+    showAddRoutineDialog = ::showAddDialogRoutine,
+    showErrorDialog = ::showErrorDialog,
+  )
 
   private fun showErrorDialog(errorDialogRemoveUiModel: ErrorDialogRemoveUiModel) {
     errorDialogRemoveRoutineNavigationSlot.activate(ErrorDialogRemoveRoutine(errorDialogRemoveUiModel))
