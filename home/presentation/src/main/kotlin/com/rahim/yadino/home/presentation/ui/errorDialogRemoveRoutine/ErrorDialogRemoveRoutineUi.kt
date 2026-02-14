@@ -37,7 +37,7 @@ import com.rahim.yadino.toStringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ErrorDialogUi(
+fun ErrorDialogRemoveRoutineUi(
   modifier: Modifier = Modifier,
   component: ErrorDialogRemoveRoutineComponent,
 ) {

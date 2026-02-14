@@ -65,6 +65,8 @@ import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.ErrorDialogUi
 import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
 import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
+import com.rahim.yadino.home.presentation.ui.errorDialog.ErrorDialogUi
+import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.ErrorDialogRemoveRoutineUi
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.UpdateRoutineDialog
 import kotlinx.coroutines.launch
 
@@ -76,9 +78,10 @@ fun HomeRoute(
   component: RootHomeComponent,
 ) {
 
-  val addRoutineDialogHome = component.addRoutineDialogScreen.subscribeAsState().value.child
-  val updateRoutineDialogHome = component.updateRoutineDialogScreen.subscribeAsState().value.child
-  val errorDialogHomeRemoveRoutine = component.errorDialogRemoveRoutineScreen.subscribeAsState().value.child
+  val addRoutineDialog = component.addRoutineDialogScreen.subscribeAsState().value.child
+  val updateRoutineDialog = component.updateRoutineDialogScreen.subscribeAsState().value.child
+  val errorDialogRemoveRoutine = component.errorDialogRemoveRoutineScreen.subscribeAsState().value.child
+  val errorDialog = component.errorDialogScreen.subscribeAsState().value.child
 
   val context = LocalContext.current
 
@@ -87,7 +90,7 @@ fun HomeRoute(
 
   val (state, effect, event) = use(component = component)
 
-  addRoutineDialogHome?.let { dialogSlot ->
+  addRoutineDialog?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       AddRoutineDialog(
         component = dialogComponent,
@@ -95,7 +98,7 @@ fun HomeRoute(
     }
   }
 
-  updateRoutineDialogHome?.let { dialogSlot ->
+  updateRoutineDialog?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       UpdateRoutineDialog(
         component = dialogComponent,
@@ -103,7 +106,13 @@ fun HomeRoute(
     }
   }
 
-  errorDialogHomeRemoveRoutine?.let { dialogSlot ->
+  errorDialogRemoveRoutine?.let { dialogSlot ->
+    dialogSlot.instance.also { dialogComponent ->
+      ErrorDialogRemoveRoutineUi(component = dialogComponent)
+    }
+  }
+
+  errorDialog?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       ErrorDialogUi(component = dialogComponent)
     }
