@@ -5,7 +5,7 @@ import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.UnidirectionalComponent
 import com.rahim.yadino.routine.presentation.model.IncompleteOrCompletedRoutinesUiModel
 
-interface HistoryRoutineComponent : UnidirectionalComponent<HistoryRoutineComponent.Event, HistoryRoutineComponent.HistoryState, Nothing> {
+interface HistoryRoutineComponent : UnidirectionalComponent<HistoryRoutineComponent.Event, HistoryRoutineComponent.HistoryState, Unit> {
 
   @Immutable
   sealed class Event {

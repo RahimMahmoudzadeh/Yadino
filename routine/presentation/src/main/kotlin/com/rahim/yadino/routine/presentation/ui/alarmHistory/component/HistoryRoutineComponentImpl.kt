@@ -15,6 +15,9 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -28,6 +31,9 @@ class HistoryRoutineComponentImpl(
 
   private val _state = MutableValue(HistoryRoutineComponent.HistoryState())
   override val state: Value<HistoryRoutineComponent.HistoryState> = _state
+
+  override val effects: Flow<Unit>
+    get() = Channel<Unit>(Channel.BUFFERED).consumeAsFlow()
 
   init {
     lifecycle.doOnCreate {
