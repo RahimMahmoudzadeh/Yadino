@@ -30,9 +30,9 @@ class ErrorDialogRemoveRoutineComponentImpl(
   override val state: Value<ErrorDialogRemoveRoutineComponent.State> = _state
 
   private val _effect = Channel<ErrorDialogRemoveRoutineComponent.Effect>(Channel.BUFFERED)
-  override val effect: Flow<ErrorDialogRemoveRoutineComponent.Effect> = _effect.receiveAsFlow()
+  override val effects: Flow<ErrorDialogRemoveRoutineComponent.Effect> = _effect.receiveAsFlow()
 
-  override fun event(event: ErrorDialogRemoveRoutineComponent.Event) = when (event) {
+  override fun onEvent(event: ErrorDialogRemoveRoutineComponent.Event) = when (event) {
     ErrorDialogRemoveRoutineComponent.Event.CancelClicked -> onDismissed()
     ErrorDialogRemoveRoutineComponent.Event.OkClicked -> {
       okClickedButton()

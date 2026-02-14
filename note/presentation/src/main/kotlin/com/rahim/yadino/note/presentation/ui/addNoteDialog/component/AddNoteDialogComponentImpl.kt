@@ -28,13 +28,13 @@ class AddNoteDialogComponentImpl(
   private val ioScope: CoroutineScope = coroutineScope(ioDispatcher + SupervisorJob())
 
 
-  final override val state: Value<AddNoteDialogComponent.State>
-    field = MutableValue(AddNoteDialogComponent.State())
+  private val _state = MutableValue(AddNoteDialogComponent.State())
+  final override val state: Value<AddNoteDialogComponent.State> = _state
 
-  private val _effect = Channel<AddNoteDialogComponent.Effect>(Channel.BUFFERED)
-  override val effect: Flow<AddNoteDialogComponent.Effect> = _effect.consumeAsFlow()
+  private val _effects = Channel<AddNoteDialogComponent.Effect>(Channel.BUFFERED)
+  override val effects: Flow<AddNoteDialogComponent.Effect> = _effects.consumeAsFlow()
 
-  override fun event(event: AddNoteDialogComponent.Event) = when (event) {
+  override fun onEvent(event: AddNoteDialogComponent.Event) = when (event) {
     is AddNoteDialogComponent.Event.CreateNote -> addNote(event.note)
     AddNoteDialogComponent.Event.Dismiss -> onDismissed()
   }
@@ -44,10 +44,10 @@ class AddNoteDialogComponentImpl(
       runCatching {
         addNoteUseCase(note.toNote())
       }.onSuccess {
-        _effect.send(AddNoteDialogComponent.Effect.ShowToast(MessageUi.SUCCESS_ADD_NOTE))
+        _effects.send(AddNoteDialogComponent.Effect.ShowToast(MessageUi.SUCCESS_ADD_NOTE))
         onDismissed()
       }.onFailure {
-        _effect.send(AddNoteDialogComponent.Effect.ShowToast(MessageUi.ERROR_ADD_NOTE))
+        _effects.send(AddNoteDialogComponent.Effect.ShowToast(MessageUi.ERROR_ADD_NOTE))
       }
     }
   }

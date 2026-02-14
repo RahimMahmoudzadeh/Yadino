@@ -29,10 +29,10 @@ class ErrorDialogComponentImpl(
   private val _state = MutableValue(ErrorDialogComponent.State(title = errorDialogRemoveNoteUiModel.title, submitTextButton = errorDialogRemoveNoteUiModel.submitTextButton))
   override val state: Value<ErrorDialogComponent.State> = _state
 
-  private val _effect = Channel<ErrorDialogComponent.Effect>(Channel.BUFFERED)
-  override val effect: Flow<ErrorDialogComponent.Effect> = _effect.receiveAsFlow()
+  private val _effects = Channel<ErrorDialogComponent.Effect>(Channel.BUFFERED)
+  override val effects: Flow<ErrorDialogComponent.Effect> = _effects.receiveAsFlow()
 
-  override fun event(event: ErrorDialogComponent.Event) = when (event) {
+  override fun onEvent(event: ErrorDialogComponent.Event) = when (event) {
     ErrorDialogComponent.Event.CancelClicked -> onDismissed()
     ErrorDialogComponent.Event.OkClicked -> {
       okClickedButton()
@@ -46,7 +46,7 @@ class ErrorDialogComponentImpl(
       }.onSuccess {
         onDismissed()
       }.onFailure {
-        _effect.send(ErrorDialogComponent.Effect.ShowToast(MessageUi.ERROR_REMOVE_REMINDER))
+        _effects.send(ErrorDialogComponent.Effect.ShowToast(MessageUi.ERROR_REMOVE_REMINDER))
       }
     }
   }

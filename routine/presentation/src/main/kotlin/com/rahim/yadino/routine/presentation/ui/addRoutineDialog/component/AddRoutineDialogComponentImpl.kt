@@ -44,7 +44,7 @@ class AddRoutineDialogComponentImpl(
   override val state: Value<AddRoutineDialogComponent.State> = _state
 
   private val _effect = Channel<AddRoutineDialogComponent.Effect>(Channel.BUFFERED)
-  override val effect: Flow<AddRoutineDialogComponent.Effect> = _effect.consumeAsFlow()
+  override val effects: Flow<AddRoutineDialogComponent.Effect> = _effect.consumeAsFlow()
 
   init {
     lifecycle.doOnCreate {
@@ -52,7 +52,7 @@ class AddRoutineDialogComponentImpl(
     }
   }
 
-  override fun event(event: AddRoutineDialogComponent.Event) = when (event) {
+  override fun onEvent(event: AddRoutineDialogComponent.Event) = when (event) {
     AddRoutineDialogComponent.Event.Dismiss -> onDismissed()
     is AddRoutineDialogComponent.Event.CreateRoutine -> addRoutine(event.routine)
     is AddRoutineDialogComponent.Event.MonthChange -> checkDialogMonthChange(monthNumber = event.monthNumber, yearNumber = event.yearNumber, increaseDecrease = event.increaseDecrease)

@@ -18,10 +18,10 @@ data class StateDispatch<EVENT, STATE, EFFECT>(
 @Composable
 inline fun <reified EVENT, STATE : Any, EFFECT> use(component: UnidirectionalComponent<EVENT, STATE, EFFECT>): StateDispatch<EVENT, STATE, EFFECT> {
   val state by component.state.subscribeAsState()
-  val effect = component.effect
+  val effect = component.effects
 
   val dispatch: (EVENT) -> Unit = { event ->
-    component.event(event)
+    component.onEvent(event)
   }
 
   return StateDispatch(
@@ -31,12 +31,10 @@ inline fun <reified EVENT, STATE : Any, EFFECT> use(component: UnidirectionalCom
   )
 }
 
-interface UnidirectionalComponent<EVENT, STATE : Any, EFFECT> {
+interface UnidirectionalComponent<in EVENT, out STATE : Any, out EFFECT> {
   val state: Value<STATE>
-  val effect: Flow<EFFECT>
-    get() = flow {}
-
-  fun event(event: EVENT) {}
+  val effects: Flow<EFFECT>
+  fun onEvent(event: EVENT) {}
 }
 
 

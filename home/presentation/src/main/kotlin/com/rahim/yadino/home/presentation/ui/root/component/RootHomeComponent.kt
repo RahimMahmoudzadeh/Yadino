@@ -16,8 +16,7 @@ import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component.
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import kotlinx.collections.immutable.PersistentList
 
-interface RootHomeComponent : UnidirectionalComponent<RootHomeComponent.Event, RootHomeComponent.State, RootHomeComponent.Effect> {
-
+interface RootHomeComponent : UnidirectionalComponent<RootHomeComponent.Event, Unit, RootHomeComponent.Effect> {
 
   val addRoutineDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.AddRoutineDialog, AddRoutineDialogComponent>>
   val updateRoutineDialogScreen: Value<ChildSlot<DialogSlotHomeComponent.UpdateRoutineDialog, UpdateRoutineDialogComponent>>
@@ -26,14 +25,10 @@ interface RootHomeComponent : UnidirectionalComponent<RootHomeComponent.Event, R
 
   @Immutable
   sealed class Event {
-    data class CheckedRoutine(val routine: RoutineUiModel) : Event()
-    data class UpdateRoutine(val routine: RoutineUiModel) : Event()
     data class ShowErrorDialogRemoveRoutine(val errorDialogRemoveUiModel: ErrorDialogRemoveUiModel) : Event()
     data class ShowErrorDialog(val errorDialogUiModel: ErrorDialogUiModel) : Event()
-    data class SearchRoutine(val routineName: String) : Event()
     data class ShowUpdateRoutineDialog(val routine: RoutineUiModel) : Event()
     data object ShowAddRoutineDialog : Event()
-    data object GetRoutines : Event()
   }
 
   @Immutable
@@ -41,10 +36,4 @@ interface RootHomeComponent : UnidirectionalComponent<RootHomeComponent.Event, R
     data class ShowToast(val message: MessageUi) : Effect()
     data class ShowSnackBar(val message: MessageUi) : Effect()
   }
-
-  @Immutable
-  data class State(
-    val routines: LoadableData<PersistentList<RoutineUiModel>> = LoadableData.Initial,
-    val currentDate: CurrentDateUiModel? = null,
-  )
 }

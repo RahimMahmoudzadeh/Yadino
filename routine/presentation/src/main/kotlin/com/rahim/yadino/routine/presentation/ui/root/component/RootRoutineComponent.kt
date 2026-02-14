@@ -18,7 +18,7 @@ import com.rahim.yadino.routine.presentation.ui.updateDialogRoutine.component.Up
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 
-interface RootRoutineComponent : UnidirectionalComponent<RootRoutineComponent.Event, RootRoutineComponent.State, Nothing> {
+interface RootRoutineComponent : UnidirectionalComponent<RootRoutineComponent.Event, RootRoutineComponent.State, Unit> {
 
   val addRoutineDialogScreen: Value<ChildSlot<DialogSlotComponent.AddRoutineDialog, AddRoutineDialogComponent>>
   val updateRoutineDialogScreen: Value<ChildSlot<DialogSlotComponent.UpdateRoutineDialog, UpdateRoutineDialogComponent>>

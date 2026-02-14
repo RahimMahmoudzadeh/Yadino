@@ -27,7 +27,10 @@ class OnBoardingComponentImpl(
   private val _state = MutableValue(OnBoardingComponent.WelcomeState())
   override val state: Value<OnBoardingComponent.WelcomeState> = _state
 
-  override fun event(event: OnBoardingComponent.WelcomeEvent) = when (event) {
+  override val effects: Flow<Unit>
+    get() = Channel<Unit>(BUFFERED).consumeAsFlow()
+
+  override fun onEvent(event: OnBoardingComponent.WelcomeEvent) = when (event) {
     is OnBoardingComponent.WelcomeEvent.SaveShowWelcome -> {
       saveShowWelcome(event.isShow)
     }
