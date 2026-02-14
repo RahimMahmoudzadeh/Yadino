@@ -30,12 +30,20 @@ inline fun <reified EVENT, STATE : Any, EFFECT> use(component: UnidirectionalCom
     effect = effect,
   )
 }
-
-interface UnidirectionalComponent<in EVENT, out STATE : Any, out EFFECT> {
-  val state: Value<STATE>
-  val effects: Flow<EFFECT>
-  fun onEvent(event: EVENT) {}
+interface EventEmitter<in EVENT> {
+  fun onEvent(event: EVENT)
 }
+
+interface EffectSource<out EFFECT> {
+  val effects: Flow<EFFECT>
+}
+
+interface StateSource<out STATE : Any> {
+  val state: Value<STATE>
+}
+
+interface UnidirectionalComponent<in EVENT, out STATE : Any, out EFFECT> :
+  EventEmitter<EVENT>, StateSource<STATE>, EffectSource<EFFECT>
 
 
 data class StateEffectDispatch<EVENT, EFFECT, STATE>(
