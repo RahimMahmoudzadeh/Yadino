@@ -33,6 +33,7 @@ import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponent
 import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponent
 import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.openAppNotificationSettings
 import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toStringResource
 
@@ -51,9 +52,13 @@ fun ErrorDialogUi(
   val context = LocalContext.current
 
   LaunchedEffect(effect) {
-    effect.collect {effect->
+    effect.collect { effect ->
       when (effect) {
         is ErrorDialogComponent.Effect.ShowToast -> context.showToastShort(stringId = effect.messageUi.toStringResource())
+        ErrorDialogComponent.Effect.NavigateToSettingPermissionPoshNotification -> {
+          context.openAppNotificationSettings()
+          event.invoke(ErrorDialogComponent.Event.Dismissed)
+        }
       }
     }
   }

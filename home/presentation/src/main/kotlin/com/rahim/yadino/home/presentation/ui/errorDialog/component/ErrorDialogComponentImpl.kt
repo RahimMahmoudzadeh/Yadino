@@ -37,11 +37,12 @@ class ErrorDialogComponentImpl(
     ErrorDialogComponent.Event.OkClicked -> {
       okClickedButton()
     }
+    ErrorDialogComponent.Event.Dismissed -> onDismissed()
   }
 
   private fun okClickedButton() {
     scope.launch {
-
+      _effect.send(ErrorDialogComponent.Effect.NavigateToSettingPermissionPoshNotification)
     }
   }
 }

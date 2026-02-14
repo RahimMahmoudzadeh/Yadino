@@ -1,7 +1,11 @@
 package com.rahim.yadino
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import android.widget.Toast
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -136,4 +140,11 @@ fun DrawScope.createOvalBottomPath(
 
 fun Context.showToastShort(stringId: Int, duration: Int = Toast.LENGTH_SHORT) {
   Toast.makeText(this, this.resources.getString(stringId), duration).show()
+}
+
+fun Context.openAppNotificationSettings() {
+  val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+    putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+  }
+  startActivity(intent)
 }

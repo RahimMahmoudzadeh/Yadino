@@ -8,14 +8,16 @@ import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component.
 
 interface ErrorDialogComponent : UnidirectionalComponent<ErrorDialogComponent.Event, ErrorDialogComponent.State, ErrorDialogComponent.Effect> {
   @Immutable
-  sealed class Event {
-    object OkClicked : Event()
-    object CancelClicked : Event()
+  sealed interface Event {
+    object OkClicked : Event
+    object CancelClicked : Event
+    object Dismissed : Event
   }
 
   @Immutable
-  sealed class Effect {
-    data class ShowToast(val messageUi: MessageUi) : Effect()
+  sealed interface Effect {
+    data class ShowToast(val messageUi: MessageUi) : Effect
+    data object NavigateToSettingPermissionPoshNotification : Effect
   }
 
   @Stable
