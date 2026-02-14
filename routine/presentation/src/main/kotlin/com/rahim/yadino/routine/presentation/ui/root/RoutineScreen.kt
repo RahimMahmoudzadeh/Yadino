@@ -76,7 +76,8 @@ import com.rahim.yadino.routine.presentation.model.RoutineUiModel
 import com.rahim.yadino.routine.presentation.model.TimeDateUiModel
 import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.AddRoutineDialog
 import com.rahim.yadino.routine.presentation.ui.component.ListRoutines
-import com.rahim.yadino.routine.presentation.ui.errorDialogRemoveRoutine.ErrorDialogUi
+import com.rahim.yadino.routine.presentation.ui.errorDialog.ErrorDialogUi
+import com.rahim.yadino.routine.presentation.ui.errorDialogRemoveRoutine.ErrorDialogRemoveRoutineUi
 import com.rahim.yadino.routine.presentation.ui.root.component.RootRoutineComponent
 import com.rahim.yadino.routine.presentation.ui.updateDialogRoutine.UpdateRoutineDialog
 import com.rahim.yadino.toPersianDigits
@@ -96,7 +97,8 @@ fun RoutineRoute(
   val (state, _, event) = use(component)
 
   val dialogSlotAddRoutine by component.addRoutineDialogScreen.subscribeAsState()
-  val dialogSlotErrorDialog by component.errorDialogRemoveRoutineScreen.subscribeAsState()
+  val dialogSlotErrorRemoveRoutineDialog by component.errorDialogRemoveRoutineScreen.subscribeAsState()
+  val dialogSlotErrorDialog by component.errorDialogScreen.subscribeAsState()
   val dialogSlotUpdateRoutine by component.updateRoutineDialogScreen.subscribeAsState()
 
   dialogSlotAddRoutine.child?.let { dialogSlot ->
@@ -106,11 +108,18 @@ fun RoutineRoute(
       )
     }
   }
+  dialogSlotErrorRemoveRoutineDialog.child?.let { dialogSlot ->
+    dialogSlot.instance.also { dialogComponent ->
+      ErrorDialogRemoveRoutineUi(component = dialogComponent)
+    }
+  }
+
   dialogSlotErrorDialog.child?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       ErrorDialogUi(component = dialogComponent)
     }
   }
+
   dialogSlotUpdateRoutine.child?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       UpdateRoutineDialog(
@@ -120,8 +129,8 @@ fun RoutineRoute(
   }
 
   val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
-  val title = stringResource(com.rahim.yadino.library.designsystem.R.string.ok)
-  val submitTextButton = stringResource(com.rahim.yadino.library.designsystem.R.string.ok)
+  val title = stringResource(com.rahim.yadino.core.base.R.string.permission_notification)
+  val submitTextButton = stringResource(com.rahim.yadino.library.designsystem.R.string.setting)
 
   Scaffold(
     floatingActionButton = {
