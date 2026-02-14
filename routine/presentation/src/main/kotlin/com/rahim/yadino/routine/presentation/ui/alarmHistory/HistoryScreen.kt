@@ -41,7 +41,7 @@ import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.AlarmHistoryCardItem
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.routine.presentation.R
-import com.rahim.yadino.routine.presentation.component.history.HistoryRoutineComponent
+import com.rahim.yadino.routine.presentation.ui.alarmHistory.component.HistoryRoutineComponent
 import com.rahim.yadino.toPersianDigits
 
 @Composable

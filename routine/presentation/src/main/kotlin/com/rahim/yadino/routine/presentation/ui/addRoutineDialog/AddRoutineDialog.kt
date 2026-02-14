@@ -57,7 +57,7 @@ import com.rahim.yadino.designsystem.utils.theme.Onahau
 import com.rahim.yadino.designsystem.utils.theme.Purple
 import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.routine.presentation.component.addRoutineDialog.AddRoutineDialogComponent
+import com.rahim.yadino.routine.presentation.ui.addRoutineDialog.component.AddRoutineDialogComponent
 import com.rahim.yadino.routine.presentation.model.IncreaseDecrease
 import com.rahim.yadino.routine.presentation.model.RoutineUiModel
 import com.rahim.yadino.showToastShort

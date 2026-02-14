@@ -41,7 +41,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
@@ -55,7 +54,7 @@ import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueDark
 import com.rahim.yadino.designsystem.utils.theme.Mantis
 import com.rahim.yadino.designsystem.utils.theme.Punch
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.note.presentation.component.addNoteDialog.AddNoteDialogComponent
+import com.rahim.yadino.note.presentation.ui.addNoteDialog.component.AddNoteDialogComponent
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.model.PriorityNote
 import com.rahim.yadino.showToastShort

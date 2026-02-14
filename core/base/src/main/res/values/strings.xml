@@ -9,7 +9,7 @@
     <string name="errorSaveReminder">مشکلی در ثبت روتین پیش امده است! لطفا دوباره امتحان کنید</string>
     <string name="errorUpdateReminder">مشکلی در بروزرسانی روتین پیش امده است! لطفا دوباره امتحان کنید</string>
     <string name="errorTimePassed">زمان ثبت شده برای روتین باید از آینده باشد!!!</string>
-    <string name="permission_notification">لطفا برای ادامه روند کار دسترسی ارسال نوتیفیکیشن به یادینو را بدهید!!!</string>
+    <string name="permission_notification">لطفا برای ادامه روند کار دسترسی ارسال نوتیفیکیشن به یادینو را بدهید.</string>
     <string name="permission_reminder">لطفا برای ادامه روند کار دسترسی الارم به یادینو را بدهید!!!</string>
     <string name="permission_notification_reminder">لطفا برای ادامه روند کار دسترسی ارسال نوتیفیکیشن و الارم را به یادینو بدهید</string>
     <string name="we_encountered_problem_during_search_routine">در هنگام سرچ روتین با مشکل مواجه شدیم</string>

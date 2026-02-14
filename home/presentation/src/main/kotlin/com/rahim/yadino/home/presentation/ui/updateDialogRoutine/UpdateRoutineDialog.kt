@@ -52,8 +52,7 @@ import com.rahim.yadino.designsystem.utils.size.SizeDimensions
 import com.rahim.yadino.designsystem.utils.theme.Onahau
 import com.rahim.yadino.designsystem.utils.theme.Purple
 import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
-import com.rahim.yadino.home.presentation.component.addRoutineDialog.AddRoutineDialogComponent
-import com.rahim.yadino.home.presentation.component.updateRoutineDialog.UpdateRoutineDialogComponent
+import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.showToastShort
