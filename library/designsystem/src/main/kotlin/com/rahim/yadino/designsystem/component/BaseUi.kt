@@ -320,23 +320,19 @@ fun DialogButtonBackgroundWrapper() {
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
-fun requestPermissionNotification(
-  notificationPermission: PermissionState,
-  isGranted: (Boolean) -> Unit,
-  permissionState: (PermissionState) -> Unit,
+fun PermissionState.requestNotificationPermission(
+  onGranted: () -> Unit,
+  onShowRationale: () -> Unit,
 ) {
-  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-    if (notificationPermission.status.isGranted) {
-      isGranted(true)
-    } else {
-      if (notificationPermission.status.shouldShowRationale) {
-        isGranted(false)
-      } else {
-        permissionState(notificationPermission)
-      }
-    }
-  } else {
-    isGranted(true)
+  if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+    onGranted()
+    return
+  }
+
+  when {
+    status.isGranted -> onGranted()
+    status.shouldShowRationale -> onShowRationale()
+    else -> launchPermissionRequest()
   }
 }
 
