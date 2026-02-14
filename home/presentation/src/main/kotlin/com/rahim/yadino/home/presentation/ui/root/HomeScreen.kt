@@ -60,7 +60,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.collections.immutable.persistentListOf
 import com.rahim.yadino.base.LoadableData
-import com.rahim.yadino.designsystem.component.requestPermissionNotification
+import com.rahim.yadino.designsystem.component.requestNotificationPermission
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.ErrorDialogUi
 import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
@@ -78,7 +78,7 @@ fun HomeRoute(
 
   val addRoutineDialogHome = component.addRoutineDialogScreen.subscribeAsState().value.child
   val updateRoutineDialogHome = component.updateRoutineDialogScreen.subscribeAsState().value.child
-  val errorDialogHome = component.errorDialogRemoveRoutineScreen.subscribeAsState().value.child
+  val errorDialogHomeRemoveRoutine = component.errorDialogRemoveRoutineScreen.subscribeAsState().value.child
 
   val context = LocalContext.current
 
@@ -103,7 +103,7 @@ fun HomeRoute(
     }
   }
 
-  errorDialogHome?.let { dialogSlot ->
+  errorDialogHomeRemoveRoutine?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       ErrorDialogUi(component = dialogComponent)
     }
@@ -137,25 +137,24 @@ fun HomeRoute(
         containerColor = CornflowerBlueLight,
         contentColor = Color.White,
         onClick = {
-          requestPermissionNotification(
-            isGranted = {
-              if (it) {
-                event(RootHomeComponent.Event.ShowAddRoutineDialog)
-              } else {
-                event(
-                  RootHomeComponent.Event.OnShowErrorDialog(
-                    ErrorDialogUiModel(
-                      title = title,
-                      submitTextButton = submitTextButton,
-                    ),
-                  ),
-                )
-              }
-            },
-            permissionState = {
-              it.launchPermissionRequest()
-            },
-            notificationPermission = notificationPermissionState,
+          val onPermissionGranted = {
+            event(RootHomeComponent.Event.ShowAddRoutineDialog)
+          }
+
+          val onPermissionDenied = {
+            event(
+              RootHomeComponent.Event.ShowErrorDialog(
+                ErrorDialogUiModel(
+                  title = title,
+                  submitTextButton = submitTextButton,
+                ),
+              ),
+            )
+          }
+
+          notificationPermissionState.requestNotificationPermission(
+            onGranted = { onPermissionGranted() },
+            onShowRationale = { onPermissionDenied() }
           )
         },
       ) {
@@ -171,7 +170,7 @@ fun HomeRoute(
         event.invoke(RootHomeComponent.Event.CheckedRoutine(it))
       },
       onShowErrorDialog = { deleteUiModel ->
-        event.invoke(RootHomeComponent.Event.OnShowErrorDialogRemoveRoutine(errorDialogRemoveUiModel = deleteUiModel))
+        event.invoke(RootHomeComponent.Event.ShowErrorDialogRemoveRoutine(errorDialogRemoveUiModel = deleteUiModel))
       },
       onUpdateRoutine = {
         event.invoke(RootHomeComponent.Event.ShowUpdateRoutineDialog(it))

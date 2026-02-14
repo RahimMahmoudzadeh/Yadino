@@ -28,8 +28,8 @@ interface RootHomeComponent : UnidirectionalComponent<RootHomeComponent.Event, R
   sealed class Event {
     data class CheckedRoutine(val routine: RoutineUiModel) : Event()
     data class UpdateRoutine(val routine: RoutineUiModel) : Event()
-    data class OnShowErrorDialogRemoveRoutine(val errorDialogRemoveUiModel: ErrorDialogRemoveUiModel) : Event()
-    data class OnShowErrorDialog(val errorDialogUiModel: ErrorDialogUiModel) : Event()
+    data class ShowErrorDialogRemoveRoutine(val errorDialogRemoveUiModel: ErrorDialogRemoveUiModel) : Event()
+    data class ShowErrorDialog(val errorDialogUiModel: ErrorDialogUiModel) : Event()
     data class SearchRoutine(val routineName: String) : Event()
     data class ShowUpdateRoutineDialog(val routine: RoutineUiModel) : Event()
     data object ShowAddRoutineDialog : Event()

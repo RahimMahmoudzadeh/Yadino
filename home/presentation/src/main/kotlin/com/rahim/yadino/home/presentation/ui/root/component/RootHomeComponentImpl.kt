@@ -167,7 +167,7 @@ class RootHomeComponentImpl(
         checkedRoutine(event.routine)
       }
 
-      is RootHomeComponent.Event.OnShowErrorDialogRemoveRoutine -> {
+      is RootHomeComponent.Event.ShowErrorDialogRemoveRoutine -> {
         showErrorDialog(event.errorDialogRemoveUiModel)
       }
 
@@ -177,7 +177,7 @@ class RootHomeComponentImpl(
 
       is RootHomeComponent.Event.ShowUpdateRoutineDialog -> showUpdateDialogRoutine(event.routine)
       RootHomeComponent.Event.ShowAddRoutineDialog -> showAddDialogRoutine()
-      is RootHomeComponent.Event.OnShowErrorDialog -> showErrorDialog(event.errorDialogUiModel)
+      is RootHomeComponent.Event.ShowErrorDialog -> showErrorDialog(event.errorDialogUiModel)
     }
   }
 
