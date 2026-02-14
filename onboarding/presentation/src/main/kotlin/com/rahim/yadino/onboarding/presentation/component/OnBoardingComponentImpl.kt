@@ -11,6 +11,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
@@ -29,6 +30,10 @@ class OnBoardingComponentImpl(
 
   override val effects: Flow<Unit>
     get() = Channel<Unit>(BUFFERED).consumeAsFlow()
+
+  init {
+      checkShowWelcome()
+  }
 
   override fun onEvent(event: OnBoardingComponent.WelcomeEvent) = when (event) {
     is OnBoardingComponent.WelcomeEvent.SaveShowWelcome -> {
