@@ -2,6 +2,7 @@ package com.rahim.yadino.base
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.value.Value
@@ -9,27 +10,24 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 
-data class StateDispatch<EVENT, STATE, EFFECT>(
+data class Dispatch<EVENT, STATE, EFFECT>(
   val state: STATE,
   val effect: Flow<EFFECT>,
   val event: (EVENT) -> Unit,
 )
 
-@Composable
-inline fun <reified EVENT, STATE : Any, EFFECT> use(component: UnidirectionalComponent<EVENT, STATE, EFFECT>): StateDispatch<EVENT, STATE, EFFECT> {
-  val state by component.state.subscribeAsState()
-  val effect = component.effects
+data class StateDispatch<STATE>(
+  val state: STATE,
+)
 
-  val dispatch: (EVENT) -> Unit = { event ->
-    component.onEvent(event)
-  }
+data class EventDispatch<EVENT>(
+  val event: (EVENT) -> Unit,
+)
 
-  return StateDispatch(
-    state = state,
-    event = dispatch,
-    effect = effect,
-  )
-}
+data class EffectDispatch<EFFECT>(
+  val effect: Flow<EFFECT>,
+)
+
 interface EventEmitter<in EVENT> {
   fun onEvent(event: EVENT)
 }
@@ -45,6 +43,49 @@ interface StateSource<out STATE : Any> {
 interface UnidirectionalComponent<in EVENT, out STATE : Any, out EFFECT> :
   EventEmitter<EVENT>, StateSource<STATE>, EffectSource<EFFECT>
 
+@Composable
+inline fun <reified EVENT, STATE : Any, EFFECT> use(component: UnidirectionalComponent<EVENT, STATE, EFFECT>): Dispatch<EVENT, STATE, EFFECT> {
+  val state by component.state.subscribeAsState()
+
+  val dispatch = remember(component) {
+    { event: EVENT -> component.onEvent(event) }
+  }
+
+  return remember(state, component.effects, dispatch) {
+    Dispatch(
+      state = state,
+      event = dispatch,
+      effect = component.effects
+    )
+  }
+}
+
+@Composable
+inline fun <STATE : Any> use(component: StateSource<STATE>): StateDispatch<STATE> {
+  val state by component.state.subscribeAsState()
+  return StateDispatch(
+    state = state,
+  )
+}
+
+@Composable
+inline fun <reified EVENT> use(component: EventEmitter<EVENT>): EventDispatch<EVENT> {
+  val dispatch: (EVENT) -> Unit = { event ->
+    component.onEvent(event)
+  }
+
+  return EventDispatch(
+    event = dispatch,
+  )
+}
+
+@Composable
+inline fun <EFFECT> use(component: EffectSource<EFFECT>): EffectDispatch<EFFECT> {
+  val effect = component.effects
+  return EffectDispatch(
+    effect = effect,
+  )
+}
 
 data class StateEffectDispatch<EVENT, EFFECT, STATE>(
   val state: STATE,
@@ -54,14 +95,14 @@ data class StateEffectDispatch<EVENT, EFFECT, STATE>(
 
 
 @Composable
-inline fun <reified EVENT, STATE, EFFECT> use(viewModel: UnidirectionalViewModel<EVENT, STATE, EFFECT>): StateDispatch<EVENT, STATE, EFFECT> {
+inline fun <reified EVENT, STATE, EFFECT> use(viewModel: UnidirectionalViewModel<EVENT, STATE, EFFECT>): Dispatch<EVENT, STATE, EFFECT> {
   val state by viewModel.state.collectAsStateWithLifecycle()
   val effect = viewModel.effect
 
   val dispatch: (EVENT) -> Unit = { event ->
     viewModel.event(event)
   }
-  return StateDispatch(
+  return Dispatch(
     state = state,
     event = dispatch,
     effect = effect,
