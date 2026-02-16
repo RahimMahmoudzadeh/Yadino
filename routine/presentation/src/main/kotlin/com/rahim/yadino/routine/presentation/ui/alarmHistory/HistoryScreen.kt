@@ -49,7 +49,7 @@ fun HistoryRoute(
   modifier: Modifier = Modifier,
   component: HistoryRoutineComponent,
 ) {
-  val (state, _, _) = use(component)
+  val (state) = use(component)
 
   HistoryScreen(modifier = modifier, state = state)
 }
