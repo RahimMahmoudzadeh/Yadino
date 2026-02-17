@@ -11,34 +11,37 @@ import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.ui.addNoteDialog.component.AddNoteDialogComponent
 import com.rahim.yadino.note.presentation.ui.errorDialog.component.ErrorDialogComponent
+import com.rahim.yadino.note.presentation.ui.main.component.NoteMainComponent
 import com.rahim.yadino.note.presentation.ui.updateNoteDialog.component.UpdateNoteDialogComponent
 import kotlinx.collections.immutable.PersistentList
+import kotlinx.serialization.Serializable
 
-interface RootNoteComponent : UnidirectionalComponent<RootNoteComponent.Event, RootNoteComponent.State, RootNoteComponent.Effect> {
+interface RootNoteComponent {
 
-  @Immutable
-  sealed class Event() {
-    data class Search(val nameNoteUi: NameNoteUi) : Event()
-    data class ShowErrorRemoveNoteDialog(val errorDialogRemoveNoteUiModel: ErrorDialogRemoveNoteUiModel) : Event()
-    data class OnChecked(val checkedNote: NoteUiModel) : Event()
-    data class OnOpenUpdateNoteDialog(val updateNote: NoteUiModel) : Event()
-    data object GetNotes : Event()
-    data object OnShowAddNoteDialog : Event()
-  }
-
-  @Immutable
-  sealed class Effect {
-    data class ShowToast(val message: MessageUi) : Effect()
-  }
-
-  @Immutable
-  data class State(
-    val notes: LoadableData<PersistentList<NoteUiModel>> = LoadableData.Initial,
-  )
+  val stack: Value<com.arkivanov.decompose.router.stack.ChildStack<*, ChildStack>>
 
   val addNoteDialogScreen: Value<ChildSlot<DialogSlotNoteComponent.AddNoteDialog, AddNoteDialogComponent>>
   val updateNoteDialogScreen: Value<ChildSlot<DialogSlotNoteComponent.UpdateNoteDialog, UpdateNoteDialogComponent>>
   val errorDialogRemoveNoteScreen: Value<ChildSlot<DialogSlotNoteComponent.ErrorDialogNote, ErrorDialogComponent>>
 
-  fun onShowAddNoteDialog()
+  sealed interface ChildStack {
+    class NoteMainStack(val component: NoteMainComponent) : ChildStack
+  }
+
+  sealed interface DialogSlotNoteComponent {
+    @Serializable
+    data object AddNoteDialog : DialogSlotNoteComponent
+
+    @Serializable
+    data class UpdateNoteDialog(val updateNote: NoteUiModel) : DialogSlotNoteComponent
+
+    @Serializable
+    data class ErrorDialogNote(val errorDialogRemoveNoteUiModel: ErrorDialogRemoveNoteUiModel) : DialogSlotNoteComponent
+  }
+
+  @Serializable
+  sealed interface ChildConfig {
+    @Serializable
+    data object NoteMain : ChildConfig
+  }
 }
