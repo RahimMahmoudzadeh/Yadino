@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
-class MainComponentImpl(
+class MainHomeComponentImpl(
   componentContext: ComponentContext,
   mainContext: CoroutineContext,
   private val cancelReminderUseCase: CancelReminderUseCase,

@@ -9,7 +9,6 @@ import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.home.domain.useCase.AddReminderUseCase
@@ -27,16 +26,13 @@ import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogCo
 import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponentImpl
 import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponent
 import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponentImpl
-import com.rahim.yadino.home.presentation.ui.main.component.MainComponentImpl
+import com.rahim.yadino.home.presentation.ui.main.component.MainHomeComponentImpl
 import com.rahim.yadino.home.presentation.ui.main.component.MainHomeComponent
 import com.rahim.yadino.home.presentation.ui.root.component.DialogSlotHomeComponent.*
 import com.rahim.yadino.home.presentation.ui.root.component.config.ChildConfigHomeComponent
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponentImpl
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlin.coroutines.CoroutineContext
 
 class RootHomeComponentImpl(
@@ -142,7 +138,7 @@ class RootHomeComponentImpl(
     ChildConfigHomeComponent.HomeMain -> RootHomeComponent.ChildStack.HomeMainStack(component = homeComponent(componentContext = childComponentContext))
   }
 
-  private fun homeComponent(componentContext: ComponentContext): MainHomeComponent = MainComponentImpl(
+  private fun homeComponent(componentContext: ComponentContext): MainHomeComponent = MainHomeComponentImpl(
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
     cancelReminderUseCase = cancelReminderUseCase,
