@@ -24,6 +24,11 @@ data class EventDispatch<EVENT>(
   val event: (EVENT) -> Unit,
 )
 
+data class EventStateDispatch<EVENT, STATE>(
+  val event: (EVENT) -> Unit,
+  val state: STATE,
+)
+
 data class EffectDispatch<EFFECT>(
   val effect: Flow<EFFECT>,
 )
@@ -42,6 +47,9 @@ interface StateSource<out STATE : Any> {
 
 interface UnidirectionalComponent<in EVENT, out STATE : Any, out EFFECT> :
   EventEmitter<EVENT>, StateSource<STATE>, EffectSource<EFFECT>
+
+interface StateEventComponent<in EVENT, out STATE : Any> :
+  EventEmitter<EVENT>, StateSource<STATE>
 
 @Composable
 inline fun <reified EVENT, STATE : Any, EFFECT> use(component: UnidirectionalComponent<EVENT, STATE, EFFECT>): Dispatch<EVENT, STATE, EFFECT> {
@@ -80,6 +88,22 @@ inline fun <reified EVENT> use(component: EventEmitter<EVENT>): EventDispatch<EV
     )
   }
 }
+
+@Composable
+inline fun <reified EVENT, STATE : Any> use(component: StateEventComponent<EVENT, STATE>): EventStateDispatch<EVENT, STATE> {
+  val state by component.state.subscribeAsState()
+  val dispatch = remember(component) {
+    { event: EVENT -> component.onEvent(event) }
+  }
+
+  return remember(dispatch) {
+    EventStateDispatch(
+      event = dispatch,
+      state = state,
+    )
+  }
+}
+
 
 @Composable
 inline fun <EFFECT> use(component: EffectSource<EFFECT>): EffectDispatch<EFFECT> {

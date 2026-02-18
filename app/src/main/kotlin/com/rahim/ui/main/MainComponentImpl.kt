@@ -1,7 +1,11 @@
 package com.rahim.ui.main
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.update
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.rahim.data.distributionActions.AppDistributionActions
 import com.rahim.yadino.core.timeDate.repo.DateTimeRepository
 import com.rahim.yadino.navigation.component.DrawerItemType
@@ -9,36 +13,35 @@ import com.rahim.yadino.note.domain.NoteRepository
 import com.rahim.yadino.routine.domain.repo.RoutineRepository
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-class MainViewModel(
+class MainComponentImpl(
+  mainContext: CoroutineContext,
+  ioContext: CoroutineDispatcher,
+  componentContext: ComponentContext,
   private val dateTimeRepository: DateTimeRepository,
   private val repositoryRoutine: RoutineRepository,
   private val noteRepository: NoteRepository,
   private val appDistributionActions: AppDistributionActions,
-  private val ioDispatcher: CoroutineDispatcher,
   private val sharedPreferencesRepository: SharedPreferencesRepository,
-) :
-  ViewModel(), MainContract {
+) : MainComponent, ComponentContext by componentContext {
 
-  private val mutableState = MutableStateFlow(MainContract.MainState())
-  override val state: StateFlow<MainContract.MainState> = mutableState.onStart {
-    initialize()
-  }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000L), MainContract.MainState())
+  private val scopeMain: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
+  private val scopeIo: CoroutineScope = coroutineScope(ioContext + SupervisorJob())
 
-  override fun event(event: MainContract.MainEvent) = when (event) {
-    is MainContract.MainEvent.CheckedAllRoutinePastTime -> {
+  private val mutableState = MutableValue(MainComponent.MainState())
+  override val state: Value<MainComponent.MainState> = mutableState
+
+  override fun onEvent(event: MainComponent.MainEvent) = when (event) {
+    is MainComponent.MainEvent.CheckedAllRoutinePastTime -> {
       checkedAllRoutinePastTime()
     }
 
-    is MainContract.MainEvent.ClickDrawer -> clickDrawerItem(event.drawerItemType)
+    is MainComponent.MainEvent.ClickDrawer -> clickDrawerItem(event.drawerItemType)
   }
 
   private fun clickDrawerItem(drawerItemType: DrawerItemType) {
@@ -49,43 +52,47 @@ class MainViewModel(
           it.copy(stateOfClickItemDrawable = state)
         }
       }
+
       is DrawerItemType.ShareWithFriends -> {
         val state = appDistributionActions.drawerItemType(com.rahim.data.distributionActions.DrawerItemType.ShareWithFriends)
         mutableState.update {
           it.copy(stateOfClickItemDrawable = state)
         }
       }
+
       is DrawerItemType.Theme -> {
         setDarkTheme(state.value.isDarkTheme != true)
       }
     }
   }
 
-  private fun initialize() {
-    viewModelScope.launch(ioDispatcher) {
-      launch {
-        dateTimeRepository.calculateToday()
-      }
-      launch {
-        dateTimeRepository.addTime()
-      }
-      launch {
-        repositoryRoutine.addSampleRoutine()
-      }
-      launch {
-        noteRepository.addSampleNote()
-      }
-      launch {
-        repositoryRoutine.changeRoutineId()
-      }
-      launch {
-        isShowWelcomeScreen()
-      }
-      launch {
-        haveAlarm()
-      }
-      launch {
-        getDarkTheme()
+  init {
+    lifecycle.doOnCreate {
+      scopeIo.launch {
+        launch {
+          dateTimeRepository.calculateToday()
+        }
+        launch {
+          dateTimeRepository.addTime()
+        }
+        launch {
+          repositoryRoutine.addSampleRoutine()
+        }
+        launch {
+          noteRepository.addSampleNote()
+        }
+        launch {
+          repositoryRoutine.changeRoutineId()
+        }
+        launch {
+          isShowWelcomeScreen()
+        }
+        launch {
+          haveAlarm()
+        }
+        launch {
+          getDarkTheme()
+        }
       }
     }
   }
@@ -99,13 +106,13 @@ class MainViewModel(
   }
 
   private fun checkedAllRoutinePastTime() {
-    viewModelScope.launch {
+    scopeMain.launch {
       repositoryRoutine.checkedAllRoutinePastTime()
     }
   }
 
   private fun setDarkTheme(isDarkTheme: Boolean) {
-    viewModelScope.launch {
+    scopeMain.launch {
       sharedPreferencesRepository.changeTheme(isDarkTheme)
     }
   }

@@ -1,6 +1,5 @@
 package com.rahim.ui.main
 
-import android.Manifest
 import android.os.Build
 import android.os.Bundle
 import android.view.Window
@@ -30,7 +29,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
@@ -43,13 +41,11 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.BuildConfig
 import com.rahim.component.BottomNavigationBar
 import com.rahim.component.RootComponent
 import com.rahim.component.RootComponentImpl
-import com.rahim.component.config.ConfigChildComponent
 import com.rahim.data.distributionActions.StateOfClickItemDrawable
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
@@ -64,11 +60,12 @@ import com.rahim.yadino.onboarding.presentation.OnBoardingRoute
 import com.rahim.yadino.routine.presentation.ui.root.RoutineRoute
 import com.rahim.yadino.routine.presentation.ui.alarmHistory.HistoryRoute
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.get
+import org.koin.core.component.KoinComponent
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), KoinComponent {
 
-  private val mainViewModel: MainViewModel by viewModel()
+  private val mainComponent: MainComponent = get()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     installSplashScreen()
@@ -81,7 +78,7 @@ class MainActivity : ComponentActivity() {
     getTokenFirebase()
 
     setContent {
-      val (state, _, event) = use(mainViewModel)
+      val (event, state) = use(mainComponent)
 
       changeTheme(state.isDarkTheme)
       checkStateOfClickItemDrawable(state.stateOfClickItemDrawable)
@@ -90,7 +87,7 @@ class MainActivity : ComponentActivity() {
         isDarkTheme = state.isDarkTheme ?: isSystemInDarkTheme(),
         haveAlarm = state.haveAlarm,
         drawerItemClicked = {
-          event.invoke(MainContract.MainEvent.ClickDrawer(it))
+          event.invoke(MainComponent.MainEvent.ClickDrawer(it))
         },
         window = window,
         rootComponent = root,
@@ -133,7 +130,7 @@ class MainActivity : ComponentActivity() {
 
   override fun onResume() {
     super.onResume()
-    mainViewModel.event(MainContract.MainEvent.CheckedAllRoutinePastTime)
+    mainComponent.onEvent(MainComponent.MainEvent.CheckedAllRoutinePastTime)
   }
 
   private fun getTokenFirebase() {
@@ -162,7 +159,7 @@ fun YadinoApp(
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val coroutineScope = rememberCoroutineScope()
   val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
-  if (configurationState !is ConfigChildComponent.OnBoarding) {
+  if (configurationState !is RootComponent.ChildConfig.OnBoarding) {
     windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
   } else {
     windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
@@ -174,12 +171,12 @@ fun YadinoApp(
         drawerState = drawerState,
         isDarkTheme = isDarkTheme,
         onItemClick = drawerItemClicked,
-        gesturesEnabled = configurationState !is ConfigChildComponent.OnBoarding,
+        gesturesEnabled = configurationState !is RootComponent.ChildConfig.OnBoarding,
       ) {
         Scaffold(
           topBar = {
             AnimatedVisibility(
-              visible = configurationState !is ConfigChildComponent.OnBoarding,
+              visible = configurationState !is RootComponent.ChildConfig.OnBoarding,
               enter = fadeIn() + expandVertically(animationSpec = tween(800)),
               exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
             ) {
@@ -188,8 +185,8 @@ fun YadinoApp(
                 openHistory = {
                   rootComponent.showHistoryRoutine()
                 },
-                isShowSearchIcon = configurationState !is ConfigChildComponent.HistoryRoutine,
-                isShowBackIcon = configurationState is ConfigChildComponent.HistoryRoutine,
+                isShowSearchIcon = configurationState !is RootComponent.ChildConfig.HistoryRoutine,
+                isShowBackIcon = configurationState is RootComponent.ChildConfig.HistoryRoutine,
                 onClickBack = {
                   rootComponent.navigateUp()
                 },
@@ -206,7 +203,7 @@ fun YadinoApp(
           },
           bottomBar = {
             AnimatedVisibility(
-              visible = configurationState !is ConfigChildComponent.OnBoarding && configurationState !is ConfigChildComponent.HistoryRoutine,
+              visible = configurationState !is RootComponent.ChildConfig.OnBoarding && configurationState !is RootComponent.ChildConfig.HistoryRoutine,
               enter = fadeIn() + expandVertically(animationSpec = tween(800)),
               exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
             ) {
@@ -262,17 +259,17 @@ private fun checkNavBackStackEntry(rootComponent: RootComponent): String {
   val configurationState = stack.value.active.configuration
 
   return when (configurationState) {
-    is ConfigChildComponent.Home -> {
+    is RootComponent.ChildConfig.Home -> {
       stringResource(
         id = R.string.my_firend,
       )
     }
 
-    is ConfigChildComponent.Routine -> stringResource(
+    is RootComponent.ChildConfig.Routine -> stringResource(
       id = com.rahim.R.string.list_routine,
     )
 
-    is ConfigChildComponent.HistoryRoutine -> stringResource(id = com.rahim.R.string.historyAlarm)
+    is RootComponent.ChildConfig.HistoryRoutine -> stringResource(id = com.rahim.R.string.historyAlarm)
 
     else -> stringResource(id = com.rahim.R.string.notes)
   }
