@@ -17,15 +17,15 @@ import kotlin.coroutines.CoroutineContext
 
 class UpdateNoteDialogComponentImpl(
   componentContext: ComponentContext,
-  mainDispatcher: CoroutineContext,
-  ioDispatcher: CoroutineContext,
+  mainContext: CoroutineContext,
+  ioContext: CoroutineContext,
   private val updateNoteUseCase: UpdateNoteUseCase,
   private val updateNote: NoteUiModel?,
   private val onDismissed: () -> Unit,
 ) : UpdateNoteDialogComponent, ComponentContext by componentContext {
 
-  private val mainScope: CoroutineScope = coroutineScope(mainDispatcher + SupervisorJob())
-  private val ioScope: CoroutineScope = coroutineScope(ioDispatcher + SupervisorJob())
+  private val mainScope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
+  private val ioScope: CoroutineScope = coroutineScope(ioContext + SupervisorJob())
 
 
   private val _state=MutableValue(UpdateNoteDialogComponent.State(updateNote = updateNote))

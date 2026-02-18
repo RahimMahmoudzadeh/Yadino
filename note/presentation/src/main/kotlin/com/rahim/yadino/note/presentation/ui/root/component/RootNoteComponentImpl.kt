@@ -9,22 +9,13 @@ import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.update
-import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import com.arkivanov.essenty.lifecycle.doOnCreate
-import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.note.domain.useCase.AddNoteUseCase
 import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
 import com.rahim.yadino.note.domain.useCase.GetNotesUseCase
 import com.rahim.yadino.note.domain.useCase.SearchNoteUseCase
 import com.rahim.yadino.note.domain.useCase.UpdateNoteUseCase
-import com.rahim.yadino.note.presentation.mapper.toNameNote
-import com.rahim.yadino.note.presentation.mapper.toNote
-import com.rahim.yadino.note.presentation.mapper.toNoteUiModel
 import com.rahim.yadino.note.presentation.model.ErrorDialogRemoveNoteUiModel
-import com.rahim.yadino.note.presentation.model.NameNoteUi
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.ui.addNoteDialog.component.AddNoteDialogComponent
 import com.rahim.yadino.note.presentation.ui.addNoteDialog.component.AddNoteDialogComponentImpl
@@ -34,22 +25,13 @@ import com.rahim.yadino.note.presentation.ui.main.component.NoteMainComponent
 import com.rahim.yadino.note.presentation.ui.main.component.NoteMainComponentImpl
 import com.rahim.yadino.note.presentation.ui.updateNoteDialog.component.UpdateNoteDialogComponent
 import com.rahim.yadino.note.presentation.ui.updateNoteDialog.component.UpdateNoteDialogComponentImpl
-import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 class RootNoteComponentImpl(
   componentContext: ComponentContext,
   mainContext: CoroutineContext,
+  ioContext: CoroutineContext,
   private val getNotesUseCase: GetNotesUseCase,
   private val searchNoteUseCase: SearchNoteUseCase,
   private val addNoteUseCase: AddNoteUseCase,
@@ -75,8 +57,8 @@ class RootNoteComponentImpl(
     ) { _, childComponentContext ->
       AddNoteDialogComponentImpl(
         componentContext = childComponentContext,
-        mainDispatcher = Dispatchers.Main,
-        ioDispatcher = Dispatchers.IO,
+        mainContext = mainContext,
+        ioContext = ioContext,
         addNoteUseCase = addNoteUseCase,
         onDismissed = addNoteDialogComponentNavigationSlot::dismiss,
       )
@@ -91,8 +73,8 @@ class RootNoteComponentImpl(
     ) { config, childComponentContext ->
       UpdateNoteDialogComponentImpl(
         componentContext = childComponentContext,
-        mainDispatcher = Dispatchers.Main,
-        ioDispatcher = Dispatchers.IO,
+        mainContext = mainContext,
+        ioContext = ioContext,
         updateNoteUseCase = updateNoteUseCase,
         updateNote = config.updateNote,
         onDismissed = updateNoteDialogComponentNavigationSlot::dismiss,
@@ -107,7 +89,7 @@ class RootNoteComponentImpl(
     ) { config, childComponentContext ->
       ErrorDialogComponentImpl(
         componentContext = childComponentContext,
-        mainContext = Dispatchers.Main,
+        mainContext = mainContext,
         deleteNoteUseCase = deleteNoteUseCase,
         errorDialogRemoveNoteUiModel = config.errorDialogRemoveNoteUiModel,
         onDismissed = errorDialogNoteComponentNavigationSlot::dismiss,

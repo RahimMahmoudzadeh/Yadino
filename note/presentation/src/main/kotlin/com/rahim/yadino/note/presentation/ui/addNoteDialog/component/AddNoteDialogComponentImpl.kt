@@ -18,14 +18,14 @@ import kotlin.coroutines.CoroutineContext
 
 class AddNoteDialogComponentImpl(
   componentContext: ComponentContext,
-  mainDispatcher: CoroutineContext,
-  ioDispatcher: CoroutineContext,
+  mainContext: CoroutineContext,
+  ioContext: CoroutineContext,
   private val addNoteUseCase: AddNoteUseCase,
   private val onDismissed: () -> Unit,
 ) : AddNoteDialogComponent, ComponentContext by componentContext {
 
-  private val mainScope: CoroutineScope = coroutineScope(mainDispatcher + SupervisorJob())
-  private val ioScope: CoroutineScope = coroutineScope(ioDispatcher + SupervisorJob())
+  private val mainScope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
+  private val ioScope: CoroutineScope = coroutineScope(ioContext + SupervisorJob())
 
 
   private val _state = MutableValue(AddNoteDialogComponent.State())

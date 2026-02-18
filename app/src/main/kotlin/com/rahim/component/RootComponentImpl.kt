@@ -144,6 +144,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private fun noteComponent(componentContext: ComponentContext): RootNoteComponent = RootNoteComponentImpl(
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
+    ioContext = Dispatchers.IO,
     getNotesUseCase = getNotesUseCase,
     searchNoteUseCase = searchNoteUseCase,
     updateNoteUseCase = updateNoteUseCase,
