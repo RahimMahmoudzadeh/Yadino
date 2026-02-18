@@ -152,13 +152,10 @@ fun YadinoApp(
   rootComponent: RootComponent,
   drawerItemClicked: (DrawerItemType) -> Unit,
 ) {
-  val context = LocalContext.current
   val size = LocalSize.current
 
   val stack = rootComponent.stack.subscribeAsState()
   val configurationState = stack.value.active.configuration
-
-  val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
 
   var clickSearch by rememberSaveable { mutableStateOf(false) }
 
@@ -223,20 +220,6 @@ fun YadinoApp(
           RootContent(component = rootComponent, clickSearch = clickSearch, modifier = Modifier.padding(innerPadding))
         }
       }
-    }
-    when {
-//      errorClick -> {
-//        ErrorDialog(
-//          message = stringResource(id = R.string.better_performance_access),
-//          okMessage = stringResource(id = R.string.setting),
-//          isClickOk = {
-//            if (it) {
-//              goSettingPermission(context)
-//            }
-//            errorClick = false
-//          },
-//        )
-//      }
     }
   }
 }
