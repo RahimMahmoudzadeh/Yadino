@@ -55,7 +55,7 @@ inline fun <reified EVENT, STATE : Any, EFFECT> use(component: UnidirectionalCom
     Dispatch(
       state = state,
       event = dispatch,
-      effect = component.effects
+      effect = component.effects,
     )
   }
 }
@@ -70,21 +70,24 @@ inline fun <STATE : Any> use(component: StateSource<STATE>): StateDispatch<STATE
 
 @Composable
 inline fun <reified EVENT> use(component: EventEmitter<EVENT>): EventDispatch<EVENT> {
-  val dispatch: (EVENT) -> Unit = { event ->
-    component.onEvent(event)
+  val dispatch = remember(component) {
+    { event: EVENT -> component.onEvent(event) }
   }
 
-  return EventDispatch(
-    event = dispatch,
-  )
+  return remember(dispatch) {
+    EventDispatch(
+      event = dispatch,
+    )
+  }
 }
 
 @Composable
 inline fun <EFFECT> use(component: EffectSource<EFFECT>): EffectDispatch<EFFECT> {
-  val effect = component.effects
-  return EffectDispatch(
-    effect = effect,
-  )
+  return remember(component.effects) {
+    EffectDispatch(
+      effect = component.effects,
+    )
+  }
 }
 
 data class StateEffectDispatch<EVENT, EFFECT, STATE>(
