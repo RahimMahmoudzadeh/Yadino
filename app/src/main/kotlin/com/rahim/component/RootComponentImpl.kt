@@ -15,7 +15,6 @@ import com.rahim.component.RootComponent.ChildStack.HomeStack
 import com.rahim.component.RootComponent.ChildStack.Note
 import com.rahim.component.RootComponent.ChildStack.OnBoarding
 import com.rahim.component.RootComponent.ChildStack.Routine
-import com.rahim.component.config.ConfigChildComponent
 import com.rahim.yadino.core.timeDate.repo.DateTimeRepository
 import com.rahim.yadino.home.domain.useCase.AddReminderUseCase
 import com.rahim.yadino.home.domain.useCase.CancelReminderUseCase
@@ -49,7 +48,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
 class RootComponentImpl(componentContext: ComponentContext) : RootComponent, ComponentContext by componentContext, KoinComponent {
-  private val navigation = StackNavigation<ConfigChildComponent>()
+  private val navigation = StackNavigation<RootComponent.ChildConfig>()
 
   private val addReminderUseCase: AddReminderUseCase = get()
   private val updateReminderUseCase: UpdateReminderUseCase = get()
@@ -63,19 +62,19 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
 
   override val stack: Value<ChildStack<*, RootComponent.ChildStack>> = childStack(
     source = navigation,
-    serializer = ConfigChildComponent.serializer(),
-    initialConfiguration = ConfigChildComponent.OnBoarding,
+    serializer = RootComponent.ChildConfig.serializer(),
+    initialConfiguration = RootComponent.ChildConfig.OnBoarding,
     handleBackButton = true,
     childFactory = ::childComponent,
   )
 
-  override fun onTabClick(tab: ConfigChildComponent) {
+  override fun onTabClick(tab: RootComponent.ChildConfig) {
     navigation.bringToFront(tab)
   }
 
   @OptIn(DelicateDecomposeApi::class)
   override fun showHistoryRoutine() {
-    navigation.push(ConfigChildComponent.HistoryRoutine)
+    navigation.push(RootComponent.ChildConfig.HistoryRoutine)
   }
 
   override fun navigateUp() {
@@ -99,7 +98,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     mainContext = Dispatchers.Main,
     sharedPreferencesRepository = sharedPreferencesRepository,
     onNavigateToHome = {
-      navigation.replaceAll(ConfigChildComponent.Home)
+      navigation.replaceAll(RootComponent.ChildConfig.Home)
     },
   )
 
@@ -153,14 +152,14 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   )
 
   private fun childComponent(
-    config: ConfigChildComponent,
+    config: RootComponent.ChildConfig,
     childComponentContext: ComponentContext,
   ): RootComponent.ChildStack = when (config) {
-    ConfigChildComponent.Home -> HomeStack(component = homeComponent(componentContext = childComponentContext))
-    ConfigChildComponent.OnBoarding -> OnBoarding(component = onBoardingComponent(componentContext = childComponentContext))
-    ConfigChildComponent.HistoryRoutine -> HistoryRoutine(component = historyRoutineComponent(componentContext = childComponentContext))
-    ConfigChildComponent.Note -> Note(component = noteComponent(componentContext = childComponentContext))
-    ConfigChildComponent.Routine -> Routine(component = routineComponent(componentContext = childComponentContext))
+    RootComponent.ChildConfig.Home -> HomeStack(component = homeComponent(componentContext = childComponentContext))
+    RootComponent.ChildConfig.OnBoarding -> OnBoarding(component = onBoardingComponent(componentContext = childComponentContext))
+    RootComponent.ChildConfig.HistoryRoutine -> HistoryRoutine(component = historyRoutineComponent(componentContext = childComponentContext))
+    RootComponent.ChildConfig.Note -> Note(component = noteComponent(componentContext = childComponentContext))
+    RootComponent.ChildConfig.Routine -> Routine(component = routineComponent(componentContext = childComponentContext))
     else -> Routine(component = routineComponent(componentContext = childComponentContext))
   }
 }

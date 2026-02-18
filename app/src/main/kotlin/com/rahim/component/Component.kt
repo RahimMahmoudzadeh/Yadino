@@ -1,7 +1,6 @@
 package com.rahim.component
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -14,8 +13,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
-import com.rahim.component.BottomNavItem
-import com.rahim.component.config.ConfigChildComponent
 import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 
 @Composable
@@ -41,19 +38,19 @@ fun BottomNavigationBar(
         indicatorColor = MaterialTheme.colorScheme.onBackground,
       ),
       onClick = {
-        component.onTabClick(ConfigChildComponent.Home)
+        component.onTabClick(RootComponent.ChildConfig.Home)
       },
       icon = {
         Icon(
           painter = painterResource(
-            id = if (configuration is ConfigChildComponent.Home) BottomNavItem.Home.iconSelected else BottomNavItem.Home.iconNormal,
+            id = if (configuration is RootComponent.ChildConfig.Home) BottomNavItem.Home.iconSelected else BottomNavItem.Home.iconNormal,
           ),
-          tint = if (configuration is ConfigChildComponent.Home) CornflowerBlueLight else MaterialTheme.colorScheme.onTertiary,
+          tint = if (configuration is RootComponent.ChildConfig.Home) CornflowerBlueLight else MaterialTheme.colorScheme.onTertiary,
           contentDescription = BottomNavItem.Home.route,
           modifier = Modifier.padding(space.space8),
         )
       },
-      selected = configuration is ConfigChildComponent.Home,
+      selected = configuration is RootComponent.ChildConfig.Home,
     )
     NavigationBarItem(
       colors = NavigationBarItemDefaults.colors(
@@ -64,20 +61,20 @@ fun BottomNavigationBar(
         indicatorColor = MaterialTheme.colorScheme.onBackground,
       ),
       onClick = {
-        component.onTabClick(ConfigChildComponent.Routine)
+        component.onTabClick(RootComponent.ChildConfig.Routine)
       },
       icon = {
         Icon(
           painter = painterResource(
-            id = if (configuration is ConfigChildComponent.Routine) BottomNavItem.Routine.iconSelected else BottomNavItem.Routine.iconNormal,
+            id = if (configuration is RootComponent.ChildConfig.Routine) BottomNavItem.Routine.iconSelected else BottomNavItem.Routine.iconNormal,
           ),
-          tint = if (configuration is ConfigChildComponent.Routine) CornflowerBlueLight else MaterialTheme.colorScheme.onTertiary,
+          tint = if (configuration is RootComponent.ChildConfig.Routine) CornflowerBlueLight else MaterialTheme.colorScheme.onTertiary,
           contentDescription = BottomNavItem.Routine.route,
           modifier = Modifier
             .padding(space.space8),
         )
       },
-      selected = configuration is ConfigChildComponent.Routine,
+      selected = configuration is RootComponent.ChildConfig.Routine,
     )
     NavigationBarItem(
       colors = NavigationBarItemDefaults.colors(
@@ -88,18 +85,18 @@ fun BottomNavigationBar(
         indicatorColor = MaterialTheme.colorScheme.onBackground,
       ),
       onClick = {
-        component.onTabClick(ConfigChildComponent.Note)
+        component.onTabClick(RootComponent.ChildConfig.Note)
       },
       icon = {
         Icon(
-          painter = painterResource(id = if (configuration is ConfigChildComponent.Note) BottomNavItem.Note.iconSelected else BottomNavItem.Note.iconNormal),
+          painter = painterResource(id = if (configuration is RootComponent.ChildConfig.Note) BottomNavItem.Note.iconSelected else BottomNavItem.Note.iconNormal),
           contentDescription = BottomNavItem.Note.route,
-          tint = if (configuration is ConfigChildComponent.Note) CornflowerBlueLight else MaterialTheme.colorScheme.onTertiary,
+          tint = if (configuration is RootComponent.ChildConfig.Note) CornflowerBlueLight else MaterialTheme.colorScheme.onTertiary,
           modifier = Modifier
             .padding(space.space8),
         )
       },
-      selected = configuration is ConfigChildComponent.Note,
+      selected = configuration is RootComponent.ChildConfig.Note,
     )
   }
 }
