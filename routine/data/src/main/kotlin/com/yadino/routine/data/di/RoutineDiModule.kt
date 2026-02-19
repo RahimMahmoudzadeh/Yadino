@@ -11,6 +11,7 @@ import com.rahim.yadino.routine.domain.useCase.GetAllRoutineUseCase
 import com.rahim.yadino.routine.domain.useCase.GetCurrentTimeUseCase
 import com.rahim.yadino.routine.domain.useCase.GetRemindersUseCase
 import com.rahim.yadino.routine.domain.useCase.GetTimesMonthUseCase
+import com.rahim.yadino.routine.domain.useCase.HaveAlarmUseCase
 import com.rahim.yadino.routine.domain.useCase.SearchRoutineUseCase
 import com.rahim.yadino.routine.domain.useCase.UpdateReminderUseCase
 import org.koin.dsl.module
@@ -28,4 +29,5 @@ val RoutineDiModule = module {
   single { GetCurrentTimeUseCase(dateTimeRepository = get()) }
   single { AddSampleRoutineUseCase(routineRepository = get()) }
   single { ChangeIdRoutinesUseCase(routineRepository = get()) }
+  single { HaveAlarmUseCase(routineRepository = get()) }
 }
