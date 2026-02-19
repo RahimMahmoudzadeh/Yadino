@@ -44,9 +44,11 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.BuildConfig
 import com.rahim.component.BottomNavigationBar
-import com.rahim.component.RootComponent
-import com.rahim.component.RootComponentImpl
+import com.rahim.ui.root.component.RootComponent
+import com.rahim.ui.root.component.RootComponentImpl
 import com.rahim.data.distributionActions.StateOfClickItemDrawable
+import com.rahim.ui.main.component.MainComponent
+import com.rahim.ui.root.YadinoApp
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
 import com.rahim.yadino.designsystem.utils.size.LocalSize
@@ -136,141 +138,5 @@ class MainActivity : ComponentActivity(), KoinComponent {
   private fun getTokenFirebase() {
     FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
     }
-  }
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-fun YadinoApp(
-  isShowWelcomeScreen: Boolean,
-  isDarkTheme: Boolean = isSystemInDarkTheme(),
-  haveAlarm: Boolean,
-  window: Window,
-  rootComponent: RootComponent,
-  drawerItemClicked: (DrawerItemType) -> Unit,
-) {
-  val size = LocalSize.current
-
-  val stack = rootComponent.stack.subscribeAsState()
-  val configurationState = stack.value.active.configuration
-
-  var clickSearch by rememberSaveable { mutableStateOf(false) }
-
-  val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-  val coroutineScope = rememberCoroutineScope()
-  val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
-  if (configurationState !is RootComponent.ChildConfig.OnBoarding) {
-    windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
-  } else {
-    windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
-  }
-
-  CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-    YadinoTheme(darkTheme = isDarkTheme) {
-      YadinoNavigationDrawer(
-        drawerState = drawerState,
-        isDarkTheme = isDarkTheme,
-        onItemClick = drawerItemClicked,
-        gesturesEnabled = configurationState !is RootComponent.ChildConfig.OnBoarding,
-      ) {
-        Scaffold(
-          topBar = {
-            AnimatedVisibility(
-              visible = configurationState !is RootComponent.ChildConfig.OnBoarding,
-              enter = fadeIn() + expandVertically(animationSpec = tween(800)),
-              exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
-            ) {
-              TopBarCenterAlign(
-                title = checkNavBackStackEntry(rootComponent = rootComponent),
-                openHistory = {
-                  rootComponent.showHistoryRoutine()
-                },
-                isShowSearchIcon = configurationState !is RootComponent.ChildConfig.HistoryRoutine,
-                isShowBackIcon = configurationState is RootComponent.ChildConfig.HistoryRoutine,
-                onClickBack = {
-                  rootComponent.navigateUp()
-                },
-                onClickSearch = {
-                  clickSearch = !clickSearch
-                },
-                onDrawerClick = {
-                  coroutineScope.launch { drawerState.open() }
-                },
-                haveAlarm = haveAlarm,
-                size = size,
-              )
-            }
-          },
-          bottomBar = {
-            AnimatedVisibility(
-              visible = configurationState !is RootComponent.ChildConfig.OnBoarding && configurationState !is RootComponent.ChildConfig.HistoryRoutine,
-              enter = fadeIn() + expandVertically(animationSpec = tween(800)),
-              exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
-            ) {
-              BottomNavigationBar(
-                configuration = configurationState,
-                component = rootComponent,
-              )
-            }
-          },
-        ) { innerPadding ->
-          RootContent(component = rootComponent, clickSearch = clickSearch, modifier = Modifier.padding(innerPadding))
-        }
-      }
-    }
-  }
-}
-
-@Composable
-fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifier = Modifier) {
-  Children(
-    stack = component.stack,
-    modifier = modifier.fillMaxSize(),
-    animation = stackAnimation(fade()),
-  ) {
-
-    Surface(color = MaterialTheme.colorScheme.background) {
-      when (val child = it.instance) {
-        is RootComponent.ChildStack.HomeStack -> {
-          HomeRoot(
-            component = child.component,
-            clickSearch = clickSearch,
-          )
-        }
-
-        is RootComponent.ChildStack.OnBoarding -> OnBoardingRoute(component = child.component)
-        is RootComponent.ChildStack.Routine -> RoutineRoute(
-          component = child.component, showSearchBar = clickSearch,
-        )
-
-        is RootComponent.ChildStack.HistoryRoutine -> HistoryRoute(component = child.component)
-        is RootComponent.ChildStack.Note -> NoteRoute(
-          component = child.component,
-          clickSearch = clickSearch,
-        )
-      }
-    }
-  }
-}
-
-@Composable
-private fun checkNavBackStackEntry(rootComponent: RootComponent): String {
-  val stack = rootComponent.stack.subscribeAsState()
-  val configurationState = stack.value.active.configuration
-
-  return when (configurationState) {
-    is RootComponent.ChildConfig.Home -> {
-      stringResource(
-        id = R.string.my_firend,
-      )
-    }
-
-    is RootComponent.ChildConfig.Routine -> stringResource(
-      id = com.rahim.R.string.list_routine,
-    )
-
-    is RootComponent.ChildConfig.HistoryRoutine -> stringResource(id = com.rahim.R.string.historyAlarm)
-
-    else -> stringResource(id = com.rahim.R.string.notes)
   }
 }

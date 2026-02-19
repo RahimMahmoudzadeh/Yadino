@@ -1,0 +1,185 @@
+package com.rahim.ui.root
+
+import android.view.Window
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.rahim.component.BottomNavigationBar
+import com.rahim.ui.root.component.RootComponent
+import com.rahim.yadino.designsystem.component.TopBarCenterAlign
+import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
+import com.rahim.yadino.home.presentation.ui.root.HomeRoot
+import com.rahim.yadino.library.designsystem.R
+import com.rahim.yadino.navigation.component.DrawerItemType
+import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
+import com.rahim.yadino.note.presentation.ui.root.NoteRoute
+import com.rahim.yadino.onboarding.presentation.OnBoardingRoute
+import com.rahim.yadino.routine.presentation.ui.alarmHistory.HistoryRoute
+import com.rahim.yadino.routine.presentation.ui.root.RoutineRoute
+import kotlinx.coroutines.launch
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun YadinoApp(
+  isShowWelcomeScreen: Boolean,
+  isDarkTheme: Boolean = isSystemInDarkTheme(),
+  haveAlarm: Boolean,
+  window: Window,
+  rootComponent: RootComponent,
+  drawerItemClicked: (DrawerItemType) -> Unit,
+) {
+  val size = LocalSize.current
+
+  val stack = rootComponent.stack.subscribeAsState()
+  val configurationState = stack.value.active.configuration
+
+  var clickSearch by rememberSaveable { mutableStateOf(false) }
+
+  val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+  val coroutineScope = rememberCoroutineScope()
+  val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+  if (configurationState !is RootComponent.ChildConfig.OnBoarding) {
+    windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
+  } else {
+    windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
+  }
+
+  CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+    YadinoTheme(darkTheme = isDarkTheme) {
+      YadinoNavigationDrawer(
+        drawerState = drawerState,
+        isDarkTheme = isDarkTheme,
+        onItemClick = drawerItemClicked,
+        gesturesEnabled = configurationState !is RootComponent.ChildConfig.OnBoarding,
+      ) {
+        Scaffold(
+          topBar = {
+            AnimatedVisibility(
+              visible = configurationState !is RootComponent.ChildConfig.OnBoarding,
+              enter = fadeIn() + expandVertically(animationSpec = tween(800)),
+              exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
+            ) {
+              TopBarCenterAlign(
+                title = checkNavBackStackEntry(rootComponent = rootComponent),
+                openHistory = {
+                  rootComponent.showHistoryRoutine()
+                },
+                isShowSearchIcon = configurationState !is RootComponent.ChildConfig.HistoryRoutine,
+                isShowBackIcon = configurationState is RootComponent.ChildConfig.HistoryRoutine,
+                onClickBack = {
+                  rootComponent.navigateUp()
+                },
+                onClickSearch = {
+                  clickSearch = !clickSearch
+                },
+                onDrawerClick = {
+                  coroutineScope.launch { drawerState.open() }
+                },
+                haveAlarm = haveAlarm,
+                size = size,
+              )
+            }
+          },
+          bottomBar = {
+            AnimatedVisibility(
+              visible = configurationState !is RootComponent.ChildConfig.OnBoarding && configurationState !is RootComponent.ChildConfig.HistoryRoutine,
+              enter = fadeIn() + expandVertically(animationSpec = tween(800)),
+              exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
+            ) {
+              BottomNavigationBar(
+                configuration = configurationState,
+                component = rootComponent,
+              )
+            }
+          },
+        ) { innerPadding ->
+          RootContent(component = rootComponent, clickSearch = clickSearch, modifier = Modifier.padding(innerPadding))
+        }
+      }
+    }
+  }
+}
+
+@Composable
+fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifier = Modifier) {
+  Children(
+    stack = component.stack,
+    modifier = modifier.fillMaxSize(),
+    animation = stackAnimation(fade()),
+  ) {
+
+    Surface(color = MaterialTheme.colorScheme.background) {
+      when (val child = it.instance) {
+        is RootComponent.ChildStack.HomeStack -> {
+          HomeRoot(
+            component = child.component,
+            clickSearch = clickSearch,
+          )
+        }
+
+        is RootComponent.ChildStack.OnBoarding -> OnBoardingRoute(component = child.component)
+        is RootComponent.ChildStack.Routine -> RoutineRoute(
+          component = child.component, showSearchBar = clickSearch,
+        )
+
+        is RootComponent.ChildStack.HistoryRoutine -> HistoryRoute(component = child.component)
+        is RootComponent.ChildStack.Note -> NoteRoute(
+          component = child.component,
+          clickSearch = clickSearch,
+        )
+      }
+    }
+  }
+}
+
+@Composable
+private fun checkNavBackStackEntry(rootComponent: RootComponent): String {
+  val stack = rootComponent.stack.subscribeAsState()
+  val configurationState = stack.value.active.configuration
+
+  return when (configurationState) {
+    is RootComponent.ChildConfig.Home -> {
+      stringResource(
+        id = R.string.my_firend,
+      )
+    }
+
+    is RootComponent.ChildConfig.Routine -> stringResource(
+      id = com.rahim.R.string.list_routine,
+    )
+
+    is RootComponent.ChildConfig.HistoryRoutine -> stringResource(id = com.rahim.R.string.historyAlarm)
+
+    else -> stringResource(id = com.rahim.R.string.notes)
+  }
+}
