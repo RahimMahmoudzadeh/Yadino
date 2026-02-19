@@ -6,6 +6,7 @@ import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepositoryImpl
 import com.rahim.yadino.sharedPreferences.useCase.ChangeThemeUseCase
 import com.rahim.yadino.sharedPreferences.useCase.IsDarkThemeUseCase
+import com.rahim.yadino.sharedPreferences.useCase.IsShowWelcomeScreenUseCase
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
@@ -16,6 +17,7 @@ val CoreDiModule = module {
   single<SharedPreferencesRepository> { SharedPreferencesRepositoryImpl(sharedPreferencesCustom = get()) }
   single { ChangeThemeUseCase(sharedPreferencesRepository = get()) }
   single { IsDarkThemeUseCase(sharedPreferencesRepository = get()) }
+  single { IsShowWelcomeScreenUseCase(sharedPreferencesRepository = get()) }
   single(named(DispatchersQualifier.Default)) { Dispatchers.Default }
   single(named(DispatchersQualifier.IO)) { Dispatchers.IO }
   single(named(DispatchersQualifier.Main)) { Dispatchers.Main }
