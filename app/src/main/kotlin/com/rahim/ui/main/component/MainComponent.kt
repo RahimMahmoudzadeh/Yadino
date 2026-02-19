@@ -1,12 +1,8 @@
-package com.rahim.ui.main
+package com.rahim.ui.main.component
 
 import androidx.compose.runtime.Immutable
 import com.rahim.data.distributionActions.StateOfClickItemDrawable
-import com.rahim.yadino.base.EventEmitter
 import com.rahim.yadino.base.StateEventComponent
-import com.rahim.yadino.base.StateSource
-import com.rahim.yadino.base.UnidirectionalComponent
-import com.rahim.yadino.base.UnidirectionalViewModel
 import com.rahim.yadino.navigation.component.DrawerItemType
 
 interface MainComponent : StateEventComponent<MainComponent.MainEvent, MainComponent.MainState> {

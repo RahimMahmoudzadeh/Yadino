@@ -1,6 +1,7 @@
 package com.rahim.component
 
 import androidx.annotation.DrawableRes
+import com.rahim.ui.root.component.RootComponent
 import com.rahim.yadino.library.navigation.R
 
 sealed class BottomNavItem(

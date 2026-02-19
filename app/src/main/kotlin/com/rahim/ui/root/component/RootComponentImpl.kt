@@ -1,4 +1,4 @@
-package com.rahim.component
+package com.rahim.ui.root.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DelicateDecomposeApi
@@ -10,12 +10,17 @@ import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
-import com.rahim.component.RootComponent.ChildStack.HistoryRoutine
-import com.rahim.component.RootComponent.ChildStack.HomeStack
-import com.rahim.component.RootComponent.ChildStack.Note
-import com.rahim.component.RootComponent.ChildStack.OnBoarding
-import com.rahim.component.RootComponent.ChildStack.Routine
+import com.rahim.data.distributionActions.AppDistributionActions
+import com.rahim.ui.main.component.MainComponent
+import com.rahim.ui.main.component.MainComponentImpl
+import com.rahim.ui.root.component.RootComponent.ChildStack.HistoryRoutine
+import com.rahim.ui.root.component.RootComponent.ChildStack.HomeStack
+import com.rahim.ui.root.component.RootComponent.ChildStack.Note
+import com.rahim.ui.root.component.RootComponent.ChildStack.OnBoarding
+import com.rahim.ui.root.component.RootComponent.ChildStack.Routine
 import com.rahim.yadino.core.timeDate.repo.DateTimeRepository
+import com.rahim.yadino.core.timeDate.useCase.AddTimeUseCase
+import com.rahim.yadino.core.timeDate.useCase.CalculateTodayUseCase
 import com.rahim.yadino.home.domain.useCase.AddReminderUseCase
 import com.rahim.yadino.home.domain.useCase.CancelReminderUseCase
 import com.rahim.yadino.home.domain.useCase.DeleteReminderUseCase
@@ -26,6 +31,7 @@ import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.home.presentation.ui.root.component.RootHomeComponent
 import com.rahim.yadino.home.presentation.ui.root.component.RootHomeComponentImpl
 import com.rahim.yadino.note.domain.useCase.AddNoteUseCase
+import com.rahim.yadino.note.domain.useCase.AddSampleNoteUseCase
 import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
 import com.rahim.yadino.note.domain.useCase.GetNotesUseCase
 import com.rahim.yadino.note.domain.useCase.SearchNoteUseCase
@@ -34,15 +40,22 @@ import com.rahim.yadino.note.presentation.ui.root.component.RootNoteComponent
 import com.rahim.yadino.note.presentation.ui.root.component.RootNoteComponentImpl
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
 import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponentImpl
+import com.rahim.yadino.routine.domain.useCase.AddSampleRoutineUseCase
+import com.rahim.yadino.routine.domain.useCase.ChangeIdRoutinesUseCase
+import com.rahim.yadino.routine.domain.useCase.CheckedAllRoutinePastTimeUseCase
 import com.rahim.yadino.routine.domain.useCase.GetAllRoutineUseCase
 import com.rahim.yadino.routine.domain.useCase.GetCurrentTimeUseCase
 import com.rahim.yadino.routine.domain.useCase.GetRemindersUseCase
 import com.rahim.yadino.routine.domain.useCase.GetTimesMonthUseCase
+import com.rahim.yadino.routine.domain.useCase.HaveAlarmUseCase
 import com.rahim.yadino.routine.presentation.ui.alarmHistory.component.HistoryRoutineComponent
 import com.rahim.yadino.routine.presentation.ui.alarmHistory.component.HistoryRoutineComponentImpl
 import com.rahim.yadino.routine.presentation.ui.root.component.RootRoutineComponent
 import com.rahim.yadino.routine.presentation.ui.root.component.RootRoutineComponentImpl
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
+import com.rahim.yadino.sharedPreferences.useCase.ChangeThemeUseCase
+import com.rahim.yadino.sharedPreferences.useCase.IsDarkThemeUseCase
+import com.rahim.yadino.sharedPreferences.useCase.IsShowWelcomeScreenUseCase
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -135,6 +148,35 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     getCurrentTimeUseCase = getCurrentTimeUseCase,
   )
 
+  private val calculateTodayUseCase: CalculateTodayUseCase = get()
+  private val addTimeUseCase: AddTimeUseCase = get()
+  private val addSampleNoteUseCase: AddSampleNoteUseCase = get()
+  private val addSampleRoutineUseCase: AddSampleRoutineUseCase = get()
+  private val changeIdRoutinesUseCase: ChangeIdRoutinesUseCase = get()
+  private val haveAlarmUseCase: HaveAlarmUseCase = get()
+  private val checkedAllRoutinePastTimeUseCase: CheckedAllRoutinePastTimeUseCase = get()
+  private val changeThemeUseCase: ChangeThemeUseCase = get()
+  private val isDarkThemeUseCase: IsDarkThemeUseCase = get()
+  private val isShowWelcomeScreenUseCase: IsShowWelcomeScreenUseCase = get()
+  private val appDistributionActions: AppDistributionActions = get()
+
+  private fun mainComponent(componentContext: ComponentContext): MainComponent = MainComponentImpl(
+    componentContext = componentContext,
+    mainContext = Dispatchers.Main,
+    ioContext = Dispatchers.IO,
+    calculateTodayUseCase = calculateTodayUseCase,
+    addTimeUseCase = addTimeUseCase,
+    addSampleNoteUseCase = addSampleNoteUseCase,
+    addSampleRoutineUseCase = addSampleRoutineUseCase,
+    changeIdRoutinesUseCase = changeIdRoutinesUseCase,
+    haveAlarmUseCase = haveAlarmUseCase,
+    checkedAllRoutinePastTimeUseCase = checkedAllRoutinePastTimeUseCase,
+    changeThemeUseCase = changeThemeUseCase,
+    isDarkThemeUseCase = isDarkThemeUseCase,
+    isShowWelcomeScreenUseCase = isShowWelcomeScreenUseCase,
+    appDistributionActions = appDistributionActions,
+  )
+
   private val deleteNoteUseCase: DeleteNoteUseCase = get()
   private val getNotesUseCase: GetNotesUseCase = get()
   private val searchNoteUseCase: SearchNoteUseCase = get()
@@ -161,6 +203,6 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     RootComponent.ChildConfig.HistoryRoutine -> HistoryRoutine(component = historyRoutineComponent(componentContext = childComponentContext))
     RootComponent.ChildConfig.Note -> Note(component = noteComponent(componentContext = childComponentContext))
     RootComponent.ChildConfig.Routine -> Routine(component = routineComponent(componentContext = childComponentContext))
-    else -> Routine(component = routineComponent(componentContext = childComponentContext))
+    RootComponent.ChildConfig.Main -> RootComponent.ChildStack.Main(component = mainComponent(componentContext = childComponentContext))
   }
 }

@@ -6,13 +6,8 @@ import com.rahim.data.reminder.notification.NotificationManager
 import com.rahim.data.reminder.ReminderSchedulerImpl
 import com.rahim.data.reminder.alarm.ControlAlarm
 import com.rahim.data.reminder.alarm.ControlAlarmImplementation
-import com.rahim.ui.main.MainComponent
-import com.rahim.ui.main.MainComponentImpl
 import com.rahim.yadino.base.reminder.ReminderScheduler
-import com.rahim.yadino.enums.DispatchersQualifier
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.module.dsl.viewModel
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val YadinoDiModule = module {

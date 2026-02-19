@@ -1,4 +1,4 @@
-package com.rahim.ui.main
+package com.rahim.ui.main.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -8,10 +8,20 @@ import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.rahim.data.distributionActions.AppDistributionActions
 import com.rahim.yadino.core.timeDate.repo.DateTimeRepository
+import com.rahim.yadino.core.timeDate.useCase.AddTimeUseCase
+import com.rahim.yadino.core.timeDate.useCase.CalculateTodayUseCase
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.note.domain.NoteRepository
+import com.rahim.yadino.note.domain.useCase.AddSampleNoteUseCase
 import com.rahim.yadino.routine.domain.repo.RoutineRepository
+import com.rahim.yadino.routine.domain.useCase.AddSampleRoutineUseCase
+import com.rahim.yadino.routine.domain.useCase.ChangeIdRoutinesUseCase
+import com.rahim.yadino.routine.domain.useCase.CheckedAllRoutinePastTimeUseCase
+import com.rahim.yadino.routine.domain.useCase.HaveAlarmUseCase
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
+import com.rahim.yadino.sharedPreferences.useCase.ChangeThemeUseCase
+import com.rahim.yadino.sharedPreferences.useCase.IsDarkThemeUseCase
+import com.rahim.yadino.sharedPreferences.useCase.IsShowWelcomeScreenUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -23,11 +33,17 @@ class MainComponentImpl(
   mainContext: CoroutineContext,
   ioContext: CoroutineDispatcher,
   componentContext: ComponentContext,
-  private val dateTimeRepository: DateTimeRepository,
-  private val repositoryRoutine: RoutineRepository,
-  private val noteRepository: NoteRepository,
+  private val calculateTodayUseCase: CalculateTodayUseCase,
+  private val addTimeUseCase: AddTimeUseCase,
+  private val addSampleNoteUseCase: AddSampleNoteUseCase,
+  private val addSampleRoutineUseCase: AddSampleRoutineUseCase,
+  private val changeIdRoutinesUseCase: ChangeIdRoutinesUseCase,
+  private val haveAlarmUseCase: HaveAlarmUseCase,
+  private val checkedAllRoutinePastTimeUseCase: CheckedAllRoutinePastTimeUseCase,
+  private val changeThemeUseCase: ChangeThemeUseCase,
+  private val isDarkThemeUseCase: IsDarkThemeUseCase,
+  private val isShowWelcomeScreenUseCase: IsShowWelcomeScreenUseCase,
   private val appDistributionActions: AppDistributionActions,
-  private val sharedPreferencesRepository: SharedPreferencesRepository,
 ) : MainComponent, ComponentContext by componentContext {
 
   private val scopeMain: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
@@ -70,19 +86,19 @@ class MainComponentImpl(
     lifecycle.doOnCreate {
       scopeIo.launch {
         launch {
-          dateTimeRepository.calculateToday()
+          calculateTodayUseCase()
         }
         launch {
-          dateTimeRepository.addTime()
+          addTimeUseCase()
         }
         launch {
-          repositoryRoutine.addSampleRoutine()
+          addSampleRoutineUseCase()
         }
         launch {
-          noteRepository.addSampleNote()
+          addSampleNoteUseCase()
         }
         launch {
-          repositoryRoutine.changeRoutineId()
+          changeIdRoutinesUseCase()
         }
         launch {
           isShowWelcomeScreen()
@@ -98,7 +114,7 @@ class MainComponentImpl(
   }
 
   private suspend fun haveAlarm() {
-    repositoryRoutine.haveAlarm().catch {}.collect { haveAlarm ->
+    haveAlarmUseCase().catch {}.collect { haveAlarm ->
       mutableState.update {
         it.copy(haveAlarm = haveAlarm)
       }
@@ -107,18 +123,18 @@ class MainComponentImpl(
 
   private fun checkedAllRoutinePastTime() {
     scopeMain.launch {
-      repositoryRoutine.checkedAllRoutinePastTime()
+      checkedAllRoutinePastTimeUseCase()
     }
   }
 
   private fun setDarkTheme(isDarkTheme: Boolean) {
     scopeMain.launch {
-      sharedPreferencesRepository.changeTheme(isDarkTheme)
+      changeThemeUseCase(isDarkTheme)
     }
   }
 
   private suspend fun getDarkTheme() {
-    sharedPreferencesRepository.isDarkTheme().catch {}.collect { theme ->
+    isDarkThemeUseCase().catch {}.collect { theme ->
       mutableState.update {
         it.copy(isDarkTheme = theme)
       }
@@ -126,7 +142,7 @@ class MainComponentImpl(
   }
 
   private suspend fun isShowWelcomeScreen() {
-    sharedPreferencesRepository.isShowWelcomeScreen().catch {}.collect { isShow ->
+    isShowWelcomeScreenUseCase().catch {}.collect { isShow ->
       mutableState.update {
         it.copy(isShowWelcomeScreen = isShow)
       }
