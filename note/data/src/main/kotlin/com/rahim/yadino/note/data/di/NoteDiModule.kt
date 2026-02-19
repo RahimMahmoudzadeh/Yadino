@@ -3,6 +3,7 @@ package com.rahim.yadino.note.data.di
 import com.rahim.yadino.note.data.NoteRepositoryImpl
 import com.rahim.yadino.note.domain.NoteRepository
 import com.rahim.yadino.note.domain.useCase.AddNoteUseCase
+import com.rahim.yadino.note.domain.useCase.AddSampleNoteUseCase
 import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
 import com.rahim.yadino.note.domain.useCase.GetNotesUseCase
 import com.rahim.yadino.note.domain.useCase.SearchNoteUseCase
@@ -16,4 +17,5 @@ val NoteDiModule = module {
   single { DeleteNoteUseCase(noteRepository = get()) }
   single { GetNotesUseCase(noteRepository = get()) }
   single { SearchNoteUseCase(noteRepository = get()) }
+  single { AddSampleNoteUseCase(noteRepository = get()) }
 }
