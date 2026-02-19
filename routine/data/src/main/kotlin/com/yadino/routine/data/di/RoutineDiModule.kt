@@ -5,6 +5,7 @@ import com.rahim.yadino.routine.domain.repo.RoutineRepository
 import com.rahim.yadino.routine.domain.useCase.AddReminderUseCase
 import com.rahim.yadino.routine.domain.useCase.AddSampleRoutineUseCase
 import com.rahim.yadino.routine.domain.useCase.CancelReminderUseCase
+import com.rahim.yadino.routine.domain.useCase.ChangeIdRoutinesUseCase
 import com.rahim.yadino.routine.domain.useCase.DeleteReminderUseCase
 import com.rahim.yadino.routine.domain.useCase.GetAllRoutineUseCase
 import com.rahim.yadino.routine.domain.useCase.GetCurrentTimeUseCase
@@ -26,4 +27,5 @@ val RoutineDiModule = module {
   single { GetTimesMonthUseCase(dateTimeRepository = get()) }
   single { GetCurrentTimeUseCase(dateTimeRepository = get()) }
   single { AddSampleRoutineUseCase(routineRepository = get()) }
+  single { ChangeIdRoutinesUseCase(routineRepository = get()) }
 }
