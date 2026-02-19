@@ -9,10 +9,13 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.replaceAll
+import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.update
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import com.arkivanov.essenty.lifecycle.doOnCreate
+import com.arkivanov.essenty.lifecycle.doOnResume
 import com.rahim.data.distributionActions.AppDistributionActions
-import com.rahim.ui.main.component.MainComponent
-import com.rahim.ui.main.component.MainComponentImpl
 import com.rahim.ui.root.component.RootComponent.ChildStack.HistoryRoutine
 import com.rahim.ui.root.component.RootComponent.ChildStack.HomeStack
 import com.rahim.ui.root.component.RootComponent.ChildStack.Note
@@ -30,6 +33,7 @@ import com.rahim.yadino.home.domain.useCase.SearchRoutineUseCase
 import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
 import com.rahim.yadino.home.presentation.ui.root.component.RootHomeComponent
 import com.rahim.yadino.home.presentation.ui.root.component.RootHomeComponentImpl
+import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.note.domain.useCase.AddNoteUseCase
 import com.rahim.yadino.note.domain.useCase.AddSampleNoteUseCase
 import com.rahim.yadino.note.domain.useCase.DeleteNoteUseCase
@@ -56,7 +60,11 @@ import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
 import com.rahim.yadino.sharedPreferences.useCase.ChangeThemeUseCase
 import com.rahim.yadino.sharedPreferences.useCase.IsDarkThemeUseCase
 import com.rahim.yadino.sharedPreferences.useCase.IsShowWelcomeScreenUseCase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
@@ -148,35 +156,6 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     getCurrentTimeUseCase = getCurrentTimeUseCase,
   )
 
-  private val calculateTodayUseCase: CalculateTodayUseCase = get()
-  private val addTimeUseCase: AddTimeUseCase = get()
-  private val addSampleNoteUseCase: AddSampleNoteUseCase = get()
-  private val addSampleRoutineUseCase: AddSampleRoutineUseCase = get()
-  private val changeIdRoutinesUseCase: ChangeIdRoutinesUseCase = get()
-  private val haveAlarmUseCase: HaveAlarmUseCase = get()
-  private val checkedAllRoutinePastTimeUseCase: CheckedAllRoutinePastTimeUseCase = get()
-  private val changeThemeUseCase: ChangeThemeUseCase = get()
-  private val isDarkThemeUseCase: IsDarkThemeUseCase = get()
-  private val isShowWelcomeScreenUseCase: IsShowWelcomeScreenUseCase = get()
-  private val appDistributionActions: AppDistributionActions = get()
-
-  private fun mainComponent(componentContext: ComponentContext): MainComponent = MainComponentImpl(
-    componentContext = componentContext,
-    mainContext = Dispatchers.Main,
-    ioContext = Dispatchers.IO,
-    calculateTodayUseCase = calculateTodayUseCase,
-    addTimeUseCase = addTimeUseCase,
-    addSampleNoteUseCase = addSampleNoteUseCase,
-    addSampleRoutineUseCase = addSampleRoutineUseCase,
-    changeIdRoutinesUseCase = changeIdRoutinesUseCase,
-    haveAlarmUseCase = haveAlarmUseCase,
-    checkedAllRoutinePastTimeUseCase = checkedAllRoutinePastTimeUseCase,
-    changeThemeUseCase = changeThemeUseCase,
-    isDarkThemeUseCase = isDarkThemeUseCase,
-    isShowWelcomeScreenUseCase = isShowWelcomeScreenUseCase,
-    appDistributionActions = appDistributionActions,
-  )
-
   private val deleteNoteUseCase: DeleteNoteUseCase = get()
   private val getNotesUseCase: GetNotesUseCase = get()
   private val searchNoteUseCase: SearchNoteUseCase = get()
@@ -203,6 +182,121 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
     RootComponent.ChildConfig.HistoryRoutine -> HistoryRoutine(component = historyRoutineComponent(componentContext = childComponentContext))
     RootComponent.ChildConfig.Note -> Note(component = noteComponent(componentContext = childComponentContext))
     RootComponent.ChildConfig.Routine -> Routine(component = routineComponent(componentContext = childComponentContext))
-    RootComponent.ChildConfig.Main -> RootComponent.ChildStack.Main(component = mainComponent(componentContext = childComponentContext))
+  }
+
+
+  private val mutableState = MutableValue(RootComponent.State())
+  override val state: Value<RootComponent.State> = mutableState
+
+  private val calculateTodayUseCase: CalculateTodayUseCase = get()
+  private val addTimeUseCase: AddTimeUseCase = get()
+  private val addSampleNoteUseCase: AddSampleNoteUseCase = get()
+  private val addSampleRoutineUseCase: AddSampleRoutineUseCase = get()
+  private val changeIdRoutinesUseCase: ChangeIdRoutinesUseCase = get()
+  private val haveAlarmUseCase: HaveAlarmUseCase = get()
+  private val checkedAllRoutinePastTimeUseCase: CheckedAllRoutinePastTimeUseCase = get()
+  private val changeThemeUseCase: ChangeThemeUseCase = get()
+  private val isDarkThemeUseCase: IsDarkThemeUseCase = get()
+  private val isShowWelcomeScreenUseCase: IsShowWelcomeScreenUseCase = get()
+  private val appDistributionActions: AppDistributionActions = get()
+
+  override fun onEvent(event: RootComponent.Event) = when (event) {
+    is RootComponent.Event.ClickDrawer -> clickDrawerItem(event.drawerItemType)
+  }
+
+  private fun clickDrawerItem(drawerItemType: DrawerItemType) {
+    when (drawerItemType) {
+      is DrawerItemType.RateToApp -> {
+        val state = appDistributionActions.drawerItemType(com.rahim.data.distributionActions.DrawerItemType.RateToApp)
+        mutableState.update {
+          it.copy(stateOfClickItemDrawable = state)
+        }
+      }
+
+      is DrawerItemType.ShareWithFriends -> {
+        val state = appDistributionActions.drawerItemType(com.rahim.data.distributionActions.DrawerItemType.ShareWithFriends)
+        mutableState.update {
+          it.copy(stateOfClickItemDrawable = state)
+        }
+      }
+
+      is DrawerItemType.Theme -> {
+        setDarkTheme(state.value.isDarkTheme != true)
+      }
+    }
+  }
+  private val scopeMain: CoroutineScope = coroutineScope(Dispatchers.Main + SupervisorJob())
+  private val scopeIo: CoroutineScope = coroutineScope(Dispatchers.IO + SupervisorJob())
+
+  init {
+    lifecycle.run {
+      this.doOnResume {
+        checkedAllRoutinePastTime()
+      }
+      this.doOnCreate {
+        scopeIo.launch {
+          launch {
+            calculateTodayUseCase()
+          }
+          launch {
+            addTimeUseCase()
+          }
+          launch {
+            addSampleRoutineUseCase()
+          }
+          launch {
+            addSampleNoteUseCase()
+          }
+          launch {
+            changeIdRoutinesUseCase()
+          }
+          launch {
+            isShowWelcomeScreen()
+          }
+          launch {
+            haveAlarm()
+          }
+          launch {
+            getDarkTheme()
+          }
+        }
+      }
+    }
+  }
+
+  private suspend fun haveAlarm() {
+    haveAlarmUseCase().catch {}.collect { haveAlarm ->
+      mutableState.update {
+        it.copy(haveAlarm = haveAlarm)
+      }
+    }
+  }
+
+  private fun checkedAllRoutinePastTime() {
+    scopeMain.launch {
+      checkedAllRoutinePastTimeUseCase()
+    }
+  }
+
+  private fun setDarkTheme(isDarkTheme: Boolean) {
+    scopeMain.launch {
+      changeThemeUseCase(isDarkTheme)
+    }
+  }
+
+  private suspend fun getDarkTheme() {
+    isDarkThemeUseCase().catch {}.collect { theme ->
+      mutableState.update {
+        it.copy(isDarkTheme = theme)
+      }
+    }
+  }
+
+  private suspend fun isShowWelcomeScreen() {
+    isShowWelcomeScreenUseCase().catch {}.collect { isShow ->
+      mutableState.update {
+        it.copy(isShowWelcomeScreen = isShow)
+      }
+    }
   }
 }

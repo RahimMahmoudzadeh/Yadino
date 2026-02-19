@@ -55,12 +55,12 @@ fun YadinoApp(
   isDarkTheme: Boolean = isSystemInDarkTheme(),
   haveAlarm: Boolean,
   window: Window,
-  rootComponent: RootComponent,
+  component: RootComponent,
   drawerItemClicked: (DrawerItemType) -> Unit,
 ) {
   val size = LocalSize.current
 
-  val stack = rootComponent.stack.subscribeAsState()
+  val stack = component.stack.subscribeAsState()
   val configurationState = stack.value.active.configuration
 
   var clickSearch by rememberSaveable { mutableStateOf(false) }
@@ -90,14 +90,14 @@ fun YadinoApp(
               exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
             ) {
               TopBarCenterAlign(
-                title = checkNavBackStackEntry(rootComponent = rootComponent),
+                title = checkNavBackStackEntry(rootComponent = component),
                 openHistory = {
-                  rootComponent.showHistoryRoutine()
+                  component.showHistoryRoutine()
                 },
                 isShowSearchIcon = configurationState !is RootComponent.ChildConfig.HistoryRoutine,
                 isShowBackIcon = configurationState is RootComponent.ChildConfig.HistoryRoutine,
                 onClickBack = {
-                  rootComponent.navigateUp()
+                  component.navigateUp()
                 },
                 onClickSearch = {
                   clickSearch = !clickSearch
@@ -118,12 +118,12 @@ fun YadinoApp(
             ) {
               BottomNavigationBar(
                 configuration = configurationState,
-                component = rootComponent,
+                component = component,
               )
             }
           },
         ) { innerPadding ->
-          RootContent(component = rootComponent, clickSearch = clickSearch, modifier = Modifier.padding(innerPadding))
+          RootContent(component = component, clickSearch = clickSearch, modifier = Modifier.padding(innerPadding))
         }
       }
     }
