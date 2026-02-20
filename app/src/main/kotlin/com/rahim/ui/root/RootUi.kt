@@ -1,6 +1,10 @@
 package com.rahim.ui.root
 
+import android.app.Activity
+import android.content.Context
+import android.os.Build
 import android.view.Window
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -23,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
@@ -33,8 +38,11 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.rahim.BuildConfig
 import com.rahim.component.BottomNavigationBar
+import com.rahim.data.distributionActions.StateOfClickItemDrawable
 import com.rahim.ui.root.component.RootComponent
+import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
@@ -51,23 +59,26 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun YadinoApp(
-  isShowWelcomeScreen: Boolean,
-  isDarkTheme: Boolean = isSystemInDarkTheme(),
-  haveAlarm: Boolean,
+  modifier: Modifier = Modifier,
   window: Window,
   component: RootComponent,
-  drawerItemClicked: (DrawerItemType) -> Unit,
 ) {
   val size = LocalSize.current
-
+  val context = LocalContext.current
+  val (event, state) = use(component)
+  val isDark = state.isDarkTheme ?: isSystemInDarkTheme()
   val stack = component.stack.subscribeAsState()
   val configurationState = stack.value.active.configuration
+
+  changeTheme(theme = state.isDarkTheme, activity = context as Activity)
+  checkStateOfClickItemDrawable(stateOfClickItemDrawable = state.stateOfClickItemDrawable, context = context)
 
   var clickSearch by rememberSaveable { mutableStateOf(false) }
 
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val coroutineScope = rememberCoroutineScope()
   val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+
   if (configurationState !is RootComponent.ChildConfig.OnBoarding) {
     windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
   } else {
@@ -75,11 +86,14 @@ fun YadinoApp(
   }
 
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-    YadinoTheme(darkTheme = isDarkTheme) {
+    YadinoTheme(darkTheme = isDark) {
       YadinoNavigationDrawer(
+        modifier = modifier,
         drawerState = drawerState,
-        isDarkTheme = isDarkTheme,
-        onItemClick = drawerItemClicked,
+        isDarkTheme = isDark,
+        onItemClick = {
+          event(RootComponent.Event.ClickDrawer(it))
+        },
         gesturesEnabled = configurationState !is RootComponent.ChildConfig.OnBoarding,
       ) {
         Scaffold(
@@ -105,7 +119,7 @@ fun YadinoApp(
                 onDrawerClick = {
                   coroutineScope.launch { drawerState.open() }
                 },
-                haveAlarm = haveAlarm,
+                haveAlarm = state.haveAlarm,
                 size = size,
               )
             }
@@ -183,3 +197,37 @@ private fun checkNavBackStackEntry(rootComponent: RootComponent): String {
     else -> stringResource(id = com.rahim.R.string.notes)
   }
 }
+
+private fun checkStateOfClickItemDrawable(stateOfClickItemDrawable: StateOfClickItemDrawable?, context: Context) {
+  if (stateOfClickItemDrawable is StateOfClickItemDrawable.InstallApp) {
+    when {
+      BuildConfig.FLAVOR.contains("myket") -> {
+        Toast.makeText(
+          context,
+          context.resources.getString(com.rahim.R.string.install_myket),
+          Toast.LENGTH_SHORT,
+        ).show()
+      }
+
+      BuildConfig.FLAVOR.contains("cafeBazaar") -> {
+        Toast.makeText(
+          context,
+          context.resources.getString(com.rahim.R.string.install_cafeBazaar),
+          Toast.LENGTH_SHORT,
+        ).show()
+      }
+    }
+  }
+}
+
+private fun changeTheme(theme: Boolean?,activity: Activity) {
+  if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
+  theme?.let {
+    if (theme) {
+      activity.splashScreen.setSplashScreenTheme(com.rahim.R.style.Theme_dark)
+    } else {
+      activity.splashScreen.setSplashScreenTheme(com.rahim.R.style.Theme_Light)
+    }
+  }
+}
+
