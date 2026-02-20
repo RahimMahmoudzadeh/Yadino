@@ -60,7 +60,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun YadinoApp(
   modifier: Modifier = Modifier,
-  window: Window,
   component: RootComponent,
 ) {
   val size = LocalSize.current
@@ -77,13 +76,6 @@ fun YadinoApp(
 
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val coroutineScope = rememberCoroutineScope()
-  val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
-
-  if (configurationState !is RootComponent.ChildConfig.OnBoarding) {
-    windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
-  } else {
-    windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
-  }
 
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
     YadinoTheme(darkTheme = isDark) {

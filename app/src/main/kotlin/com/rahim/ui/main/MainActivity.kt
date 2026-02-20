@@ -8,7 +8,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.arkivanov.decompose.defaultComponentContext
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.google.firebase.messaging.FirebaseMessaging
 import com.rahim.BuildConfig
 import com.rahim.ui.root.component.RootComponent
@@ -33,7 +36,6 @@ class MainActivity : ComponentActivity() {
 
     setContent {
       YadinoApp(
-        window = window,
         component = root,
       )
     }
