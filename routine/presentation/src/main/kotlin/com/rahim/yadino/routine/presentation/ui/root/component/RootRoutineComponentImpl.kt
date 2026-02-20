@@ -62,6 +62,37 @@ class RootRoutineComponentImpl(
   private val errorDialogNavigationSlot =
     SlotNavigation<RootRoutineComponent.DialogSlot.ErrorDialog>()
 
+  private val navigation = StackNavigation<RootRoutineComponent.ChildConfig>()
+
+  override val stack: Value<ChildStack<*, RootRoutineComponent.ChildStack>> = childStack(
+    source = navigation,
+    serializer = RootRoutineComponent.ChildConfig.serializer(),
+    initialConfiguration = RootRoutineComponent.ChildConfig.RoutineMain,
+    handleBackButton = true,
+    childFactory = ::childComponent,
+  )
+
+  private fun childComponent(
+    config: RootRoutineComponent.ChildConfig,
+    childComponentContext: ComponentContext,
+  ): RootRoutineComponent.ChildStack = when (config) {
+    RootRoutineComponent.ChildConfig.RoutineMain -> RootRoutineComponent.ChildStack.RoutineMainStack(component = mainComponent(componentContext = childComponentContext))
+  }
+
+  private fun mainComponent(componentContext: ComponentContext): MainRoutineComponent = MainRoutineComponentImpl(
+    componentContext = componentContext,
+    mainContext = mainContext,
+    ioContext = ioContext,
+    cancelReminderUseCase = cancelReminderUseCase,
+    getRemindersUseCase = getRemindersUseCase,
+    searchRoutineUseCase = searchRoutineUseCase,
+    dateTimeRepository = dateTimeRepository,
+    showErrorDialogRemoveRoutine = ::showErrorDialogRemoveRoutine,
+    showUpdateDialog = ::showUpdateDialog,
+    showErrorDialog = ::showErrorDialog,
+    showAddDialog = ::showAddDialog,
+  )
+
   override val addRoutineDialogScreen: Value<ChildSlot<RootRoutineComponent.DialogSlot.AddRoutineDialog, AddRoutineDialogComponent>> =
     childSlot(
       source = addRoutineDialogNavigationSlot,
@@ -129,36 +160,6 @@ class RootRoutineComponentImpl(
         onDismissed = errorDialogNavigationSlot::dismiss,
       )
     }
-
-  private val navigation = StackNavigation<RootRoutineComponent.ChildConfig>()
-
-  override val stack: Value<ChildStack<*, RootRoutineComponent.ChildStack>> = childStack(
-    source = navigation,
-    serializer = RootRoutineComponent.ChildConfig.serializer(),
-    initialConfiguration = RootRoutineComponent.ChildConfig.RoutineMain,
-    handleBackButton = true,
-    childFactory = ::childComponent,
-  )
-  private fun childComponent(
-    config: RootRoutineComponent.ChildConfig,
-    childComponentContext: ComponentContext,
-  ): RootRoutineComponent.ChildStack = when (config) {
-    RootRoutineComponent.ChildConfig.RoutineMain -> RootRoutineComponent.ChildStack.RoutineMainStack(component = mainComponent(componentContext = childComponentContext))
-  }
-
-  private fun mainComponent(componentContext: ComponentContext): MainRoutineComponent = MainRoutineComponentImpl(
-    componentContext = componentContext,
-    mainContext = mainContext,
-    ioContext = ioContext,
-    cancelReminderUseCase = cancelReminderUseCase,
-    getRemindersUseCase = getRemindersUseCase,
-    searchRoutineUseCase = searchRoutineUseCase,
-    dateTimeRepository = dateTimeRepository,
-    showErrorDialogRemoveRoutine = ::showErrorDialogRemoveRoutine,
-    showUpdateDialog = ::showUpdateDialog,
-    showErrorDialog = ::showErrorDialog,
-    showAddDialog = ::showAddDialog,
-  )
 
   private fun showErrorDialogRemoveRoutine(errorDialogRemoveRoutineUiModel: ErrorDialogRemoveRoutineUiModel) {
     errorDialogRemoveRoutineNavigationSlot.activate(RootRoutineComponent.DialogSlot.ErrorDialogRemoveRoutine(errorDialogRemoveRoutineUiModel))

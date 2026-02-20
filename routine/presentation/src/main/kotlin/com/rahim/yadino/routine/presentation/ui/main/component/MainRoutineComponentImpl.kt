@@ -44,16 +44,15 @@ class MainRoutineComponentImpl(
   private val showAddDialog: () -> Unit,
 ) : MainRoutineComponent, ComponentContext by componentContext {
 
-  private var _state = MutableValue(MainRoutineComponent.State())
-  override val state: Value<MainRoutineComponent.State> = _state
-
   private val mainScope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
   private val ioScope: CoroutineScope = coroutineScope(ioContext + SupervisorJob())
+
+  private var _state = MutableValue(MainRoutineComponent.State())
+  override val state: Value<MainRoutineComponent.State> = _state
 
   private var lastYearNumber = dateTimeRepository.currentTimeYear
   private var lastMonthNumber = dateTimeRepository.currentTimeMonth
   private var lastDayNumber = dateTimeRepository.currentTimeDay
-
 
   private var searchNameRoutine = ""
 

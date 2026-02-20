@@ -71,9 +71,11 @@ inline fun <reified EVENT, STATE : Any, EFFECT> use(component: UnidirectionalCom
 @Composable
 inline fun <STATE : Any> use(component: StateSource<STATE>): StateDispatch<STATE> {
   val state by component.state.subscribeAsState()
-  return StateDispatch(
-    state = state,
-  )
+  return remember(state) {
+    StateDispatch(
+      state = state,
+    )
+  }
 }
 
 @Composable
@@ -96,7 +98,7 @@ inline fun <reified EVENT, STATE : Any> use(component: StateEventComponent<EVENT
     { event: EVENT -> component.onEvent(event) }
   }
 
-  return remember(dispatch) {
+  return remember(key1 = dispatch, key2 = state) {
     EventStateDispatch(
       event = dispatch,
       state = state,
