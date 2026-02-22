@@ -67,18 +67,7 @@ fun NoteMainScreen(modifier: Modifier = Modifier, clickSearch: Boolean, componen
     NoteScreen(
       modifier = modifier.padding(innerPadding),
       state = state,
-      onUpdateNote = { updateNote ->
-        event(NoteMainComponent.Event.OnOpenUpdateNoteDialog(updateNote))
-      },
-      onShowErrorDialog = {
-        event(NoteMainComponent.Event.ShowErrorRemoveNoteDialog(it))
-      },
-      onSearchText = {
-        event(NoteMainComponent.Event.Search(it))
-      },
-      onCheckedNote = {
-        event(NoteMainComponent.Event.OnChecked(it))
-      },
+      event = event,
       clickSearch = clickSearch,
     )
   }
@@ -89,11 +78,8 @@ fun NoteMainScreen(modifier: Modifier = Modifier, clickSearch: Boolean, componen
 private fun NoteScreen(
   modifier: Modifier = Modifier,
   state: NoteMainComponent.State,
+  event: (NoteMainComponent.Event) -> Unit,
   clickSearch: Boolean,
-  onUpdateNote: (note: NoteUiModel) -> Unit,
-  onShowErrorDialog: (errorDialogRemoveNoteUiModel: ErrorDialogRemoveNoteUiModel) -> Unit,
-  onCheckedNote: (NoteUiModel) -> Unit,
-  onSearchText: (NameNoteUi) -> Unit,
 ) {
   var searchText by rememberSaveable { mutableStateOf("") }
 
@@ -109,7 +95,7 @@ private fun NoteScreen(
       .debounce(300)
       .distinctUntilChanged()
       .collect { query ->
-        onSearchText(NameNoteUi(name = query))
+        event(NoteMainComponent.Event.Search(NameNoteUi(name = query)))
       }
   }
 
@@ -118,7 +104,7 @@ private fun NoteScreen(
     verticalArrangement = Arrangement.Top,
     modifier = modifier
       .fillMaxSize(),
-    ) {
+  ) {
     ShowSearchBar(clickSearch, searchText = searchText) { search ->
       searchText = search
     }
@@ -138,7 +124,7 @@ private fun NoteScreen(
           ItemsNote(
             notes = notes,
             checkedNote = { note ->
-              onCheckedNote(note)
+              event(NoteMainComponent.Event.OnChecked(note))
             },
             spaceDimensions = space,
             updateNote = { updateNote ->
@@ -150,7 +136,7 @@ private fun NoteScreen(
                 ).show()
                 return@ItemsNote
               }
-              onUpdateNote(updateNote)
+              event(NoteMainComponent.Event.OnOpenUpdateNoteDialog(updateNote))
             },
             deleteNote = {
               if (it.isChecked) {
@@ -161,9 +147,7 @@ private fun NoteScreen(
                 ).show()
                 return@ItemsNote
               }
-              onShowErrorDialog(
-                ErrorDialogRemoveNoteUiModel(title = title, submitTextButton = submitTextButton, noteUiModel = it),
-              )
+              event(NoteMainComponent.Event.ShowErrorRemoveNoteDialog(ErrorDialogRemoveNoteUiModel(title = title, submitTextButton = submitTextButton, noteUiModel = it)))
             },
           )
         }

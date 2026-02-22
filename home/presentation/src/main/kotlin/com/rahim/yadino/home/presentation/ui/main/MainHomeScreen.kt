@@ -133,8 +133,8 @@ fun HomeMainScreen(
       }
     },
   ) { innerPadding ->
+    val b=innerPadding
     HomeScreen(
-      modifier = modifier.padding(innerPadding),
       state = state,
       clickSearch = clickSearch,
       onCheckedRoutine = {
