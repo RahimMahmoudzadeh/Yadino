@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class NoteUiModel(
-  val id: Int? = null,
+  val id: Int,
   val name: String,
   val description: String,
   val isChecked: Boolean = false,

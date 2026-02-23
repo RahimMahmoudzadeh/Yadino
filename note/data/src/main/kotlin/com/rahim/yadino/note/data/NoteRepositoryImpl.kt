@@ -8,6 +8,7 @@ import com.rahim.yadino.note.domain.NoteRepository
 import com.rahim.yadino.note.domain.model.NameNote
 import com.rahim.yadino.note.domain.model.Note
 import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -24,12 +25,13 @@ class NoteRepositoryImpl(
   private val currentTimeDay = persianData.shDay
   private val currentTimeMonth = persianData.shMonth
   private val currentTimeYear = persianData.shYear
+
   override suspend fun addSampleNote() {
     if (sharedPreferencesRepository.isShowSampleNote().first()) {
       noteDao.removeSampleNote()
       return
     }
-    (0..1).forEachIndexed { index, it ->
+    repeat(2) {index ->
       val note =
         NoteEntity(
           name = "تست${index.plus(1)}",
@@ -40,7 +42,7 @@ class NoteRepositoryImpl(
           yearNumber = currentTimeYear,
           monthNumber = currentTimeMonth,
           isSample = true,
-          id = index,
+          id = index.plus(1),
         )
       noteDao.insertNote(note)
     }

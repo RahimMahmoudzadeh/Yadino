@@ -49,7 +49,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @Composable
 fun NoteMainScreen(modifier: Modifier = Modifier, clickSearch: Boolean, component: NoteMainComponent) {
 
-  val (state, effect, event) = use(component)
+  val (state, _, event) = use(component)
 
   Scaffold(
     floatingActionButton = {
@@ -172,14 +172,13 @@ fun ItemsNote(
       ),
   ) {
     items(
+      key = {
+        it.id
+      },
       items = notes,
       itemContent = {
         ItemListNote(
-          isChecked = it.isChecked,
-          priorityNote = it.state,
-          descriptionNote = it.description,
-          nameNote = it.name,
-          timeNote = it.timeNote,
+          note = it,
           onChecked = { checked ->
             checkedNote(it.copy(isChecked = checked))
           },

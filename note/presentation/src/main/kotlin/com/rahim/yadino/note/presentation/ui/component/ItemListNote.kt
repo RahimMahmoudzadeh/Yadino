@@ -36,6 +36,7 @@ import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.Mantis
 import com.rahim.yadino.designsystem.utils.theme.Porcelain
 import com.rahim.yadino.designsystem.utils.theme.Punch
+import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.note.presentation.model.NoteUiModel
 import com.rahim.yadino.note.presentation.model.PriorityNote
@@ -47,20 +48,16 @@ import me.saket.swipe.SwipeableActionsBox
 @Composable
 fun ItemListNote(
   modifier: Modifier = Modifier,
+  note: NoteUiModel,
   onChecked: (Boolean) -> Unit,
-  isChecked: Boolean,
-  priorityNote: PriorityNote,
-  nameNote: String,
-  descriptionNote: String,
-  timeNote: NoteUiModel.TimeNoteUiModel,
   openDialogEdit: () -> Unit,
   openDialogDelete: () -> Unit,
 ) {
   val space = LocalSpacing.current
   val size = LocalSize.current
 
-  val textUnderLine = if (isChecked) TextDecoration.LineThrough else TextDecoration.None
-  val date by remember { mutableStateOf("${timeNote.yearNumber}/${timeNote.monthNumber}/${timeNote.dayNumber}") }
+  val textUnderLine = if (note.isChecked) TextDecoration.LineThrough else TextDecoration.None
+  val date by remember { mutableStateOf("${note.timeNote.yearNumber}/${note.timeNote.monthNumber}/${note.timeNote.dayNumber}") }
 
   val delete = SwipeAction(
     icon = painterResource(id = R.drawable.delete),
@@ -85,7 +82,7 @@ fun ItemListNote(
   ) {
     Card(
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-      border = if (isChecked) {
+      border = if (note.isChecked) {
         BorderStroke(
           size.size1,
           color = Porcelain,
@@ -97,7 +94,7 @@ fun ItemListNote(
         )
       },
       onClick = {
-        onChecked(!isChecked)
+        onChecked(!note.isChecked)
       },
       modifier = modifier
         .fillMaxWidth()
@@ -111,9 +108,9 @@ fun ItemListNote(
         horizontalArrangement = Arrangement.SpaceBetween,
       ) {
         Checkbox(
-          checked = isChecked,
+          checked = note.isChecked,
           onCheckedChange = {
-            onChecked(!isChecked)
+            onChecked(!note.isChecked)
           },
           colors = CheckboxDefaults.colors(
             uncheckedColor = CornflowerBlueLight,
@@ -123,8 +120,8 @@ fun ItemListNote(
         Column(modifier = Modifier.padding(top = space.space12)) {
           Text(
             modifier = Modifier.align(Alignment.End),
-            color = if (priorityNote == PriorityNote.HIGH_PRIORITY) Punch else if (priorityNote == PriorityNote.NORMAL) CornflowerBlueDark else Mantis,
-            text = nameNote,
+            color = if (note.state == PriorityNote.HIGH_PRIORITY) Punch else if (note.state == PriorityNote.NORMAL) CornflowerBlueDark else Mantis,
+            text = note.name,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
             textDecoration = textUnderLine,
@@ -134,7 +131,7 @@ fun ItemListNote(
             modifier = Modifier
               .align(Alignment.End)
               .padding(top = space.space10),
-            text = descriptionNote,
+            text = note.description,
             color = MaterialTheme.colorScheme.secondaryContainer,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
@@ -156,23 +153,28 @@ fun ItemListNote(
   }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun ItemListNotePreview() {
+  YadinoTheme {
     ItemListNote(
-        onChecked = {},
+      note = NoteUiModel(
+        id = 1,
+        name = "Sample Note",
+        description = "This is a sample note description for preview.",
         isChecked = false,
-        priorityNote = PriorityNote.NORMAL,
-        nameNote = "Test Note",
-        descriptionNote = "This is a test description for a note.",
+        state = PriorityNote.HIGH_PRIORITY,
         timeNote = NoteUiModel.TimeNoteUiModel(
-            yearNumber = 1403,
-            monthNumber = 4,
-            dayNumber = 28,
-            dayName = "Saturday",
-            timeCreateMillSecond = 0L
+          monthNumber = 5,
+          yearNumber = 1402,
+          dayNumber = 20,
+          dayName = "Friday",
+          timeCreateMillSecond = 0L,
         ),
-        openDialogEdit = {},
-        openDialogDelete = {}
+      ),
+      onChecked = {},
+      openDialogEdit = {},
+      openDialogDelete = {},
     )
+  }
 }
