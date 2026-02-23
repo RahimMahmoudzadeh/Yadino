@@ -16,8 +16,8 @@ import com.rahim.yadino.db.routine.model.RoutineEntity
 
 @Database(
   entities = [NoteEntity::class, TimeDateEntity::class, RoutineEntity::class],
-  // 2024/18/10
-  version = 6,
+  // 2026/23/02
+  version = 7,
   exportSchema = true,
   autoMigrations = [
       AutoMigration(1, 2),
@@ -25,6 +25,7 @@ import com.rahim.yadino.db.routine.model.RoutineEntity
       AutoMigration(3, 4, spec = AppDatabase.Version3::class),
       AutoMigration(4, 5),
       AutoMigration(5, 6, spec = AppDatabase.Version6::class),
+      AutoMigration(6, 7),
   ],
 )
 abstract class AppDatabase : RoomDatabase() {
