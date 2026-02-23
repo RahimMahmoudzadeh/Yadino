@@ -131,27 +131,7 @@ fun RoutineMainUi(
       modifier = modifier.padding(innerPadding),
       state = state,
       showSearchBar = showSearchBar,
-      onShowUpdateDialog = {
-        event.invoke(MainRoutineComponent.Event.ShowUpdateDialog(it))
-      },
-      onShowErrorDialog = {
-        event.invoke(MainRoutineComponent.Event.ShowErrorRemoveRoutineDialog(it))
-      },
-      onSearchText = {
-        event.invoke(MainRoutineComponent.Event.SearchRoutineByName(it))
-      },
-      checkedRoutine = {
-        event.invoke(MainRoutineComponent.Event.CheckedRoutine(it))
-      },
-      dayCheckedNumber = { timeDate ->
-        event.invoke(MainRoutineComponent.Event.GetRoutines(timeDate))
-      },
-      increaseOrDecrease = { increaseDecrease ->
-        event.invoke(MainRoutineComponent.Event.MonthChange(increaseDecrease = increaseDecrease))
-      },
-      weekChange = { increaseDecrease ->
-        event.invoke(MainRoutineComponent.Event.WeekChange(increaseDecrease = increaseDecrease))
-      },
+      event = event,
     )
   }
 }
@@ -161,14 +141,8 @@ fun RoutineMainUi(
 private fun RoutineScreen(
   modifier: Modifier,
   state: MainRoutineComponent.State,
+  event: (MainRoutineComponent.Event) -> Unit,
   showSearchBar: Boolean,
-  checkedRoutine: (RoutineUiModel) -> Unit,
-  dayCheckedNumber: (timeDate: TimeDateUiModel) -> Unit,
-  onShowUpdateDialog: (routine: RoutineUiModel) -> Unit,
-  onShowErrorDialog: (ErrorDialogRemoveRoutineUiModel) -> Unit,
-  onSearchText: (String) -> Unit,
-  increaseOrDecrease: (increaseDecrease: IncreaseDecrease) -> Unit,
-  weekChange: (IncreaseDecrease) -> Unit,
 ) {
   val context = LocalContext.current
 
@@ -180,7 +154,7 @@ private fun RoutineScreen(
 
   LaunchedEffect(Unit) {
     snapshotFlow { searchQuery }.debounce(300).distinctUntilChanged().collect { query ->
-      onSearchText(query)
+      event(MainRoutineComponent.Event.SearchRoutineByName(query))
     }
   }
 
@@ -200,12 +174,16 @@ private fun RoutineScreen(
       yearChecked = state.currentYear,
       monthChecked = state.currentMonth,
       indexDay = state.index,
-      dayCheckedNumber = dayCheckedNumber,
+      dayCheckedNumber = {
+        event.invoke(MainRoutineComponent.Event.GetRoutines(it))
+      },
       screenWidth = screenWidth,
       monthChange = { increaseDecrease ->
-        increaseOrDecrease(increaseDecrease)
+        event.invoke(MainRoutineComponent.Event.MonthChange(increaseDecrease = increaseDecrease))
       },
-      weekChange = weekChange,
+      weekChange = {
+        event.invoke(MainRoutineComponent.Event.WeekChange(increaseDecrease = it))
+      },
       space = space,
       size = size,
       fontSize = fontSize,
@@ -225,10 +203,10 @@ private fun RoutineScreen(
           ).show()
           return@GetRoutines
         }
-        onShowUpdateDialog(routineUpdate)
+        event(MainRoutineComponent.Event.ShowUpdateDialog(routineUpdate))
       },
       routineChecked = {
-        checkedRoutine(it)
+        event(MainRoutineComponent.Event.CheckedRoutine(it))
         Timber.tag("routineGetNameDay").d("GetRoutines routineChecked->$it")
       },
       routineDeleteDialog = { deletedRoutine ->
@@ -240,7 +218,7 @@ private fun RoutineScreen(
           ).show()
           return@GetRoutines
         }
-        onShowErrorDialog(ErrorDialogRemoveRoutineUiModel(title = context.getString(com.rahim.yadino.library.designsystem.R.string.can_you_delete), submitTextButton = context.getString(com.rahim.yadino.library.designsystem.R.string.ok), routineUiModel = deletedRoutine))
+        event(MainRoutineComponent.Event.ShowErrorRemoveRoutineDialog(ErrorDialogRemoveRoutineUiModel(title = context.getString(com.rahim.yadino.library.designsystem.R.string.can_you_delete), submitTextButton = context.getString(com.rahim.yadino.library.designsystem.R.string.ok), routineUiModel = deletedRoutine))
       },
     )
   }

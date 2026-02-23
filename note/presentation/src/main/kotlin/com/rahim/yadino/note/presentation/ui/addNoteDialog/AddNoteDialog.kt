@@ -72,7 +72,7 @@ fun AddNoteDialog(
   component: AddNoteDialogComponent,
 ) {
 
-  val (state, effect, event) = use(component)
+  val (_, effect, event) = use(component)
 
   val space = LocalSpacing.current
   val size = LocalSize.current
