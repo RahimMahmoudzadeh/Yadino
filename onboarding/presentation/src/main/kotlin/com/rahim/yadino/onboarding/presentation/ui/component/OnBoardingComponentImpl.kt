@@ -4,8 +4,9 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import com.arkivanov.essenty.lifecycle.doOnCreate
+import com.rahim.yadino.onBoarding.domain.useCase.IsShowWelcomeScreenUseCase
 import com.rahim.yadino.onBoarding.domain.useCase.SaveShowWelcomeUseCase
-import com.rahim.yadino.sharedPreferences.useCase.IsShowWelcomeScreenUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.catch
@@ -26,7 +27,9 @@ class OnBoardingComponentImpl(
   override val state: Value<OnBoardingComponent.WelcomeState> = _state
 
   init {
-    checkShowWelcome()
+    lifecycle.doOnCreate {
+      checkShowWelcome()
+    }
   }
 
   override fun onEvent(event: OnBoardingComponent.WelcomeEvent) = when (event) {

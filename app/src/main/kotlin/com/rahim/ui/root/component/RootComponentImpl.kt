@@ -42,6 +42,7 @@ import com.rahim.yadino.note.domain.useCase.SearchNoteUseCase
 import com.rahim.yadino.note.domain.useCase.UpdateNoteUseCase
 import com.rahim.yadino.note.presentation.ui.root.component.RootNoteComponent
 import com.rahim.yadino.note.presentation.ui.root.component.RootNoteComponentImpl
+import com.rahim.yadino.onBoarding.domain.useCase.SaveShowWelcomeUseCase
 import com.rahim.yadino.onboarding.presentation.ui.component.OnBoardingComponent
 import com.rahim.yadino.onboarding.presentation.ui.component.OnBoardingComponentImpl
 import com.rahim.yadino.routine.domain.useCase.AddSampleRoutineUseCase
@@ -79,7 +80,8 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private val searchRoutineUseCase: SearchRoutineUseCase = get()
   private val getCurrentDateUseCase: GetCurrentDateUseCase = get()
 
-  private val sharedPreferencesRepository: SharedPreferencesRepository = get()
+  private val isShowWelcomeScreenUseCaseOnBoarding: com.rahim.yadino.onBoarding.domain.useCase.IsShowWelcomeScreenUseCase = get()
+  private val saveShowWelcomeUseCase: SaveShowWelcomeUseCase = get()
 
   override val stack: Value<ChildStack<*, RootComponent.ChildStack>> = childStack(
     source = navigation,
@@ -117,7 +119,8 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
   private fun onBoardingComponent(componentContext: ComponentContext): OnBoardingComponent = OnBoardingComponentImpl(
     componentContext = componentContext,
     mainContext = Dispatchers.Main,
-    sharedPreferencesRepository = sharedPreferencesRepository,
+    isShowWelcomeScreenUseCase = isShowWelcomeScreenUseCaseOnBoarding,
+    saveShowWelcomeUseCase = saveShowWelcomeUseCase,
     onNavigateToHome = {
       navigation.replaceAll(RootComponent.ChildConfig.Home)
     },
@@ -225,6 +228,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
       }
     }
   }
+
   private val scopeMain: CoroutineScope = coroutineScope(Dispatchers.Main + SupervisorJob())
   private val scopeIo: CoroutineScope = coroutineScope(Dispatchers.IO + SupervisorJob())
 
