@@ -69,7 +69,7 @@ inline fun <reified EVENT, STATE : Any, EFFECT> use(component: UnidirectionalCom
 }
 
 @Composable
-inline fun <STATE : Any> use(component: StateSource<STATE>): StateDispatch<STATE> {
+fun <STATE : Any> use(component: StateSource<STATE>): StateDispatch<STATE> {
   val state by component.state.subscribeAsState()
   return remember(state) {
     StateDispatch(
@@ -108,7 +108,7 @@ inline fun <reified EVENT, STATE : Any> use(component: StateEventComponent<EVENT
 
 
 @Composable
-inline fun <EFFECT> use(component: EffectSource<EFFECT>): EffectDispatch<EFFECT> {
+fun <EFFECT> use(component: EffectSource<EFFECT>): EffectDispatch<EFFECT> {
   return remember(component.effects) {
     EffectDispatch(
       effect = component.effects,
