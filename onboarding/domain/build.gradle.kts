@@ -5,9 +5,8 @@ plugins {
 }
 
 android {
-  namespace = "com.rahim.yadino.routine.domain"
+  namespace = "com.rahim.yadino.onBoarding.domain"
 }
 dependencies {
   implementation(projects.core.base)
-  implementation(projects.core.timeDate)
 }

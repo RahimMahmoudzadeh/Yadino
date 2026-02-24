@@ -41,6 +41,7 @@
             <option value="$PROJECT_DIR$/note/domain" />
             <option value="$PROJECT_DIR$/note/presentation" />
             <option value="$PROJECT_DIR$/onboarding" />
+            <option value="$PROJECT_DIR$/onboarding/domain" />
             <option value="$PROJECT_DIR$/onboarding/presentation" />
             <option value="$PROJECT_DIR$/routine" />
             <option value="$PROJECT_DIR$/routine/data" />
