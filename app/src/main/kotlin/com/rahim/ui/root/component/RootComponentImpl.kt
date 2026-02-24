@@ -42,8 +42,8 @@ import com.rahim.yadino.note.domain.useCase.SearchNoteUseCase
 import com.rahim.yadino.note.domain.useCase.UpdateNoteUseCase
 import com.rahim.yadino.note.presentation.ui.root.component.RootNoteComponent
 import com.rahim.yadino.note.presentation.ui.root.component.RootNoteComponentImpl
-import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
-import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponentImpl
+import com.rahim.yadino.onboarding.presentation.ui.component.OnBoardingComponent
+import com.rahim.yadino.onboarding.presentation.ui.component.OnBoardingComponentImpl
 import com.rahim.yadino.routine.domain.useCase.AddSampleRoutineUseCase
 import com.rahim.yadino.routine.domain.useCase.ChangeIdRoutinesUseCase
 import com.rahim.yadino.routine.domain.useCase.CheckedAllRoutinePastTimeUseCase

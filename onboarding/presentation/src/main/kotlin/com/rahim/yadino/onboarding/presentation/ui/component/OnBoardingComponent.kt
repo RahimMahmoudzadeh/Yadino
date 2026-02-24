@@ -1,4 +1,4 @@
-package com.rahim.yadino.onboarding.presentation.component
+package com.rahim.yadino.onboarding.presentation.ui.component
 
 import androidx.compose.runtime.Immutable
 import com.rahim.yadino.base.EventStateDispatch

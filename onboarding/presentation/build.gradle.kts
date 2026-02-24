@@ -10,6 +10,9 @@ android {
   namespace = "com.rahim.yadino.onboarding.presentation"
 }
 dependencies {
+  projects.run{
+    implementation(onboarding.domain)
+  }
   libs.run {
     implementation(bundles.accompanist)
   }

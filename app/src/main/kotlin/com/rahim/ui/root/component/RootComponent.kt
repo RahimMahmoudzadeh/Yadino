@@ -7,7 +7,7 @@ import com.rahim.yadino.base.StateEventComponent
 import com.rahim.yadino.home.presentation.ui.root.component.RootHomeComponent
 import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.note.presentation.ui.root.component.RootNoteComponent
-import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
+import com.rahim.yadino.onboarding.presentation.ui.component.OnBoardingComponent
 import com.rahim.yadino.routine.presentation.ui.alarmHistory.component.HistoryRoutineComponent
 import com.rahim.yadino.routine.presentation.ui.root.component.RootRoutineComponent
 import kotlinx.serialization.Serializable

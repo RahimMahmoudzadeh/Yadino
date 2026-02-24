@@ -1,24 +1,22 @@
-package com.rahim.yadino.onboarding.presentation.component
+package com.rahim.yadino.onboarding.presentation.ui.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import com.rahim.yadino.sharedPreferences.repo.SharedPreferencesRepository
+import com.rahim.yadino.onBoarding.domain.useCase.SaveShowWelcomeUseCase
+import com.rahim.yadino.sharedPreferences.useCase.IsShowWelcomeScreenUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class OnBoardingComponentImpl(
   componentContext: ComponentContext,
   mainContext: CoroutineContext,
-  private val sharedPreferencesRepository: SharedPreferencesRepository,
+  private val isShowWelcomeScreenUseCase: IsShowWelcomeScreenUseCase,
+  private val saveShowWelcomeUseCase: SaveShowWelcomeUseCase,
   private val onNavigateToHome: () -> Unit,
 ) : OnBoardingComponent, ComponentContext by componentContext {
 
@@ -28,7 +26,7 @@ class OnBoardingComponentImpl(
   override val state: Value<OnBoardingComponent.WelcomeState> = _state
 
   init {
-      checkShowWelcome()
+    checkShowWelcome()
   }
 
   override fun onEvent(event: OnBoardingComponent.WelcomeEvent) = when (event) {
@@ -39,7 +37,7 @@ class OnBoardingComponentImpl(
 
   private fun checkShowWelcome() {
     scope.launch {
-      sharedPreferencesRepository.isShowWelcomeScreen().catch {}.collect {
+      isShowWelcomeScreenUseCase().catch {}.collect {
         if (it) {
           onNavigateToHome()
         }
@@ -49,7 +47,7 @@ class OnBoardingComponentImpl(
 
   private fun saveShowWelcome() {
     scope.launch {
-      sharedPreferencesRepository.saveShowWelcome()
+      saveShowWelcomeUseCase()
       onNavigateToHome()
     }
   }

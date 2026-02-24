@@ -3,7 +3,6 @@ package com.rahim.ui.root
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.view.Window
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -31,8 +30,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
@@ -48,10 +45,9 @@ import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.home.presentation.ui.root.HomeRoot
 import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.navigation.component.DrawerItemType
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
 import com.rahim.yadino.note.presentation.ui.root.NoteRoute
-import com.rahim.yadino.onboarding.presentation.OnBoardingRoute
+import com.rahim.yadino.onboarding.presentation.ui.OnBoardingRoute
 import com.rahim.yadino.routine.presentation.ui.alarmHistory.HistoryRoute
 import com.rahim.yadino.routine.presentation.ui.root.RoutineRoute
 import kotlinx.coroutines.launch

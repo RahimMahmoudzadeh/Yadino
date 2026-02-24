@@ -17,6 +17,7 @@ import com.rahim.yadino.db.di.YadinoDatabaseModule
 import com.rahim.yadino.di.CoreDiModule
 import com.rahim.yadino.home.data.di.HomeDiModule
 import com.rahim.yadino.note.data.di.NoteDiModule
+import com.rahim.yadino.onboarding.presentation.di.onBoardingDiModule
 import com.yadino.routine.data.di.RoutineDiModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -37,6 +38,7 @@ class App : Application() {
         CoreDiModule,
         NoteDiModule,
         RoutineDiModule,
+        onBoardingDiModule,
       )
     }
 

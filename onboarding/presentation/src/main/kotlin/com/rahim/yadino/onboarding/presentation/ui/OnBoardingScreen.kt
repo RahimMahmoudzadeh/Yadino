@@ -1,4 +1,4 @@
-package com.rahim.yadino.onboarding.presentation
+package com.rahim.yadino.onboarding.presentation.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -14,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -38,7 +37,6 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rahim.yadino.Constants.MAX_PAGE_SIZE_ONBOARDING
 import com.rahim.yadino.base.use
 import com.rahim.yadino.createOvalBottomPath
@@ -50,8 +48,8 @@ import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
-import com.rahim.yadino.onboarding.presentation.component.OnBoardingComponent
-import com.rahim.yadino.onboarding.presentation.model.OnBoardingUiModel
+import com.rahim.yadino.onboarding.presentation.R
+import com.rahim.yadino.onboarding.presentation.ui.component.OnBoardingComponent
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
