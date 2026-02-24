@@ -60,26 +60,20 @@ fun OnBoardingRoute(
   modifier: Modifier = Modifier,
   component: OnBoardingComponent,
 ) {
-  val (state,_, event) = use(component)
+  val (event,state) = use(component)
 
   OnBoardingScreens(
     modifier = modifier,
-    listItemWelcome = state.listItemWelcome,
-    navigateToHome = {
-      event.invoke(OnBoardingComponent.WelcomeEvent.SaveShowWelcome(true))
-    },
-    onClickSkip = {
-      event.invoke(OnBoardingComponent.WelcomeEvent.SaveShowWelcome(true))
-    },
+    state = state,
+    event = event,
   )
 }
 
 @Composable
 private fun OnBoardingScreens(
   modifier: Modifier = Modifier,
-  listItemWelcome: List<OnBoardingUiModel>,
-  navigateToHome: () -> Unit,
-  onClickSkip: () -> Unit,
+  state: OnBoardingComponent.WelcomeState,
+  event: (OnBoardingComponent.WelcomeEvent) -> Unit,
 ) {
   val configuration = LocalConfiguration.current
   val density = LocalDensity.current
@@ -112,9 +106,9 @@ private fun OnBoardingScreens(
       state = pagerState,
     ) { page ->
       WelcomePage(
-        textWelcomeTop = listItemWelcome[page].textWelcomeTop,
-        textWelcomeBottom = listItemWelcome[page].textWelcomeBottom,
-        imageRes = listItemWelcome[page].imageRes,
+        textWelcomeTop = state.listItemWelcome[page].textWelcomeTop,
+        textWelcomeBottom = state.listItemWelcome[page].textWelcomeBottom,
+        imageRes = state.listItemWelcome[page].imageRes,
         ovalHeight = ovalHeight.dp,
         density = density,
         fontSize = fontSize,
@@ -132,7 +126,7 @@ private fun OnBoardingScreens(
       horizontalAlignment = CenterHorizontally,
     ) {
       GradientButton(
-        text = stringResource(id = listItemWelcome[pagerState.currentPage].textButton),
+        text = stringResource(id = state.listItemWelcome[pagerState.currentPage].textButton),
         gradient = Brush.horizontalGradient(gradientColors),
         modifier = Modifier
           .padding(end = space.space24, start = space.space24, bottom = space.space8),
@@ -142,14 +136,16 @@ private fun OnBoardingScreens(
         onClick = {
           scope.launch {
             if (pagerState.currentPage == MAX_PAGE_SIZE_ONBOARDING.minus(1)) {
-              navigateToHome()
+              event(OnBoardingComponent.WelcomeEvent.SaveShowWelcome)
             }
             pagerState.scrollToPage(pagerState.currentPage.plus(1))
           }
         },
       )
       TextButton(
-        onClick = onClickSkip,
+        onClick = {
+          event(OnBoardingComponent.WelcomeEvent.SaveShowWelcome)
+        },
       ) {
         Text(
           text = stringResource(R.string.skip),

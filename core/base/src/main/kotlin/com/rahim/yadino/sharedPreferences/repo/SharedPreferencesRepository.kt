@@ -3,7 +3,7 @@ package com.rahim.yadino.sharedPreferences.repo
 import kotlinx.coroutines.flow.Flow
 
 interface SharedPreferencesRepository {
-  suspend fun saveShowWelcome(isShow: Boolean)
+  suspend fun saveShowWelcome()
   fun isShowWelcomeScreen(): Flow<Boolean>
   suspend fun setShowSampleRoutine(isShow: Boolean = true)
   fun isShowSampleRoutine(): Flow<Boolean>

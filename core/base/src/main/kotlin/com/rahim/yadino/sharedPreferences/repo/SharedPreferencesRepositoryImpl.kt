@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.first
 
 class SharedPreferencesRepositoryImpl(private val sharedPreferencesCustom: SharedPreferencesCustom) :
   SharedPreferencesRepository {
-  override suspend fun saveShowWelcome(isShow: Boolean) {
-    sharedPreferencesCustom.saveWelcomePage(isShow)
+  override suspend fun saveShowWelcome() {
+    sharedPreferencesCustom.saveWelcomePage(true)
   }
 
   override fun isShowWelcomeScreen() = sharedPreferencesCustom.isShowWelcome()

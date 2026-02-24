@@ -1,16 +1,18 @@
 package com.rahim.yadino.onboarding.presentation.component
 
 import androidx.compose.runtime.Immutable
+import com.rahim.yadino.base.EventStateDispatch
+import com.rahim.yadino.base.StateEventComponent
 import com.rahim.yadino.base.UnidirectionalComponent
 import com.rahim.yadino.enums.message.MessageUi
 import com.rahim.yadino.onboarding.presentation.R
 import com.rahim.yadino.onboarding.presentation.model.OnBoardingUiModel
 
-interface OnBoardingComponent : UnidirectionalComponent<OnBoardingComponent.WelcomeEvent, OnBoardingComponent.WelcomeState, Unit> {
+interface OnBoardingComponent : StateEventComponent<OnBoardingComponent.WelcomeEvent, OnBoardingComponent.WelcomeState> {
 
   @Immutable
-  sealed class WelcomeEvent {
-    data class SaveShowWelcome(val isShow: Boolean) : WelcomeEvent()
+  sealed interface WelcomeEvent {
+    data object SaveShowWelcome : WelcomeEvent
   }
 
   @Immutable

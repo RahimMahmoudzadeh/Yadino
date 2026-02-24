@@ -218,7 +218,7 @@ private fun RoutineScreen(
           ).show()
           return@GetRoutines
         }
-        event(MainRoutineComponent.Event.ShowErrorRemoveRoutineDialog(ErrorDialogRemoveRoutineUiModel(title = context.getString(com.rahim.yadino.library.designsystem.R.string.can_you_delete), submitTextButton = context.getString(com.rahim.yadino.library.designsystem.R.string.ok), routineUiModel = deletedRoutine))
+        event(MainRoutineComponent.Event.ShowErrorRemoveRoutineDialog(ErrorDialogRemoveRoutineUiModel(title = context.getString(com.rahim.yadino.library.designsystem.R.string.can_you_delete), submitTextButton = context.getString(com.rahim.yadino.library.designsystem.R.string.ok), routineUiModel = deletedRoutine)))
       },
     )
   }
