@@ -1,5 +1,5 @@
 [versions]
-ksp = "2.3.4"
+ksp = "2.3.6"
 kotlin = "2.3.10"
 kotlinxImmutableCollection = "0.4.0"
 
