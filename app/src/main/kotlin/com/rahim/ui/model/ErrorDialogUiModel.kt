@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation.model
+package com.rahim.ui.model
 
 import kotlinx.serialization.Serializable
 

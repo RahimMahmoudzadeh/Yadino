@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation.ui.errorDialog
+package com.rahim.ui.errorDialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,8 +30,7 @@ import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
-import com.rahim.yadino.home.presentation.ui.errorDialog.component.ErrorDialogComponent
-import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponent
+import com.rahim.ui.errorDialog.component.ErrorDialogComponent
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.openAppNotificationSettings
 import com.rahim.yadino.showToastShort
