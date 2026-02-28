@@ -17,7 +17,6 @@ interface NoteMainComponent : UnidirectionalComponent<NoteMainComponent.Event, N
     data class OnChecked(val checkedNote: NoteUiModel) : Event()
     data class OnOpenUpdateNoteDialog(val updateNote: NoteUiModel) : Event()
     data object GetNotes : Event()
-    data object OnShowAddNoteDialog : Event()
   }
 
   @Immutable

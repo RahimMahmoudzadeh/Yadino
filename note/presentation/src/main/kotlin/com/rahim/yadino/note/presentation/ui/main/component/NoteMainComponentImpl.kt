@@ -37,7 +37,6 @@ class NoteMainComponentImpl(
   private val getNotesUseCase: GetNotesUseCase,
   private val searchNoteUseCase: SearchNoteUseCase,
   private val updateNoteUseCase: UpdateNoteUseCase,
-  private val showAddNoteDialog: () -> Unit,
   private val showErrorDialog: (ErrorDialogRemoveNoteUiModel) -> Unit,
   private val showUpdateNoteDialog: (NoteUiModel) -> Unit,
 ) : NoteMainComponent, ComponentContext by componentContext {
@@ -62,7 +61,6 @@ class NoteMainComponentImpl(
     is NoteMainComponent.Event.ShowErrorRemoveNoteDialog -> showErrorDialog(event.errorDialogRemoveNoteUiModel)
     is NoteMainComponent.Event.OnChecked -> updateNote(event.checkedNote)
     is NoteMainComponent.Event.OnOpenUpdateNoteDialog -> showUpdateNoteDialog(event.updateNote)
-    NoteMainComponent.Event.OnShowAddNoteDialog -> showAddNoteDialog()
   }
 
   private fun updateNote(note: NoteUiModel) {

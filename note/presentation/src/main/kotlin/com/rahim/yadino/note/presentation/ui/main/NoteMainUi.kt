@@ -51,26 +51,12 @@ fun NoteMainScreen(modifier: Modifier = Modifier, clickSearch: Boolean, componen
 
   val (state, _, event) = use(component)
 
-  Scaffold(
-    floatingActionButton = {
-      FloatingActionButton(
-        containerColor = CornflowerBlueLight,
-        contentColor = Color.White,
-        onClick = {
-          event(NoteMainComponent.Event.OnShowAddNoteDialog)
-        },
-      ) {
-        Icon(imageVector = ImageVector.vectorResource(com.rahim.yadino.library.designsystem.R.drawable.ic_add), "add item")
-      }
-    },
-  ) { innerPadding ->
-    NoteScreen(
-      modifier = modifier.padding(innerPadding),
-      state = state,
-      event = event,
-      clickSearch = clickSearch,
-    )
-  }
+  NoteScreen(
+    modifier = modifier,
+    state = state,
+    event = event,
+    clickSearch = clickSearch,
+  )
 }
 
 @OptIn(FlowPreview::class)
