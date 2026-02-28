@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation.ui.errorDialog.component
+package com.rahim.ui.errorDialog.component
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable

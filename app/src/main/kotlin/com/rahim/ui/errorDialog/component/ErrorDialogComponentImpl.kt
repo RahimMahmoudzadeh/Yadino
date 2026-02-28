@@ -1,13 +1,10 @@
-package com.rahim.yadino.home.presentation.ui.errorDialog.component
+package com.rahim.ui.errorDialog.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import com.rahim.yadino.enums.message.MessageUi
-import com.rahim.yadino.home.presentation.mapper.toRoutine
-import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
-import com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component.ErrorDialogRemoveRoutineComponent
+import com.rahim.ui.model.ErrorDialogUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel

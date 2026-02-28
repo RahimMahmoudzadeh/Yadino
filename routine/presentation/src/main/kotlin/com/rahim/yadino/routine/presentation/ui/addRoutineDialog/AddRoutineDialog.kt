@@ -81,7 +81,7 @@ const val MAX_EXPLANATION_LENGTH = 40
 @Composable
 fun AddRoutineDialog(
   modifier: Modifier = Modifier,
-  componentComponent: AddRoutineDialogComponent,
+  component: AddRoutineDialogComponent,
 ) {
   val size = LocalSize.current
   val fontSize = LocalFontSize.current
@@ -89,7 +89,7 @@ fun AddRoutineDialog(
   val context = LocalContext.current
   val persianData = PersianDate()
 
-  val (state, effect, event) = use(componentComponent)
+  val (state, effect, event) = use(component)
 
   LaunchedEffect(effect) {
     effect.collect { effect ->
