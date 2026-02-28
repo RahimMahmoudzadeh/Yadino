@@ -17,8 +17,6 @@ import com.rahim.yadino.note.domain.useCase.SearchNoteUseCase
 import com.rahim.yadino.note.domain.useCase.UpdateNoteUseCase
 import com.rahim.yadino.note.presentation.model.ErrorDialogRemoveNoteUiModel
 import com.rahim.yadino.note.presentation.model.NoteUiModel
-import com.rahim.yadino.note.presentation.ui.addNoteDialog.component.AddNoteDialogComponent
-import com.rahim.yadino.note.presentation.ui.addNoteDialog.component.AddNoteDialogComponentImpl
 import com.rahim.yadino.note.presentation.ui.errorDialog.component.ErrorDialogComponent
 import com.rahim.yadino.note.presentation.ui.errorDialog.component.ErrorDialogComponentImpl
 import com.rahim.yadino.note.presentation.ui.main.component.NoteMainComponent
@@ -34,40 +32,20 @@ class RootNoteComponentImpl(
   ioContext: CoroutineContext,
   private val getNotesUseCase: GetNotesUseCase,
   private val searchNoteUseCase: SearchNoteUseCase,
-  private val addNoteUseCase: AddNoteUseCase,
   private val deleteNoteUseCase: DeleteNoteUseCase,
   private val updateNoteUseCase: UpdateNoteUseCase,
 ) : RootNoteComponent, ComponentContext by componentContext {
 
-  private val addNoteDialogComponentNavigationSlot =
-    SlotNavigation<RootNoteComponent.DialogSlotNoteComponent.AddNoteDialog>()
-
   private val updateNoteDialogComponentNavigationSlot =
-    SlotNavigation<RootNoteComponent.DialogSlotNoteComponent.UpdateNoteDialog>()
+    SlotNavigation<RootNoteComponent.DialogSlot.UpdateNoteDialog>()
 
   private val errorDialogNoteComponentNavigationSlot =
-    SlotNavigation<RootNoteComponent.DialogSlotNoteComponent.ErrorDialogNote>()
+    SlotNavigation<RootNoteComponent.DialogSlot.ErrorDialogNote>()
 
-  override val addNoteDialogScreen: Value<ChildSlot<RootNoteComponent.DialogSlotNoteComponent.AddNoteDialog, AddNoteDialogComponent>> =
-    childSlot(
-      source = addNoteDialogComponentNavigationSlot,
-      serializer = RootNoteComponent.DialogSlotNoteComponent.AddNoteDialog.serializer(),
-      handleBackButton = true,
-      key = "addNoteDialogComponentNavigationSlot",
-    ) { _, childComponentContext ->
-      AddNoteDialogComponentImpl(
-        componentContext = childComponentContext,
-        mainContext = mainContext,
-        ioContext = ioContext,
-        addNoteUseCase = addNoteUseCase,
-        onDismissed = addNoteDialogComponentNavigationSlot::dismiss,
-      )
-    }
-
-  override val updateNoteDialogScreen: Value<ChildSlot<RootNoteComponent.DialogSlotNoteComponent.UpdateNoteDialog, UpdateNoteDialogComponent>> =
+  override val updateNoteDialogScreen: Value<ChildSlot<RootNoteComponent.DialogSlot.UpdateNoteDialog, UpdateNoteDialogComponent>> =
     childSlot(
       source = updateNoteDialogComponentNavigationSlot,
-      serializer = RootNoteComponent.DialogSlotNoteComponent.UpdateNoteDialog.serializer(),
+      serializer = RootNoteComponent.DialogSlot.UpdateNoteDialog.serializer(),
       handleBackButton = true,
       key = "updateNoteDialogComponentNavigationSlot",
     ) { config, childComponentContext ->
@@ -80,10 +58,10 @@ class RootNoteComponentImpl(
         onDismissed = updateNoteDialogComponentNavigationSlot::dismiss,
       )
     }
-  override val errorDialogRemoveNoteScreen: Value<ChildSlot<RootNoteComponent.DialogSlotNoteComponent.ErrorDialogNote, ErrorDialogComponent>> =
+  override val errorDialogRemoveNoteScreen: Value<ChildSlot<RootNoteComponent.DialogSlot.ErrorDialogNote, ErrorDialogComponent>> =
     childSlot(
       source = errorDialogNoteComponentNavigationSlot,
-      serializer = RootNoteComponent.DialogSlotNoteComponent.ErrorDialogNote.serializer(),
+      serializer = RootNoteComponent.DialogSlot.ErrorDialogNote.serializer(),
       handleBackButton = true,
       key = "errorDialogNoteComponentNavigationSlot",
     ) { config, childComponentContext ->
@@ -119,20 +97,15 @@ class RootNoteComponentImpl(
     getNotesUseCase = getNotesUseCase,
     searchNoteUseCase = searchNoteUseCase,
     updateNoteUseCase = updateNoteUseCase,
-    showAddNoteDialog = ::onShowAddNoteDialog,
     showErrorDialog = ::showErrorDialog,
     showUpdateNoteDialog = ::showUpdateNoteDialog,
   )
 
   private fun showErrorDialog(errorDialogRemoveNoteUiModel: ErrorDialogRemoveNoteUiModel) {
-    errorDialogNoteComponentNavigationSlot.activate(RootNoteComponent.DialogSlotNoteComponent.ErrorDialogNote(errorDialogRemoveNoteUiModel))
+    errorDialogNoteComponentNavigationSlot.activate(RootNoteComponent.DialogSlot.ErrorDialogNote(errorDialogRemoveNoteUiModel))
   }
 
   private fun showUpdateNoteDialog(updateNote: NoteUiModel) {
-    updateNoteDialogComponentNavigationSlot.activate(RootNoteComponent.DialogSlotNoteComponent.UpdateNoteDialog(updateNote))
-  }
-
-  fun onShowAddNoteDialog() {
-    addNoteDialogComponentNavigationSlot.activate(RootNoteComponent.DialogSlotNoteComponent.AddNoteDialog)
+    updateNoteDialogComponentNavigationSlot.activate(RootNoteComponent.DialogSlot.UpdateNoteDialog(updateNote))
   }
 }

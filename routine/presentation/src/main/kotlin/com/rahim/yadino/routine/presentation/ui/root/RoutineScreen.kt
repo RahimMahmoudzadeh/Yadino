@@ -35,18 +35,10 @@ fun RoutineRoute(
     }
   }
 
-  val dialogSlotAddRoutine by component.addRoutineDialogScreen.subscribeAsState()
   val dialogSlotErrorRemoveRoutineDialog by component.errorDialogRemoveRoutineScreen.subscribeAsState()
   val dialogSlotErrorDialog by component.errorDialogScreen.subscribeAsState()
   val dialogSlotUpdateRoutine by component.updateRoutineDialogScreen.subscribeAsState()
 
-  dialogSlotAddRoutine.child?.let { dialogSlot ->
-    dialogSlot.instance.also { dialogComponent ->
-      AddRoutineDialog(
-        componentComponent = dialogComponent,
-      )
-    }
-  }
   dialogSlotErrorRemoveRoutineDialog.child?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
       ErrorDialogRemoveRoutineUi(component = dialogComponent)
