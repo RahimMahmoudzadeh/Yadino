@@ -1,5 +1,6 @@
 package com.rahim.ui.root
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.os.Build
@@ -14,6 +15,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -26,26 +29,36 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.LayoutDirection
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.rahim.BuildConfig
 import com.rahim.component.BottomNavigationBar
 import com.rahim.data.distributionActions.StateOfClickItemDrawable
 import com.rahim.ui.root.component.RootComponent
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.TopBarCenterAlign
+import com.rahim.yadino.designsystem.component.requestNotificationPermission
 import com.rahim.yadino.designsystem.utils.size.LocalSize
+import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
+import com.rahim.ui.model.ErrorDialogUiModel
+import com.rahim.yadino.home.presentation.ui.addDialogRoutine.AddRoutineDialog
+import com.rahim.yadino.home.presentation.ui.main.component.MainHomeComponent
 import com.rahim.yadino.home.presentation.ui.root.HomeRoot
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
+import com.rahim.yadino.note.presentation.ui.addNoteDialog.AddNoteDialog
 import com.rahim.yadino.note.presentation.ui.root.NoteRoute
 import com.rahim.yadino.onboarding.presentation.ui.OnBoardingRoute
 import com.rahim.yadino.routine.presentation.ui.alarmHistory.HistoryRoute
@@ -72,6 +85,64 @@ fun YadinoApp(
 
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val coroutineScope = rememberCoroutineScope()
+
+  val addNoteDialog = component.addNoteDialog.subscribeAsState().value.child
+  addNoteDialog?.let { dialogSlot ->
+    dialogSlot.instance.also { dialogComponent ->
+      AddNoteDialog(
+        component = dialogComponent,
+      )
+    }
+  }
+
+  val addRoutineDialogHomeUi = component.addRoutineDialogHomeUi.subscribeAsState().value.child
+  addRoutineDialogHomeUi?.let { dialogSlot ->
+    dialogSlot.instance.also { dialogComponent ->
+      AddRoutineDialog(
+        component = dialogComponent,
+      )
+    }
+  }
+
+  val addRoutineDialogRoutineUi by component.addRoutineDialogRoutineUi.subscribeAsState()
+  addRoutineDialogRoutineUi.child?.let { dialogSlot ->
+    dialogSlot.instance.also { dialogComponent ->
+      com.rahim.yadino.routine.presentation.ui.addRoutineDialog.AddRoutineDialog(
+        component = dialogComponent,
+      )
+    }
+  }
+
+  val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
+  val title = stringResource(com.rahim.yadino.core.base.R.string.permission_notification)
+  val submitTextButton = stringResource(R.string.setting)
+
+  val onPermissionGranted = {
+    when (configurationState) {
+      is RootComponent.ChildConfig.Home -> {
+        event(RootComponent.Event.ShowAddRoutineDialogHomeUi)
+      }
+
+      is RootComponent.ChildConfig.Note -> {
+        event(RootComponent.Event.ShowAddNoteDialog)
+      }
+
+      is RootComponent.ChildConfig.Routine -> {
+        event(RootComponent.Event.ShowAddRoutineDialogRoutineUi)
+      }
+    }
+  }
+
+  val onPermissionDenied = {
+    event(
+      RootComponent.Event.ShowErrorDialog(
+        ErrorDialogUiModel(
+          title = title,
+          submitTextButton = submitTextButton,
+        ),
+      ),
+    )
+  }
 
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
     YadinoTheme(darkTheme = isDark) {
@@ -112,6 +183,20 @@ fun YadinoApp(
               )
             }
           },
+          floatingActionButton = {
+            FloatingActionButton(
+              containerColor = CornflowerBlueLight,
+              contentColor = Color.White,
+              onClick = {
+                notificationPermissionState.requestNotificationPermission(
+                  onGranted = { onPermissionGranted() },
+                  onShowRationale = { onPermissionDenied() },
+                )
+              },
+            ) {
+              Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_add), "add item")
+            }
+          },
           bottomBar = {
             AnimatedVisibility(
               visible = configurationState !is RootComponent.ChildConfig.OnBoarding && configurationState !is RootComponent.ChildConfig.HistoryRoutine,
@@ -142,7 +227,7 @@ fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifi
 
     Surface(color = MaterialTheme.colorScheme.background) {
       when (val child = it.instance) {
-        is RootComponent.ChildStack.HomeStack -> {
+        is RootComponent.ChildStack.Home -> {
           HomeRoot(
             component = child.component,
             clickSearch = clickSearch,
@@ -208,7 +293,7 @@ private fun checkStateOfClickItemDrawable(stateOfClickItemDrawable: StateOfClick
   }
 }
 
-private fun changeTheme(theme: Boolean?,activity: Activity) {
+private fun changeTheme(theme: Boolean?, activity: Activity) {
   if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
   theme?.let {
     if (theme) {

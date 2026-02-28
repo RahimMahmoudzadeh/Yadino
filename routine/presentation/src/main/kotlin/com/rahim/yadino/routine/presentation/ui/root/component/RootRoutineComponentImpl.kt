@@ -39,7 +39,6 @@ class RootRoutineComponentImpl(
   componentContext: ComponentContext,
   private val mainContext: CoroutineContext,
   private val ioContext: CoroutineContext,
-  private val addReminderUseCase: AddReminderUseCase,
   private val getTimesMonthUseCase: GetTimesMonthUseCase,
   private val getCurrentTimeUseCase: GetCurrentTimeUseCase,
   private val updateReminderUseCase: UpdateReminderUseCase,
@@ -49,10 +48,6 @@ class RootRoutineComponentImpl(
   private val searchRoutineUseCase: SearchRoutineUseCase,
   private val dateTimeRepository: DateTimeRepository,
 ) : RootRoutineComponent, ComponentContext by componentContext {
-
-  private val addRoutineDialogNavigationSlot =
-    SlotNavigation<RootRoutineComponent.DialogSlot.AddRoutineDialog>()
-
   private val updateRoutineDialogNavigationSlot =
     SlotNavigation<RootRoutineComponent.DialogSlot.UpdateRoutineDialog>()
 
@@ -90,26 +85,7 @@ class RootRoutineComponentImpl(
     showErrorDialogRemoveRoutine = ::showErrorDialogRemoveRoutine,
     showUpdateDialog = ::showUpdateDialog,
     showErrorDialog = ::showErrorDialog,
-    showAddDialog = ::showAddDialog,
   )
-
-  override val addRoutineDialogScreen: Value<ChildSlot<RootRoutineComponent.DialogSlot.AddRoutineDialog, AddRoutineDialogComponent>> =
-    childSlot(
-      source = addRoutineDialogNavigationSlot,
-      serializer = RootRoutineComponent.DialogSlot.AddRoutineDialog.serializer(),
-      handleBackButton = true,
-      key = "addRoutineDialogNavigationSlot",
-    ) { config, childComponentContext ->
-      AddRoutineDialogComponentImpl(
-        componentContext = childComponentContext,
-        mainDispatcher = Dispatchers.Main,
-        ioDispatcher = Dispatchers.IO,
-        addReminderUseCase = addReminderUseCase,
-        getTimesMonthUseCase = getTimesMonthUseCase,
-        getCurrentTimeUseCase = getCurrentTimeUseCase,
-        onDismissed = addRoutineDialogNavigationSlot::dismiss,
-      )
-    }
 
   override val updateRoutineDialogScreen: Value<ChildSlot<RootRoutineComponent.DialogSlot.UpdateRoutineDialog, UpdateRoutineDialogComponent>> =
     childSlot(
@@ -167,10 +143,6 @@ class RootRoutineComponentImpl(
 
   private fun showUpdateDialog(routine: RoutineUiModel) {
     updateRoutineDialogNavigationSlot.activate(RootRoutineComponent.DialogSlot.UpdateRoutineDialog(routine))
-  }
-
-  private fun showAddDialog() {
-    addRoutineDialogNavigationSlot.activate(RootRoutineComponent.DialogSlot.AddRoutineDialog)
   }
 
   private fun showErrorDialog(errorDialogUiModel: ErrorDialogUiModel) {

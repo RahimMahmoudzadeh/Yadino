@@ -24,7 +24,6 @@ interface RootRoutineComponent {
 
   val stack: Value<com.arkivanov.decompose.router.stack.ChildStack<*, ChildStack>>
 
-  val addRoutineDialogScreen: Value<ChildSlot<DialogSlot.AddRoutineDialog, AddRoutineDialogComponent>>
   val updateRoutineDialogScreen: Value<ChildSlot<DialogSlot.UpdateRoutineDialog, UpdateRoutineDialogComponent>>
   val errorDialogRemoveRoutineScreen: Value<ChildSlot<DialogSlot.ErrorDialogRemoveRoutine, ErrorDialogRemoveRoutineComponent>>
   val errorDialogScreen: Value<ChildSlot<DialogSlot.ErrorDialog, ErrorDialogComponent>>
@@ -41,9 +40,6 @@ interface RootRoutineComponent {
 
   @Serializable
   sealed interface DialogSlot{
-    @Serializable
-    data object AddRoutineDialog : DialogSlot
-
     @Serializable
     data class UpdateRoutineDialog(val updateRoutine: RoutineUiModel) : DialogSlot
 
