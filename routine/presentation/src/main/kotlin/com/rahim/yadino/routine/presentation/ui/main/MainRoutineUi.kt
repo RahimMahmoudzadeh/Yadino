@@ -92,54 +92,18 @@ fun RoutineMainUi(
 
   val (event, state) = use(component)
 
-  val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
-  val title = stringResource(com.rahim.yadino.core.base.R.string.permission_notification)
-  val submitTextButton = stringResource(com.rahim.yadino.library.designsystem.R.string.setting)
-
-  Scaffold(
-    floatingActionButton = {
-      FloatingActionButton(
-        containerColor = CornflowerBlueLight,
-        contentColor = Color.White,
-        onClick = {
-          val onPermissionGranted = {
-            event(MainRoutineComponent.Event.ShowAddRoutineDialog)
-          }
-
-          val onPermissionDenied = {
-            event(
-              MainRoutineComponent.Event.ShowErrorDialog(
-                ErrorDialogUiModel(
-                  title = title,
-                  submitTextButton = submitTextButton,
-                ),
-              ),
-            )
-          }
-
-          notificationPermissionState.requestNotificationPermission(
-            onGranted = { onPermissionGranted() },
-            onShowRationale = { onPermissionDenied() },
-          )
-        },
-      ) {
-        Icon(imageVector = ImageVector.vectorResource(com.rahim.yadino.library.designsystem.R.drawable.ic_add), "add item")
-      }
-    },
-  ) { innerPadding ->
-    RoutineScreen(
-      modifier = modifier.padding(innerPadding),
-      state = state,
-      showSearchBar = showSearchBar,
-      event = event,
-    )
-  }
+  RoutineScreen(
+    modifier = modifier,
+    state = state,
+    showSearchBar = showSearchBar,
+    event = event,
+  )
 }
 
 @OptIn(FlowPreview::class)
 @Composable
 private fun RoutineScreen(
-  modifier: Modifier,
+  modifier: Modifier = Modifier,
   state: MainRoutineComponent.State,
   event: (MainRoutineComponent.Event) -> Unit,
   showSearchBar: Boolean,

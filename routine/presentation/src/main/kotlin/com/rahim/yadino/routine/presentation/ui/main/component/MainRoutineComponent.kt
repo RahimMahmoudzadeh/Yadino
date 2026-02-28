@@ -24,7 +24,6 @@ interface MainRoutineComponent : StateEventComponent<MainRoutineComponent.Event,
     data class WeekChange(val increaseDecrease: IncreaseDecrease) : Event()
     data class MonthChange(val increaseDecrease: IncreaseDecrease) : Event()
     data object GetAllTimes : Event()
-    data object ShowAddRoutineDialog : Event()
   }
 
   @Immutable

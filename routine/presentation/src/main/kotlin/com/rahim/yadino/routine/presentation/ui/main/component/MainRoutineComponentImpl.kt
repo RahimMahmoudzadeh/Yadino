@@ -41,7 +41,6 @@ class MainRoutineComponentImpl(
   private val showErrorDialogRemoveRoutine: (errorDialog: ErrorDialogRemoveRoutineUiModel) -> Unit,
   private val showUpdateDialog: (routine: RoutineUiModel) -> Unit,
   private val showErrorDialog: (errorDialog: ErrorDialogUiModel) -> Unit,
-  private val showAddDialog: () -> Unit,
 ) : MainRoutineComponent, ComponentContext by componentContext {
 
   private val mainScope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
@@ -86,7 +85,6 @@ class MainRoutineComponentImpl(
       is MainRoutineComponent.Event.MonthChange -> checkMonthIncreaseOrDecrease(event.increaseDecrease)
       is MainRoutineComponent.Event.WeekChange -> checkWeekIncreaseOrDecrease(event.increaseDecrease)
       is MainRoutineComponent.Event.ShowErrorDialog -> showErrorDialog(event.errorDialogUiModel)
-      MainRoutineComponent.Event.ShowAddRoutineDialog -> showAddDialog()
     }
   }
 
