@@ -20,17 +20,8 @@ fun NoteRoute(
   component: RootNoteComponent,
 ) {
 
-  val addNoteDialog = component.addNoteDialogScreen.subscribeAsState().value.child
   val updateNoteDialog = component.updateNoteDialogScreen.subscribeAsState().value.child
   val errorDialogNote = component.errorDialogRemoveNoteScreen.subscribeAsState().value.child
-
-  addNoteDialog?.let { dialogSlot ->
-    dialogSlot.instance.also { dialogComponent ->
-      AddNoteDialog(
-        component = dialogComponent,
-      )
-    }
-  }
 
   updateNoteDialog?.let { dialogSlot ->
     dialogSlot.instance.also { dialogComponent ->
