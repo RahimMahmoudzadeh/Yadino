@@ -6,7 +6,6 @@ import com.rahim.yadino.base.UnidirectionalComponent
 import com.rahim.yadino.enums.message.MessageUi
 import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
 import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
-import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.PersistentList
 
@@ -20,8 +19,6 @@ interface MainHomeComponent : UnidirectionalComponent<MainHomeComponent.Event, M
     data class ShowErrorDialogRemoveRoutine(val errorDialogModel: ErrorDialogRemoveUiModel) : Event()
     data class ShowUpdateRoutineDialog(val updateRoutine: RoutineUiModel) : Event()
     data object GetRoutines : Event()
-    data object ShowAddRoutineDialog : Event()
-    data class ShowErrorDialog(val errorDialogUiModel: ErrorDialogUiModel) : Event()
   }
 
   @Immutable

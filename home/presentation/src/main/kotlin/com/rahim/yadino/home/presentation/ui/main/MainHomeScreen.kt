@@ -1,6 +1,5 @@
 package com.rahim.yadino.home.presentation.ui.main
 
-import android.Manifest
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,8 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -26,34 +23,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
 import com.rahim.yadino.base.LoadableComponent
 import com.rahim.yadino.base.LoadableData
 import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
-import com.rahim.yadino.designsystem.component.requestNotificationPermission
 import com.rahim.yadino.designsystem.utils.size.FontDimensions
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
 import com.rahim.yadino.designsystem.utils.size.LocalSize
 import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
-import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
 import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
-import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import com.rahim.yadino.home.presentation.ui.component.ListRoutines
 import com.rahim.yadino.home.presentation.ui.main.component.MainHomeComponent
-import com.rahim.yadino.home.presentation.ui.root.component.RootHomeComponent
 import com.rahim.yadino.library.designsystem.R
 import com.rahim.yadino.showToastShort
 import com.rahim.yadino.toPersianDigits
@@ -78,9 +67,6 @@ fun HomeMainScreen(
 
   val snackBarHostState = remember { SnackbarHostState() }
   val scope = rememberCoroutineScope()
-  val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
-  val title = stringResource(com.rahim.yadino.core.base.R.string.permission_notification)
-  val submitTextButton = stringResource(R.string.setting)
 
   LaunchedEffect(effect) {
     effect.collect { effect ->
@@ -102,55 +88,12 @@ fun HomeMainScreen(
     }
   }
 
-  Scaffold(
-    floatingActionButton = {
-      FloatingActionButton(
-        containerColor = CornflowerBlueLight,
-        contentColor = Color.White,
-        onClick = {
-          val onPermissionGranted = {
-            event(MainHomeComponent.Event.ShowAddRoutineDialog)
-          }
-
-          val onPermissionDenied = {
-            event(
-              MainHomeComponent.Event.ShowErrorDialog(
-                ErrorDialogUiModel(
-                  title = title,
-                  submitTextButton = submitTextButton,
-                ),
-              ),
-            )
-          }
-
-          notificationPermissionState.requestNotificationPermission(
-            onGranted = { onPermissionGranted() },
-            onShowRationale = { onPermissionDenied() },
-          )
-        },
-      ) {
-        Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_add), "add item")
-      }
-    },
-  ) { innerPadding ->
-    val b=innerPadding
-    HomeScreen(
-      state = state,
-      clickSearch = clickSearch,
-      onCheckedRoutine = {
-        event.invoke(MainHomeComponent.Event.CheckedRoutine(it))
-      },
-      onShowErrorDialog = { deleteUiModel ->
-        event.invoke(MainHomeComponent.Event.ShowErrorDialogRemoveRoutine(errorDialogModel = deleteUiModel))
-      },
-      onUpdateRoutine = {
-        event.invoke(MainHomeComponent.Event.ShowUpdateRoutineDialog(it))
-      },
-      onSearchText = {
-        event.invoke(MainHomeComponent.Event.SearchRoutine(it))
-      },
-    )
-  }
+  HomeScreen(
+    modifier = modifier,
+    state = state,
+    clickSearch = clickSearch,
+    event = event,
+  )
 }
 
 @OptIn(FlowPreview::class)
@@ -158,11 +101,8 @@ fun HomeMainScreen(
 private fun HomeScreen(
   modifier: Modifier = Modifier,
   state: MainHomeComponent.State,
+  event: (MainHomeComponent.Event) -> Unit,
   clickSearch: Boolean,
-  onCheckedRoutine: (RoutineUiModel) -> Unit,
-  onShowErrorDialog: (errorDialogRemoveUiModel: ErrorDialogRemoveUiModel) -> Unit,
-  onUpdateRoutine: (RoutineUiModel) -> Unit,
-  onSearchText: (searchText: String) -> Unit,
 ) {
   val context = LocalContext.current
   val space = LocalSpacing.current
@@ -178,7 +118,7 @@ private fun HomeScreen(
       .debounce(300)
       .distinctUntilChanged()
       .collect { query ->
-        onSearchText(query)
+        event(MainHomeComponent.Event.SearchRoutine(query))
       }
   }
   Column(
@@ -207,7 +147,7 @@ private fun HomeScreen(
             space = space,
             fontSize = fontSize,
             checkedRoutine = { checkedRoutine ->
-              onCheckedRoutine(checkedRoutine)
+              event(MainHomeComponent.Event.CheckedRoutine(checkedRoutine))
             },
             updateRoutine = { routineUpdate ->
               if (routineUpdate.isChecked) {
@@ -218,10 +158,18 @@ private fun HomeScreen(
                 ).show()
                 return@ItemsHome
               }
-              onUpdateRoutine(routineUpdate)
+              event(MainHomeComponent.Event.UpdateRoutine(routineUpdate))
             },
             deleteRoutine = { deleteRoutine ->
-              onShowErrorDialog(ErrorDialogRemoveUiModel(title = title, submitTextButton = submitTextButton, routineUiModel = deleteRoutine))
+              event(
+                MainHomeComponent.Event.ShowErrorDialogRemoveRoutine(
+                  ErrorDialogRemoveUiModel(
+                    title = title,
+                    submitTextButton = submitTextButton,
+                    routineUiModel = deleteRoutine,
+                  ),
+                ),
+              )
             },
           )
         }
@@ -294,10 +242,7 @@ private fun HomeScreenPreview() {
         currentDate = CurrentDateUiModel("شنبه ۱ فروردین"),
       ),
       clickSearch = false,
-      onCheckedRoutine = {},
-      onShowErrorDialog = { _ -> },
-      onUpdateRoutine = {},
-      onSearchText = {},
+      event = {},
     )
   }
 }

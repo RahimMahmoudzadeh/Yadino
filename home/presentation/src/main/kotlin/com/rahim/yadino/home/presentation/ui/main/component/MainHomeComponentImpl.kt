@@ -19,7 +19,6 @@ import com.rahim.yadino.home.presentation.mapper.toCurrentDatePresentationLayer
 import com.rahim.yadino.home.presentation.mapper.toRoutine
 import com.rahim.yadino.home.presentation.mapper.toRoutineUiModel
 import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
-import com.rahim.yadino.home.presentation.model.ErrorDialogUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
@@ -42,9 +41,7 @@ class MainHomeComponentImpl(
   private val getCurrentDateUseCase: GetCurrentDateUseCase,
   private val updateReminderUseCase: UpdateReminderUseCase,
   private val showErrorRemoveRoutineDialog: (ErrorDialogRemoveUiModel) -> Unit,
-  private val showErrorDialog: (ErrorDialogUiModel) -> Unit,
   private val showUpdateRoutineDialog: (RoutineUiModel) -> Unit,
-  private val showAddRoutineDialog: () -> Unit,
 ) : MainHomeComponent, ComponentContext by componentContext {
 
   private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
@@ -83,8 +80,6 @@ class MainHomeComponentImpl(
 
       is MainHomeComponent.Event.ShowErrorDialogRemoveRoutine -> showErrorRemoveRoutineDialog(event.errorDialogModel)
       is MainHomeComponent.Event.ShowUpdateRoutineDialog -> showUpdateRoutineDialog(event.updateRoutine)
-      MainHomeComponent.Event.ShowAddRoutineDialog -> showAddRoutineDialog()
-      is MainHomeComponent.Event.ShowErrorDialog -> showErrorDialog(event.errorDialogUiModel)
     }
   }
 
