@@ -7,9 +7,8 @@ import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.rahim.yadino.note.presentation.ui.addNoteDialog.AddNoteDialog
 import com.rahim.yadino.note.presentation.ui.errorDialog.ErrorDialogUi
-import com.rahim.yadino.note.presentation.ui.main.NoteMainScreen
+import com.rahim.yadino.note.presentation.ui.main.MainNoteScreen
 import com.rahim.yadino.note.presentation.ui.root.component.RootNoteComponent
 import com.rahim.yadino.note.presentation.ui.updateNoteDialog.UpdateNoteDialog
 
@@ -46,7 +45,7 @@ fun NoteRoute(
   ) {
     when (val child = it.instance) {
       is RootNoteComponent.ChildStack.NoteMainStack -> {
-        NoteMainScreen(clickSearch = clickSearch, component = child.component)
+        MainNoteScreen(clickSearch = clickSearch, component = child.component)
       }
     }
   }
