@@ -259,7 +259,7 @@ private fun ItemTimeDate(
 ) {
   val arrayString = stringArrayResource(id = com.rahim.yadino.library.designsystem.R.array.half_week_name)
 
-  Row() {
+  Row(modifier = Modifier.padding(top = space.space28)) {
     IconButton(
       onClick = {
         monthChange(IncreaseDecrease.INCREASE)
