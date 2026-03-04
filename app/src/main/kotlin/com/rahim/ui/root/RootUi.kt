@@ -86,33 +86,6 @@ fun YadinoApp(
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val coroutineScope = rememberCoroutineScope()
 
-  val addNoteDialog = component.addNoteDialog.subscribeAsState().value.child
-  addNoteDialog?.let { dialogSlot ->
-    dialogSlot.instance.also { dialogComponent ->
-      AddNoteDialog(
-        component = dialogComponent,
-      )
-    }
-  }
-
-  val addRoutineDialogHomeUi = component.addRoutineDialogHomeUi.subscribeAsState().value.child
-  addRoutineDialogHomeUi?.let { dialogSlot ->
-    dialogSlot.instance.also { dialogComponent ->
-      AddRoutineDialog(
-        component = dialogComponent,
-      )
-    }
-  }
-
-  val addRoutineDialogRoutineUi by component.addRoutineDialogRoutineUi.subscribeAsState()
-  addRoutineDialogRoutineUi.child?.let { dialogSlot ->
-    dialogSlot.instance.also { dialogComponent ->
-      com.rahim.yadino.routine.presentation.ui.addRoutineDialog.AddRoutineDialog(
-        component = dialogComponent,
-      )
-    }
-  }
-
   val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
   val title = stringResource(com.rahim.yadino.core.base.R.string.permission_notification)
   val submitTextButton = stringResource(R.string.setting)
@@ -144,8 +117,35 @@ fun YadinoApp(
     )
   }
 
+  val addNoteDialog = component.addNoteDialog.subscribeAsState().value.child
+  val addRoutineDialogRoutineUi by component.addRoutineDialogRoutineUi.subscribeAsState()
+  val addRoutineDialogHomeUi = component.addRoutineDialogHomeUi.subscribeAsState().value.child
+
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
     YadinoTheme(darkTheme = isDark) {
+      addNoteDialog?.let { dialogSlot ->
+        dialogSlot.instance.also { dialogComponent ->
+          AddNoteDialog(
+            component = dialogComponent,
+          )
+        }
+      }
+
+      addRoutineDialogHomeUi?.let { dialogSlot ->
+        dialogSlot.instance.also { dialogComponent ->
+          AddRoutineDialog(
+            component = dialogComponent,
+          )
+        }
+      }
+
+      addRoutineDialogRoutineUi.child?.let { dialogSlot ->
+        dialogSlot.instance.also { dialogComponent ->
+          com.rahim.yadino.routine.presentation.ui.addRoutineDialog.AddRoutineDialog(
+            component = dialogComponent,
+          )
+        }
+      }
       YadinoNavigationDrawer(
         modifier = modifier,
         drawerState = drawerState,
