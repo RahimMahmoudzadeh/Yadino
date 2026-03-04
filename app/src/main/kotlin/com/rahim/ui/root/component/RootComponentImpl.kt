@@ -268,7 +268,7 @@ class RootComponentImpl(componentContext: ComponentContext) : RootComponent, Com
         addReminderUseCase = addReminderUseCaseRoutine,
         getTimesMonthUseCase = getTimesMonthUseCase,
         getCurrentTimeUseCase = getCurrentTimeUseCase,
-        onDismissed = addRoutineDialogHomeUiNavigationSlot::dismiss,
+        onDismissed = addRoutineDialogRoutineUiNavigationSlot::dismiss,
       )
     }
 
