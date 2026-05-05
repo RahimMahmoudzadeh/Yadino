@@ -13,6 +13,7 @@ java {
 kotlin {
   compilerOptions {
     jvmTarget = JvmTarget.JVM_17
+    freeCompilerArgs.addAll(listOf("-opt-in=kotlin.RequiresOptIn"))
   }
 }
 

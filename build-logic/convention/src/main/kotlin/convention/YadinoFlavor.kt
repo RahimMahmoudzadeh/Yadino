@@ -3,6 +3,7 @@ package convention
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.ApplicationProductFlavor
 import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.dsl.ProductFlavor
 import config.Config
 
@@ -22,7 +23,31 @@ enum class YadinoFlavor(
   myket(FlavorDimension.contentType, applicationIdSuffix = Config.android.applicationIdSuffix, versionNameSuffix = Config.android.versionNameSuffixMyket),
 }
 
-internal fun configureFlavors(commonExtension: CommonExtension<*, *, *, *, *, *>, flavorConfigurationBlock: ProductFlavor.(flavor: YadinoFlavor) -> Unit = {}) {
+internal fun configureFlavors(commonExtension: ApplicationExtension, flavorConfigurationBlock: ProductFlavor.(flavor: YadinoFlavor) -> Unit = {}) {
+  commonExtension.apply {
+    flavorDimensions += FlavorDimension.contentType.name
+    productFlavors {
+      YadinoFlavor.values().forEach {
+        create(it.name) {
+          manifestPlaceholders += if (it == YadinoFlavor.cafeBazaar || it == YadinoFlavor.myket) {
+            mapOf("queryAllPackages" to "android.permission.QUERY_ALL_PACKAGES")
+          } else {
+            mapOf("queryAllPackages" to "false")
+          }
+          dimension = it.dimension.name
+          flavorConfigurationBlock(this, it)
+          if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {
+            if (it.applicationIdSuffix != null) {
+              applicationIdSuffix = it.applicationIdSuffix
+            }
+            versionNameSuffix = it.versionNameSuffix
+          }
+        }
+      }
+    }
+  }
+}
+internal fun configureFlavors(commonExtension: LibraryExtension, flavorConfigurationBlock: ProductFlavor.(flavor: YadinoFlavor) -> Unit = {}) {
   commonExtension.apply {
     flavorDimensions += FlavorDimension.contentType.name
     productFlavors {

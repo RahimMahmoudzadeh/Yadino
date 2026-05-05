@@ -29,13 +29,16 @@ android {
       keyPassword = keystoreProperties.getProperty("keyPassword")
     }
   }
-  applicationVariants.all {
-    outputs.forEach { output ->
-      if (output is ApkVariantOutputImpl) {
-        output.outputFileName = "yadino.apk"
+  androidComponents {
+    onVariants{
+      it.outputs.forEach { output ->
+        if (output is ApkVariantOutputImpl) {
+          output.outputFileName = "yadino.apk"
+        }
       }
     }
   }
+
   buildFeatures {
     buildConfig = true
   }

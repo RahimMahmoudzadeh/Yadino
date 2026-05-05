@@ -2,6 +2,8 @@ package plugins
 
 import androidGradle
 import applyPlugins
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.LibraryExtension
 import configureKotlinAndroid
 import convention.configureFlavors
 import org.gradle.api.Plugin
@@ -14,7 +16,6 @@ class LibraryConventionPlugin : Plugin<Project> {
       applyPlugins {
         listOf(
           versionCatalog.findPlugin("com.android.library").get().get().pluginId,
-          versionCatalog.findPlugin("kotlinAndroid").get().get().pluginId,
           versionCatalog.findPlugin("kotlin-parcelize").get().get().pluginId,
         )
       }
