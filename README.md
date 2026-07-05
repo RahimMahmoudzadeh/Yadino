@@ -14,11 +14,6 @@
     <br />
     Manage your tasks, set alarms, and organize your day with a beautiful Material 3 UI.
   </p>
-
-  
-  <a href='https://play.google.com/store/apps/details?id=com.rahim.yadino&hl=en'><img height="180" width="180" alt='Get it on Google Play' src='asset/googleplay.png'/></a>
-  <a href='https://cafebazaar.ir/app/com.rahim.yadino'><img height="180" width="180" alt='Get it on Bazaar' src="asset/cafebazzar.png"/></a>
-  <a href='https://myket.ir/app/com.rahim.yadino'><img height="180" width="180" alt='Get it on Myket' src="asset/myket.png"/></a>
 </div>
 
 ---
