@@ -13,6 +13,8 @@ kotlin {
         implementation(routine.domain)
         implementation(core.timeDate)
       }
+    }
+    androidMain.dependencies {
       libs.run {
         implementation(androidx.core.splashscreen)
         implementation(datetime)

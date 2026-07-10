@@ -11,6 +11,8 @@ kotlin {
       projects.run{
         implementation(onboarding.domain)
       }
+    }
+    androidMain.dependencies {
       libs.run {
         implementation(bundles.accompanist)
       }

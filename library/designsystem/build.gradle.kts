@@ -12,6 +12,8 @@ kotlin {
       projects.run{
         implementation(core.base)
       }
+    }
+    androidMain.dependencies {
       libs.run {
         implementation(accompanist.permissions)
         implementation(swipe)

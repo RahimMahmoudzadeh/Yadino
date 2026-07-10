@@ -1,16 +1,10 @@
 import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
-import com.android.build.api.dsl.LibraryExtension
 import config.Config
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.invoke
-import org.gradle.kotlin.dsl.provideDelegate
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import kotlin.apply
@@ -98,7 +92,7 @@ internal fun Project.configureKoin() {
   }
 }
 
-internal fun Project.configureMultiPlatform(commentDependency: KotlinDependencyHandler.() -> Unit = {}) {
+internal fun Project.configureMultiPlatform(commonMainDependency: KotlinDependencyHandler.() -> Unit = {}) {
   extensions.configure<KotlinMultiplatformExtension> {
 
     targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java)
@@ -117,7 +111,7 @@ internal fun Project.configureMultiPlatform(commentDependency: KotlinDependencyH
 
     sourceSets {
       commonMain.dependencies {
-        commentDependency()
+        commonMainDependency()
       }
       iosMain.dependencies {}
 

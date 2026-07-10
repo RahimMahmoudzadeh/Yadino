@@ -42,13 +42,8 @@ class CmpLibraryConventionPlugin : Plugin<Project> {
 
                 sourceSets.apply {
                     commonMain.dependencies {
-                        val subprojects = project
-                            .rootProject
-                            .subprojects
-                        subprojects.filter { it.path.startsWith(":library:", false) }
-                            .forEach {
-                                implementation(project(it.path))
-                            }
+                        implementation(project(":library:designsystem"))
+                        implementation(project(":library:navigation"))
                         implementation(versionCatalog.findBundle("compose").get())
                         implementation(versionCatalog.findLibrary("kotlinx-serialization").get())
                     }

@@ -2,24 +2,14 @@ package com.rahim.ui.main
 
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import com.arkivanov.decompose.defaultComponentContext
-import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.google.firebase.messaging.FirebaseMessaging
-import com.rahim.BuildConfig
-import com.rahim.ui.root.component.RootComponent
-import com.rahim.ui.root.component.RootComponentImpl
-import com.rahim.data.distributionActions.StateOfClickItemDrawable
-import com.rahim.ui.root.YadinoApp
-import com.rahim.yadino.base.use
-import org.koin.core.component.KoinComponent
+//import com.arkivanov.decompose.defaultComponentContext
+//import com.google.firebase.messaging.FirebaseMessaging
+//import com.rahim.ui.root.component.RootComponentImpl
+//import com.rahim.ui.root.YadinoApp
 
 class MainActivity : ComponentActivity() {
 
@@ -31,18 +21,18 @@ class MainActivity : ComponentActivity() {
     }
     super.onCreate(savedInstanceState)
 
-    val root = RootComponentImpl(componentContext = defaultComponentContext())
-    getTokenFirebase()
+//    val root = RootComponentImpl(componentContext = defaultComponentContext())
+//    getTokenFirebase()
 
     setContent {
-      YadinoApp(
-        component = root,
-      )
+//      YadinoApp(
+//        component = root,
+//      )
     }
   }
 
   private fun getTokenFirebase() {
-    FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-    }
+//    FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+//    }
   }
 }

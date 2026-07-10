@@ -1,7 +1,7 @@
 plugins {
   libs.plugins.run {
     alias(library)
-//    alias(di)
+    alias(di)
 //    alias (db)
   }
 }
