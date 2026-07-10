@@ -4,12 +4,18 @@ kotlin = "2.4.0"
 kotlinxImmutableCollection = "0.5.1"
 
 #compose
-compose-bom = "2026.06.01"
+compose-multiplatform = "1.11.1"
 activity-compose = "1.13.0"
+
+#navigation
+androidx-navigation3 = "1.1.1"
 
 #core
 androidDesugarJdkLibs = "2.1.5"
 androidx-core = "1.19.0"
+
+compose-multiplatform-material3 = "1.11.0-alpha07"
+compose-multiplatform-lifecycle = "2.10.0"
 
 androidx-lifecycle = "2.11.0"
 androidx-room = "2.8.4"
@@ -59,6 +65,10 @@ decompose-essenty = "2.5.0"
 
 #kotlinx-serialization
 kotlinx-serialization = "1.11.0"
+kotlinStdlib = "2.4.0"
+kotlinTest = "2.4.0"
+runner = "1.7.0"
+core = "1.7.0"
 
 [libraries]
 #core
@@ -70,10 +80,21 @@ kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotli
 androidx-tracing-ktx = { group = "androidx.tracing", name = "tracing-ktx", version.ref = "androidxTracing" }
 
 #compose
-androidx-compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
-androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayout-compose" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-multiplatform-material3" }
+compose-animation = { module = "org.jetbrains.compose.animation:animation", version.ref = "compose-multiplatform" }
+compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+compose-material-ripple = { module = "org.jetbrains.compose.material:material-ripple", version.ref = "compose-multiplatform" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
+compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose-multiplatform" }
+compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-multiplatform" }
+
+#compose-androidX
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
+androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+androidx-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "androidx-navigation3" }
+#androidx-preference = { module = "androidx.preference:preference-ktx", version.ref = "androidx-preference" }
 
 ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -159,10 +180,18 @@ kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-pl
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "androidx-room" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlinTest" }
+androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
+core = { group = "androidx.test", name = "core", version.ref = "core" }
 
 [bundles]
-compose = ["androidx-compose-activity", "androidx-material3-android", "lifecycle-runtime-compose",
-    "lifecycle-viewmodel-compose", "lottie-compose", "constraintlayout-compose"]
+compose = ["compose-animation", "compose-components-resources", "lifecycle-runtime-compose",
+    "compose-foundation", "compose-material-ripple", "compose-runtime",
+    "compose-ui-tooling-preview", "compose-material3"]
+
+compose-x = ["androidx-activity-compose", "androidx-core-splashscreen", "androidx-lifecycle-runtime-compose", "androidx-lifecycle-viewmodel-compose"]
+
 room = ["room-runtime", "room-ktx"]
 koin = ["koin-android-compose", "koin-core", "koin-android"]
 firebase = ["firebaseMessaging", "firebaseAnalytics", "firebaseCrashlytics"]
@@ -183,6 +212,10 @@ firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "
 androidx-room = { id = "androidx.room", version.ref = "androidx-room" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+android-lint = { id = "com.android.lint", version.ref = "agp" }
+composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 
 # Plugins defined by this project
 application = { id = "yadino.application", version = "unspecified" }
@@ -196,3 +229,4 @@ library-compose = { id = "library.compose", version = "unspecified" }
 db = { id = "db", version = "unspecified" }
 decompose = { id = "decompose", version = "unspecified" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+cmp = { id = "cmp", version = "unspecified" }

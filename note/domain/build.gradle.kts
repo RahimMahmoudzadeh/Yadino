@@ -3,10 +3,12 @@ plugins {
     alias(library)
   }
 }
-
-android {
-  namespace = "com.rahim.yadino.note.domin"
-}
-dependencies {
-  implementation(projects.core.base)
+kotlin {
+  sourceSets{
+    commonMain.dependencies{
+      projects.run{
+        implementation(core.base)
+      }
+    }
+  }
 }

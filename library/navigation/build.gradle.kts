@@ -5,13 +5,15 @@ plugins {
     alias(kotlinx.serialization)
   }
 }
-
-android {
-  namespace = "com.rahim.yadino.library.navigation"
-}
-dependencies {
-  implementation(projects.library.designsystem)
-  libs.run {
-    implementation(kotlinx.serialization)
+kotlin {
+  sourceSets{
+    commonMain.dependencies{
+      projects.run{
+        implementation(library.designsystem)
+      }
+      libs.run{
+        implementation(kotlinx.serialization)
+      }
+    }
   }
 }

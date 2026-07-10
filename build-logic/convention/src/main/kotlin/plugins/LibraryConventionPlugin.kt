@@ -5,6 +5,7 @@ import applyPlugins
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
 import configureKotlinAndroid
+import configureMultiPlatform
 import convention.configureFlavors
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -15,14 +16,12 @@ class LibraryConventionPlugin : Plugin<Project> {
     with(target) {
       applyPlugins {
         listOf(
-          versionCatalog.findPlugin("com.android.library").get().get().pluginId,
-          versionCatalog.findPlugin("kotlin-parcelize").get().get().pluginId,
+          versionCatalog.findPlugin("kotlin.multiplatform").get().get().pluginId,
+          versionCatalog.findPlugin("android.kotlin.multiplatform.library").get()
+            .get().pluginId,
         )
       }
-      androidGradle {
-        configureKotlinAndroid(this)
-        configureFlavors(this)
-      }
+      configureMultiPlatform()
     }
   }
 }

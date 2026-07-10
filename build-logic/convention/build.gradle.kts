@@ -66,5 +66,9 @@ gradlePlugin {
       id = "decompose"
       implementationClass = "plugins.DecomposeConventionPlugin"
     }
+    register("cmp") {
+      id = "cmp"
+      implementationClass = "plugins.CmpLibraryConventionPlugin"
+    }
   }
 }

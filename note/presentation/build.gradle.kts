@@ -2,20 +2,19 @@ plugins {
   libs.plugins.run {
     alias(presentation)
     alias(library.compose)
-    alias(decompose)
+//    alias(decompose)
     alias(kotlinx.serialization)
   }
 }
-
-android {
-  namespace = "com.rahim.yadino.note.presentation"
-}
-dependencies {
-  projects.run{
-    implementation(note.domain)
-  }
-
-  libs.run {
-    implementation(swipe)
+kotlin {
+  sourceSets{
+    commonMain.dependencies{
+      projects.run{
+        implementation(note.domain)
+      }
+      libs.run{
+        implementation(swipe)
+      }
+    }
   }
 }

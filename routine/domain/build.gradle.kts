@@ -3,11 +3,12 @@ plugins {
     alias(library)
   }
 }
-
-android {
-  namespace = "com.rahim.yadino.routine.domain"
-}
-dependencies {
-  implementation(projects.core.base)
-  implementation(projects.core.timeDate)
+kotlin {
+  sourceSets{
+    commonMain.dependencies{
+      projects.run{
+        implementation(projects.core.base)
+        implementation(projects.core.timeDate)      }
+    }
+  }
 }

@@ -7,10 +7,10 @@ plugins {
   libs.plugins.run {
     alias(application)
     alias(application.compose)
-    alias(firebase)
-    alias(db)
-    alias(decompose)
-    alias(di)
+//    alias(firebase)
+//    alias(db)
+//    alias(decompose)
+//    alias(di)
     alias(kotlinx.serialization)
   }
 }

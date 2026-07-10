@@ -1,6 +1,7 @@
 package plugins
 
 import applyPlugins
+import configureComposeMultiPlatformPresentation
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
@@ -12,12 +13,7 @@ class PresentationConventionPlugin : Plugin<Project> {
       applyPlugins {
         listOf("library", "di")
       }
-      dependencies {
-        add("implementation", versionCatalog.findLibrary("androidx.tracing.ktx").get())
-        add("api", project(":library:designsystem"))
-        add("api", project(":library:navigation"))
-        add("api", project(":core:base"))
-      }
+      configureComposeMultiPlatformPresentation()
     }
   }
 }

@@ -1,5 +1,5 @@
 plugins {
-  libs.plugins.run {
+    libs.plugins.run {
     alias(androidApplication) apply false
     alias(com.android.library) apply false
     alias(ksp) apply false
