@@ -1,7 +1,7 @@
 plugins {
   libs.plugins.run {
     alias(presentation)
-    alias(library.compose)
+//    alias(library.compose)
 //    alias(decompose)
     alias(kotlinx.serialization)
   }
@@ -16,9 +16,9 @@ kotlin {
     }
     androidMain.dependencies {
       libs.run {
-        implementation(androidx.core.splashscreen)
-        implementation(datetime)
-        implementation(accompanist.permissions)
+//        implementation(androidx.core.splashscreen)
+//        implementation(datetime)
+//        implementation(accompanist.permissions)
       }
     }
   }

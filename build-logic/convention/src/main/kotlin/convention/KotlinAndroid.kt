@@ -1,6 +1,7 @@
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import config.Config
+import config.Config.android
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
@@ -122,17 +123,21 @@ internal fun Project.configureMultiPlatform(commonMainDependency: KotlinDependen
 internal fun Project.configureComposeMultiPlatformPresentation() {
   extensions.configure<KotlinMultiplatformExtension> {
 
-    targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java)
-      .configureEach {
-        compileSdk = Config.android.compileSdkVersion
-        minSdk = Config.android.minSdkVersion
-        val formattedPath = project.path.replace(":", ".").replace("-", "_")
-        namespace = Config.android.nameSpace + formattedPath
-        compilerOptions {
-          jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-        }
+    configure<KotlinMultiplatformAndroidLibraryTarget> {
+      compileSdk = Config.android.compileSdkVersion
+      minSdk = Config.android.minSdkVersion
+
+      val formattedPath = project.path.replace(":", ".").replace("-", "_")
+      namespace = Config.android.nameSpace + formattedPath
+
+      compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
       }
 
+      androidResources {
+        enable = true
+      }
+    }
     iosArm64()
     iosSimulatorArm64()
 

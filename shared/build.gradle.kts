@@ -9,11 +9,7 @@ plugins {
 kotlin {
   sourceSets {
     commonMain.dependencies {
-      projects.run {
-        implementation(home.data)
-        implementation(routine.data)
-        implementation(note.data)
-      }
+
     }
   }
 }

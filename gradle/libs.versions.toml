@@ -71,6 +71,7 @@ runner = "1.7.0"
 core = "1.7.0"
 
 [libraries]
+compose-multiplatform-gradlePlugin = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "compose-multiplatform" }
 #core
 androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }

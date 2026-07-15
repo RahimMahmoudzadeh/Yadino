@@ -12,45 +12,60 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import versionCatalog
 
 class CmpLibraryConventionPlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        with(target) {
-            applyPlugins {
-                listOf(
-                    versionCatalog.findPlugin("kotlin.multiplatform").get().get().pluginId,
-                    versionCatalog.findPlugin("android.kotlin.multiplatform.library").get()
-                        .get().pluginId,
-                    versionCatalog.findPlugin("kotlinx.serialization").get().get().pluginId
-                )
+  override fun apply(target: Project) {
+    with(target) {
+      applyPlugins {
+        listOf(
+          versionCatalog.findPlugin("kotlin.multiplatform").get().get().pluginId,
+          versionCatalog.findPlugin("android.kotlin.multiplatform.library").get()
+            .get().pluginId,
+          versionCatalog.findPlugin("kotlinx.serialization").get().get().pluginId,
+        )
+      }
+
+      extensions.configure<KotlinMultiplatformExtension> {
+
+        targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java)
+          .configureEach {
+            compileSdk = Config.android.compileSdkVersion
+            minSdk = Config.android.minSdkVersion
+            namespace = Config.android.nameSpace + "shared"
+            compilerOptions {
+              jvmTarget.set(JvmTarget.JVM_17)
             }
+          }
 
-            extensions.configure<KotlinMultiplatformExtension> {
+        iosArm64()
+        iosSimulatorArm64()
 
-                targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java)
-                    .configureEach {
-                        compileSdk = Config.android.compileSdkVersion
-                        minSdk = Config.android.minSdkVersion
-                        namespace = Config.android.nameSpace+"shared"
-                        compilerOptions {
-                            jvmTarget.set(JvmTarget.JVM_17)
-                        }
-                    }
+        applyDefaultHierarchyTemplate()
 
-                iosArm64()
-                iosSimulatorArm64()
-
-                applyDefaultHierarchyTemplate()
-
-                sourceSets.apply {
-                    commonMain.dependencies {
-                        implementation(project(":library:designsystem"))
-                        implementation(project(":library:navigation"))
-                        implementation(versionCatalog.findBundle("compose").get())
-                        implementation(versionCatalog.findLibrary("kotlinx-serialization").get())
-                    }
-                    androidMain.dependencies {
-                    }
-                }
-            }
+        sourceSets.apply {
+          commonMain.dependencies {
+            val subprojects = project
+              .rootProject
+              .subprojects
+            subprojects.filter { it.path.startsWith(":feature:", false) }
+              .forEach { implementation(project(it.path)) }
+            subprojects.filter { it.path.startsWith(":home:", false) }
+              .forEach { implementation(project(it.path)) }
+            subprojects.filter { it.path.startsWith(":onboarding:", false) }
+              .forEach { implementation(project(it.path)) }
+            subprojects.filter { it.path.startsWith(":routine:", false) }
+              .forEach { implementation(project(it.path)) }
+            subprojects.filter { it.path.startsWith(":note:", false) }
+              .forEach { implementation(project(it.path)) }
+            subprojects.filter { it.path.startsWith(":library:", false) }
+              .forEach { implementation(project(it.path)) }
+            subprojects.filter { it.path.startsWith(":core:", false) }
+              .forEach { implementation(project(it.path)) }
+            implementation(versionCatalog.findBundle("compose").get())
+            implementation(versionCatalog.findLibrary("kotlinx-serialization").get())
+          }
+          androidMain.dependencies {
+          }
         }
+      }
     }
+  }
 }

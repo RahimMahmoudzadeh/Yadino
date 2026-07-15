@@ -38,20 +38,20 @@ class ApplicationConventionPlugin : Plugin<Project> {
           .rootProject
           .subprojects
 
-        subprojects.filter { it.path.startsWith(":feature:", false) }
-          .forEach { add("implementation", project(it.path)) }
-        subprojects.filter { it.path.startsWith(":home:", false) }
-          .forEach { add("implementation", project(it.path)) }
-        subprojects.filter { it.path.startsWith(":onboarding:", false) }
-          .forEach { add("implementation", project(it.path)) }
-        subprojects.filter { it.path.startsWith(":routine:", false) }
-          .forEach { add("implementation", project(it.path)) }
-        subprojects.filter { it.path.startsWith(":note:", false) }
-          .forEach { add("implementation", project(it.path)) }
-        subprojects.filter { it.path.startsWith(":library:", false) }
-          .forEach { add("implementation", project(it.path)) }
-        subprojects.filter { it.path.startsWith(":core:", false) }
-          .forEach { add("implementation", project(it.path)) }
+//        subprojects.filter { it.path.startsWith(":feature:", false) }
+//          .forEach { add("implementation", project(it.path)) }
+//        subprojects.filter { it.path.startsWith(":home:", false) }
+//          .forEach { add("implementation", project(it.path)) }
+//        subprojects.filter { it.path.startsWith(":onboarding:", false) }
+//          .forEach { add("implementation", project(it.path)) }
+//        subprojects.filter { it.path.startsWith(":routine:", false) }
+//          .forEach { add("implementation", project(it.path)) }
+//        subprojects.filter { it.path.startsWith(":note:", false) }
+//          .forEach { add("implementation", project(it.path)) }
+//        subprojects.filter { it.path.startsWith(":library:", false) }
+//          .forEach { add("implementation", project(it.path)) }
+//        subprojects.filter { it.path.startsWith(":core:", false) }
+//          .forEach { add("implementation", project(it.path)) }
       }
     }
   }

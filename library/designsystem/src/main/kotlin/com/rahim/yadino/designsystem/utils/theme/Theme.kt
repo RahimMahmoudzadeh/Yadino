@@ -75,6 +75,9 @@ fun YadinoTheme(
 //      WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
 //    }
   }
+  val LocalSpacing = compositionLocalOf { SpaceDimensions() }
+  val LocalFontSize = compositionLocalOf { FontDimensions() }
+  val LocalSize = compositionLocalOf { SizeDimensions() }
   CompositionLocalProvider(
     LocalSpacing provides SpaceDimensions(),
     LocalFontSize provides FontDimensions(),
