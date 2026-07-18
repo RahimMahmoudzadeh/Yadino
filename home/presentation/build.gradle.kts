@@ -1,18 +1,18 @@
 plugins {
   libs.plugins.run {
-//    alias(presentation)
+    alias(presentation)
 //    alias(decompose)
 //    alias(library.compose)
     alias(kotlinx.serialization)
   }
 }
-//kotlin {
-//  sourceSets{
-//    commonMain.dependencies{
-//      projects.run{
-//        implementation(home.domain)
-//      }
-//    }
+kotlin {
+  sourceSets{
+    commonMain.dependencies{
+      projects.run{
+        implementation(home.domain)
+      }
+    }
 //    androidMain.dependencies{
 //      libs.run {
 //        implementation(androidx.core.splashscreen)
@@ -20,5 +20,5 @@ plugins {
 //        implementation(accompanist.permissions)
 //      }
 //    }
-//  }
-//}
+  }
+}

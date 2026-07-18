@@ -18,15 +18,15 @@ kotlin {
 }
 
 dependencies {
-  compileOnly(libs.android.gradlePlugin)
-  compileOnly(libs.android.tools.common)
-  compileOnly(libs.compose.gradlePlugin)
-  compileOnly(libs.firebase.crashlytics.gradlePlugin)
-  compileOnly(libs.firebase.performance.gradlePlugin)
-  compileOnly(libs.kotlin.gradlePlugin)
-  compileOnly(libs.ksp.gradlePlugin)
-  compileOnly(libs.room.gradlePlugin)
-  compileOnly(libs.compose.multiplatform.gradlePlugin)
+  implementation(libs.android.gradlePlugin)
+  implementation(libs.android.tools.common)
+  implementation(libs.compose.gradlePlugin)
+  implementation(libs.firebase.crashlytics.gradlePlugin)
+  implementation(libs.firebase.performance.gradlePlugin)
+  implementation(libs.kotlin.gradlePlugin)
+  implementation(libs.ksp.gradlePlugin)
+  implementation(libs.room.gradlePlugin)
+  implementation(libs.compose.multiplatform.gradlePlugin)
 }
 
 gradlePlugin {
