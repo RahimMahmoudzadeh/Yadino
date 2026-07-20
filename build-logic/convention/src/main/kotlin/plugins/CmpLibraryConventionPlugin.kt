@@ -5,8 +5,12 @@ import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import config.Config
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.internal.Actions.with
 import org.gradle.kotlin.dsl.configure
+import org.jetbrains.compose.ComposeExtension
+import org.jetbrains.compose.ComposePlugin.CommonComponentsDependencies.resources
+import org.jetbrains.compose.resources.ResourcesExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import versionCatalog
@@ -20,7 +24,18 @@ class CmpLibraryConventionPlugin : Plugin<Project> {
           versionCatalog.findPlugin("android.kotlin.multiplatform.library").get()
             .get().pluginId,
           versionCatalog.findPlugin("kotlinx.serialization").get().get().pluginId,
+          versionCatalog.findPlugin("composeMultiplatform").get().get().pluginId,
+          versionCatalog.findPlugin("compose.compiler").get().get().pluginId,
         )
+      }
+      pluginManager.withPlugin("org.jetbrains.compose") {
+        extensions.configure<ComposeExtension> {
+          (this as ExtensionAware).extensions.configure<ResourcesExtension> {
+            packageOfResClass = Config.android.nameSpace + "." + project.name.replace("-", ".").replace(":", ".")
+            publicResClass = true
+            generateResClass = ResourcesExtension.ResourceClassGeneration.Auto
+          }
+        }
       }
 
       extensions.configure<KotlinMultiplatformExtension> {
@@ -45,8 +60,8 @@ class CmpLibraryConventionPlugin : Plugin<Project> {
             val subprojects = project
               .rootProject
               .subprojects
-            subprojects.filter { it.path.startsWith(":feature:", false) }
-              .forEach { implementation(project(it.path)) }
+//            subprojects.filter { it.path.startsWith(":feature:", false) }
+//              .forEach { implementation(project(it.path)) }
             subprojects.filter { it.path.startsWith(":home:", false) }
               .forEach { implementation(project(it.path)) }
             subprojects.filter { it.path.startsWith(":onboarding:", false) }
@@ -59,6 +74,7 @@ class CmpLibraryConventionPlugin : Plugin<Project> {
               .forEach { implementation(project(it.path)) }
             subprojects.filter { it.path.startsWith(":core:", false) }
               .forEach { implementation(project(it.path)) }
+
             implementation(versionCatalog.findBundle("compose").get())
             implementation(versionCatalog.findLibrary("kotlinx-serialization").get())
           }
