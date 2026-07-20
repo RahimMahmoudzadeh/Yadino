@@ -3,9 +3,12 @@ import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import config.Config
 import config.Config.android
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.invoke
+import org.jetbrains.compose.ComposeExtension
+import org.jetbrains.compose.resources.ResourcesExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import kotlin.apply
@@ -49,6 +52,16 @@ internal fun Project.configureKotlinAndroid(commonExtension: ApplicationExtensio
 }
 
 internal fun Project.configureComposeMultiPlatform() {
+  pluginManager.withPlugin("org.jetbrains.compose") {
+    extensions.configure<ComposeExtension> {
+      (this as ExtensionAware).extensions.configure<ResourcesExtension> {
+        val formattedPath = project.path.replace(":", ".").replace("-", "_")
+        packageOfResClass = Config.android.nameSpace + Config.android.applicationIdSuffix + formattedPath
+        publicResClass = true
+        generateResClass = ResourcesExtension.ResourceClassGeneration.Auto
+      }
+    }
+  }
   extensions.configure<KotlinMultiplatformExtension> {
 
     targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java)
@@ -56,7 +69,7 @@ internal fun Project.configureComposeMultiPlatform() {
         compileSdk = Config.android.compileSdkVersion
         minSdk = Config.android.minSdkVersion
         val formattedPath = project.path.replace(":", ".").replace("-", "_")
-        namespace = Config.android.nameSpace + formattedPath
+        namespace = Config.android.nameSpace + Config.android.applicationIdSuffix + formattedPath
         compilerOptions {
           jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
@@ -101,7 +114,7 @@ internal fun Project.configureMultiPlatform(commonMainDependency: KotlinDependen
         compileSdk = Config.android.compileSdkVersion
         minSdk = Config.android.minSdkVersion
         val formattedPath = project.path.replace(":", ".").replace("-", "_")
-        namespace = Config.android.nameSpace + formattedPath
+        namespace = Config.android.nameSpace + android.applicationIdSuffix + formattedPath
         compilerOptions {
           jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
@@ -128,7 +141,7 @@ internal fun Project.configureComposeMultiPlatformPresentation() {
       minSdk = Config.android.minSdkVersion
 
       val formattedPath = project.path.replace(":", ".").replace("-", "_")
-      namespace = Config.android.nameSpace + formattedPath
+      namespace = Config.android.nameSpace + android.applicationIdSuffix + formattedPath
 
       compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
