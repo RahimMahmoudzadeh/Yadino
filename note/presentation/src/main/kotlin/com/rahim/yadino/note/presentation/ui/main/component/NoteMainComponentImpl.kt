@@ -31,71 +31,71 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
-class NoteMainComponentImpl(
-  componentContext: ComponentContext,
-  mainContext: CoroutineContext,
-  private val getNotesUseCase: GetNotesUseCase,
-  private val searchNoteUseCase: SearchNoteUseCase,
-  private val updateNoteUseCase: UpdateNoteUseCase,
-  private val showErrorDialog: (ErrorDialogRemoveNoteUiModel) -> Unit,
-  private val showUpdateNoteDialog: (NoteUiModel) -> Unit,
-) : NoteMainComponent, ComponentContext by componentContext {
-
-  private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
-
-  private var _state = MutableValue(NoteMainComponent.State())
-  override val state: Value<NoteMainComponent.State> = _state
-
-  private val _effects: Channel<NoteMainComponent.Effect> = Channel(Channel.BUFFERED)
-  override val effects: Flow<NoteMainComponent.Effect> = _effects.consumeAsFlow()
-
-  init {
-    lifecycle.doOnCreate {
-      getNotes()
-    }
-  }
-
-  override fun onEvent(event: NoteMainComponent.Event) = when (event) {
-    is NoteMainComponent.Event.GetNotes -> getNotes()
-    is NoteMainComponent.Event.Search -> searchItems(event.nameNoteUi)
-    is NoteMainComponent.Event.ShowErrorRemoveNoteDialog -> showErrorDialog(event.errorDialogRemoveNoteUiModel)
-    is NoteMainComponent.Event.OnChecked -> updateNote(event.checkedNote)
-    is NoteMainComponent.Event.OnOpenUpdateNoteDialog -> showUpdateNoteDialog(event.updateNote)
-  }
-
-  private fun updateNote(note: NoteUiModel) {
-    scope.launch {
-      updateNoteUseCase(note.toNote())
-    }
-  }
-
-  private fun searchItems(nameNoteUi: NameNoteUi) {
-    scope.launch {
-      if (nameNoteUi.name.isNotEmpty()) {
-        Timber.tag("searchRoutine").d("searchText:${nameNoteUi.name}")
-        searchNoteUseCase(nameNoteUi.toNameNote()).catch {
-        }.collectLatest { notes ->
-          _state.update {
-            it.copy(notes = LoadableData.Loaded(notes.map { it.toNoteUiModel() }.toPersistentList()))
-          }
-        }
-      } else {
-        getNotes()
-      }
-    }
-  }
-
-  private fun getNotes() {
-    scope.launch {
-      getNotesUseCase()
-        .catch {
-
-        }
-        .collectLatest { notes ->
-          _state.update {
-            it.copy(notes = LoadableData.Loaded(notes.map { it.toNoteUiModel() }.toPersistentList()))
-          }
-        }
-    }
-  }
-}
+//class NoteMainComponentImpl(
+//  componentContext: ComponentContext,
+//  mainContext: CoroutineContext,
+//  private val getNotesUseCase: GetNotesUseCase,
+//  private val searchNoteUseCase: SearchNoteUseCase,
+//  private val updateNoteUseCase: UpdateNoteUseCase,
+//  private val showErrorDialog: (ErrorDialogRemoveNoteUiModel) -> Unit,
+//  private val showUpdateNoteDialog: (NoteUiModel) -> Unit,
+//) : NoteMainComponent, ComponentContext by componentContext {
+//
+//  private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
+//
+//  private var _state = MutableValue(NoteMainComponent.State())
+//  override val state: Value<NoteMainComponent.State> = _state
+//
+//  private val _effects: Channel<NoteMainComponent.Effect> = Channel(Channel.BUFFERED)
+//  override val effects: Flow<NoteMainComponent.Effect> = _effects.consumeAsFlow()
+//
+//  init {
+//    lifecycle.doOnCreate {
+//      getNotes()
+//    }
+//  }
+//
+//  override fun onEvent(event: NoteMainComponent.Event) = when (event) {
+//    is NoteMainComponent.Event.GetNotes -> getNotes()
+//    is NoteMainComponent.Event.Search -> searchItems(event.nameNoteUi)
+//    is NoteMainComponent.Event.ShowErrorRemoveNoteDialog -> showErrorDialog(event.errorDialogRemoveNoteUiModel)
+//    is NoteMainComponent.Event.OnChecked -> updateNote(event.checkedNote)
+//    is NoteMainComponent.Event.OnOpenUpdateNoteDialog -> showUpdateNoteDialog(event.updateNote)
+//  }
+//
+//  private fun updateNote(note: NoteUiModel) {
+//    scope.launch {
+//      updateNoteUseCase(note.toNote())
+//    }
+//  }
+//
+//  private fun searchItems(nameNoteUi: NameNoteUi) {
+//    scope.launch {
+//      if (nameNoteUi.name.isNotEmpty()) {
+//        Timber.tag("searchRoutine").d("searchText:${nameNoteUi.name}")
+//        searchNoteUseCase(nameNoteUi.toNameNote()).catch {
+//        }.collectLatest { notes ->
+//          _state.update {
+//            it.copy(notes = LoadableData.Loaded(notes.map { it.toNoteUiModel() }.toPersistentList()))
+//          }
+//        }
+//      } else {
+//        getNotes()
+//      }
+//    }
+//  }
+//
+//  private fun getNotes() {
+//    scope.launch {
+//      getNotesUseCase()
+//        .catch {
+//
+//        }
+//        .collectLatest { notes ->
+//          _state.update {
+//            it.copy(notes = LoadableData.Loaded(notes.map { it.toNoteUiModel() }.toPersistentList()))
+//          }
+//        }
+//    }
+//  }
+//}

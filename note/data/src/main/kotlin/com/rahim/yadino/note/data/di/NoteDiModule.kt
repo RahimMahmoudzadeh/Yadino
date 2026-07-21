@@ -11,11 +11,11 @@ import com.rahim.yadino.note.domain.useCase.UpdateNoteUseCase
 import org.koin.dsl.module
 
 val NoteDiModule = module {
-  single<NoteRepository> { NoteRepositoryImpl(noteDao = get(), sharedPreferencesRepository = get()) }
-  single { AddNoteUseCase(noteRepository = get()) }
-  single { UpdateNoteUseCase(noteRepository = get()) }
-  single { DeleteNoteUseCase(noteRepository = get()) }
-  single { GetNotesUseCase(noteRepository = get()) }
-  single { SearchNoteUseCase(noteRepository = get()) }
-  single { AddSampleNoteUseCase(noteRepository = get()) }
+//  single<NoteRepository> { NoteRepositoryImpl(noteDao = get(), sharedPreferencesRepository = get()) }
+//  single { AddNoteUseCase(noteRepository = get()) }
+//  single { UpdateNoteUseCase(noteRepository = get()) }
+//  single { DeleteNoteUseCase(noteRepository = get()) }
+//  single { GetNotesUseCase(noteRepository = get()) }
+//  single { SearchNoteUseCase(noteRepository = get()) }
+//  single { AddSampleNoteUseCase(noteRepository = get()) }
 }

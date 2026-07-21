@@ -17,6 +17,9 @@ class LibraryComposeConventionPlugin : Plugin<Project> {
         listOf(
           versionCatalog.findPlugin("composeMultiplatform").get().get().pluginId,
           versionCatalog.findPlugin("compose.compiler").get().get().pluginId,
+          versionCatalog.findPlugin("kotlin.multiplatform").get().get().pluginId,
+          versionCatalog.findPlugin("android.kotlin.multiplatform.library").get()
+            .get().pluginId,
         )
       }
       configureComposeMultiPlatform()

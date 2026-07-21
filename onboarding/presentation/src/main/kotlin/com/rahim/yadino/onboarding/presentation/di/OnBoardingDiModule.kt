@@ -5,6 +5,6 @@ import com.rahim.yadino.onBoarding.domain.useCase.SaveShowWelcomeUseCase
 import org.koin.dsl.module
 
 val onBoardingDiModule = module {
-  single { IsShowWelcomeScreenUseCase(sharedPreferencesRepository = get()) }
-  single { SaveShowWelcomeUseCase(sharedPreferencesRepository = get()) }
+//  single { IsShowWelcomeScreenUseCase(sharedPreferencesRepository = get()) }
+//  single { SaveShowWelcomeUseCase(sharedPreferencesRepository = get()) }
 }

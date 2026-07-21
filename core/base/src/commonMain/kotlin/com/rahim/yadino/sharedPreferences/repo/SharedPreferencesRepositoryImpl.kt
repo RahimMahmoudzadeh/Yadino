@@ -1,0 +1,28 @@
+package com.rahim.yadino.sharedPreferences.repo
+
+//class SharedPreferencesRepositoryImpl(private val sharedPreferencesCustom: SharedPreferencesCustom) :
+//  SharedPreferencesRepository {
+//  override suspend fun saveShowWelcome() {
+//    sharedPreferencesCustom.saveWelcomePage(true)
+//  }
+//
+//  override fun isShowWelcomeScreen() = sharedPreferencesCustom.isShowWelcome()
+//  override suspend fun setShowSampleRoutine(isShow: Boolean) {
+//    if (isShowSampleRoutine().first()) return
+//    sharedPreferencesCustom.showSampleRoutine(isShow)
+//  }
+//
+//  override fun isShowSampleRoutine(): Flow<Boolean> = sharedPreferencesCustom.isShowSampleRoutine()
+//  override fun isShowSampleNote() = sharedPreferencesCustom.isSampleNote()
+//
+//  override suspend fun setShowSampleNote(isShow: Boolean) {
+//    if (isShowSampleNote().first()) return
+//    sharedPreferencesCustom.showSampleNote(isShow)
+//  }
+//
+//  override suspend fun changeTheme(isDarkTheme: Boolean) {
+//    sharedPreferencesCustom.setDarkTheme(isDarkTheme)
+//  }
+//
+//  override fun isDarkTheme(): Flow<Boolean?> = sharedPreferencesCustom.isDarkTheme()
+//}

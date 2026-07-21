@@ -15,34 +15,34 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class UpdateNoteDialogComponentImpl(
-  componentContext: ComponentContext,
-  mainContext: CoroutineContext,
-  ioContext: CoroutineContext,
-  private val updateNoteUseCase: UpdateNoteUseCase,
-  private val updateNote: NoteUiModel?,
-  private val onDismissed: () -> Unit,
-) : UpdateNoteDialogComponent, ComponentContext by componentContext {
-
-  private val mainScope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
-  private val ioScope: CoroutineScope = coroutineScope(ioContext + SupervisorJob())
-
-
-  private val _state=MutableValue(UpdateNoteDialogComponent.State(updateNote = updateNote))
-  final override val state: Value<UpdateNoteDialogComponent.State> = _state
-
-  private val _effects = Channel<UpdateNoteDialogComponent.Effect>(Channel.BUFFERED)
-  override val effects: Flow<UpdateNoteDialogComponent.Effect> = _effects.consumeAsFlow()
-
-  override fun onEvent(event: UpdateNoteDialogComponent.Event) = when (event) {
-    UpdateNoteDialogComponent.Event.Dismiss -> onDismissed()
-    is UpdateNoteDialogComponent.Event.UpdateNote -> updateNote(event.note)
-  }
-
-  private fun updateNote(note: NoteUiModel) {
-    mainScope.launch {
-      updateNoteUseCase(note.toNote())
-      onDismissed()
-    }
-  }
-}
+//class UpdateNoteDialogComponentImpl(
+//  componentContext: ComponentContext,
+//  mainContext: CoroutineContext,
+//  ioContext: CoroutineContext,
+//  private val updateNoteUseCase: UpdateNoteUseCase,
+//  private val updateNote: NoteUiModel?,
+//  private val onDismissed: () -> Unit,
+//) : UpdateNoteDialogComponent, ComponentContext by componentContext {
+//
+//  private val mainScope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
+//  private val ioScope: CoroutineScope = coroutineScope(ioContext + SupervisorJob())
+//
+//
+//  private val _state=MutableValue(UpdateNoteDialogComponent.State(updateNote = updateNote))
+//  final override val state: Value<UpdateNoteDialogComponent.State> = _state
+//
+//  private val _effects = Channel<UpdateNoteDialogComponent.Effect>(Channel.BUFFERED)
+//  override val effects: Flow<UpdateNoteDialogComponent.Effect> = _effects.consumeAsFlow()
+//
+//  override fun onEvent(event: UpdateNoteDialogComponent.Event) = when (event) {
+//    UpdateNoteDialogComponent.Event.Dismiss -> onDismissed()
+//    is UpdateNoteDialogComponent.Event.UpdateNote -> updateNote(event.note)
+//  }
+//
+//  private fun updateNote(note: NoteUiModel) {
+//    mainScope.launch {
+//      updateNoteUseCase(note.toNote())
+//      onDismissed()
+//    }
+//  }
+//}

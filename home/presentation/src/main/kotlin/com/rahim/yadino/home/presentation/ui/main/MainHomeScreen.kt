@@ -55,194 +55,194 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-fun HomeMainScreen(
-  modifier: Modifier = Modifier,
-  clickSearch: Boolean,
-  component: MainHomeComponent,
-) {
-  val (state, effect, event) = use(component = component)
-  val context = LocalContext.current
-
-  val snackBarHostState = remember { SnackbarHostState() }
-  val scope = rememberCoroutineScope()
-
-  LaunchedEffect(effect) {
-    effect.collect { effect ->
-      when (effect) {
-        is MainHomeComponent.Effect.ShowSnackBar -> {
-          val messageSnackBar = context.getString(effect.message.toStringResource())
-          scope.launch {
-            snackBarHostState.showSnackbar(
-              message = messageSnackBar,
-              duration = SnackbarDuration.Short,
-            )
-          }
-        }
-
-        is MainHomeComponent.Effect.ShowToast -> {
-          context.showToastShort(effect.message.toStringResource())
-        }
-      }
-    }
-  }
-
-  HomeScreen(
-    modifier = modifier,
-    state = state,
-    clickSearch = clickSearch,
-    event = event,
-  )
-}
-
-@OptIn(FlowPreview::class)
-@Composable
-private fun HomeScreen(
-  modifier: Modifier = Modifier,
-  state: MainHomeComponent.State,
-  event: (MainHomeComponent.Event) -> Unit,
-  clickSearch: Boolean,
-) {
-  val context = LocalContext.current
-  val space = LocalSpacing.current
-  val size = LocalSize.current
-  val fontSize = LocalFontSize.current
-  val title = stringResource(R.string.can_you_delete)
-  val submitTextButton = stringResource(R.string.ok)
-
-  var searchText by rememberSaveable { mutableStateOf("") }
-
-  LaunchedEffect(Unit) {
-    snapshotFlow { searchText }
-      .debounce(300)
-      .distinctUntilChanged()
-      .collect { query ->
-        event(MainHomeComponent.Event.SearchRoutine(query))
-      }
-  }
-  Column(
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Top,
-    modifier = modifier.fillMaxSize(),
-  ) {
-    ShowSearchBar(clickSearch, searchText = searchText) { search ->
-      searchText = search
-    }
-    LoadableComponent(
-      loadableData = state.routines,
-      loading = {},
-      loaded = { routines ->
-        if (routines.isEmpty()) {
-          EmptyMessage(
-            space = space,
-            size = size,
-            fontSize = fontSize,
-            messageEmpty = if (searchText.isNotEmpty()) R.string.search_empty_routine else R.string.not_work_for_day,
-          )
-        } else {
-          ItemsHome(
-            currentTime = state.currentDate,
-            routineModels = routines,
-            space = space,
-            fontSize = fontSize,
-            checkedRoutine = { checkedRoutine ->
-              event(MainHomeComponent.Event.CheckedRoutine(checkedRoutine))
-            },
-            updateRoutine = { routineUpdate ->
-              if (routineUpdate.isChecked) {
-                Toast.makeText(
-                  context,
-                  R.string.not_update_checked_routine,
-                  Toast.LENGTH_SHORT,
-                ).show()
-                return@ItemsHome
-              }
-              event(MainHomeComponent.Event.UpdateRoutine(routineUpdate))
-            },
-            deleteRoutine = { deleteRoutine ->
-              event(
-                MainHomeComponent.Event.ShowErrorDialogRemoveRoutine(
-                  ErrorDialogRemoveUiModel(
-                    title = title,
-                    submitTextButton = submitTextButton,
-                    routineUiModel = deleteRoutine,
-                  ),
-                ),
-              )
-            },
-          )
-        }
-      },
-    )
-  }
-}
-
-@Composable
-fun ItemsHome(
-  currentTime: CurrentDateUiModel?,
-  routineModels: PersistentList<RoutineUiModel>,
-  space: SpaceDimensions,
-  fontSize: FontDimensions,
-  checkedRoutine: (RoutineUiModel) -> Unit,
-  updateRoutine: (RoutineUiModel) -> Unit,
-  deleteRoutine: (RoutineUiModel) -> Unit,
-) {
-  Row(
-    horizontalArrangement = Arrangement.SpaceBetween,
-    modifier = Modifier
-      .padding(horizontal = space.space28, vertical = space.space24)
-      .fillMaxWidth(),
-  ) {
-    currentTime?.date?.let { currentTime ->
-      Text(
-        text = currentTime.toPersianDigits(),
-        style = MaterialTheme.typography.labelMedium,
-        color = MaterialTheme.colorScheme.primary,
-      )
-    }
-    Text(
-      text = stringResource(id = com.rahim.yadino.home.presentation.R.string.list_work_day),
-      fontSize = fontSize.fontSize18,
-      color = MaterialTheme.colorScheme.primary,
-    )
-  }
-  ListRoutines(modifier = Modifier.fillMaxWidth(), routines = routineModels, checkedRoutine = checkedRoutine, deleteRoutine = deleteRoutine, updateRoutine = updateRoutine)
-}
-
-@Preview
-@Composable
-private fun HomeScreenPreview() {
-  YadinoTheme {
-    HomeScreen(
-      state = MainHomeComponent.State(
-        routines = LoadableData.Loaded(
-          persistentListOf(
-            RoutineUiModel(
-              name = "Task 1",
-              colorTask = 0,
-              dayName = "Saturday",
-              dayNumber = 1,
-              monthNumber = 1,
-              yearNumber = 1403,
-              timeHours = "10:00",
-            ),
-            RoutineUiModel(
-              name = "Task 2",
-              colorTask = 1,
-              dayName = "Saturday",
-              dayNumber = 1,
-              monthNumber = 1,
-              yearNumber = 1403,
-              timeHours = "11:00",
-              isChecked = true,
-            ),
-          ),
-        ),
-        currentDate = CurrentDateUiModel("شنبه ۱ فروردین"),
-      ),
-      clickSearch = false,
-      event = {},
-    )
-  }
-}
+//@OptIn(ExperimentalPermissionsApi::class)
+//@Composable
+//fun HomeMainScreen(
+//  modifier: Modifier = Modifier,
+//  clickSearch: Boolean,
+//  component: MainHomeComponent,
+//) {
+//  val (state, effect, event) = use(component = component)
+//  val context = LocalContext.current
+//
+//  val snackBarHostState = remember { SnackbarHostState() }
+//  val scope = rememberCoroutineScope()
+//
+//  LaunchedEffect(effect) {
+//    effect.collect { effect ->
+//      when (effect) {
+//        is MainHomeComponent.Effect.ShowSnackBar -> {
+//          val messageSnackBar = context.getString(effect.message.toStringResource())
+//          scope.launch {
+//            snackBarHostState.showSnackbar(
+//              message = messageSnackBar,
+//              duration = SnackbarDuration.Short,
+//            )
+//          }
+//        }
+//
+//        is MainHomeComponent.Effect.ShowToast -> {
+//          context.showToastShort(effect.message.toStringResource())
+//        }
+//      }
+//    }
+//  }
+//
+//  HomeScreen(
+//    modifier = modifier,
+//    state = state,
+//    clickSearch = clickSearch,
+//    event = event,
+//  )
+//}
+//
+//@OptIn(FlowPreview::class)
+//@Composable
+//private fun HomeScreen(
+//  modifier: Modifier = Modifier,
+//  state: MainHomeComponent.State,
+//  event: (MainHomeComponent.Event) -> Unit,
+//  clickSearch: Boolean,
+//) {
+//  val context = LocalContext.current
+//  val space = LocalSpacing.current
+//  val size = LocalSize.current
+//  val fontSize = LocalFontSize.current
+//  val title = stringResource(R.string.can_you_delete)
+//  val submitTextButton = stringResource(R.string.ok)
+//
+//  var searchText by rememberSaveable { mutableStateOf("") }
+//
+//  LaunchedEffect(Unit) {
+//    snapshotFlow { searchText }
+//      .debounce(300)
+//      .distinctUntilChanged()
+//      .collect { query ->
+//        event(MainHomeComponent.Event.SearchRoutine(query))
+//      }
+//  }
+//  Column(
+//    horizontalAlignment = Alignment.CenterHorizontally,
+//    verticalArrangement = Arrangement.Top,
+//    modifier = modifier.fillMaxSize(),
+//  ) {
+//    ShowSearchBar(clickSearch, searchText = searchText) { search ->
+//      searchText = search
+//    }
+//    LoadableComponent(
+//      loadableData = state.routines,
+//      loading = {},
+//      loaded = { routines ->
+//        if (routines.isEmpty()) {
+//          EmptyMessage(
+//            space = space,
+//            size = size,
+//            fontSize = fontSize,
+//            messageEmpty = if (searchText.isNotEmpty()) R.string.search_empty_routine else R.string.not_work_for_day,
+//          )
+//        } else {
+//          ItemsHome(
+//            currentTime = state.currentDate,
+//            routineModels = routines,
+//            space = space,
+//            fontSize = fontSize,
+//            checkedRoutine = { checkedRoutine ->
+//              event(MainHomeComponent.Event.CheckedRoutine(checkedRoutine))
+//            },
+//            updateRoutine = { routineUpdate ->
+//              if (routineUpdate.isChecked) {
+//                Toast.makeText(
+//                  context,
+//                  R.string.not_update_checked_routine,
+//                  Toast.LENGTH_SHORT,
+//                ).show()
+//                return@ItemsHome
+//              }
+//              event(MainHomeComponent.Event.UpdateRoutine(routineUpdate))
+//            },
+//            deleteRoutine = { deleteRoutine ->
+//              event(
+//                MainHomeComponent.Event.ShowErrorDialogRemoveRoutine(
+//                  ErrorDialogRemoveUiModel(
+//                    title = title,
+//                    submitTextButton = submitTextButton,
+//                    routineUiModel = deleteRoutine,
+//                  ),
+//                ),
+//              )
+//            },
+//          )
+//        }
+//      },
+//    )
+//  }
+//}
+//
+//@Composable
+//fun ItemsHome(
+//  currentTime: CurrentDateUiModel?,
+//  routineModels: PersistentList<RoutineUiModel>,
+//  space: SpaceDimensions,
+//  fontSize: FontDimensions,
+//  checkedRoutine: (RoutineUiModel) -> Unit,
+//  updateRoutine: (RoutineUiModel) -> Unit,
+//  deleteRoutine: (RoutineUiModel) -> Unit,
+//) {
+//  Row(
+//    horizontalArrangement = Arrangement.SpaceBetween,
+//    modifier = Modifier
+//      .padding(horizontal = space.space28, vertical = space.space24)
+//      .fillMaxWidth(),
+//  ) {
+//    currentTime?.date?.let { currentTime ->
+//      Text(
+//        text = currentTime.toPersianDigits(),
+//        style = MaterialTheme.typography.labelMedium,
+//        color = MaterialTheme.colorScheme.primary,
+//      )
+//    }
+//    Text(
+//      text = stringResource(id = com.rahim.yadino.home.presentation.R.string.list_work_day),
+//      fontSize = fontSize.fontSize18,
+//      color = MaterialTheme.colorScheme.primary,
+//    )
+//  }
+//  ListRoutines(modifier = Modifier.fillMaxWidth(), routines = routineModels, checkedRoutine = checkedRoutine, deleteRoutine = deleteRoutine, updateRoutine = updateRoutine)
+//}
+//
+//@Preview
+//@Composable
+//private fun HomeScreenPreview() {
+//  YadinoTheme {
+//    HomeScreen(
+//      state = MainHomeComponent.State(
+//        routines = LoadableData.Loaded(
+//          persistentListOf(
+//            RoutineUiModel(
+//              name = "Task 1",
+//              colorTask = 0,
+//              dayName = "Saturday",
+//              dayNumber = 1,
+//              monthNumber = 1,
+//              yearNumber = 1403,
+//              timeHours = "10:00",
+//            ),
+//            RoutineUiModel(
+//              name = "Task 2",
+//              colorTask = 1,
+//              dayName = "Saturday",
+//              dayNumber = 1,
+//              monthNumber = 1,
+//              yearNumber = 1403,
+//              timeHours = "11:00",
+//              isChecked = true,
+//            ),
+//          ),
+//        ),
+//        currentDate = CurrentDateUiModel("شنبه ۱ فروردین"),
+//      ),
+//      clickSearch = false,
+//      event = {},
+//    )
+//  }
+//}

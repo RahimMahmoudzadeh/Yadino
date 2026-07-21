@@ -52,39 +52,37 @@ internal fun Project.configureKotlinAndroid(commonExtension: ApplicationExtensio
 }
 
 internal fun Project.configureComposeMultiPlatform() {
-  pluginManager.withPlugin("org.jetbrains.compose") {
-    extensions.configure<ComposeExtension> {
-      (this as ExtensionAware).extensions.configure<ResourcesExtension> {
-        val formattedPath = project.path.replace(":", ".").replace("-", "_")
-        packageOfResClass = Config.android.nameSpace + Config.android.applicationIdSuffix + formattedPath
-        publicResClass = true
-        generateResClass = ResourcesExtension.ResourceClassGeneration.Auto
+  val formattedPath = project.path.replace(":", ".").replace("-", "_")
+  val fullNamespace = Config.android.nameSpace + Config.android.applicationIdSuffix + formattedPath
+
+  extensions.configure<KotlinMultiplatformExtension> {
+    configure<KotlinMultiplatformAndroidLibraryTarget> {
+      compileSdk = Config.android.compileSdkVersion
+      minSdk = Config.android.minSdkVersion
+      namespace = fullNamespace
+
+      compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
       }
     }
-  }
-  extensions.configure<KotlinMultiplatformExtension> {
-
-    targets.withType(KotlinMultiplatformAndroidLibraryTarget::class.java)
-      .configureEach {
-        compileSdk = Config.android.compileSdkVersion
-        minSdk = Config.android.minSdkVersion
-        val formattedPath = project.path.replace(":", ".").replace("-", "_")
-        namespace = Config.android.nameSpace + Config.android.applicationIdSuffix + formattedPath
-        compilerOptions {
-          jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-        }
-      }
 
     iosArm64()
     iosSimulatorArm64()
 
-    sourceSets {
+    sourceSets.apply {
       commonMain.dependencies {
         val compose = versionCatalog.findBundle("compose").get()
         implementation(compose)
       }
-      iosMain.dependencies {}
+    }
+  }
 
+  // 2. Configure Compose Resources
+  extensions.configure<ComposeExtension> {
+    (this as ExtensionAware).extensions.configure<ResourcesExtension> {
+      packageOfResClass = fullNamespace
+      publicResClass = true
+      generateResClass = ResourcesExtension.ResourceClassGeneration.Auto
     }
   }
 }

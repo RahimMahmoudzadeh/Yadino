@@ -16,37 +16,37 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class UpdateRoutineDialogComponentImpl(
-  componentContext: ComponentContext,
-  mainDispatcher: CoroutineContext,
-  private val updateReminderUseCase: UpdateReminderUseCase,
-  private val updateRoutine: RoutineUiModel,
-  private val onDismissed: () -> Unit,
-) : UpdateRoutineDialogComponent, ComponentContext by componentContext {
-
-  private val scope = coroutineScope(mainDispatcher + SupervisorJob())
-
-  private val _state = MutableValue(UpdateRoutineDialogComponent.State(updateRoutine = updateRoutine))
-  override val state: Value<UpdateRoutineDialogComponent.State> = _state
-
-
-  private val _effect: Channel<UpdateRoutineDialogComponent.Effect> = Channel(Channel.BUFFERED)
-  override val effects: Flow<UpdateRoutineDialogComponent.Effect> = _effect.receiveAsFlow()
-
-  override fun onEvent(event: UpdateRoutineDialogComponent.Event) = when (event) {
-    UpdateRoutineDialogComponent.Event.DismissDialog -> onDismissed()
-    is UpdateRoutineDialogComponent.Event.UpdateRoutine -> updateRoutine(event.routine)
-  }
-
-  private fun updateRoutine(routine: RoutineUiModel) {
-    scope.launch {
-      runCatching {
-        updateReminderUseCase.invoke(routine.toRoutine())
-      }.onSuccess {
-        _effect.send(UpdateRoutineDialogComponent.Effect.ShowToast(it.toMessageUi(onDismissed)))
-      }.onFailure {
-        _effect.send(UpdateRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_UPDATE_REMINDER))
-      }
-    }
-  }
-}
+//class UpdateRoutineDialogComponentImpl(
+//  componentContext: ComponentContext,
+//  mainDispatcher: CoroutineContext,
+//  private val updateReminderUseCase: UpdateReminderUseCase,
+//  private val updateRoutine: RoutineUiModel,
+//  private val onDismissed: () -> Unit,
+//) : UpdateRoutineDialogComponent, ComponentContext by componentContext {
+//
+//  private val scope = coroutineScope(mainDispatcher + SupervisorJob())
+//
+//  private val _state = MutableValue(UpdateRoutineDialogComponent.State(updateRoutine = updateRoutine))
+//  override val state: Value<UpdateRoutineDialogComponent.State> = _state
+//
+//
+//  private val _effect: Channel<UpdateRoutineDialogComponent.Effect> = Channel(Channel.BUFFERED)
+//  override val effects: Flow<UpdateRoutineDialogComponent.Effect> = _effect.receiveAsFlow()
+//
+//  override fun onEvent(event: UpdateRoutineDialogComponent.Event) = when (event) {
+//    UpdateRoutineDialogComponent.Event.DismissDialog -> onDismissed()
+//    is UpdateRoutineDialogComponent.Event.UpdateRoutine -> updateRoutine(event.routine)
+//  }
+//
+//  private fun updateRoutine(routine: RoutineUiModel) {
+//    scope.launch {
+//      runCatching {
+//        updateReminderUseCase.invoke(routine.toRoutine())
+//      }.onSuccess {
+//        _effect.send(UpdateRoutineDialogComponent.Effect.ShowToast(it.toMessageUi(onDismissed)))
+//      }.onFailure {
+//        _effect.send(UpdateRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_UPDATE_REMINDER))
+//      }
+//    }
+//  }
+//}

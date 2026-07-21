@@ -13,48 +13,48 @@ import com.rahim.yadino.home.presentation.ui.main.HomeMainScreen
 import com.rahim.yadino.home.presentation.ui.root.component.RootHomeComponent
 import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.UpdateRoutineDialog
 
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-fun HomeRoot(
-  modifier: Modifier = Modifier,
-  clickSearch: Boolean,
-  component: RootHomeComponent,
-) {
-
-  val updateRoutineDialog = component.updateRoutineDialogScreen.subscribeAsState().value.child
-  val errorDialogRemoveRoutine = component.errorDialogRemoveRoutineScreen.subscribeAsState().value.child
-//  val errorDialog = component.errorDialogScreen.subscribeAsState().value.child
-
-  updateRoutineDialog?.let { dialogSlot ->
-    dialogSlot.instance.also { dialogComponent ->
-      UpdateRoutineDialog(
-        component = dialogComponent,
-      )
-    }
-  }
-
-  errorDialogRemoveRoutine?.let { dialogSlot ->
-    dialogSlot.instance.also { dialogComponent ->
-      ErrorDialogRemoveRoutineUi(component = dialogComponent)
-    }
-  }
-
-//  errorDialog?.let { dialogSlot ->
+//@OptIn(ExperimentalPermissionsApi::class)
+//@Composable
+//fun HomeRoot(
+//  modifier: Modifier = Modifier,
+//  clickSearch: Boolean,
+//  component: RootHomeComponent,
+//) {
+//
+//  val updateRoutineDialog = component.updateRoutineDialogScreen.subscribeAsState().value.child
+//  val errorDialogRemoveRoutine = component.errorDialogRemoveRoutineScreen.subscribeAsState().value.child
+////  val errorDialog = component.errorDialogScreen.subscribeAsState().value.child
+//
+//  updateRoutineDialog?.let { dialogSlot ->
 //    dialogSlot.instance.also { dialogComponent ->
-//      ErrorDialogUi(component = dialogComponent)
+//      UpdateRoutineDialog(
+//        component = dialogComponent,
+//      )
 //    }
 //  }
-
-  Children(
-    stack = component.stack,
-    modifier = modifier.fillMaxSize(),
-    animation = stackAnimation(fade()),
-  ) {
-    when (val child = it.instance) {
-      is RootHomeComponent.ChildStack.HomeMainStack -> {
-        HomeMainScreen(clickSearch = clickSearch, component = child.component)
-      }
-    }
-  }
-}
+//
+//  errorDialogRemoveRoutine?.let { dialogSlot ->
+//    dialogSlot.instance.also { dialogComponent ->
+//      ErrorDialogRemoveRoutineUi(component = dialogComponent)
+//    }
+//  }
+//
+////  errorDialog?.let { dialogSlot ->
+////    dialogSlot.instance.also { dialogComponent ->
+////      ErrorDialogUi(component = dialogComponent)
+////    }
+////  }
+//
+//  Children(
+//    stack = component.stack,
+//    modifier = modifier.fillMaxSize(),
+//    animation = stackAnimation(fade()),
+//  ) {
+//    when (val child = it.instance) {
+//      is RootHomeComponent.ChildStack.HomeMainStack -> {
+//        HomeMainScreen(clickSearch = clickSearch, component = child.component)
+//      }
+//    }
+//  }
+//}
 

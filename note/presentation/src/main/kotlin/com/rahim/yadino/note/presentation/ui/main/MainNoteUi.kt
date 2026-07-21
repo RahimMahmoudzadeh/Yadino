@@ -39,137 +39,137 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 
-@Composable
-fun MainNoteScreen(modifier: Modifier = Modifier, clickSearch: Boolean, component: NoteMainComponent) {
-
-  val (state, _, event) = use(component)
-
-  NoteScreen(
-    modifier = modifier,
-    state = state,
-    event = event,
-    clickSearch = clickSearch,
-  )
-}
-
-@OptIn(FlowPreview::class)
-@Composable
-private fun NoteScreen(
-  modifier: Modifier = Modifier,
-  state: NoteMainComponent.State,
-  event: (NoteMainComponent.Event) -> Unit,
-  clickSearch: Boolean,
-) {
-  var searchText by rememberSaveable { mutableStateOf("") }
-
-  val context = LocalContext.current
-  val size = LocalSize.current
-  val space = LocalSpacing.current
-  val fontSize = LocalFontSize.current
-  val title = stringResource(com.rahim.yadino.library.designsystem.R.string.can_you_delete)
-  val submitTextButton = stringResource(com.rahim.yadino.library.designsystem.R.string.ok)
-
-  LaunchedEffect(Unit) {
-    snapshotFlow { searchText }
-      .debounce(300)
-      .distinctUntilChanged()
-      .collect { query ->
-        event(NoteMainComponent.Event.Search(NameNoteUi(name = query)))
-      }
-  }
-
-  Column(
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Top,
-    modifier = modifier
-      .fillMaxSize(),
-  ) {
-    ShowSearchBar(clickSearch, searchText = searchText) { search ->
-      searchText = search
-    }
-    LoadableComponent(
-      loadableData = state.notes,
-      loading = {},
-      loaded = { notes ->
-        if (notes.isEmpty()) {
-          EmptyMessage(
-            messageEmpty = if (searchText.isNotEmpty()) R.string.search_empty_note else R.string.not_note,
-            painter = R.drawable.empty_note,
-            space = space,
-            size = size,
-            fontSize = fontSize,
-          )
-        } else {
-          ItemsNote(
-            notes = notes,
-            checkedNote = { note ->
-              event(NoteMainComponent.Event.OnChecked(note))
-            },
-            spaceDimensions = space,
-            updateNote = { updateNote ->
-              if (updateNote.isChecked) {
-                Toast.makeText(
-                  context,
-                  R.string.not_update_checked_note,
-                  Toast.LENGTH_SHORT,
-                ).show()
-                return@ItemsNote
-              }
-              event(NoteMainComponent.Event.OnOpenUpdateNoteDialog(updateNote))
-            },
-            deleteNote = {
-              if (it.isChecked) {
-                Toast.makeText(
-                  context,
-                  R.string.not_removed_checked_note,
-                  Toast.LENGTH_SHORT,
-                ).show()
-                return@ItemsNote
-              }
-              event(NoteMainComponent.Event.ShowErrorRemoveNoteDialog(ErrorDialogRemoveNoteUiModel(title = title, submitTextButton = submitTextButton, noteUiModel = it)))
-            },
-          )
-        }
-      },
-    )
-  }
-}
-
-@Composable
-fun ItemsNote(
-  notes: PersistentList<NoteUiModel>,
-  spaceDimensions: SpaceDimensions,
-  checkedNote: (NoteUiModel) -> Unit,
-  updateNote: (NoteUiModel) -> Unit,
-  deleteNote: (NoteUiModel) -> Unit,
-) {
-  LazyColumn(
-    modifier = Modifier
-      .fillMaxWidth()
-      .padding(
-        horizontal = spaceDimensions.space16,
-      ),
-    contentPadding = PaddingValues(top = spaceDimensions.space24),
-  ) {
-    items(
-      key = {
-        it.id
-      },
-      items = notes,
-      itemContent = {
-        ItemListNote(
-          note = it,
-          onChecked = { checked ->
-            checkedNote(it.copy(isChecked = checked))
-          },
-          openDialogDelete = {
-            deleteNote(it)
-          },
-          openDialogEdit = {
-            updateNote(it)
-          },
-        )
-      },
-    )
-  }
-}
+//@Composable
+//fun MainNoteScreen(modifier: Modifier = Modifier, clickSearch: Boolean, component: NoteMainComponent) {
+//
+//  val (state, _, event) = use(component)
+//
+//  NoteScreen(
+//    modifier = modifier,
+//    state = state,
+//    event = event,
+//    clickSearch = clickSearch,
+//  )
+//}
+//
+//@OptIn(FlowPreview::class)
+//@Composable
+//private fun NoteScreen(
+//  modifier: Modifier = Modifier,
+//  state: NoteMainComponent.State,
+//  event: (NoteMainComponent.Event) -> Unit,
+//  clickSearch: Boolean,
+//) {
+//  var searchText by rememberSaveable { mutableStateOf("") }
+//
+//  val context = LocalContext.current
+//  val size = LocalSize.current
+//  val space = LocalSpacing.current
+//  val fontSize = LocalFontSize.current
+//  val title = stringResource(com.rahim.yadino.library.designsystem.R.string.can_you_delete)
+//  val submitTextButton = stringResource(com.rahim.yadino.library.designsystem.R.string.ok)
+//
+//  LaunchedEffect(Unit) {
+//    snapshotFlow { searchText }
+//      .debounce(300)
+//      .distinctUntilChanged()
+//      .collect { query ->
+//        event(NoteMainComponent.Event.Search(NameNoteUi(name = query)))
+//      }
+//  }
+//
+//  Column(
+//    horizontalAlignment = Alignment.CenterHorizontally,
+//    verticalArrangement = Arrangement.Top,
+//    modifier = modifier
+//      .fillMaxSize(),
+//  ) {
+//    ShowSearchBar(clickSearch, searchText = searchText) { search ->
+//      searchText = search
+//    }
+//    LoadableComponent(
+//      loadableData = state.notes,
+//      loading = {},
+//      loaded = { notes ->
+//        if (notes.isEmpty()) {
+//          EmptyMessage(
+//            messageEmpty = if (searchText.isNotEmpty()) R.string.search_empty_note else R.string.not_note,
+//            painter = R.drawable.empty_note,
+//            space = space,
+//            size = size,
+//            fontSize = fontSize,
+//          )
+//        } else {
+//          ItemsNote(
+//            notes = notes,
+//            checkedNote = { note ->
+//              event(NoteMainComponent.Event.OnChecked(note))
+//            },
+//            spaceDimensions = space,
+//            updateNote = { updateNote ->
+//              if (updateNote.isChecked) {
+//                Toast.makeText(
+//                  context,
+//                  R.string.not_update_checked_note,
+//                  Toast.LENGTH_SHORT,
+//                ).show()
+//                return@ItemsNote
+//              }
+//              event(NoteMainComponent.Event.OnOpenUpdateNoteDialog(updateNote))
+//            },
+//            deleteNote = {
+//              if (it.isChecked) {
+//                Toast.makeText(
+//                  context,
+//                  R.string.not_removed_checked_note,
+//                  Toast.LENGTH_SHORT,
+//                ).show()
+//                return@ItemsNote
+//              }
+//              event(NoteMainComponent.Event.ShowErrorRemoveNoteDialog(ErrorDialogRemoveNoteUiModel(title = title, submitTextButton = submitTextButton, noteUiModel = it)))
+//            },
+//          )
+//        }
+//      },
+//    )
+//  }
+//}
+//
+//@Composable
+//fun ItemsNote(
+//  notes: PersistentList<NoteUiModel>,
+//  spaceDimensions: SpaceDimensions,
+//  checkedNote: (NoteUiModel) -> Unit,
+//  updateNote: (NoteUiModel) -> Unit,
+//  deleteNote: (NoteUiModel) -> Unit,
+//) {
+//  LazyColumn(
+//    modifier = Modifier
+//      .fillMaxWidth()
+//      .padding(
+//        horizontal = spaceDimensions.space16,
+//      ),
+//    contentPadding = PaddingValues(top = spaceDimensions.space24),
+//  ) {
+//    items(
+//      key = {
+//        it.id
+//      },
+//      items = notes,
+//      itemContent = {
+//        ItemListNote(
+//          note = it,
+//          onChecked = { checked ->
+//            checkedNote(it.copy(isChecked = checked))
+//          },
+//          openDialogDelete = {
+//            deleteNote(it)
+//          },
+//          openDialogEdit = {
+//            updateNote(it)
+//          },
+//        )
+//      },
+//    )
+//  }
+//}

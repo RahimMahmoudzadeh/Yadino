@@ -16,36 +16,36 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class AddRoutineDialogComponentImpl(
-  componentContext: ComponentContext,
-  mainDispatcher: CoroutineContext,
-  private val addReminderUseCase: AddReminderUseCase,
-  private val onDismissed: () -> Unit,
-) : AddRoutineDialogComponent, ComponentContext by componentContext {
-
-  private val scope = coroutineScope(mainDispatcher + SupervisorJob())
-
-  private val _state = MutableValue(AddRoutineDialogComponent.State())
-  override val state: Value<AddRoutineDialogComponent.State> = _state
-
-
-  private val _effect: Channel<AddRoutineDialogComponent.Effect> = Channel(Channel.BUFFERED)
-  override val effects: Flow<AddRoutineDialogComponent.Effect> = _effect.receiveAsFlow()
-
-  override fun onEvent(event: AddRoutineDialogComponent.Event) = when (event) {
-    AddRoutineDialogComponent.Event.DismissDialog -> onDismissed()
-    is AddRoutineDialogComponent.Event.CreateRoutine -> addRoutine(event.routine)
-  }
-
-  private fun addRoutine(routine: RoutineUiModel) {
-    scope.launch {
-      runCatching {
-        addReminderUseCase(routine.toRoutine())
-      }.onSuccess {
-        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(it.toMessageUi(onDismissed)))
-      }.onFailure {
-        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_SAVE_REMINDER))
-      }
-    }
-  }
-}
+//class AddRoutineDialogComponentImpl(
+//  componentContext: ComponentContext,
+//  mainDispatcher: CoroutineContext,
+//  private val addReminderUseCase: AddReminderUseCase,
+//  private val onDismissed: () -> Unit,
+//) : AddRoutineDialogComponent, ComponentContext by componentContext {
+//
+//  private val scope = coroutineScope(mainDispatcher + SupervisorJob())
+//
+//  private val _state = MutableValue(AddRoutineDialogComponent.State())
+//  override val state: Value<AddRoutineDialogComponent.State> = _state
+//
+//
+//  private val _effect: Channel<AddRoutineDialogComponent.Effect> = Channel(Channel.BUFFERED)
+//  override val effects: Flow<AddRoutineDialogComponent.Effect> = _effect.receiveAsFlow()
+//
+//  override fun onEvent(event: AddRoutineDialogComponent.Event) = when (event) {
+//    AddRoutineDialogComponent.Event.DismissDialog -> onDismissed()
+//    is AddRoutineDialogComponent.Event.CreateRoutine -> addRoutine(event.routine)
+//  }
+//
+//  private fun addRoutine(routine: RoutineUiModel) {
+//    scope.launch {
+//      runCatching {
+//        addReminderUseCase(routine.toRoutine())
+//      }.onSuccess {
+//        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(it.toMessageUi(onDismissed)))
+//      }.onFailure {
+//        _effect.send(AddRoutineDialogComponent.Effect.ShowToast(MessageUi.ERROR_SAVE_REMINDER))
+//      }
+//    }
+//  }
+//}

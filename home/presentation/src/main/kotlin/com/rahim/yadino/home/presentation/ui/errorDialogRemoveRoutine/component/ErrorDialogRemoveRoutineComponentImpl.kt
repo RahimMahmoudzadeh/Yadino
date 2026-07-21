@@ -16,38 +16,38 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class ErrorDialogRemoveRoutineComponentImpl(
-  mainContext: CoroutineContext,
-  componentContext: ComponentContext,
-  private val deleteReminderUseCase: DeleteReminderUseCase,
-  private val errorDialogRemoveUiModel: ErrorDialogRemoveUiModel,
-  private val onDismissed: () -> Unit,
-) : ErrorDialogRemoveRoutineComponent, ComponentContext by componentContext {
-
-  private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
-
-  private val _state = MutableValue(ErrorDialogRemoveRoutineComponent.State(title = errorDialogRemoveUiModel.title, submitTextButton = errorDialogRemoveUiModel.submitTextButton))
-  override val state: Value<ErrorDialogRemoveRoutineComponent.State> = _state
-
-  private val _effect = Channel<ErrorDialogRemoveRoutineComponent.Effect>(Channel.BUFFERED)
-  override val effects: Flow<ErrorDialogRemoveRoutineComponent.Effect> = _effect.receiveAsFlow()
-
-  override fun onEvent(event: ErrorDialogRemoveRoutineComponent.Event) = when (event) {
-    ErrorDialogRemoveRoutineComponent.Event.CancelClicked -> onDismissed()
-    ErrorDialogRemoveRoutineComponent.Event.OkClicked -> {
-      okClickedButton()
-    }
-  }
-
-  private fun okClickedButton() {
-    scope.launch {
-      runCatching {
-        deleteReminderUseCase(errorDialogRemoveUiModel.routineUiModel.toRoutine())
-      }.onSuccess {
-        onDismissed()
-      }.onFailure {
-        _effect.send(ErrorDialogRemoveRoutineComponent.Effect.ShowToast(MessageUi.ERROR_REMOVE_REMINDER))
-      }
-    }
-  }
-}
+//class ErrorDialogRemoveRoutineComponentImpl(
+//  mainContext: CoroutineContext,
+//  componentContext: ComponentContext,
+//  private val deleteReminderUseCase: DeleteReminderUseCase,
+//  private val errorDialogRemoveUiModel: ErrorDialogRemoveUiModel,
+//  private val onDismissed: () -> Unit,
+//) : ErrorDialogRemoveRoutineComponent, ComponentContext by componentContext {
+//
+//  private val scope: CoroutineScope = coroutineScope(mainContext + SupervisorJob())
+//
+//  private val _state = MutableValue(ErrorDialogRemoveRoutineComponent.State(title = errorDialogRemoveUiModel.title, submitTextButton = errorDialogRemoveUiModel.submitTextButton))
+//  override val state: Value<ErrorDialogRemoveRoutineComponent.State> = _state
+//
+//  private val _effect = Channel<ErrorDialogRemoveRoutineComponent.Effect>(Channel.BUFFERED)
+//  override val effects: Flow<ErrorDialogRemoveRoutineComponent.Effect> = _effect.receiveAsFlow()
+//
+//  override fun onEvent(event: ErrorDialogRemoveRoutineComponent.Event) = when (event) {
+//    ErrorDialogRemoveRoutineComponent.Event.CancelClicked -> onDismissed()
+//    ErrorDialogRemoveRoutineComponent.Event.OkClicked -> {
+//      okClickedButton()
+//    }
+//  }
+//
+//  private fun okClickedButton() {
+//    scope.launch {
+//      runCatching {
+//        deleteReminderUseCase(errorDialogRemoveUiModel.routineUiModel.toRoutine())
+//      }.onSuccess {
+//        onDismissed()
+//      }.onFailure {
+//        _effect.send(ErrorDialogRemoveRoutineComponent.Effect.ShowToast(MessageUi.ERROR_REMOVE_REMINDER))
+//      }
+//    }
+//  }
+//}
