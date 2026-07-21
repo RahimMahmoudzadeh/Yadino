@@ -2,7 +2,6 @@ import org.gradle.kotlin.dsl.invoke
 
 plugins {
     libs.plugins.run {
-        alias(library)
 //        alias(di)
 //        alias(decompose)
         alias(library.compose)
