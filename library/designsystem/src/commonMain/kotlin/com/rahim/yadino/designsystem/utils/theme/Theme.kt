@@ -6,14 +6,15 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalView
 import com.rahim.yadino.designsystem.utils.size.FontDimensions
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
-import com.rahim.yadino.designsystem.utils.size.LocalSize
-import com.rahim.yadino.designsystem.utils.size.LocalSpacing
+import com.rahim.yadino.designsystem.utils.size.LocalSizeDimensions
+import com.rahim.yadino.designsystem.utils.size.LocalSpaceDimensions
 import com.rahim.yadino.designsystem.utils.size.SizeDimensions
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
+
 
 private val DarkColorScheme = darkColorScheme(
   primary = Color.White,
@@ -50,42 +51,36 @@ private val LightColorScheme = lightColorScheme(
   onSecondaryContainer = TaupeGray,
   onPrimaryContainer = PhilippineSilver,
 )
+object AppTheme {
+  val dimensions: SizeDimensions
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalSizeDimensions.current
+  val spacing: SpaceDimensions
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalSpaceDimensions.current
 
+  val fontSize: FontDimensions
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalFontSize.current
+}
 @Composable
 fun YadinoTheme(
   darkTheme: Boolean = isSystemInDarkTheme(),
-  dynamicColor: Boolean = true,
   content: @Composable () -> Unit,
 ) {
-  val colorScheme = when {
-//        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-//            val context = LocalContext.current
-//            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-//        }
-    darkTheme -> DarkColorScheme
-    else -> LightColorScheme
-  }
-  val view = LocalView.current
-  if (!view.isInEditMode) {
-//    SideEffect {
-//      val window = (view.context as Activity).window
-//      window.statusBarColor = Color.Transparent.toArgb()
-//      window.navigationBarColor = Color.Transparent.toArgb()
-//      WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
-//      WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
-//    }
-  }
-  val LocalSpacing = compositionLocalOf { SpaceDimensions() }
-  val LocalFontSize = compositionLocalOf { FontDimensions() }
-  val LocalSize = compositionLocalOf { SizeDimensions() }
+  val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+
   CompositionLocalProvider(
-    LocalSpacing provides SpaceDimensions(),
+    LocalSpaceDimensions provides SpaceDimensions(),
     LocalFontSize provides FontDimensions(),
-    LocalSize provides SizeDimensions(),
+    LocalSizeDimensions provides SizeDimensions(),
   ) {
     MaterialTheme(
       colorScheme = colorScheme,
-      typography = Typography,
+//      typography = Typography,
       content = content,
     )
   }
