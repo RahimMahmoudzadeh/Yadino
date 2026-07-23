@@ -5,19 +5,22 @@ plugins {
     alias(kotlinx.serialization)
   }
 }
-//kotlin {
-//  sourceSets{
-//    commonMain.dependencies{
-//      projects.run{
-//        implementation(core.base)
-//      }
-//    }
-//    androidMain.dependencies {
-////      libs.run {
-////        implementation(accompanist.permissions)
-////        implementation(swipe)
-////        api(kotlinx.collections.immutable)
-////      }
-//    }
-//  }
-//}
+kotlin {
+  sourceSets {
+    commonMain.dependencies {
+      projects.run {
+        implementation(core.base)
+      }
+      libs.run {
+        implementation(swipe)
+      }
+    }
+    androidMain.dependencies {
+      libs.run {
+//        implementation(accompanist.permissions)
+
+//        api(kotlinx.collections.immutable)
+      }
+    }
+  }
+}

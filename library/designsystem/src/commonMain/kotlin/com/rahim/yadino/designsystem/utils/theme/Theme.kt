@@ -52,7 +52,7 @@ private val LightColorScheme = lightColorScheme(
   onPrimaryContainer = PhilippineSilver,
 )
 object AppTheme {
-  val dimensions: SizeDimensions
+  val size: SizeDimensions
     @Composable
     @ReadOnlyComposable
     get() = LocalSizeDimensions.current
