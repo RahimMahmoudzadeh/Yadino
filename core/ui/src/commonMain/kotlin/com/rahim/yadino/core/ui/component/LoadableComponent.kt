@@ -1,4 +1,4 @@
-package com.rahim.yadino.base
+package com.rahim.yadino.core.ui.component
 
 import androidx.compose.runtime.Composable
 

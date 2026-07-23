@@ -82,25 +82,25 @@ import kotlinx.coroutines.flow.map
 //  MessageUi.ERROR_ADD_NOTE -> R.string.errorAddNote
 //}
 //
-//fun String.toPersianDigits(): String {
-//  val builder = StringBuilder(this.length) // Initialize with the same capacity
-//  for (ch in this) {
-//    when (ch) {
-//      '0' -> builder.append('۰')
-//      '1' -> builder.append('۱')
-//      '2' -> builder.append('۲')
-//      '3' -> builder.append('۳')
-//      '4' -> builder.append('۴')
-//      '5' -> builder.append('۵')
-//      '6' -> builder.append('۶')
-//      '7' -> builder.append('۷')
-//      '8' -> builder.append('۸')
-//      '9' -> builder.append('۹')
-//      else -> builder.append(ch) // Don't forget non-digit characters
-//    }
-//  }
-//  return builder.toString()
-//}
+fun String.toPersianDigits(): String {
+  val builder = StringBuilder(this.length) // Initialize with the same capacity
+  for (ch in this) {
+    when (ch) {
+      '0' -> builder.append('۰')
+      '1' -> builder.append('۱')
+      '2' -> builder.append('۲')
+      '3' -> builder.append('۳')
+      '4' -> builder.append('۴')
+      '5' -> builder.append('۵')
+      '6' -> builder.append('۶')
+      '7' -> builder.append('۷')
+      '8' -> builder.append('۸')
+      '9' -> builder.append('۹')
+      else -> builder.append(ch) // Don't forget non-digit characters
+    }
+  }
+  return builder.toString()
+}
 //
 //
 //fun String.isPackageInstalled(packageManager: PackageManager): Boolean {

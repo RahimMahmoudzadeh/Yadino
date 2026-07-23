@@ -1,4 +1,4 @@
-package com.rahim.yadino.base
+package com.rahim.yadino.core.ui.component
 
 sealed class LoadableData<out T> {
   abstract val data: T?

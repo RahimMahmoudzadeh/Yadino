@@ -62,7 +62,6 @@ dependencies {
   libs.run {
     implementation(androidx.core.splashscreen)
     implementation(androidx.constraintlayout)
-    implementation(timber)
     implementation(kotlinx.collections.immutable)
     implementation(accompanist.permissions)
   }

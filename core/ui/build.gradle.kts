@@ -1,7 +1,5 @@
 plugins {
   libs.plugins.run {
-//        alias(di)
-//        alias(decompose)
     alias(library.compose)
   }
 }
