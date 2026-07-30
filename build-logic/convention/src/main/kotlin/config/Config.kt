@@ -8,7 +8,7 @@ object Config {
     targetSdkVersion = 37,
     compileSdkVersion = 37,
     applicationId = "com.rahim",
-    versionCode = 137,
+    versionCode = getGitCommitCount(),
     versionName = "1.6.7",
     nameSpace = "com.rahim",
     versionNameSuffixCafeBazaar = "-c",
@@ -42,3 +42,11 @@ data class JvmConfig(
   val kotlinJvm: String,
   val freeCompilerArgs: List<String>,
 )
+fun getGitCommitCount(): Int {
+  return try {
+    val process = ProcessBuilder("git", "rev-list", "--count", "HEAD").start()
+    process.inputStream.bufferedReader().readText().trim().toInt()
+  } catch (e: Exception) {
+    1
+  }
+}
