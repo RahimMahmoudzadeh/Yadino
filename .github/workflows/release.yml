@@ -3,7 +3,8 @@ name: CafeBazaar Release Build
 on:
   push:
     tags:
-      - '*'
+      - 'v*'
+      - '*.*.*'
 
 jobs:
   build-and-release:
@@ -16,6 +17,9 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          # CRITICAL: fetch-depth: 0 fetches all history and tags so 'git log' works
+          fetch-depth: 0
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -24,7 +28,7 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      # Recreating your local environment using Secrets
+      # Prepare keystore and local.properties from secrets
       - name: Prepare Signing Environment
         run: |
           echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> local.properties
@@ -35,53 +39,64 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # CHANGED: Target the specific CafeBazaar flavor
+      # Build the CafeBazaar Release APK
       - name: Build CafeBazaar Release APK
         run: ./gradlew assembleCafeBazaarRelease
 
-      - name: Generate Release Notes
-        id: milestone_notes
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const tagName = context.ref.replace('refs/tags/', '');
-            
-            const milestones = await github.rest.issues.listMilestones({
-              owner,
-              repo,
-              state: 'all'
-            });
-            const targetMilestone = milestones.data.find(m => m.title === tagName);
+      # Generate Release Notes directly from Git Commit History
+      - name: Generate Commit Release Notes
+        id: commit_notes
+        run: |
+          # 1. Find the previous tag (if one exists)
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          
+          echo "Current Tag: ${{ github.ref_name }}"
+          echo "Previous Tag: $PREV_TAG"
 
-            if (!targetMilestone) {
-              core.setFailed(`No milestone found for tag ${tagName}`);
-              return;
-            }
+          # 2. Extract commits between previous tag and current tag
+          if [ -z "$PREV_TAG" ]; then
+            # If no previous tag exists, get the last 20 commits
+            COMMIT_LOGS=$(git log -n 20 --pretty=format:"* %s (%h)")
+          else
+            # Get all commits between previous tag and current tag
+            COMMIT_LOGS=$(git log ${PREV_TAG}..HEAD --pretty=format:"* %s (%h)")
+          fi
 
-            const issues = await github.rest.issues.listForRepo({
-              owner,
-              repo,
-              milestone: targetMilestone.number,
-              state: 'all'
-            });
+          # 3. Write Release Notes Body to step output
+          {
+            echo 'body<<EOF'
+            echo "## What's Changed in ${{ github.ref_name }}"
+            echo ""
+            if [ -z "$COMMIT_LOGS" ]; then
+              echo "* Routine maintenance and build updates."
+            else
+              echo "$COMMIT_LOGS"
+            fi
+            echo ""
+            echo "---"
+            echo "_Built automatically via GitHub Actions._"
+            echo 'EOF'
+          } >> $GITHUB_OUTPUT
 
-            let body = `## What's Changes\n\n`;
-            for (const issue of issues.data) {
-              const fixer = issue.assignee ? issue.assignee.login : issue.user.login;
-              body += `#${issue.number} ${issue.title} - Fixed by @${fixer}\n`;
-            }
+      # Automatically mark as pre-release if tag contains alpha, beta, or rc
+      - name: Determine Pre-release Status
+        id: check_prerelease
+        run: |
+          TAG_NAME="${{ github.ref_name }}"
+          if [[ "$TAG_NAME" =~ (alpha|beta|rc) ]]; then
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+          fi
 
-            core.setOutput('body', body);
-
+      # Publish build assets and commit notes to GitHub Releases
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          body: ${{ steps.milestone_notes.outputs.body }}
+          body: ${{ steps.commit_notes.outputs.body }}
           name: Release ${{ github.ref_name }}
-          # CHANGED: Updated path to include the 'cafeBazaar' folder
           files: app/build/outputs/apk/cafeBazaar/release/*.apk
           draft: false
-          prerelease: false
+          prerelease: ${{ steps.check_prerelease.outputs.is_prerelease == 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
