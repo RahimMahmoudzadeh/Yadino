@@ -1,0 +1,46 @@
+package com.rahim.yadino.note.presentation.ui.root
+
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+
+//@Composable
+//fun NoteRoute(
+//  modifier: Modifier = Modifier,
+//  clickSearch: Boolean,
+//  component: RootNoteComponent,
+//) {
+//
+//  val updateNoteDialog = component.updateNoteDialogScreen.subscribeAsState().value.child
+//  val errorDialogNote = component.errorDialogRemoveNoteScreen.subscribeAsState().value.child
+//
+//  updateNoteDialog?.let { dialogSlot ->
+//    dialogSlot.instance.also { dialogComponent ->
+//      UpdateNoteDialog(
+//        component = dialogComponent,
+//      )
+//    }
+//  }
+//
+//  errorDialogNote?.let { dialogSlot ->
+//    dialogSlot.instance.also { dialogComponent ->
+//      ErrorDialogUi(
+//        component = dialogComponent,
+//      )
+//    }
+//  }
+//
+//  Children(
+//    stack = component.stack,
+//    modifier = modifier.fillMaxSize(),
+//    animation = stackAnimation(fade()),
+//  ) {
+//    when (val child = it.instance) {
+//      is RootNoteComponent.ChildStack.NoteMainStack -> {
+//        MainNoteScreen(clickSearch = clickSearch, component = child.component)
+//      }
+//    }
+//  }
+//}
+
+
