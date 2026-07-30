@@ -2,8 +2,6 @@ package com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import com.rahim.yadino.base.UnidirectionalComponent
-import com.rahim.yadino.enums.message.MessageUi
 
 //interface ErrorDialogRemoveRoutineComponent : UnidirectionalComponent<ErrorDialogRemoveRoutineComponent.Event, ErrorDialogRemoveRoutineComponent.State, ErrorDialogRemoveRoutineComponent.Effect> {
 //  @Immutable

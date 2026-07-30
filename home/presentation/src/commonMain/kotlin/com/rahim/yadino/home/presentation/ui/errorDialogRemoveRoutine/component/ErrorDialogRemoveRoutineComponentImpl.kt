@@ -1,12 +1,6 @@
 package com.rahim.yadino.home.presentation.ui.errorDialogRemoveRoutine.component
 
-import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import com.rahim.yadino.enums.message.MessageUi
-import com.rahim.yadino.home.domain.useCase.DeleteReminderUseCase
-import com.rahim.yadino.home.presentation.mapper.toRoutine
+
 import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob

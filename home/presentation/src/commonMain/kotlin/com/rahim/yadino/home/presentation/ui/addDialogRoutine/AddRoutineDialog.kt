@@ -1,4 +1,4 @@
-package com.rahim.yadino.home.presentation.ui.updateDialogRoutine
+package com.rahim.yadino.home.presentation.ui.addDialogRoutine
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -33,39 +33,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.window.DialogProperties
-import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.DialogButtonBackground
 import com.rahim.yadino.designsystem.component.gradientColors
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
-import com.rahim.yadino.designsystem.utils.size.LocalSize
-import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SizeDimensions
 import com.rahim.yadino.designsystem.utils.theme.Onahau
 import com.rahim.yadino.designsystem.utils.theme.Purple
 import com.rahim.yadino.designsystem.utils.theme.PurpleGrey
-import com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component.UpdateRoutineDialogComponent
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
-import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.showToastShort
-import com.rahim.yadino.toPersianDigits
-import com.rahim.yadino.toStringResource
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.MaterialDialogState
-import com.vanpra.composematerialdialogs.datetime.time.TimePickerDefaults
-import com.vanpra.composematerialdialogs.datetime.time.timepicker
-import com.vanpra.composematerialdialogs.rememberMaterialDialogState
-import saman.zamani.persiandate.PersianDate
-import timber.log.Timber
-import java.time.LocalTime
 
 //const val MAX_NAME_LENGTH = 22
 //const val MAX_EXPLANATION_LENGTH = 40
@@ -74,9 +56,9 @@ import java.time.LocalTime
 //  ExperimentalMaterial3Api::class,
 //)
 //@Composable
-//fun UpdateRoutineDialog(
+//fun AddRoutineDialog(
 //  modifier: Modifier = Modifier,
-//  component: UpdateRoutineDialogComponent,
+//  component: AddRoutineDialogComponent,
 //) {
 //
 //  val (state, effect, event) = use(component)
@@ -85,7 +67,7 @@ import java.time.LocalTime
 //  LaunchedEffect(effect) {
 //    effect.collect { effect ->
 //      when (effect) {
-//        is UpdateRoutineDialogComponent.Effect.ShowToast -> {
+//        is AddRoutineDialogComponent.Effect.ShowToast -> {
 //          context.showToastShort(stringId = effect.messageUi.toStringResource())
 //        }
 //      }
@@ -96,9 +78,9 @@ import java.time.LocalTime
 //  val space = LocalSpacing.current
 //  val fontSize = LocalFontSize.current
 //
-//  var routineName by rememberSaveable { mutableStateOf(if (state.updateRoutine?.name.isNullOrBlank()) "" else state.updateRoutine.name) }
-//  var routineExplanation by rememberSaveable { mutableStateOf(if (state.updateRoutine?.explanation.isNullOrBlank()) "" else state.updateRoutine.explanation) }
-//  var time by rememberSaveable { mutableStateOf(if (state.updateRoutine?.timeHours.isNullOrBlank()) "12:00" else state.updateRoutine.timeHours) }
+//  var routineName by rememberSaveable { mutableStateOf("") }
+//  var routineExplanation by rememberSaveable { mutableStateOf("") }
+//  var time by rememberSaveable { mutableStateOf("12:00") }
 //
 //  var isErrorName by remember { mutableStateOf(false) }
 //  var isErrorExplanation by remember { mutableStateOf(false) }
@@ -106,9 +88,9 @@ import java.time.LocalTime
 //
 //  val persianData = PersianDate()
 //  val date = persianData.initJalaliDate(
-//    state.updateRoutine?.yearNumber ?: persianData.shYear,
-//    state.updateRoutine?.monthNumber ?: persianData.shMonth,
-//    state.updateRoutine?.dayNumber ?: persianData.shDay,
+//    persianData.shYear,
+//    persianData.shMonth,
+//    persianData.shDay,
 //  )
 //  CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
 //    BasicAlertDialog(
@@ -126,7 +108,7 @@ import java.time.LocalTime
 //          shape = RoundedCornerShape(size.size8),
 //        ),
 //      onDismissRequest = {
-//        event.invoke(UpdateRoutineDialogComponent.Event.DismissDialog)
+//        event.invoke(AddRoutineDialogComponent.Event.DismissDialog)
 //      },
 //    ) {
 //      Column(
@@ -300,7 +282,6 @@ import java.time.LocalTime
 //                isErrorName = true
 //              } else {
 //                val routine = RoutineUiModel(
-//                  id = state.updateRoutine?.id,
 //                  name = routineName,
 //                  explanation = routineExplanation,
 //                  timeHours = time,
@@ -310,14 +291,14 @@ import java.time.LocalTime
 //                  dayName = date.dayName(),
 //                  colorTask = null,
 //                )
-//                event.invoke(UpdateRoutineDialogComponent.Event.UpdateRoutine(routine))
+//                event.invoke(AddRoutineDialogComponent.Event.CreateRoutine(routine))
 //              }
 //            },
 //          )
 //          Spacer(modifier = Modifier.width(size.size10))
 //          TextButton(
 //            onClick = {
-//              event.invoke(UpdateRoutineDialogComponent.Event.DismissDialog)
+//              event.invoke(AddRoutineDialogComponent.Event.DismissDialog)
 //            },
 //          ) {
 //            Text(

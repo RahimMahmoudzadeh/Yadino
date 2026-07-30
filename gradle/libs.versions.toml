@@ -128,7 +128,7 @@ firebaseCrashlytics = { group = "com.google.firebase", name = "firebase-crashlyt
 datetime = { group = "io.github.vanpra.compose-material-dialogs", name = "datetime", version.ref = "datetime" }
 
 #swipe
-swipe = {  module = "com.stevdza-san:swipeable-kmp", version.ref = "swipe" }
+swipe = { module = "com.stevdza-san:swipeable-kmp", version.ref = "swipe" }
 
 #accompanist
 accompanist-pager = { group = "com.google.accompanist", name = "accompanist-pager", version.ref = "accompanist_pager" }
@@ -172,7 +172,7 @@ core = { group = "androidx.test", name = "core", version.ref = "core" }
 [bundles]
 compose = ["cmp-compose-animation", "cmp-compose-components-resources", "cmp-lifecycle-runtime-compose",
     "cmp-compose-foundation", "cmp-compose-material-ripple", "cmp-compose-runtime",
-    "cmp-compose-ui-tooling-preview", "cmp-compose-material3"]
+    "cmp-compose-ui-tooling-preview", "cmp-compose-material3", "cmp-navigation3-ui"]
 
 compose-x = ["androidx-activity-compose", "androidx-core-splashscreen", "androidx-lifecycle-runtime-compose", "cmp-lifecycle-viewmodel-compose"]
 

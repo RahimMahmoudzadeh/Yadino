@@ -75,7 +75,6 @@ internal fun Project.configureComposeMultiPlatform() {
     }
   }
 
-  // 2. Configure Compose Resources
   extensions.configure<ComposeExtension> {
     (this as ExtensionAware).extensions.configure<ResourcesExtension> {
       packageOfResClass = fullNamespace
@@ -130,6 +129,16 @@ internal fun Project.configureMultiPlatform(commonMainDependency: KotlinDependen
 }
 
 internal fun Project.configureComposeMultiPlatformPresentation() {
+  val formattedPath = project.path.replace(":", ".").replace("-", "_")
+  val fullNamespace = Config.android.nameSpace + Config.android.applicationIdSuffix + formattedPath
+
+  extensions.configure<ComposeExtension> {
+    (this as ExtensionAware).extensions.configure<ResourcesExtension> {
+      packageOfResClass = fullNamespace
+      publicResClass = true
+      generateResClass = ResourcesExtension.ResourceClassGeneration.Auto
+    }
+  }
   extensions.configure<KotlinMultiplatformExtension> {
 
     configure<KotlinMultiplatformAndroidLibraryTarget> {
@@ -154,6 +163,7 @@ internal fun Project.configureComposeMultiPlatformPresentation() {
       commonMain.dependencies {
         implementation(project(":library:designsystem"))
         implementation(project(":library:navigation"))
+        implementation(versionCatalog.findBundle("compose").get())
       }
       iosMain.dependencies {}
     }

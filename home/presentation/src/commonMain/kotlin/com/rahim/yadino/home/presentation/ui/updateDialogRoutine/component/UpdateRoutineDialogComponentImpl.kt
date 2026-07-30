@@ -1,13 +1,5 @@
 package com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component
 
-import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import com.rahim.yadino.base.toMessageUi
-import com.rahim.yadino.enums.message.MessageUi
-import com.rahim.yadino.home.domain.useCase.UpdateReminderUseCase
-import com.rahim.yadino.home.presentation.mapper.toRoutine
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel

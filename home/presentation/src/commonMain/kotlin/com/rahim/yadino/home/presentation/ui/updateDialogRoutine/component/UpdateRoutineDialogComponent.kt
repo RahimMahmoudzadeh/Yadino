@@ -1,8 +1,6 @@
 package com.rahim.yadino.home.presentation.ui.updateDialogRoutine.component
 
 import androidx.compose.runtime.Immutable
-import com.rahim.yadino.base.UnidirectionalComponent
-import com.rahim.yadino.enums.message.MessageUi
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
 
 //interface UpdateRoutineDialogComponent : UnidirectionalComponent<UpdateRoutineDialogComponent.Event, UpdateRoutineDialogComponent.State, UpdateRoutineDialogComponent.Effect> {

@@ -1,6 +1,5 @@
 package com.rahim.yadino.home.presentation.ui.main
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -23,45 +21,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.rahim.yadino.base.LoadableComponent
-import com.rahim.yadino.base.LoadableData
-import com.rahim.yadino.base.use
 import com.rahim.yadino.designsystem.component.EmptyMessage
 import com.rahim.yadino.designsystem.component.ShowSearchBar
 import com.rahim.yadino.designsystem.utils.size.FontDimensions
 import com.rahim.yadino.designsystem.utils.size.LocalFontSize
-import com.rahim.yadino.designsystem.utils.size.LocalSize
-import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.designsystem.utils.size.SpaceDimensions
 import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
 import com.rahim.yadino.home.presentation.model.CurrentDateUiModel
 import com.rahim.yadino.home.presentation.model.ErrorDialogRemoveUiModel
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
-import com.rahim.yadino.home.presentation.ui.component.ListRoutines
-import com.rahim.yadino.home.presentation.ui.main.component.MainHomeComponent
-import com.rahim.yadino.library.designsystem.R
-import com.rahim.yadino.showToastShort
-import com.rahim.yadino.toPersianDigits
-import com.rahim.yadino.toStringResource
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 
-//@OptIn(ExperimentalPermissionsApi::class)
-//@Composable
-//fun HomeMainScreen(
-//  modifier: Modifier = Modifier,
-//  clickSearch: Boolean,
-//  component: MainHomeComponent,
-//) {
+@Composable
+fun HomeScreenRoot(
+  modifier: Modifier = Modifier,
+  clickSearch: Boolean,
+) {
 //  val (state, effect, event) = use(component = component)
 //  val context = LocalContext.current
 //
@@ -87,15 +67,15 @@ import kotlinx.coroutines.launch
 //      }
 //    }
 //  }
-//
+
 //  HomeScreen(
 //    modifier = modifier,
 //    state = state,
 //    clickSearch = clickSearch,
 //    event = event,
 //  )
-//}
-//
+}
+
 //@OptIn(FlowPreview::class)
 //@Composable
 //private fun HomeScreen(

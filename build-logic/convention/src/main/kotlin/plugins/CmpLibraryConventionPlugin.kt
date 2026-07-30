@@ -60,8 +60,6 @@ class CmpLibraryConventionPlugin : Plugin<Project> {
             val subprojects = project
               .rootProject
               .subprojects
-//            subprojects.filter { it.path.startsWith(":feature:", false) }
-//              .forEach { implementation(project(it.path)) }
             subprojects.filter { it.path.startsWith(":home:", false) }
               .forEach { implementation(project(it.path)) }
             subprojects.filter { it.path.startsWith(":onboarding:", false) }

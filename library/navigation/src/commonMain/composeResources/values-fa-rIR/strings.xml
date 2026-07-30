@@ -7,4 +7,7 @@
     <string name="drawer_item_guide">راهنما</string>
     <string name="hello_friend">سلام دوست خوبم</string>
     <string name="welcome">خوشامدگویی</string>
+    <string name="home">خانه</string>
+    <string name="routine">روتین</string>
+    <string name="note">یادداشت</string>
 </resources>

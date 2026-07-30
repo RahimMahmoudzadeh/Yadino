@@ -7,9 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rahim.yadino.designsystem.component.ItemRoutine
-import com.rahim.yadino.designsystem.utils.size.LocalSpacing
 import com.rahim.yadino.home.presentation.model.RoutineUiModel
-import kotlinx.collections.immutable.PersistentList
 
 //@Composable()
 //fun ListRoutines(
