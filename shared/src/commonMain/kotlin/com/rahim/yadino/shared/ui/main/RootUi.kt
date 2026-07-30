@@ -1,275 +1,189 @@
 package com.rahim.yadino.shared.ui.main
 
-//import android.Manifest
-//import android.app.Activity
-//import android.content.Context
-//import android.os.Build
-//import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.rememberDrawerState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-//import androidx.compose.ui.platform.LocalContext
-//import androidx.compose.ui.platform.LocalLayoutDirection
-//import androidx.compose.ui.res.stringResource
-//import androidx.compose.ui.res.vectorResource
-//import androidx.compose.ui.unit.LayoutDirection
-//import com.arkivanov.decompose.extensions.compose.stack.Children
-//import com.arkivanov.decompose.extensions.compose.stack.animation.fade
-//import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-//import com.arkivanov.decompose.extensions.compose.subscribeAsState
-//import com.google.accompanist.permissions.ExperimentalPermissionsApi
-//import com.google.accompanist.permissions.rememberPermissionState
-//import com.rahim.BuildConfig
-//import com.rahim.component.BottomNavigationBar
-//import com.rahim.data.distributionActions.StateOfClickItemDrawable
-//import com.rahim.ui.root.component.RootComponent
-//import com.rahim.yadino.base.use
-//import com.rahim.yadino.designsystem.component.TopBarCenterAlign
-//import com.rahim.yadino.designsystem.component.requestNotificationPermission
-//import com.rahim.yadino.designsystem.utils.size.LocalSize
-//import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
-//import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
-//import com.rahim.ui.model.ErrorDialogUiModel
-//import com.rahim.yadino.home.presentation.ui.addDialogRoutine.AddRoutineDialog
-//import com.rahim.yadino.home.presentation.ui.root.HomeRoot
-//import com.rahim.yadino.library.designsystem.R
-//import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
-//import com.rahim.yadino.note.presentation.ui.addNoteDialog.AddNoteDialog
-//import com.rahim.yadino.note.presentation.ui.root.NoteRoute
-//import com.rahim.yadino.onboarding.presentation.ui.OnBoardingRoute
-//import com.rahim.yadino.routine.presentation.ui.alarmHistory.HistoryRoute
-//import com.rahim.yadino.routine.presentation.ui.root.RoutineRoute
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.navigation3.ui.NavDisplay
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationBackHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
+import com.rahim.shared.Res
+import com.rahim.shared.list_routine
+import com.rahim.shared.notes
+import com.rahim.yadino.designsystem.component.TopBarCenterAlign
+import com.rahim.yadino.designsystem.utils.theme.AppTheme
+import com.rahim.yadino.designsystem.utils.theme.CornflowerBlueLight
+import com.rahim.yadino.designsystem.utils.theme.YadinoTheme
+import com.rahim.yadino.home.presentation.navigation.renderHomeRoute
+import com.rahim.yadino.library.designsystem.ic_add
+import com.rahim.yadino.library.designsystem.my_firend
+import com.rahim.yadino.navigation.component.YadinoNavigationDrawer
+import com.rahim.yadino.navigation.component.base.NavRoute
+import com.rahim.yadino.navigation.component.navigator.rememberAppNavigator
+import com.rahim.yadino.note.presentation.navigation.renderNoteRoute
+import com.rahim.yadino.routine.presentation.navigation.renderRoutineRoute
+import com.rahim.yadino.shared.BottomNavigationBar
 import kotlinx.coroutines.launch
-//
-//@OptIn(ExperimentalPermissionsApi::class)
-//@Composable
-//fun YadinoApp(
-//  modifier: Modifier = Modifier,
-//  component: RootComponent,
-//) {
-//  val size = LocalSize.current
-//  val context = LocalContext.current
-//  val (event, state) = use(component)
-//  val isDark = state.isDarkTheme ?: isSystemInDarkTheme()
-//  val stack = component.stack.subscribeAsState()
-//  val configurationState = stack.value.active.configuration
-//
-//  changeTheme(theme = state.isDarkTheme, activity = context as Activity)
-//  checkStateOfClickItemDrawable(stateOfClickItemDrawable = state.stateOfClickItemDrawable, context = context)
-//
-//  var clickSearch by rememberSaveable { mutableStateOf(false) }
-//
-//  val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-//  val coroutineScope = rememberCoroutineScope()
-//
-//  val notificationPermissionState = rememberPermissionState(Manifest.permission.POST_NOTIFICATIONS)
-//  val title = stringResource(com.rahim.yadino.core.base.R.string.permission_notification)
-//  val submitTextButton = stringResource(R.string.setting)
-//
-//  val onPermissionGranted = {
-//    when (configurationState) {
-//      is RootComponent.ChildConfig.Home -> {
-//        event(RootComponent.Event.ShowAddRoutineDialogHomeUi)
-//      }
-//
-//      is RootComponent.ChildConfig.Note -> {
-//        event(RootComponent.Event.ShowAddNoteDialog)
-//      }
-//
-//      is RootComponent.ChildConfig.Routine -> {
-//        event(RootComponent.Event.ShowAddRoutineDialogRoutineUi)
-//      }
-//    }
-//  }
-//
-//  val onPermissionDenied = {
-//    event(
-//      RootComponent.Event.ShowErrorDialog(
-//        ErrorDialogUiModel(
-//          title = title,
-//          submitTextButton = submitTextButton,
-//        ),
-//      ),
-//    )
-//  }
-//
-//  val addNoteDialog = component.addNoteDialog.subscribeAsState().value.child
-//  val addRoutineDialogRoutineUi by component.addRoutineDialogRoutineUi.subscribeAsState()
-//  val addRoutineDialogHomeUi = component.addRoutineDialogHomeUi.subscribeAsState().value.child
-//
-//  CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-//    YadinoTheme(darkTheme = isDark) {
-//      addNoteDialog?.let { dialogSlot ->
-//        dialogSlot.instance.also { dialogComponent ->
-//          AddNoteDialog(
-//            component = dialogComponent,
-//          )
-//        }
-//      }
-//
-//      addRoutineDialogHomeUi?.let { dialogSlot ->
-//        dialogSlot.instance.also { dialogComponent ->
-//          AddRoutineDialog(
-//            component = dialogComponent,
-//          )
-//        }
-//      }
-//
-//      addRoutineDialogRoutineUi.child?.let { dialogSlot ->
-//        dialogSlot.instance.also { dialogComponent ->
-//          com.rahim.yadino.routine.presentation.ui.addRoutineDialog.AddRoutineDialog(
-//            component = dialogComponent,
-//          )
-//        }
-//      }
-//      YadinoNavigationDrawer(
-//        modifier = modifier,
-//        drawerState = drawerState,
-//        isDarkTheme = isDark,
-//        onItemClick = {
-//          event(RootComponent.Event.ClickDrawer(it))
-//        },
-//        gesturesEnabled = configurationState !is RootComponent.ChildConfig.OnBoarding,
-//      ) {
-//        Scaffold(
-//          topBar = {
-//            AnimatedVisibility(
-//              visible = configurationState !is RootComponent.ChildConfig.OnBoarding,
-//              enter = fadeIn() + expandVertically(animationSpec = tween(800)),
-//              exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
-//            ) {
-//              TopBarCenterAlign(
-//                title = checkNavBackStackEntry(rootComponent = component),
-//                openHistory = {
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun YadinoApp() {
+  val backstack = rememberSaveable(
+    saver = listSaver(
+      save = { it.toList() },
+      restore = { mutableStateListOf(*it.toTypedArray()) }
+    )
+  ) {
+    mutableStateListOf<NavRoute>(NavRoute.Home.Main)
+  }
+  val navigator = rememberAppNavigator()
+  val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+  val scope = rememberCoroutineScope()
+  val size = AppTheme.size
+  val navState = rememberNavigationEventState(currentInfo = NavigationEventInfo.None)
+
+  NavigationBackHandler(
+    state = navState,
+    isBackEnabled = drawerState.isOpen,
+    onBackCompleted = {
+      scope.launch { drawerState.close() }
+    }
+  )
+
+  var clickSearch by rememberSaveable { mutableStateOf(false) }
+  CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+    YadinoTheme(darkTheme = false) {
+      YadinoNavigationDrawer(
+        drawerState = drawerState, isTopLevelDestination = navigator.isTopLevelDestination, onItemClick = {},
+        content = {
+          Scaffold(
+            topBar = {
+              AnimatedVisibility(
+                visible = navigator.isTopLevelDestination,
+                enter = fadeIn() + expandVertically(animationSpec = tween(800)),
+                exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
+              ) {
+                TopBarCenterAlign(
+                  title = checkNavBackStackEntry(navRoute = navigator.currentRoute),
+                  openHistory = {
 //                  component.showHistoryRoutine()
-//                },
-//                isShowSearchIcon = configurationState !is RootComponent.ChildConfig.HistoryRoutine,
-//                isShowBackIcon = configurationState is RootComponent.ChildConfig.HistoryRoutine,
-//                onClickBack = {
+                  },
+                  isShowSearchIcon = navigator.currentRoute !is NavRoute.Home.HistoryRoutine,
+                  isShowBackIcon = navigator.currentRoute !is NavRoute.Home.HistoryRoutine,
+                  onClickBack = {
 //                  component.navigateUp()
-//                },
-//                onClickSearch = {
-//                  clickSearch = !clickSearch
-//                },
-//                onDrawerClick = {
-//                  coroutineScope.launch { drawerState.open() }
-//                },
-//                haveAlarm = state.haveAlarm,
-//                size = size,
+                  },
+                  onClickSearch = {
+                    clickSearch = !clickSearch
+                  },
+                  onDrawerClick = {
+                    scope.launch { drawerState.open() }
+                  },
+                  haveAlarm = true,
+                  size = size,
+                )
+              }
+
+            },
+            bottomBar = {
+              AnimatedVisibility(
+                visible = navigator.isTopLevelDestination,
+                enter = fadeIn() + expandVertically(animationSpec = tween(800)),
+                exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
+              ) {
+                BottomNavigationBar(
+                  navRoute = navigator.currentRoute,
+                  onNavigation = {
+                    navigator.navigateToRoot(it)
+                  },
+                )
+              }
+            },
+            floatingActionButton = {
+              FloatingActionButton(
+                containerColor = CornflowerBlueLight,
+                contentColor = Color.White,
+                onClick = {
+//              notificationPermissionState.requestNotificationPermission(
+//                onGranted = { onPermissionGranted() },
+//                onShowRationale = { onPermissionDenied() },
 //              )
-//            }
-//          },
-//          floatingActionButton = {
-//            FloatingActionButton(
-//              containerColor = CornflowerBlueLight,
-//              contentColor = Color.White,
-//              onClick = {
-//                notificationPermissionState.requestNotificationPermission(
-//                  onGranted = { onPermissionGranted() },
-//                  onShowRationale = { onPermissionDenied() },
-//                )
-//              },
-//            ) {
-//              Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_add), "add item")
-//            }
-//          },
-//          bottomBar = {
-//            AnimatedVisibility(
-//              visible = configurationState !is RootComponent.ChildConfig.OnBoarding && configurationState !is RootComponent.ChildConfig.HistoryRoutine,
-//              enter = fadeIn() + expandVertically(animationSpec = tween(800)),
-//              exit = fadeOut() + shrinkVertically(animationSpec = tween(800)),
-//            ) {
-//              BottomNavigationBar(
-//                configuration = configurationState,
-//                component = component,
-//              )
-//            }
-//          },
-//        ) { innerPadding ->
-//          RootContent(component = component, clickSearch = clickSearch, modifier = padding(innerPadding))
-//        }
-//      }
-//    }
-//  }
-//}
-//
-//@Composable
-//fun RootContent(component: RootComponent, clickSearch: Boolean, modifier: Modifier = Modifier) {
-//  Children(
-//    stack = component.stack,
-//    modifier = modifier.fillMaxSize(),
-//    animation = stackAnimation(fade()),
-//  ) {
-//
-//    Surface(color = MaterialTheme.colorScheme.background) {
-//      when (val child = it.instance) {
-//        is RootComponent.ChildStack.Home -> {
-//          HomeRoot(
-//            component = child.component,
-//            clickSearch = clickSearch,
-//          )
-//        }
-//
-//        is RootComponent.ChildStack.OnBoarding -> OnBoardingRoute(component = child.component)
-//        is RootComponent.ChildStack.Routine -> RoutineRoute(
-//          component = child.component, showSearchBar = clickSearch,
-//        )
-//
-//        is RootComponent.ChildStack.HistoryRoutine -> HistoryRoute(component = child.component)
-//        is RootComponent.ChildStack.Note -> NoteRoute(
-//          component = child.component,
-//          clickSearch = clickSearch,
-//        )
-//      }
-//    }
-//  }
-//}
-//
-//@Composable
-//private fun checkNavBackStackEntry(rootComponent: RootComponent): String {
-//  val stack = rootComponent.stack.subscribeAsState()
-//  val configurationState = stack.value.active.configuration
-//
-//  return when (configurationState) {
-//    is RootComponent.ChildConfig.Home -> {
-//      stringResource(
-//        id = R.string.my_firend,
-//      )
-//    }
-//
-//    is RootComponent.ChildConfig.Routine -> stringResource(
-//      id = com.rahim.R.string.list_routine,
+                },
+              ) {
+                Icon(imageVector = vectorResource(com.rahim.yadino.library.designsystem.Res.drawable.ic_add), "add item")
+              }
+            },
+          ) { innerPadding ->
+            NavDisplay(
+              backStack = backstack,
+              modifier = Modifier.padding(innerPadding),
+              onBack = { if (backstack.size > 1) backstack.removeLast() },
+              entryProvider = { route ->
+                when (route) {
+                  is NavRoute.Home -> {
+                    renderHomeRoute(
+                      route = route,
+                      onNavigate = { newRoute -> backstack.add(newRoute) },
+                    )
+                  }
+
+                  is NavRoute.Routine -> {
+                    renderRoutineRoute(
+                      route = route,
+                      onNavigate = { newRoute -> backstack.add(newRoute) },
+                    )
+                  }
+                  is NavRoute.Note -> {
+                    renderNoteRoute(
+                      route = route,
+                      onNavigate = { newRoute -> backstack.add(newRoute) },
+                    )
+                  }
+                }
+              },
+            )
+          }
+        },
+      )
+    }
+  }
+}
+
+@Composable
+private fun checkNavBackStackEntry(navRoute: NavRoute): String {
+
+  return when (navRoute) {
+    is NavRoute.Home.Main -> {
+      stringResource(
+        com.rahim.yadino.library.designsystem.Res.string.my_firend,
+      )
+    }
+
+//    is NavRoute.Routine.Main -> stringResource(
+//      Res.string.list_routine,
 //    )
 //
-//    is RootComponent.ChildConfig.HistoryRoutine -> stringResource(id = com.rahim.R.string.historyAlarm)
-//
-//    else -> stringResource(id = com.rahim.R.string.notes)
-//  }
-//}
-//
+//    is NavRoute.Note.Main -> stringResource(Res.string.notes)
+
+    else -> stringResource(Res.string.notes)
+  }
+}
+
 //private fun checkStateOfClickItemDrawable(stateOfClickItemDrawable: StateOfClickItemDrawable?, context: Context) {
 //  if (stateOfClickItemDrawable is StateOfClickItemDrawable.InstallApp) {
 //    when {
