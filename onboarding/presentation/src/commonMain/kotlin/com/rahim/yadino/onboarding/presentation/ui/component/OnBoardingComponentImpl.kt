@@ -1,12 +1,5 @@
 package com.rahim.yadino.onboarding.presentation.ui.component
 
-import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
-import com.arkivanov.essenty.lifecycle.doOnCreate
-import com.rahim.yadino.onBoarding.domain.useCase.IsShowWelcomeScreenUseCase
-import com.rahim.yadino.onBoarding.domain.useCase.SaveShowWelcomeUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.catch

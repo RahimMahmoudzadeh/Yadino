@@ -1,12 +1,6 @@
 package com.rahim.yadino.onboarding.presentation.ui.component
 
 import androidx.compose.runtime.Immutable
-import com.rahim.yadino.base.EventStateDispatch
-import com.rahim.yadino.base.StateEventComponent
-import com.rahim.yadino.base.UnidirectionalComponent
-import com.rahim.yadino.enums.message.MessageUi
-import com.rahim.yadino.onboarding.presentation.R
-import com.rahim.yadino.onboarding.presentation.model.OnBoardingUiModel
 
 //interface OnBoardingComponent : StateEventComponent<OnBoardingComponent.WelcomeEvent, OnBoardingComponent.WelcomeState> {
 //
