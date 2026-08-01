@@ -163,6 +163,7 @@ internal fun Project.configureComposeMultiPlatformPresentation() {
       commonMain.dependencies {
         implementation(project(":library:designsystem"))
         implementation(project(":library:navigation"))
+        implementation(project(":core:base"))
         implementation(versionCatalog.findBundle("compose").get())
       }
       iosMain.dependencies {}
