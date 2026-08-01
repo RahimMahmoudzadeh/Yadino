@@ -1,8 +1,6 @@
 plugins {
   libs.plugins.run {
     alias(presentation)
-//    alias(decompose)
-//    alias(library.compose)
     alias(kotlinx.serialization)
   }
 }
