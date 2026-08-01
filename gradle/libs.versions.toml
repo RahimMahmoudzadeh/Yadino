@@ -88,6 +88,7 @@ cmp-compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", versi
 cmp-compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-multiplatform" }
 cmp-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "cmp-lifecycle" }
 cmp-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "cmp-lifecycle" }
+cmp-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "cmp-lifecycle" }
 cmp-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "androidx-navigation3" }
 
 #compose-androidX
@@ -172,9 +173,9 @@ core = { group = "androidx.test", name = "core", version.ref = "core" }
 [bundles]
 compose = ["cmp-compose-animation", "cmp-compose-components-resources", "cmp-lifecycle-runtime-compose",
     "cmp-compose-foundation", "cmp-compose-material-ripple", "cmp-compose-runtime",
-    "cmp-compose-ui-tooling-preview", "cmp-compose-material3", "cmp-navigation3-ui"]
+    "cmp-compose-ui-tooling-preview", "cmp-compose-material3", "cmp-navigation3-ui","cmp-lifecycle-viewmodel-compose","cmp-lifecycle-viewmodel-navigation3"]
 
-compose-x = ["androidx-activity-compose", "androidx-core-splashscreen", "androidx-lifecycle-runtime-compose", "cmp-lifecycle-viewmodel-compose"]
+compose-x = ["androidx-activity-compose", "androidx-core-splashscreen", "androidx-lifecycle-runtime-compose",]
 
 room = ["room-runtime", "room-ktx"]
 koin = ["koin-compose-viewmodel-navigation", "koin-compose", "koin-compose-viewmodel"]
